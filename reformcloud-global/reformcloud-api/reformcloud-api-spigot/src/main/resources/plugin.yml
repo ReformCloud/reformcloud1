@@ -1,0 +1,9 @@
+name: ReformCloudAPISpigot
+version: 2.0
+author: ReformCloud
+main: systems.reformcloud.launcher.SpigotBootstrap
+
+load: STARTUP
+
+commands:
+  selectors:

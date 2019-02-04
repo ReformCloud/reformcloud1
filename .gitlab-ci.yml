@@ -1,0 +1,15 @@
+image: maven:3.5.0-jdk-8
+
+stages:
+  - build
+  - test
+
+compile:
+  stage: build
+  script:
+    - mvn compile --batch-mode
+
+verify:
+  stage: test
+  script:
+    - mvn verify --batch-mode

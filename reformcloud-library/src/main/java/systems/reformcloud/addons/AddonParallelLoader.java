@@ -1,0 +1,123 @@
+/*
+  Copyright © 2018 Pasqual K. | All rights reserved
+ */
+
+package systems.reformcloud.addons;
+
+import lombok.Getter;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.addons.configuration.AddonClassConfig;
+import systems.reformcloud.addons.exceptions.AddonLoadException;
+import systems.reformcloud.addons.extendable.AddonExtendable;
+import systems.reformcloud.addons.loader.AddonMainClassLoader;
+import systems.reformcloud.utility.StringUtil;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+/**
+ * @author _Klaro | Pasqual K. / created on 10.12.2018
+ */
+
+public class AddonParallelLoader extends AddonExtendable {
+    @Getter
+    private Queue<JavaAddon> javaAddons = new ConcurrentLinkedDeque<>();
+
+    /**
+     * Loads all addons
+     */
+    @Override
+    public void loadAddons() {
+        Collection<AddonClassConfig> addonClassConfigs = this.checkForAddons();
+
+        addonClassConfigs.forEach(addonClassConfig -> {
+            try {
+                final AddonMainClassLoader addonMainClassLoader = new AddonMainClassLoader(addonClassConfig);
+                JavaAddon javaAddon = addonMainClassLoader.loadAddon();
+                javaAddon.setAddonMainClassLoader(addonMainClassLoader);
+
+                javaAddons.add(javaAddon);
+
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_prepared()
+                        .replace("%name%", addonClassConfig.getName())
+                        .replace("%version%", addonClassConfig.getVersion()));
+            } catch (final Throwable throwable) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while loading addon", throwable);
+            }
+        });
+    }
+
+    /**
+     * Enables the Addons
+     */
+    @Override
+    public void enableAddons() {
+        this.javaAddons.forEach(consumer -> {
+            consumer.onAddonLoading();
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_enabled()
+                    .replace("%name%", consumer.getAddonName())
+                    .replace("%version%", consumer.getAddonClassConfig().getVersion()));
+        });
+    }
+
+    /**
+     * Disables all addons
+     */
+    @Override
+    public void disableAddons() {
+        if (javaAddons.isEmpty())
+            return;
+
+        do {
+            JavaAddon consumer = javaAddons.poll();
+            consumer.onAddonReadyToClose();
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_closed()
+                    .replace("%name%", consumer.getAddonName())
+                    .replace("%version%", consumer.getAddonClassConfig().getVersion()));
+        } while (!javaAddons.isEmpty());
+    }
+
+    /**
+     * Returns all Addon Class Configs of all jar files
+     *
+     * @return {@link Set<AddonClassConfig>} of all Addons
+     */
+    private Set<AddonClassConfig> checkForAddons() {
+        Set<AddonClassConfig> moduleConfigs = new HashSet<>();
+
+        File[] files = new File("reformcloud/addons").listFiles(pathname ->
+                pathname.isFile()
+                        && pathname.exists()
+                        && pathname.getName().endsWith(".jar"));
+        if (files == null)
+            return moduleConfigs;
+
+        for (File file : files) {
+            try (JarFile jarFile = new JarFile(file)) {
+                JarEntry jarEntry = jarFile.getJarEntry("addon.properties");
+                if (jarEntry == null)
+                    throw new AddonLoadException(new FileNotFoundException("Could't find properties file"));
+
+                try (InputStreamReader reader = new InputStreamReader(jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8)) {
+                    Properties properties = new Properties();
+                    properties.load(reader);
+                    AddonClassConfig moduleConfig = new AddonClassConfig(file,
+                            properties.getProperty("name"),
+                            properties.getProperty("version"),
+                            properties.getProperty("mainClazz"));
+                    moduleConfigs.add(moduleConfig);
+                }
+            } catch (final Throwable throwable) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load addon configuration", throwable);
+            }
+        }
+
+        return moduleConfigs;
+    }
+}

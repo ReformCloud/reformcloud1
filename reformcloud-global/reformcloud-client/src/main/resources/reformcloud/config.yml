@@ -1,0 +1,44 @@
+player_limit: 550
+permissions:
+  default: []
+  admin:
+    - bungeecord.command.alert
+    - bungeecord.command.end
+    - bungeecord.command.ip
+    - bungeecord.command.reload
+    - bungeecord.command.send
+    - bungeecord.command.service
+    - bungeecord.command.list
+timeout: 30000
+log_commands: false
+online_mode: true
+disabled_commands:
+  - disabledcommandhere
+servers:
+  Lobby-1:
+    motd: ''
+    address: localhost:25565
+    restricted: false
+listeners:
+  - query_port: 25577
+    motd: "§c§lReformCloud §8┃ §c§lAn intelligent Cloud System \n §7§lTwitter: §7@ReformCloud §8┃ §7§lDiscord: §7discord.gg/fwe2CHD"
+    priorities:
+      - Lobby-1
+    bind_local_address: true
+    tab_list: GLOBAL_PING
+    query_enabled: false
+    host: 0.0.0.0:25577
+    forced_hosts:
+      pvp.md-5.net: pvp
+    max_players: 0
+    tab_size: 60
+    ping_passthrough: false
+    force_default_server: false
+ip_forward: true
+network_compression_threshold: 256
+groups:
+  md5_:
+    - admin
+connection_throttle: -1
+stats: 13be5ac9-5731-4502-9ccc-c4a80163f14a
+prevent_proxy_connections: false
