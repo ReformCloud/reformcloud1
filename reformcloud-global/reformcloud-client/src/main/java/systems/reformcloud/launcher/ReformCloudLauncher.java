@@ -32,6 +32,20 @@ final class ReformCloudLauncher {
      * @throws Throwable    Will be thrown if an error occurs
      */
     public static synchronized void main(String[] args) throws Throwable {
+        final List<String> options = Arrays.asList(args);
+
+        if (StringUtil.USER_NAME.equalsIgnoreCase("root")
+                && StringUtil.OS_NAME.toLowerCase().contains("linux")
+                && !options.contains("--ignore-root")) {
+            System.out.println("You cannot run ReformCloud as root user");
+            try {
+                Thread.sleep(2000);
+            } catch (final InterruptedException ignored) {
+            }
+            System.exit(1);
+            return;
+        }
+
         final long current = System.currentTimeMillis();
 
         System.out.println("Trying to startup ReformCloudClient...");
@@ -44,12 +58,10 @@ final class ReformCloudLauncher {
 
         System.out.println();
 
-        ReformCloudLibraryService.sendHeader();
-
-        final List<String> options = Arrays.asList(args);
-
         final LoggerProvider loggerProvider = new LoggerProvider();
         final CommandManager commandManager = new CommandManager();
+
+        ReformCloudLibraryService.sendHeader(loggerProvider);
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 

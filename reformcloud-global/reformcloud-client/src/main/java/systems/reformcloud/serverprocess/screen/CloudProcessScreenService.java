@@ -4,10 +4,13 @@
 
 package systems.reformcloud.serverprocess.screen;
 
+import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +19,7 @@ import java.util.Map;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public class CloudProcessScreenService {
+public class CloudProcessScreenService implements Runnable {
     private Map<String, ProxyStartupHandler> proxyStartupHandlerMap = ReformCloudLibraryService.concurrentHashMap();
     private Map<String, CloudServerStartupHandler> cloudServerStartupHandlerMap = ReformCloudLibraryService.concurrentHashMap();
 
@@ -94,5 +97,71 @@ public class CloudProcessScreenService {
      */
     public CloudServerStartupHandler getRegisteredServerHandler(final String name) {
         return this.cloudServerStartupHandlerMap.getOrDefault(name, null);
+    }
+
+    private final StringBuffer stringBuffer = new StringBuffer();
+    private final byte[] buffer = new byte[1024];
+
+    @Override
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            for (CloudServerStartupHandler cloudServerStartupHandler : this.cloudServerStartupHandlerMap.values())
+                this.readLog(cloudServerStartupHandler);
+
+            for (ProxyStartupHandler proxyStartupHandler : this.proxyStartupHandlerMap.values())
+                this.readLog(proxyStartupHandler);
+
+            ReformCloudLibraryService.sleep(50);
+        }
+    }
+
+    private synchronized void readLog(final CloudServerStartupHandler cloudServerStartupHandler) {
+        if (!cloudServerStartupHandler.isAlive() || cloudServerStartupHandler.getProcess().getInputStream() == null)
+            return;
+
+        InputStream inputStream = cloudServerStartupHandler.getProcess().getInputStream();
+
+        try {
+            int len;
+            while (inputStream.available() > 0 && (len = inputStream.read(buffer, 0, buffer.length)) != -1)
+                stringBuffer.append(new String(buffer, 0, len, StandardCharsets.UTF_8));
+
+            String stringText = stringBuffer.toString();
+            if (!stringText.contains("\n") && !stringText.contains("\r"))
+                return;
+
+            for (String input : stringText.split("\r"))
+                for (String text : input.split("\n"))
+                    cloudServerStartupHandler.getScreenHandler().addScreenLine(text);
+
+            stringBuffer.setLength(0);
+        } catch (final Throwable ignored) {
+            stringBuffer.setLength(0);
+        }
+    }
+
+    private synchronized void readLog(final ProxyStartupHandler proxyStartupHandler) {
+        if (!proxyStartupHandler.isAlive() || proxyStartupHandler.getProcess().getInputStream() == null)
+            return;
+
+        InputStream inputStream = proxyStartupHandler.getProcess().getInputStream();
+
+        try {
+            int len;
+            while (inputStream.available() > 0 && (len = inputStream.read(buffer, 0, buffer.length)) != -1)
+                stringBuffer.append(new String(buffer, 0, len, StandardCharsets.UTF_8));
+
+            String stringText = stringBuffer.toString();
+            if (!stringText.contains("\n") && !stringText.contains("\r"))
+                return;
+
+            for (String input : stringText.split("\r"))
+                for (String text : input.split("\n"))
+                    proxyStartupHandler.getScreenHandler().addScreenLine(text);
+
+            stringBuffer.setLength(0);
+        } catch (final Throwable ignored) {
+            stringBuffer.setLength(0);
+        }
     }
 }

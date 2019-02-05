@@ -10,8 +10,5 @@ package systems.reformcloud.meta.enums;
 
 public enum TemplateBackend {
     CLIENT,
-    URL;
-
-    TemplateBackend() {
-    }
+    URL
 }

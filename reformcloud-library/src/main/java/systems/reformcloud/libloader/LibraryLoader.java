@@ -12,6 +12,7 @@ import systems.reformcloud.utility.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -31,8 +32,6 @@ import java.util.List;
 
 public final class LibraryLoader {
     private List<Dependency> libraries = new ArrayList<>();
-
-    private Class<?>[] parameters = new Class[]{URL.class};
 
     public LibraryLoader() {
         if (Float.parseFloat(System.getProperty("java.class.version")) != 52D) {
@@ -80,7 +79,7 @@ public final class LibraryLoader {
 
         urls.forEach(url -> {
             try {
-                Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", this.parameters);
+                Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                 addURL.setAccessible(true);
                 addURL.invoke(urlClassLoader, url);
             } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {

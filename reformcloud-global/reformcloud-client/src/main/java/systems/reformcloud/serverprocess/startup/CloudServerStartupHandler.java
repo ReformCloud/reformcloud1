@@ -20,6 +20,7 @@ import systems.reformcloud.netty.packets.out.PacketOutAddProcess;
 import systems.reformcloud.netty.packets.out.PacketOutRemoveProcess;
 import systems.reformcloud.netty.packets.out.PacketOutSendControllerConsoleMessage;
 import systems.reformcloud.netty.packets.out.PacketOutUpdateInternalCloudNetwork;
+import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
@@ -50,6 +51,9 @@ public class CloudServerStartupHandler {
     private Process process;
     private int port;
 
+    private Template loaded;
+    private ScreenHandler screenHandler;
+
     private ProcessStartupStage processStartupStage;
 
     /**
@@ -73,20 +77,19 @@ public class CloudServerStartupHandler {
         FileUtils.deleteFullDirectory(path);
         FileUtils.createDirectory(path);
 
-        final Template toLoad;
         if (this.serverStartupInfo.getTemplate() != null)
-            toLoad = this.serverStartupInfo.getServerGroup().getTemplate(this.serverStartupInfo.getTemplate());
+            loaded = this.serverStartupInfo.getServerGroup().getTemplate(this.serverStartupInfo.getTemplate());
         else
-            toLoad = this.serverStartupInfo.getServerGroup().randomTemplate();
+            loaded = this.serverStartupInfo.getServerGroup().randomTemplate();
 
         this.processStartupStage = ProcessStartupStage.COPY;
         this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
                 .replace("%path%", this.path + ""));
-        if (toLoad.getTemplateBackend().equals(TemplateBackend.URL)
-                && toLoad.getTemplate_url() != null) {
-            new TemplatePreparer(path + "/toLoad.zip").loadTemplate(toLoad.getTemplate_url());
-            ZoneInformationProtocolUtility.extract(path + "/toLoad.zip", path + "");
-        } else if (toLoad.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+        if (loaded.getTemplateBackend().equals(TemplateBackend.URL)
+                && loaded.getTemplate_url() != null) {
+            new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplate_url());
+            ZoneInformationProtocolUtility.extract(path + "/loaded.zip", path + "");
+        } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
             FileUtils.copyAllFiles(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName()), path + StringUtil.EMPTY);
         } else
             return false;
@@ -161,7 +164,7 @@ public class CloudServerStartupHandler {
 
         ServerInfo serverInfo = new ServerInfo(
                 new CloudProcess(serverStartupInfo.getName(), serverStartupInfo.getUid(), ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
-                        toLoad, serverStartupInfo.getId()),
+                        loaded, serverStartupInfo.getId()),
                 serverStartupInfo.getServerGroup(), serverStartupInfo.getServerGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
                 serverStartupInfo.getServerGroup().getMotd(), this.port, 0, serverStartupInfo.getServerGroup().getMemory(),
                 false, new ArrayList<>()
@@ -174,6 +177,8 @@ public class CloudServerStartupHandler {
                 .addProperty("startupInfo", serverStartupInfo)
 
                 .saveAsConfigurationFile(Paths.get(path + "/reformcloud/config.json"));
+
+        this.screenHandler = new ScreenHandler(serverInfo.getCloudProcess().getName());
 
         this.processStartupStage = ProcessStartupStage.START;
         final String[] cmd = new String[]
@@ -241,7 +246,8 @@ public class CloudServerStartupHandler {
             this.process.destroyForcibly();
         ReformCloudLibraryService.sleep(250);
 
-        if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
+        if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
+                && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
             FileUtils.copyAllFiles(path, "reformcloud/templates/" + serverStartupInfo.getServerGroup().getName(), "spigot.jar");
             ReformCloudLibraryService.sleep(250);
         }

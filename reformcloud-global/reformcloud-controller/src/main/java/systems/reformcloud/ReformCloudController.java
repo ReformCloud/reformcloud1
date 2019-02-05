@@ -25,12 +25,14 @@ import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
 import systems.reformcloud.netty.out.PacketOutStopProcess;
 import systems.reformcloud.netty.out.PacketOutUpdateAll;
 import systems.reformcloud.netty.sync.in.PacketInSyncClientDisconnects;
+import systems.reformcloud.netty.sync.in.PacketInSyncScreenUpdate;
 import systems.reformcloud.netty.sync.in.PacketInSyncUpdateClientInfo;
 import systems.reformcloud.startup.CloudProcessOfferService;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
+import systems.reformcloud.utility.screen.ScreenSessionProvider;
 import systems.reformcloud.utility.threading.scheduler.Scheduler;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
@@ -67,6 +69,7 @@ public class ReformCloudController implements Shutdown, Reload {
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
     private final CloudProcessOfferService cloudProcessOfferService = new CloudProcessOfferService();
     private final EventManager eventManager = new EventManager();
+    private final ScreenSessionProvider screenSessionProvider = new ScreenSessionProvider();
 
     private List<UUID> uuid = new ArrayList<>();
     private List<DatabaseProvider> databaseProviders = new ArrayList<>();
@@ -212,7 +215,8 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerHandler("StartProxyProcess", new PacketInStartProxyProcess())
                 .registerHandler("ProcessLog", new PacketInGetLog())
                 .registerHandler("UpdateClientInfo", new PacketInSyncUpdateClientInfo())
-                .registerHandler("ClientDisconnects", new PacketInSyncClientDisconnects());
+                .registerHandler("ClientDisconnects", new PacketInSyncClientDisconnects())
+                .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate());
     }
 
     /**
@@ -235,7 +239,8 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerCommand("update", new CommandUpdate())
                 .registerCommand("whitelist", new CommandWhitelist())
                 .registerCommand("log", new CommandLog())
-                .registerCommand("addons", new CommandAddons());
+                .registerCommand("addons", new CommandAddons())
+                .registerCommand("screen", new CommandScreen());
     }
 
     /**

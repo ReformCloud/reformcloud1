@@ -21,6 +21,8 @@ import systems.reformcloud.netty.NettyHandler;
 import systems.reformcloud.netty.NettySocketClient;
 import systems.reformcloud.netty.channel.ChannelHandler;
 import systems.reformcloud.netty.packets.in.*;
+import systems.reformcloud.netty.packets.sync.in.PacketInSyncScreenDisable;
+import systems.reformcloud.netty.packets.sync.in.PacketInSyncScreenJoin;
 import systems.reformcloud.netty.packets.sync.out.PacketOutSyncClientDisconnects;
 import systems.reformcloud.serverprocess.CloudProcessStartupHandler;
 import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
@@ -106,6 +108,8 @@ public class ReformCloudClient implements Shutdown, Reload {
         nettyHandler.registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
         nettyHandler.registerHandler("CopyServerIntoTemplate", new PacketInCopyServerIntoTemplate());
         nettyHandler.registerHandler("PacketInUploadLog", new PacketInUploadLog());
+        nettyHandler.registerHandler("JoinScreen", new PacketInSyncScreenJoin());
+        nettyHandler.registerHandler("ScreenDisable", new PacketInSyncScreenDisable());
 
         commandManager
                 .registerCommand("exit", new CommandExit())
@@ -144,6 +148,11 @@ public class ReformCloudClient implements Shutdown, Reload {
         shutdown.setDaemon(true);
         shutdown.start();
 
+        Thread log = new Thread(this.cloudProcessScreenService);
+        log.setPriority(Thread.MIN_PRIORITY);
+        log.setDaemon(true);
+        log.start();
+
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "ShutdownHook"));
 
         this.connect(ssl);
@@ -172,21 +181,19 @@ public class ReformCloudClient implements Shutdown, Reload {
         this.nettySocketClient.close();
 
         this.cloudProcessScreenService.getRegisteredProxyProcesses().forEach(proxyProcess -> {
-            this.getLoggerProvider().info("ProxyProcess " + proxyProcess.getProxyStartupInfo().getName() + " stops...");
             proxyProcess.shutdown(null, false);
-            this.getLoggerProvider().info("ProxyProcess " + proxyProcess.getProxyStartupInfo().getName() + " was stopped");
+            this.getLoggerProvider().info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
+                    .replace("%name%", proxyProcess.getProxyStartupInfo().getName()));
             ReformCloudLibraryService.sleep(200);
         });
         this.cloudProcessScreenService.getRegisteredServerProcesses().forEach(serverProcess -> {
-            this.getLoggerProvider().info("ServerProcess " + serverProcess.getServerStartupInfo().getName() + " stops...");
             serverProcess.shutdown(false);
-            this.getLoggerProvider().info("ServerProcess " + serverProcess.getServerStartupInfo().getName() + " was stopped");
+            this.getLoggerProvider().info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
+                    .replace("%name%", serverProcess.getServerStartupInfo().getName()));
             ReformCloudLibraryService.sleep(1000);
         });
 
         this.addonParallelLoader.disableAddons();
-
-        loggerProvider.info("Waiting for background task to finish...");
         ReformCloudLibraryService.sleep(2000);
     }
 

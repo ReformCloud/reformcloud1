@@ -19,6 +19,7 @@ import systems.reformcloud.netty.packets.out.PacketOutAddProcess;
 import systems.reformcloud.netty.packets.out.PacketOutRemoveProcess;
 import systems.reformcloud.netty.packets.out.PacketOutSendControllerConsoleMessage;
 import systems.reformcloud.netty.packets.out.PacketOutUpdateInternalCloudNetwork;
+import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
@@ -47,7 +48,10 @@ public class ProxyStartupHandler {
     private Process process;
     private int port;
 
+    private ScreenHandler screenHandler;
     private ProcessStartupStage processStartupStage;
+
+    private Template template;
 
     /**
      * Creates a instance of a ProxyStartupHandler
@@ -69,7 +73,6 @@ public class ProxyStartupHandler {
     public boolean bootstrap() {
         FileUtils.deleteFullDirectory(path);
 
-        Template template;
         if (this.proxyStartupInfo.getTemplate() != null)
             template = this.proxyStartupInfo.getProxyGroup().getTemplate(this.proxyStartupInfo.getTemplate());
         else
@@ -162,6 +165,8 @@ public class ProxyStartupHandler {
                 .addProperty("startupInfo", proxyStartupInfo)
 
                 .saveAsConfigurationFile(Paths.get(path + "/reformcloud/config.json"));
+
+        this.screenHandler = new ScreenHandler(proxyInfo.getCloudProcess().getName());
 
         this.processStartupStage = ProcessStartupStage.START;
         final String[] cmd = new String[]

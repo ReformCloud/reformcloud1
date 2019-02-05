@@ -29,7 +29,7 @@ import java.util.Properties;
 @Getter
 public class CloudConfiguration {
     private String controllerKey, controllerIP, clientName, startIP;
-    private int memory, controllerPort, controllerWebPort;
+    private int memory, controllerPort, controllerWebPort, logSize;
     private double cpu;
 
     private EthernetAddress ethernetAddress;
@@ -65,7 +65,8 @@ public class CloudConfiguration {
                 new File("reformcloud/default/servers/plugins"),
                 new File("reformcloud/temp/servers"),
                 new File("reformcloud/temp/proxies"),
-                new File("reformcloud/files")
+                new File("reformcloud/files"),
+                new File("reformcloud/jars")
         })
             dir.mkdirs();
     }
@@ -96,10 +97,12 @@ public class CloudConfiguration {
         properties.setProperty("controller.ip", controllerIP);
         properties.setProperty("controller.port", 5000 + StringUtil.EMPTY);
         properties.setProperty("controller.web-port", 4790 + StringUtil.EMPTY);
+
         properties.setProperty("general.client-name", clientID);
         properties.setProperty("general.start-host", ip);
         properties.setProperty("general.memory", 1024 + StringUtil.EMPTY);
         properties.setProperty("general.maxcpuusage", 90.00 + StringUtil.EMPTY);
+        properties.setProperty("general.max-log-size", Integer.toString(46));
 
         try (OutputStream outputStream = Files.newOutputStream(Paths.get("configuration.properties"))) {
             properties.store(outputStream, "ReformCloud default Configuration");
@@ -154,6 +157,7 @@ public class CloudConfiguration {
         this.controllerPort = Integer.parseInt(properties.getProperty("controller.port"));
         this.controllerWebPort = Integer.parseInt(properties.getProperty("controller.web-port"));
         this.cpu = Double.parseDouble(properties.getProperty("general.maxcpuusage"));
+        this.logSize = Integer.parseInt(properties.getProperty("general.max-log-size", "46"));
 
         this.ethernetAddress = new EthernetAddress(this.controllerIP, this.controllerPort);
 
