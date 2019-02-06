@@ -27,12 +27,8 @@ public class ClientAddonImpl extends JavaAddon<ReformCloudClient> {
         return ReformCloudLibraryServiceProvider.getInstance();
     }
 
-    public void registerCommand(final String name, final Command command) {
-        ReformCloudClient.getInstance().getCommandManager().registerCommand(name, command);
-    }
-
-    public void registerCommand(final String name, final Command command, final String... aliases) {
-        ReformCloudClient.getInstance().getCommandManager().registerCommand(name, command, aliases);
+    public void registerCommand(final Command command) {
+        ReformCloudClient.getInstance().getCommandManager().registerCommand(command);
     }
 
     public void registerListener(final Listener listener) {

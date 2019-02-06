@@ -11,5 +11,5 @@ package systems.reformcloud.meta.enums;
 public enum ServerModeType {
     LOBBY,
     STATIC,
-    GAME_SERVER
+    DYNAMIC
 }

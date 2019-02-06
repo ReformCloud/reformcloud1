@@ -19,8 +19,10 @@ public final class ControllerDisconnectHandler extends ChannelInboundHandlerAdap
     private static final long serialVersionUID = 4902179984306421185L;
 
     @Override
-    public void channelInactive(final ChannelHandlerContext ctx) {
-        if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable()) {
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable()
+                && ReformCloudClient.getInstance().getNettySocketClient().getConnections() == -1
+                && ReformCloudClient.RUNNING) {
             ReformCloudClient.getInstance().getChannelHandler().unregisterChannel("ReformCloudController");
             ReformCloudClient.getInstance().getNettySocketClient().close();
             ReformCloudLibraryService.sleep(1000);

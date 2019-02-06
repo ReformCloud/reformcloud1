@@ -5,16 +5,12 @@
 package systems.reformcloud;
 
 import systems.reformcloud.addons.AddonParallelLoader;
-import systems.reformcloud.commands.CommandExit;
-import systems.reformcloud.commands.CommandHelp;
-import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.commands.CommandUpdate;
+import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.LoadSuccessEvent;
 import systems.reformcloud.exceptions.LoadException;
-import systems.reformcloud.language.languages.defaults.English;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.netty.NettyHandler;
@@ -23,14 +19,16 @@ import systems.reformcloud.netty.channel.ChannelHandler;
 import systems.reformcloud.netty.packets.in.*;
 import systems.reformcloud.netty.packets.sync.in.PacketInSyncScreenDisable;
 import systems.reformcloud.netty.packets.sync.in.PacketInSyncScreenJoin;
+import systems.reformcloud.netty.packets.sync.in.PacketInSyncUpdateClient;
 import systems.reformcloud.netty.packets.sync.out.PacketOutSyncClientDisconnects;
+import systems.reformcloud.netty.packets.sync.out.PacketOutSyncClientUpdateSuccess;
 import systems.reformcloud.serverprocess.CloudProcessStartupHandler;
 import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
+import systems.reformcloud.serverprocess.screen.internal.ClientScreenHandler;
 import systems.reformcloud.serverprocess.shutdown.ShutdownWorker;
 import systems.reformcloud.synchronization.SynchronizationHandler;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
-import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
@@ -66,14 +64,17 @@ public class ReformCloudClient implements Shutdown, Reload {
 
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
-    private final NettyHandler nettyHandler = new NettyHandler();
     private final ChannelHandler channelHandler = new ChannelHandler();
     private final NettySocketClient nettySocketClient = new NettySocketClient();
     private final Scheduler scheduler = new Scheduler(40);
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
 
+    private final Thread sync;
+
     private CloudConfiguration cloudConfiguration;
+
+    private final ClientScreenHandler clientScreenHandler;
 
     /**
      * Creates a new Instance of the {ReformCloudClient}
@@ -97,24 +98,13 @@ public class ReformCloudClient implements Shutdown, Reload {
         this.cloudConfiguration = new CloudConfiguration();
         new ReformCloudLibraryServiceProvider(loggerProvider, this.cloudConfiguration.getControllerKey(), cloudConfiguration.getEthernetAddress().getHost(), eventManager, null);
 
+        this.registerNetworkHandlers();
+        this.registerCommands();
+
+        this.clientScreenHandler = new ClientScreenHandler();
+        loggerProvider.registerLoggerHandler(clientScreenHandler);
+
         this.addonParallelLoader.loadAddons();
-
-        nettyHandler.registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal());
-        nettyHandler.registerHandler("StartCloudServer", new PacketInStartGameServer());
-        nettyHandler.registerHandler("StartProxy", new PacketInStartProxy());
-        nettyHandler.registerHandler("UpdateAll", new PacketInUpdateAll());
-        nettyHandler.registerHandler("ExecuteCommand", new PacketInExecuteCommand());
-        nettyHandler.registerHandler("StopProcess", new PacketInStopProcess());
-        nettyHandler.registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
-        nettyHandler.registerHandler("CopyServerIntoTemplate", new PacketInCopyServerIntoTemplate());
-        nettyHandler.registerHandler("PacketInUploadLog", new PacketInUploadLog());
-        nettyHandler.registerHandler("JoinScreen", new PacketInSyncScreenJoin());
-        nettyHandler.registerHandler("ScreenDisable", new PacketInSyncScreenDisable());
-
-        commandManager
-                .registerCommand("exit", new CommandExit())
-                .registerCommand("update", new CommandUpdate())
-                .registerCommand("help", new CommandHelp());
 
         this.clientInfo = new ClientInfo(
                 cloudConfiguration.getMemory(),
@@ -138,7 +128,7 @@ public class ReformCloudClient implements Shutdown, Reload {
         startup.setDaemon(true);
         startup.start();
 
-        Thread sync = new Thread(new SynchronizationHandler());
+        sync = new Thread(new SynchronizationHandler());
         sync.setPriority(Thread.MIN_PRIORITY);
         sync.setDaemon(true);
         sync.start();
@@ -167,13 +157,69 @@ public class ReformCloudClient implements Shutdown, Reload {
         this.eventManager.callEvent(EventTargetType.LOAD_SUCCESS, new LoadSuccessEvent(true));
     }
 
-    @Override
-    public void reloadAll() {
+    private void registerNetworkHandlers() {
+        getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
+                .registerHandler("StartCloudServer", new PacketInStartGameServer())
+                .registerHandler("StartProxy", new PacketInStartProxy())
+                .registerHandler("UpdateAll", new PacketInUpdateAll())
+                .registerHandler("ExecuteCommand", new PacketInExecuteCommand())
+                .registerHandler("StopProcess", new PacketInStopProcess())
+                .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
+                .registerHandler("CopyServerIntoTemplate", new PacketInCopyServerIntoTemplate())
+                .registerHandler("PacketInUploadLog", new PacketInUploadLog())
+                .registerHandler("JoinScreen", new PacketInSyncScreenJoin())
+                .registerHandler("ScreenDisable", new PacketInSyncScreenDisable())
+                .registerHandler("ReloadClient", new PacketInSyncUpdateClient())
+                .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand());
+    }
+
+    private void registerCommands() {
+        commandManager
+                .registerCommand(new CommandExit())
+                .registerCommand(new CommandUpdate())
+                .registerCommand(new CommandHelp())
+                .registerCommand(new CommandVersion())
+                .registerCommand(new CommandAddons())
+                .registerCommand(new CommandReload());
     }
 
     @Override
+    public void reloadAll() {
+        final String oldName = this.cloudConfiguration.getClientName();
+
+        this.cloudConfiguration = null;
+        this.getNettyHandler().clearHandlers();
+        this.commandManager.clearCommands();
+        this.addonParallelLoader.disableAddons();
+        this.eventManager.unregisterAllListener();
+
+        this.cloudConfiguration = new CloudConfiguration();
+        this.cloudConfiguration.setClientName(oldName);
+
+        this.addonParallelLoader.loadAddons();
+
+        this.registerNetworkHandlers();
+        this.registerCommands();
+
+        this.addonParallelLoader.enableAddons();
+        this.checkForUpdates();
+
+        this.loggerProvider.info(this.internalCloudNetwork.getLoaded().getGlobal_reload_done());
+        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientUpdateSuccess());
+    }
+
+    private boolean shutdown = false;
+
+    @Override
     public void shutdownAll() {
+        if (shutdown)
+            return;
+
+        shutdown = true;
         RUNNING = false;
+
+        if (!this.sync.isInterrupted())
+            this.sync.interrupt();
 
         this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutSyncClientDisconnects());
 
@@ -214,16 +260,15 @@ public class ReformCloudClient implements Shutdown, Reload {
      * Connects to the Controller by using {@link Boolean}
      *
      * @param ssl
-     * @see NettySocketClient#connect(EthernetAddress, NettyHandler, ChannelHandler, boolean)
      */
     public void connect(final boolean ssl) {
         this.nettySocketClient.setConnections(1);
 
-        while (this.nettySocketClient.getConnections() != -1) {
+        while (this.nettySocketClient.getConnections() != -1 && !shutdown) {
             if (this.nettySocketClient.getConnections() == 8)
                 System.exit(1);
 
-            this.nettySocketClient.connect(cloudConfiguration.getEthernetAddress(), this.nettyHandler, this.channelHandler, ssl);
+            this.nettySocketClient.connect(cloudConfiguration.getEthernetAddress(), this.channelHandler, ssl);
 
             ReformCloudLibraryService.sleep(2000);
         }
@@ -235,5 +280,9 @@ public class ReformCloudClient implements Shutdown, Reload {
         } else {
             loggerProvider.info(this.internalCloudNetwork.getLoaded().getVersion_update());
         }
+    }
+
+    private NettyHandler getNettyHandler() {
+        return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
     }
 }

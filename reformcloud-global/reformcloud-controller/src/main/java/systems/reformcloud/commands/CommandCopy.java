@@ -12,11 +12,17 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.out.PacketOutCopyServerIntoTemplate;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
  */
 
-public final class CommandCopy implements Command {
+public final class CommandCopy extends Command implements Serializable {
+    public CommandCopy() {
+        super("copy", "Copies a server or proxy into the template", "reformcloud.command.copy", new String[0]);
+    }
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1) {
@@ -42,10 +48,5 @@ public final class CommandCopy implements Command {
         } else {
             commandSender.sendMessage("copy <name>");
         }
-    }
-
-    @Override
-    public final String getPermission() {
-        return "reformcloud.command.copy";
     }
 }

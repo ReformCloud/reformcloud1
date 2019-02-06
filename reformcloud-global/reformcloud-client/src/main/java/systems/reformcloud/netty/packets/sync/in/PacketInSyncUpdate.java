@@ -4,6 +4,7 @@
 
 package systems.reformcloud.netty.packets.sync.in;
 
+import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
 import systems.reformcloud.netty.packet.enums.QueryType;
@@ -20,6 +21,6 @@ public final class PacketInSyncUpdate implements Serializable, NetworkInboundHan
 
     @Override
     public void handle(Configuration configuration, List<QueryType> queryTypes) {
-
+        ReformCloudClient.getInstance().getCommandManager().dispatchCommand("update confirm");
     }
 }

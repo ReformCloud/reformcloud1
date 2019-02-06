@@ -23,6 +23,11 @@ public final class PacketInSyncScreenDisable implements Serializable, NetworkInb
 
     @Override
     public void handle(Configuration configuration, List<QueryType> queryTypes) {
+        if (configuration.getStringValue("name").equalsIgnoreCase(ReformCloudClient.getInstance().getCloudConfiguration().getClientName())) {
+            ReformCloudClient.getInstance().getClientScreenHandler().getScreenHandler().disableScreen();
+            return;
+        }
+
         CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient.getInstance()
                 .getCloudProcessScreenService()
                 .getRegisteredServerHandler(configuration.getStringValue("name"));

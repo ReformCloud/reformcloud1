@@ -20,6 +20,17 @@ import java.util.List;
 public class PacketInRequestSignUpdate implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration, List<QueryType> queryTypes) {
-        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(configuration.getStringValue("name"), new PacketOutSendSigns(SignSelector.getInstance().getSignConfiguration().getSignLayoutConfiguration(), SignSelector.getInstance().getSignConfiguration().getSignMap()));
+        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
+                configuration.getStringValue("name"),
+                new PacketOutSendSigns(
+                        SignSelector
+                                .getInstance()
+                                .getSignConfiguration()
+                                .getSignLayoutConfiguration(),
+                        SignSelector
+                                .getInstance()
+                                .getSignConfiguration()
+                                .getSignMap())
+        );
     }
 }

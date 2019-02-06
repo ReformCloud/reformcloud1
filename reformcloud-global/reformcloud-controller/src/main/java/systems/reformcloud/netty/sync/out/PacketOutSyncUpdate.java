@@ -19,7 +19,6 @@ import java.util.Collections;
 public final class PacketOutSyncUpdate extends Packet implements Serializable {
     private static final long serialVersionUID = 8220472124040186582L;
 
-    //TODO: add handler in client
     public PacketOutSyncUpdate() {
         super(
                 "SyncUpdate",

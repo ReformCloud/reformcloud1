@@ -10,11 +10,17 @@ import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.utility.StringUtil;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
  */
 
-public final class CommandInfo implements Command {
+public final class CommandInfo extends Command implements Serializable {
+    public CommandInfo() {
+        super("info", "Prints the Cloud info", null, new String[0]);
+    }
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         final StatisticsProvider.Stats stats = ReformCloudController.getInstance().getStatisticsProvider().getStats();
@@ -30,10 +36,5 @@ public final class CommandInfo implements Command {
         commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
         commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
         commandSender.sendMessage("For further information please contact us on our Discord (\"https://discord.gg/fwe2CHD\")");
-    }
-
-    @Override
-    public String getPermission() {
-        return null;
     }
 }

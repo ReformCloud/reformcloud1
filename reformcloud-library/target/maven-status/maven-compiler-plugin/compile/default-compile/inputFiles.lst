@@ -88,6 +88,7 @@ C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\ja
 C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\java\systems\reformcloud\libloader\libraries\Gson.java
 C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\java\systems\reformcloud\versioneering\VersionController.java
 C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\java\systems\reformcloud\netty\authentication\AuthenticationHandler.java
+C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\java\systems\reformcloud\language\languages\defaults\German.java
 C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\java\systems\reformcloud\utility\AccessChecker.java
 C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\java\systems\reformcloud\event\enums\EventTargetType.java
 C:\Users\Pasqual\IdeaProjects\reformcloud-parent\reformcloud-library\src\main\java\systems\reformcloud\addons\extendable\ModulePreLoader.java

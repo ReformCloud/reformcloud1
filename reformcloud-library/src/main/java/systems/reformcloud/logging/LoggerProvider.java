@@ -177,6 +177,8 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         stringBuilder.append(cause.getMessage()).append("\n");
         Arrays.stream(cause.getStackTrace()).forEach(e -> stringBuilder.append("    " + e).append("\n"));
         this.err(stringBuilder.substring(0));
+
+        this.handleAll(stringBuilder.substring(0));
     }
 
     /**
@@ -218,6 +220,8 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         try {
             this.consoleReader.println(StringUtil.EMPTY + ConsoleReader.RESET_LINE);
             this.complete();
+
+            this.handleAll(StringUtil.EMPTY);
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
         }
@@ -295,6 +299,10 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while closing logger", ex);
         }
+    }
+
+    public void registerLoggerHandler(final IConsoleInputHandler iConsoleInputHandler) {
+        this.iConsoleInputHandlers.add(iConsoleInputHandler);
     }
 
     public String uploadLog(String input) {

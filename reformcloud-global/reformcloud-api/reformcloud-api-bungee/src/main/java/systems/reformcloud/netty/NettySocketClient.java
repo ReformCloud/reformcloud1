@@ -35,14 +35,13 @@ public class NettySocketClient implements AutoCloseable {
      * Connects to the ReformCloudController
      *
      * @param ethernetAddress
-     * @param nettyHandler
      * @param channelHandler
      * @param ssl
      * @param key
      * @param name
      * @see io.netty.bootstrap.ServerBootstrap
      */
-    public void connect(EthernetAddress ethernetAddress, NettyHandler nettyHandler, ChannelHandler channelHandler, boolean ssl, String key, String name) {
+    public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler, boolean ssl, String key, String name) {
         try {
             if (ssl)
                 sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
@@ -65,7 +64,7 @@ public class NettySocketClient implements AutoCloseable {
                                 channel.pipeline().addLast(sslContext.newHandler(channel.alloc(),
                                         ethernetAddress.getHost(), ethernetAddress.getPort()));
 
-                            ReformCloudLibraryService.prepareChannel(channel, nettyHandler, channelHandler);
+                            ReformCloudLibraryService.prepareChannel(channel, channelHandler);
                         }
                     });
 

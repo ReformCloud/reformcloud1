@@ -4,6 +4,7 @@
 
 package systems.reformcloud.configuration;
 
+import lombok.Data;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -12,7 +13,6 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.FileUtils;
-import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.util.Properties;
  * @author _Klaro | Pasqual K. / created on 24.10.2018
  */
 
-@Getter
+@Data
 public class CloudConfiguration {
     private String controllerKey, controllerIP, clientName, startIP;
     private int memory, controllerPort, controllerWebPort, logSize;
@@ -66,7 +66,10 @@ public class CloudConfiguration {
                 new File("reformcloud/temp/servers"),
                 new File("reformcloud/temp/proxies"),
                 new File("reformcloud/files"),
-                new File("reformcloud/jars")
+                new File("reformcloud/jars"),
+                new File("reformcloud/apis"),
+                new File("reformcloud/saves/servers/logs"),
+                new File("reformcloud/saves/proxies/logs")
         })
             dir.mkdirs();
     }

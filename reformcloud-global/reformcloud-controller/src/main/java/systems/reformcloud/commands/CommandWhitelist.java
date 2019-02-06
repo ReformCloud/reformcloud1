@@ -10,13 +10,18 @@ import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.netty.out.PacketOutUpdateAll;
 import systems.reformcloud.utility.uuid.UUIDConverter;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 17.12.2018
  */
 
-public final class CommandWhitelist implements Command {
+public final class CommandWhitelist extends Command implements Serializable {
+    public CommandWhitelist() {
+        super("whitelist", "Adds a player to a proxy whitelist", "reformcloud.command.whitelist", new String[]{"wl"});
+    }
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
@@ -92,10 +97,5 @@ public final class CommandWhitelist implements Command {
         } catch (final IllegalArgumentException ignored) {
             return UUIDConverter.getUUIDFromName(in);
         }
-    }
-
-    @Override
-    public final String getPermission() {
-        return "reformcloud.command.whitelist";
     }
 }

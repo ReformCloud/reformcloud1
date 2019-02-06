@@ -31,7 +31,7 @@ public class ProxyGroup implements Serializable {
     protected List<Template> templates;
     protected Collection<UUID> whitelist;
 
-    protected boolean controllerCommandLogging, maintenance;
+    protected boolean controllerCommandLogging, maintenance, save_logs;
 
     protected int startPort, minOnline, maxOnline, maxPlayers, memory;
 

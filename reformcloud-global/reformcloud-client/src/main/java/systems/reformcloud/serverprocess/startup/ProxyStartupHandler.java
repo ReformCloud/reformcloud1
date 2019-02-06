@@ -109,25 +109,25 @@ public class ProxyStartupHandler {
             FileUtils.copyCompiledFile("reformcloud/config.yml", path + "/config.yml");
 
         if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
-            if (!Files.exists(Paths.get("reformcloud/files/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
+            if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
                 DownloadManager.downloadAndDisconnect(
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
-                        "reformcloud/files/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                        "reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())
                 );
             }
 
-            FileUtils.copyFile("reformcloud/files/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions()), path + "/BungeeCord.jar");
+            FileUtils.copyFile("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions()), path + "/BungeeCord.jar");
         }
 
-        if (!Files.exists(Paths.get("reformcloud/files/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"))) {
+        if (!Files.exists(Paths.get("reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"))) {
             DownloadManager.downloadSilentAndDisconnect(
                     //TODO: change link
                     "https://dl.klarcloudservice.de/download/latest/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar",
-                    "reformcloud/files/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"
+                    "reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"
             );
 
-            final File dir = new File("reformcloud/files");
+            final File dir = new File("reformcloud/apis");
             if (dir.listFiles() != null) {
                 Arrays.stream(dir.listFiles()).forEach(file -> {
                     if (file.getName().startsWith("ReformAPIBungee")
@@ -140,7 +140,7 @@ public class ProxyStartupHandler {
         }
 
         FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPIBungee.jar"));
-        FileUtils.copyFile("reformcloud/files/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPIBungee.jar");
+        FileUtils.copyFile("reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPIBungee.jar");
 
         try {
             this.prepareConfiguration(new File(path + "/config.yml"), "\"" +
@@ -236,6 +236,18 @@ public class ProxyStartupHandler {
             this.process.destroyForcibly();
         ReformCloudLibraryService.sleep(250);
 
+        this.screenHandler.disableScreen();
+
+        if (this.proxyStartupInfo.getProxyGroup().isSave_logs()) {
+            if (this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.BUNGEECORD)
+                    || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.HEXACORD)) {
+                FileUtils.copyFile(this.path + "/proxy.log.0", "reformcloud/saves/proxies/logs/server_log_" + this.proxyStartupInfo.getUid() + "-" + this.proxyStartupInfo.getName() + ".log");
+            } else if (this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.TRAVERTINE)
+                    || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.WATERFALL)) {
+                FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/proxies/logs/server_log_" + this.proxyStartupInfo.getUid() + "-" + this.proxyStartupInfo.getName() + ".log");
+            }
+        }
+
         FileUtils.deleteFullDirectory(path);
 
         final ProxyInfo proxyInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
@@ -274,11 +286,6 @@ public class ProxyStartupHandler {
             process.getOutputStream().flush();
         } catch (final IOException ignored) {
         }
-    }
-
-    private void downloadViaVersion() {
-        //TODO: link?
-        DownloadManager.download("ViaVersion", "https://ci.viaversion.com/job/ViaVersion/lastBuild/us.myles$viaversion-bungee/artifact/us.myles/viaversion-bungee/2.0.0-SNAPSHOT/viaversion-bungee-2.0.0-SNAPSHOT.jar", "reformcloud/files/ViaVersion.jar");
     }
 
     /**

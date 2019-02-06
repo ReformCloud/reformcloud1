@@ -129,25 +129,25 @@ public class CloudServerStartupHandler {
         }
 
         if (!Files.exists(Paths.get(path + "/spigot.jar"))) {
-            if (!Files.exists(Paths.get("reformcloud/files/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())))) {
+            if (!Files.exists(Paths.get("reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())))) {
                 DownloadManager.downloadAndDisconnect(
                         this.serverStartupInfo.getServerGroup().getSpigotVersions().getName(),
                         this.serverStartupInfo.getServerGroup().getSpigotVersions().getUrl(),
-                        "reformcloud/files/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())
+                        "reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())
                 );
             }
 
-            FileUtils.copyFile("reformcloud/files/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions()), path + "/spigot.jar");
+            FileUtils.copyFile("reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions()), path + "/spigot.jar");
         }
 
-        if (!Files.exists(Paths.get("reformcloud/files/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"))) {
+        if (!Files.exists(Paths.get("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"))) {
             DownloadManager.downloadSilentAndDisconnect(
                     //TODO: change download link
                     "https://dl.klarcloudservice.de/download/latest/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar",
-                    "reformcloud/files/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"
+                    "reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"
             );
 
-            final File dir = new File("reformcloud/files");
+            final File dir = new File("reformcloud/apis");
             if (dir.listFiles() != null) {
                 Arrays.stream(dir.listFiles()).forEach(file -> {
                     if (file.getName().startsWith("ReformAPISpigot")
@@ -160,7 +160,7 @@ public class CloudServerStartupHandler {
         }
 
         FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPISpigot.jar"));
-        FileUtils.copyFile("reformcloud/files/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPISpigot.jar");
+        FileUtils.copyFile("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPISpigot.jar");
 
         ServerInfo serverInfo = new ServerInfo(
                 new CloudProcess(serverStartupInfo.getName(), serverStartupInfo.getUid(), ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
@@ -245,6 +245,12 @@ public class CloudServerStartupHandler {
         if (this.isAlive())
             this.process.destroyForcibly();
         ReformCloudLibraryService.sleep(250);
+
+        this.screenHandler.disableScreen();
+
+        if (this.serverStartupInfo.getServerGroup().isSave_logs()) {
+            FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/servers/logs/server_log_" + this.serverStartupInfo.getUid() + "-" + this.serverStartupInfo.getName() + ".log");
+        }
 
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
                 && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {

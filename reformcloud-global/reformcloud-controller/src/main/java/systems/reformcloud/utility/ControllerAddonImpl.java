@@ -30,12 +30,8 @@ public class ControllerAddonImpl extends JavaAddon<ReformCloudController> {
         return ReformCloudLibraryServiceProvider.getInstance();
     }
 
-    public void registerCommand(final String name, final Command command) {
-        ReformCloudController.getInstance().getCommandManager().registerCommand(name, command);
-    }
-
-    public void registerCommand(final String name, final Command command, final String... aliases) {
-        ReformCloudController.getInstance().getCommandManager().registerCommand(name, command, aliases);
+    public void registerCommand(final Command command) {
+        ReformCloudController.getInstance().getCommandManager().registerCommand(command);
     }
 
     public void registerListener(final Listener listener) {

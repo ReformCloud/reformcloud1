@@ -4,15 +4,18 @@
 
 package systems.reformcloud.commands.interfaces;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-/**
- * Command interface to create a custom command
- */
-public interface Command {
-    void executeCommand(CommandSender commandSender, String[] args);
+@AllArgsConstructor
+@Getter
+public abstract class Command {
+    private String name, description, permission;
+    private String[] aliases;
 
-    String getPermission();
+    public abstract void executeCommand(CommandSender commandSender, String[] args);
 }

@@ -39,7 +39,6 @@ public class ReformCloudAPIBungee {
     public static ReformCloudAPIBungee instance;
 
     private final NettySocketClient nettySocketClient;
-    private final NettyHandler nettyHandler = new NettyHandler();
     private final ChannelHandler channelHandler = new ChannelHandler();
 
     private final ProxyStartupInfo proxyStartupInfo;
@@ -69,15 +68,15 @@ public class ReformCloudAPIBungee {
 
         BungeecordBootstrap.getInstance().getProxy().getPluginManager().registerListener(BungeecordBootstrap.getInstance(), new CloudConnectListener());
 
-        this.nettyHandler.registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal());
-        this.nettyHandler.registerHandler("ProcessAdd", new PacketInProcessAdd());
-        this.nettyHandler.registerHandler("ProcessRemove", new PacketInProcessRemove());
-        this.nettyHandler.registerHandler("UpdateAll", new PacketInUpdateAll());
-        this.nettyHandler.registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
+        this.getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
+                .registerHandler("ProcessAdd", new PacketInProcessAdd())
+                .registerHandler("ProcessRemove", new PacketInProcessRemove())
+                .registerHandler("UpdateAll", new PacketInUpdateAll())
+                .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
         this.nettySocketClient.connect(
-                ethernetAddress, nettyHandler, channelHandler, configuration.getBooleanValue("ssl"),
+                ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.proxyStartupInfo.getName()
         );
     }
@@ -130,5 +129,9 @@ public class ReformCloudAPIBungee {
     @Deprecated
     public void removeInternalProcess() {
         BungeecordBootstrap.getInstance().onDisable();
+    }
+
+    public NettyHandler getNettyHandler() {
+        return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
     }
 }

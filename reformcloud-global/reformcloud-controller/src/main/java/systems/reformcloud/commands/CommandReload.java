@@ -9,23 +9,23 @@ import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.utility.StringUtil;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public final class CommandReload implements Command {
+public final class CommandReload extends Command implements Serializable {
+    public CommandReload() {
+        super("reload", "Reloads the CloudSystem", "reformcloud.command.reload", new String[]{"rl"});
+    }
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         try {
-            commandSender.sendMessage("Trying to reload the full cloud system....");
             ReformCloudController.getInstance().reloadAll();
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(), "An error occurred while reloading CloudSystem", throwable);
         }
-    }
-
-    @Override
-    public String getPermission() {
-        return "reformcloud.command.reload";
     }
 }

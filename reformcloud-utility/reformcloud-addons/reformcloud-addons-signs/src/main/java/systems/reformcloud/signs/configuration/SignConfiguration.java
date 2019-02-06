@@ -38,10 +38,10 @@ public class SignConfiguration {
      * Loads the SignConfiguration
      */
     public void loadAll() {
-        if (! Files.exists(Paths.get("reformcloud/signs")))
+        if (!Files.exists(Paths.get("reformcloud/signs")))
             FileUtils.createDirectory(Paths.get("reformcloud/signs"));
 
-        if (! Files.exists(Paths.get("reformcloud/signs/" + path))) {
+        if (!Files.exists(Paths.get("reformcloud/signs/" + path))) {
             new Configuration().addProperty("config", new SignLayoutConfiguration(
                     new SignLayout.GroupLayout(
                             new SignLayout(new String[]{"§8§m---------§r", "&c§lmaintenance", " ", "§8§m---------"}, "STAINED_CLAY", 4),

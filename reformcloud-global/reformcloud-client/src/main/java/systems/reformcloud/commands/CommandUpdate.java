@@ -11,11 +11,17 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.versioneering.VersionUpdater;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 08.01.2019
  */
 
-public final class CommandUpdate implements Command {
+public final class CommandUpdate extends Command implements Serializable {
+    public CommandUpdate() {
+        super("update", "Updates the CloudSystem", "reformcloud.command.update", new String[]{"upgrade"});
+    }
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1) {
@@ -33,10 +39,5 @@ public final class CommandUpdate implements Command {
             commandSender.sendMessage("Checking for updates...");
             ReformCloudClient.getInstance().checkForUpdates();
         }
-    }
-
-    @Override
-    public String getPermission() {
-        return "reformcloud.command.update";
     }
 }

@@ -23,8 +23,12 @@ import java.nio.file.Paths;
  * @author _Klaro | Pasqual K. / created on 29.01.2019
  */
 
-public final class CommandLog implements Command, Serializable {
+public final class CommandLog extends Command implements Serializable {
     private static final long serialVersionUID = 8869467720046339074L;
+
+    public CommandLog() {
+        super("log", "Uploads a log of a specific server/proxy/client", "reformcloud.command.log", new String[0]);
+    }
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
@@ -87,10 +91,5 @@ public final class CommandLog implements Command, Serializable {
                 commandSender.sendMessage("The serverType is invalid");
             }
         }
-    }
-
-    @Override
-    public String getPermission() {
-        return "reformcloud.command.log";
     }
 }

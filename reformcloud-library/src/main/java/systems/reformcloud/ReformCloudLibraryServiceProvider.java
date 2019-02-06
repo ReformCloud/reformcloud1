@@ -4,13 +4,14 @@
 
 package systems.reformcloud;
 
+import lombok.Data;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.netty.NettyHandler;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.management.InstanceAlreadyExistsException;
 
@@ -18,8 +19,7 @@ import javax.management.InstanceAlreadyExistsException;
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-@Getter
-@Setter
+@Data
 public final class ReformCloudLibraryServiceProvider {
     @Getter
     private static ReformCloudLibraryServiceProvider instance;
@@ -31,6 +31,8 @@ public final class ReformCloudLibraryServiceProvider {
 
     private LoggerProvider loggerProvider;
     private String key, controllerIP;
+
+    private final NettyHandler nettyHandler = new NettyHandler();
 
     /**
      * Creates a new Instance of the {ReformCloudLibraryServiceProvider}

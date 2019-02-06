@@ -4,6 +4,7 @@
 
 package systems.reformcloud.netty.channel;
 
+import lombok.Setter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.enums.EventTargetType;
@@ -28,7 +29,6 @@ import java.net.InetSocketAddress;
 
 @AllArgsConstructor
 public class ChannelReader extends SimpleChannelInboundHandler {
-    private NettyHandler nettyHandler;
     private ChannelHandler channelHandler;
 
     @Override
@@ -67,7 +67,7 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                     packet, channelHandlerContext, channelHandler);
         }
 
-        if (nettyHandler.handle(packet.getType(), packet.getConfiguration(), packet.getQueryTypes()))
+        if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration(), packet.getQueryTypes()))
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(true, packet));
         else
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(false, packet));

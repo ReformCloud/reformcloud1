@@ -33,7 +33,8 @@ public class DefaultGroup extends ServerGroup implements Serializable {
                 50,
                 41000,
                 true,
-                ServerModeType.GAME_SERVER,
+                false,
+                ServerModeType.DYNAMIC,
                 SpigotVersions.SPIGOT_1_8_8
         );
     }

@@ -4,15 +4,14 @@
 
 package systems.reformcloud.commands;
 
-import systems.reformcloud.ReformCloudLibraryService;
+import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.defaults.CommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.utility.StringUtil;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -23,7 +22,9 @@ import java.util.Set;
  */
 public class CommandManager {
     private final CommandSender commandSender = new CommandSender();
-    private Map<String, Command> commandMap = ReformCloudLibraryService.concurrentHashMap();
+
+    @Getter
+    private List<Command> commands = new ArrayList<>();
 
     /**
      * Dispatch method, to dispatch command
@@ -35,16 +36,26 @@ public class CommandManager {
     private boolean dispatchCommand(systems.reformcloud.commands.interfaces.CommandSender commandSender, String command) {
         String[] strings = command.split(" ");
 
-        if (strings.length <= 0) return false;
+        if (strings.length <= 0)
+            return false;
 
-        if (this.commandMap.containsKey(strings[0].toLowerCase()) && commandSender.hasPermission(this.commandMap.get(strings[0].toLowerCase()).getPermission())) {
+        Command command2;
+        Optional<Command> cmd = commands.stream().filter(command1 ->
+                command1.getName().equalsIgnoreCase(strings[0]) || Arrays.asList(command1.getAliases()).contains(strings[0])
+        ).findFirst();
+        if (cmd.isPresent())
+            command2 = cmd.get();
+        else
+            return false;
+
+        if (command2.getPermission() == null || commandSender.hasPermission(command2.getPermission())) {
             String string = command.replace((command.contains(" ") ? command.split(" ")[0] + " " : command), "");
             try {
                 if (string.equalsIgnoreCase(""))
-                    this.commandMap.get(strings[0].toLowerCase()).executeCommand(commandSender, new String[0]);
+                    command2.executeCommand(commandSender, new String[0]);
                 else {
                     final String[] arguments = string.split(" ");
-                    this.commandMap.get(strings[0].toLowerCase()).executeCommand(commandSender, arguments);
+                    command2.executeCommand(commandSender, arguments);
                 }
             } catch (final Throwable throwable) {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while dispatching command", throwable);
@@ -54,33 +65,15 @@ public class CommandManager {
             return false;
     }
 
-    /**
-     * Register a command
-     *
-     * @param name
-     * @param command
-     * @return this
-     */
-    public CommandManager registerCommand(final String name, Command command) {
-        this.registerCommand(name, command, new String[]{});
-        return this;
-    }
 
     /**
      * Register a command with aliases
      *
-     * @param name
      * @param command
-     * @param aliases
      * @return this
      */
-    public CommandManager registerCommand(final String name, Command command, final String... aliases) {
-        this.commandMap.put(name.toLowerCase(), command);
-
-        if (aliases.length > 0)
-            for (String alias : aliases)
-                this.commandMap.put(alias.toLowerCase(), command);
-
+    public CommandManager registerCommand(Command command) {
+        this.commands.add(command);
         return this;
     }
 
@@ -88,7 +81,7 @@ public class CommandManager {
      * Unregisters all commands
      */
     public void clearCommands() {
-        this.commandMap.clear();
+        this.commands.clear();
     }
 
     /**
@@ -97,7 +90,7 @@ public class CommandManager {
      * @param name
      */
     public void unregisterCommand(final String name) {
-        this.commandMap.remove(name);
+        this.commands.remove(name);
     }
 
     /**
@@ -107,7 +100,7 @@ public class CommandManager {
      * @return if the command is registered
      */
     public boolean isCommandRegistered(final String command) {
-        return this.commandMap.containsKey(command);
+        return this.commands.stream().anyMatch(e -> e.getName().equalsIgnoreCase(command) || Arrays.asList(e.getAliases()).contains(command));
     }
 
     /**
@@ -115,8 +108,12 @@ public class CommandManager {
      *
      * @return a Set with all commands as String
      */
-    public Set<String> getCommands() {
-        return this.commandMap.keySet();
+    public List<String> getCommandsAsString() {
+        List<String> commands = new ArrayList<>();
+        this.commands.forEach(e -> commands.add(e.getName()));
+        this.commands.forEach(e -> commands.addAll(Arrays.asList(e.getAliases())));
+
+        return commands;
     }
 
     /**

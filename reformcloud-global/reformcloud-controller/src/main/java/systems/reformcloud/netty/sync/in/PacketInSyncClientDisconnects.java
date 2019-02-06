@@ -7,6 +7,7 @@ package systems.reformcloud.netty.sync.in;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
@@ -26,7 +27,11 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
     public void handle(Configuration configuration, List<QueryType> queryTypes) {
         Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(configuration.getStringValue("name"));
         if (client != null) {
-            client.getClientInfo().getStartedServers().forEach(s -> {
+            final ClientInfo clientInfo = client.getClientInfo();
+            ReformCloudController.getInstance().getChannelHandler().unregisterChannel(client.getName());
+            client.setClientInfo(null);
+
+            clientInfo.getStartedServers().forEach(s -> {
                 ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(s);
                 if (serverInfo != null) {
                     ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
@@ -35,15 +40,14 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                 }
             });
 
-            client.getClientInfo().getStartedProxies().forEach(s -> {
+            clientInfo.getStartedProxies().forEach(s -> {
                 ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(s);
                 if (proxyInfo != null) {
-                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
+                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterProxyProcess(
                             proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(), proxyInfo.getPort()
                     );
                 }
             });
-            client.setClientInfo(null);
         }
     }
 }

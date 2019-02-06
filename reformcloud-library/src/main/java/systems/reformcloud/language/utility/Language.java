@@ -22,7 +22,7 @@ public class Language implements Serializable {
             help_default, help_command_not_found,
             controller_loading_client, controller_loading_server,
             controller_loading_proxy, loading_done,
-            controller_reload, controller_reload_done,
+            controller_reload, global_reload_done,
             version_available, version_update,
             controller_servprocess_stopped, controller_proxyprocess_stopped,
             waiting_for_tasks, addon_prepared,
@@ -34,5 +34,6 @@ public class Language implements Serializable {
             controller_command_executed_packet, controller_get_log_in,
             controller_server_added_to_queue, controller_proxy_added_to_queue,
             client_shutdown_process, client_copies_template,
-            client_wait_start, channel_global_disconnected;
+            client_wait_start, channel_global_disconnected,
+            screen_kicked_process_disconnect, client_controller_info_reload_success;
 }

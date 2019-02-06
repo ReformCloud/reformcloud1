@@ -14,6 +14,7 @@ import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
 import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.netty.out.PacketOutProcessRemove;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+import systems.reformcloud.utility.screen.ScreenSessionProvider;
 
 import java.util.List;
 
@@ -36,6 +37,14 @@ public class PacketInRemoveProcess implements NetworkInboundHandler {
                     .replace("%client%", serverInfo.getCloudProcess().getClient()));
             ReformCloudController.getInstance().getEventManager().callEvent(EventTargetType.PROCESS_UNREGISTERED, new ProcessUnregistersEvent(serverInfo.getCloudProcess().getName()));
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessRemove(serverInfo));
+
+            final ScreenSessionProvider screenSessionProvider = ReformCloudController.getInstance().getScreenSessionProvider();
+            if (screenSessionProvider.isInScreen(serverInfo.getCloudProcess().getName())) {
+                screenSessionProvider.leaveScreen();
+                ReformCloudController.getInstance().getLoggerProvider().info(
+                        ReformCloudController.getInstance().getLoadedLanguage().getScreen_kicked_process_disconnect()
+                );
+            }
         } else {
             final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getProxyInfoType());
 
@@ -48,6 +57,14 @@ public class PacketInRemoveProcess implements NetworkInboundHandler {
                     .replace("%client%", proxyInfo.getCloudProcess().getClient()));
             ReformCloudController.getInstance().getEventManager().callEvent(EventTargetType.PROCESS_UNREGISTERED, new ProcessUnregistersEvent(proxyInfo.getCloudProcess().getName()));
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessRemove(proxyInfo));
+
+            final ScreenSessionProvider screenSessionProvider = ReformCloudController.getInstance().getScreenSessionProvider();
+            if (screenSessionProvider.isInScreen(proxyInfo.getCloudProcess().getName())) {
+                screenSessionProvider.leaveScreen();
+                ReformCloudController.getInstance().getLoggerProvider().info(
+                        ReformCloudController.getInstance().getLoadedLanguage().getScreen_kicked_process_disconnect()
+                );
+            }
         }
     }
 }

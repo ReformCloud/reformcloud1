@@ -37,17 +37,19 @@ public class NettySocketClient implements AutoCloseable {
     private int connections = 1;
 
     private SslContext sslContext;
-    private final EventLoopGroup eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
+    private EventLoopGroup eventLoopGroup;
 
     /**
      * Connects to the ReformCloudController
      *
      * @param ethernetAddress
-     * @param nettyHandler
      * @param channelHandler
      * @param ssl
      */
-    public void connect(EthernetAddress ethernetAddress, NettyHandler nettyHandler, ChannelHandler channelHandler, boolean ssl) {
+    public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler, boolean ssl) {
+        if (eventLoopGroup == null)
+            eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
+
         try {
             ReformCloudClient.getInstance().getLoggerProvider().info("Trying to connect to §3ReformCloudController §e@" +
                     ethernetAddress.getHost() + ":" + ethernetAddress.getPort() + "§r [" + connections + "/7]");
@@ -79,7 +81,7 @@ public class NettySocketClient implements AutoCloseable {
                             }
 
                             ReformCloudLibraryService
-                                    .prepareChannel(channel, nettyHandler, channelHandler)
+                                    .prepareChannel(channel, channelHandler)
                                     .pipeline().addLast(new ControllerDisconnectHandler());
                         }
                     });
@@ -105,5 +107,6 @@ public class NettySocketClient implements AutoCloseable {
     @Override
     public void close() {
         eventLoopGroup.shutdownGracefully();
+        eventLoopGroup = null;
     }
 }

@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public enum ProxyVersions implements Serializable {
-    WATERFALL("Waterfall", "https://archive.mcmirror.io/WaterFall/Waterfall-201.jar"),
+    WATERFALL("Waterfall", "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar"),
     HEXACORD("HexaCord", "https://archive.mcmirror.io/HexaCord/HexaCord-v139.jar"),
     BUNGEECORD("BungeeCord", "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar"),
     TRAVERTINE("Travertine", "https://papermc.io/ci/job/Travertine/lastSuccessfulBuild/artifact/Travertine-Proxy/launcher/target/Travertine.jar");

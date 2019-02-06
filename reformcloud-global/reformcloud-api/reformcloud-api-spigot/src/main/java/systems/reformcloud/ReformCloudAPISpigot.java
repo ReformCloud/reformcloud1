@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import org.bukkit.Bukkit;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
@@ -39,7 +40,6 @@ public class ReformCloudAPISpigot {
     public static ReformCloudAPISpigot instance;
 
     private final NettySocketClient nettySocketClient;
-    private final NettyHandler nettyHandler = new NettyHandler();
     private final ChannelHandler channelHandler = new ChannelHandler();
 
     private final ServerStartupInfo serverStartupInfo;
@@ -66,19 +66,19 @@ public class ReformCloudAPISpigot {
         this.serverStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getServerStartupInfoType());
         this.serverInfo = configuration.getValue("info", TypeTokenAdaptor.getServerInfoType());
 
-        this.nettyHandler.registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal());
-        this.nettyHandler.registerHandler("UpdateAll", new PacketInUpdateAll());
-        this.nettyHandler.registerHandler("ProcessAdd", new PacketInProcessAdd());
-        this.nettyHandler.registerHandler("ProcessRemove", new PacketInProcessRemove());
-        this.nettyHandler.registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
-        this.nettyHandler.registerHandler("Signs", new PacketInRequestSigns());
-        this.nettyHandler.registerHandler("RemoveSign", new PacketInRemoveSign());
-        this.nettyHandler.registerHandler("CreateSign", new PacketInCreateSign());
-        this.nettyHandler.registerHandler("PlayerAccepted", new PacketInPlayerAccepted());
+        this.getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
+                .registerHandler("UpdateAll", new PacketInUpdateAll())
+                .registerHandler("ProcessAdd", new PacketInProcessAdd())
+                .registerHandler("ProcessRemove", new PacketInProcessRemove())
+                .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
+                .registerHandler("Signs", new PacketInRequestSigns())
+                .registerHandler("RemoveSign", new PacketInRemoveSign())
+                .registerHandler("CreateSign", new PacketInCreateSign())
+                .registerHandler("PlayerAccepted", new PacketInPlayerAccepted());
 
         this.nettySocketClient = new NettySocketClient();
         this.nettySocketClient.connect(
-                ethernetAddress, nettyHandler, channelHandler, configuration.getBooleanValue("ssl"),
+                ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.serverStartupInfo.getName()
         );
     }
@@ -136,5 +136,9 @@ public class ReformCloudAPISpigot {
     @Deprecated
     public void removeInternalProcess() {
         SpigotBootstrap.getInstance().onDisable();
+    }
+
+    public NettyHandler getNettyHandler() {
+        return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
     }
 }

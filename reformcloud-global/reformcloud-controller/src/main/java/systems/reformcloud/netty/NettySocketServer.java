@@ -105,7 +105,7 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
             if (sslContext != null)
                 channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
 
-            ReformCloudLibraryService.prepareChannel(channel, ReformCloudController.getInstance().getNettyHandler(), ReformCloudController.getInstance().getChannelHandler());
+            ReformCloudLibraryService.prepareChannel(channel, ReformCloudController.getInstance().getChannelHandler());
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_channel_connected()
                     .replace("%ip%", inetSocketAddress.getAddress().getHostAddress())
                     .replace("%port%", Integer.toString(inetSocketAddress.getPort())));

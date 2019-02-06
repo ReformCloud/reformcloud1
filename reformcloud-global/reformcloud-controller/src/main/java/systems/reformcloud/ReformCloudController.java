@@ -25,8 +25,10 @@ import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
 import systems.reformcloud.netty.out.PacketOutStopProcess;
 import systems.reformcloud.netty.out.PacketOutUpdateAll;
 import systems.reformcloud.netty.sync.in.PacketInSyncClientDisconnects;
+import systems.reformcloud.netty.sync.in.PacketInSyncClientReloadSuccess;
 import systems.reformcloud.netty.sync.in.PacketInSyncScreenUpdate;
 import systems.reformcloud.netty.sync.in.PacketInSyncUpdateClientInfo;
+import systems.reformcloud.netty.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.startup.CloudProcessOfferService;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -63,7 +65,6 @@ public class ReformCloudController implements Shutdown, Reload {
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private final StatisticsProvider statisticsProvider = new StatisticsProvider();
-    private final NettyHandler nettyHandler = new NettyHandler();
     private final ChannelHandler channelHandler = new ChannelHandler();
     private final Scheduler scheduler = new Scheduler(40);
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
@@ -197,7 +198,7 @@ public class ReformCloudController implements Shutdown, Reload {
      * @see NettyHandler#registerHandler(String, NetworkInboundHandler)
      */
     private void preparePacketHandlers() {
-        this.nettyHandler
+        this.getNettyHandler()
                 .registerHandler("AuthSuccess", new PacketInAuthSuccess())
                 .registerHandler("SendControllerConsoleMessage", new PacketInSendControllerConsoleMessage())
                 .registerHandler("ProcessAdd", new PacketInAddProcess())
@@ -216,31 +217,34 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerHandler("ProcessLog", new PacketInGetLog())
                 .registerHandler("UpdateClientInfo", new PacketInSyncUpdateClientInfo())
                 .registerHandler("ClientDisconnects", new PacketInSyncClientDisconnects())
-                .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate());
+                .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate())
+                .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess());
     }
 
     /**
      * Prepares all commands
      *
-     * @see CommandManager#registerCommand(String, Command)
+     * @see CommandManager#registerCommand(Command)
      */
     private void prepareCommands() {
         this.commandManager
-                .registerCommand("exit", new CommandExit())
-                .registerCommand("help", new CommandHelp())
-                .registerCommand("execute", new CommandExecute())
-                .registerCommand("process", new CommandProcess())
-                .registerCommand("reload", new CommandReload())
-                .registerCommand("create", new CommandCreate())
-                .registerCommand("delete", new CommandDelete())
-                .registerCommand("clear", new CommandClear())
-                .registerCommand("info", new CommandInfo())
-                .registerCommand("copy", new CommandCopy())
-                .registerCommand("update", new CommandUpdate())
-                .registerCommand("whitelist", new CommandWhitelist())
-                .registerCommand("log", new CommandLog())
-                .registerCommand("addons", new CommandAddons())
-                .registerCommand("screen", new CommandScreen());
+                .registerCommand(new CommandExit())
+                .registerCommand(new CommandHelp())
+                .registerCommand(new CommandExecute())
+                .registerCommand(new CommandProcess())
+                .registerCommand(new CommandReload())
+                .registerCommand(new CommandCreate())
+                .registerCommand(new CommandDelete())
+                .registerCommand(new CommandClear())
+                .registerCommand(new CommandInfo())
+                .registerCommand(new CommandCopy())
+                .registerCommand(new CommandUpdate())
+                .registerCommand(new CommandWhitelist())
+                .registerCommand(new CommandLog())
+                .registerCommand(new CommandAddons())
+                .registerCommand(new CommandScreen())
+                .registerCommand(new CommandVersion())
+                .registerCommand(new CommandListGroups());
     }
 
     /**
@@ -252,8 +256,10 @@ public class ReformCloudController implements Shutdown, Reload {
     public void reloadAll() throws Throwable {
         this.loggerProvider.info(this.getLoadedLanguage().getController_reload());
 
+        this.updateAllConnectedClients();
+
         this.cloudConfiguration = null;
-        this.nettyHandler.clearHandlers();
+        this.getNettyHandler().clearHandlers();
         this.commandManager.clearCommands();
 
         this.internalCloudNetwork.getServerGroups().clear();
@@ -304,7 +310,16 @@ public class ReformCloudController implements Shutdown, Reload {
         this.addonParallelLoader.enableAddons();
         this.checkForUpdates();
 
-        this.loggerProvider.info(this.getLoadedLanguage().getController_reload_done());
+        this.loggerProvider.info(this.getLoadedLanguage().getGlobal_reload_done());
+    }
+
+    private void updateAllConnectedClients() {
+        this.internalCloudNetwork
+                .getClients()
+                .values()
+                .stream()
+                .filter(client -> client.getClientInfo() != null)
+                .forEach(client -> this.channelHandler.sendPacketAsynchronous(client.getName(), new PacketOutSyncUpdateClient()));
     }
 
     /**
@@ -353,7 +368,9 @@ public class ReformCloudController implements Shutdown, Reload {
         this.internalCloudNetwork.getClients()
                 .values()
                 .stream()
-                .filter(e -> this.channelHandler.isChannelRegistered(e.getName()) && clients.contains(e.getName()))
+                .filter(e -> this.channelHandler.isChannelRegistered(e.getName())
+                        && e.getClientInfo() != null
+                        && clients.contains(e.getName()))
                 .forEach(e -> available.add(e));
 
         if (available.size() == 0)
@@ -383,6 +400,10 @@ public class ReformCloudController implements Shutdown, Reload {
         }
 
         return best;
+    }
+
+    public NettyHandler getNettyHandler() {
+        return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
     }
 
     public Language getLoadedLanguage() {

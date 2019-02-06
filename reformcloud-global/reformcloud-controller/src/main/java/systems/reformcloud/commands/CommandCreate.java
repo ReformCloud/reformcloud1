@@ -11,11 +11,17 @@ import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.defaults.DefaultProxyGroup;
 import systems.reformcloud.meta.server.defaults.DefaultGroup;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public final class CommandCreate implements Command {
+public final class CommandCreate extends Command implements Serializable {
+    public CommandCreate() {
+        super("create", "Creates a new ServerGroup, ProxyGroup or Client", "reformcloud.command.create", new String[0]);
+    }
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length < 2) {
@@ -76,10 +82,5 @@ public final class CommandCreate implements Command {
                 commandSender.sendMessage("create SERVERGROUP <name> <client>");
                 commandSender.sendMessage("create PROXYGROUP <name> <client>");
         }
-    }
-
-    @Override
-    public String getPermission() {
-        return "reformcloud.command.create";
     }
 }

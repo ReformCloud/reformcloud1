@@ -50,7 +50,9 @@ public final class English extends Language implements Serializable {
                 "Trying to §cshutdown §rProcess §e[Name=%name%]§r...",
                 "ReformCloud copies custom §eTemplate§r to §e\"%path%\"§r, this may take a long time...",
                 "Waiting for Process §e[Name=%name%/UID=%uid%/Group=%group%/Service=%type%]§r to §astart",
-                "Channel §e[Host=%ip%/Port=%port%]§r is §cdisconnected"
+                "Channel §e[Host=%ip%/Port=%port%]§r is §cdisconnected",
+                "You was §ckicked§r out of the current §3screen§r, because the process §cdisconnected§r",
+                "The Client §3%name%§r was updated §asuccessfully"
         );
     }
 }

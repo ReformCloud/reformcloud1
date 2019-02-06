@@ -5,8 +5,10 @@
 package systems.reformcloud.utility.screen.defaults;
 
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.netty.out.PacketOutExecuteClientCommand;
 import systems.reformcloud.netty.out.PacketOutExecuteCommand;
 import systems.reformcloud.utility.screen.ScreenHandler;
 
@@ -58,6 +60,15 @@ public final class DefaultScreenHandler extends ScreenHandler implements Seriali
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
                         new PacketOutExecuteCommand(cmd, "server", name));
                 break;
+            }
+            case "client": {
+                final Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(name);
+                if (client == null || client.getClientInfo() == null)
+                    return;
+
+                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                        new PacketOutExecuteClientCommand(cmd)
+                );
             }
             default:
                 break;

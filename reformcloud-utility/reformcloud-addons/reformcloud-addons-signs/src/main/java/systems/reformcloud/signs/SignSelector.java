@@ -57,5 +57,6 @@ public final class SignSelector implements Shutdown {
         ReformCloudController.getInstance().getNettyHandler().unregisterHandler("CreateSign");
         ReformCloudController.getInstance().getNettyHandler().unregisterHandler("RemoveSign");
         ReformCloudController.getInstance().getNettyHandler().unregisterHandler("RequestSigns");
+        ReformCloudController.getInstance().getNettyHandler().unregisterHandler("RequestSignUpdate");
     }
 }

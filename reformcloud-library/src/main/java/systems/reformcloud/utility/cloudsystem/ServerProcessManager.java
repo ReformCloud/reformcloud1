@@ -293,7 +293,7 @@ public class ServerProcessManager {
     public ServerInfo nextFreeLobby(final Collection<String> permissions) {
         for (ServerInfo serverInfo : this.serverProcessUIDMap.values()) {
             if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
-                    || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.GAME_SERVER)) {
+                    || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)) {
                 continue;
             }
 
@@ -346,7 +346,7 @@ public class ServerProcessManager {
      */
     public int nextFreePort(int startPort) {
         while (this.ports.contains(startPort)) {
-            startPort++;
+            startPort = startPort + 1;
         }
         return startPort;
     }

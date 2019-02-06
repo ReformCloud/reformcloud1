@@ -11,12 +11,17 @@ import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
  */
 
-public final class CommandDelete implements Command {
+public final class CommandDelete extends Command implements Serializable {
+    public CommandDelete() {
+        super("delete", "Deletes a ServerGroup, ProxyGroup or Client", "reformcloud.command.delete", new String[]{"delet", "del"});
+    }
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length != 2) {
@@ -65,10 +70,5 @@ public final class CommandDelete implements Command {
                 commandSender.sendMessage("delete client <name>");
             }
         }
-    }
-
-    @Override
-    public final String getPermission() {
-        return "reformcloud.command.delete";
     }
 }

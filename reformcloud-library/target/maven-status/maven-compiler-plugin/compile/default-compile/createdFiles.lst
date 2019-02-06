@@ -121,6 +121,7 @@ systems\reformcloud\web\handler\WebServerHandler.class
 systems\reformcloud\addons\extendable\ModulePreLoader.class
 systems\reformcloud\addons\exceptions\AddonLoadException.class
 systems\reformcloud\meta\server\versions\SpigotVersions.class
+systems\reformcloud\language\languages\defaults\German.class
 systems\reformcloud\web\utils\WebHandlerAdapter.class
 systems\reformcloud\addons\JavaAddon.class
 systems\reformcloud\template\TemplatePreparer.class

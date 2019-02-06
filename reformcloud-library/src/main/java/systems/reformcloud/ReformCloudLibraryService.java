@@ -96,21 +96,19 @@ public final class ReformCloudLibraryService {
      * Prepares the given Channel with all utilities
      *
      * @param channel               The given channel where all Handlers should be added
-     * @param nettyHandler          The pre-initialized NettyHandler to handle all incoming
-     *                              Packets
      * @param channelHandler        The pre-initialized ChannelHandler where all channels are
      *                              registered and handled
      * @see Channel#pipeline()
      * @see LengthFieldBasedFrameDecoder
      * @see LengthFieldPrepender
      */
-    public static Channel prepareChannel(Channel channel, NettyHandler nettyHandler, ChannelHandler channelHandler) {
+    public static Channel prepareChannel(Channel channel, ChannelHandler channelHandler) {
         channel.pipeline().addLast(
                 new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4),
                 new LengthFieldPrepender(4),
                 new Encoder(),
                 new Decoder(),
-                new ChannelReader(nettyHandler, channelHandler));
+                new ChannelReader(channelHandler));
 
         return channel;
     }
@@ -223,6 +221,10 @@ public final class ReformCloudLibraryService {
 
     public static long maxMemorySystem() {
         return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize();
+    }
+
+    public static long bytesToMB(final long b) {
+        return b / 1024 / 1024;
     }
 
     public static boolean check(Checkable<Object> checkable, final Object toCheck) {
