@@ -84,7 +84,9 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
             ChannelFuture channelFuture = serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort())
                     .addListener((handler) -> {
                         if (handler.isSuccess())
-                            ReformCloudController.getInstance().getLoggerProvider().info("ReformCloud is now §aready §rand listening on §e" + ethernetAddress.getHost() + ":" + ethernetAddress.getPort());
+                            ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_socket_bind_success()
+                                    .replace("%ip%", ethernetAddress.getHost())
+                                    .replace("%port%", Integer.toString(ethernetAddress.getPort())));
                         else
                             ReformCloudController.getInstance().getLoggerProvider().err(ReformCloudController.getInstance().getLoadedLanguage().getNetty_server_bound()
                                     .replace("%ip%", ethernetAddress.getHost())

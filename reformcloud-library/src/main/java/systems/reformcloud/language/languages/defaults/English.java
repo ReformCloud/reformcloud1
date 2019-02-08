@@ -52,7 +52,8 @@ public final class English extends Language implements Serializable {
                 "Waiting for Process §e[Name=%name%/UID=%uid%/Group=%group%/Service=%type%]§r to §astart",
                 "Channel §e[Host=%ip%/Port=%port%]§r is §cdisconnected",
                 "You was §ckicked§r out of the current §3screen§r, because the process §cdisconnected§r",
-                "The Client §3%name%§r was updated §asuccessfully"
+                "The Client §3%name%§r was updated §asuccessfully",
+                "ReformCloud is now §aready§r and listening on §e%ip%:%port%"
         );
     }
 }

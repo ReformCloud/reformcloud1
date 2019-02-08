@@ -35,5 +35,6 @@ public class Language implements Serializable {
             controller_server_added_to_queue, controller_proxy_added_to_queue,
             client_shutdown_process, client_copies_template,
             client_wait_start, channel_global_disconnected,
-            screen_kicked_process_disconnect, client_controller_info_reload_success;
+            screen_kicked_process_disconnect, client_controller_info_reload_success,
+            controller_socket_bind_success;
 }
