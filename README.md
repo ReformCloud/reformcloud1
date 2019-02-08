@@ -29,7 +29,6 @@ Please read [CONTRIBUTING.md](https://gitlab.com/_Klaro/KlarCloudService-2.0/blo
 ## Authors
 
 * **Pasqual K.** - *Initial work* - [Profile](https://gitlab.com/_Klaro)
-* **Emmanuel L.** - *Development* - [Profile](https://gitlab.com/rexlManu)
 
 See also the list of [contributors](https://gitlab.com/_Klaro/KlarCloudService-2.0/graphs/master) who participated in this project.
 

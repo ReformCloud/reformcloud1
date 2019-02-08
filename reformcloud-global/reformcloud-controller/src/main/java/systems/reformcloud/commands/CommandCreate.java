@@ -7,11 +7,14 @@ package systems.reformcloud.commands;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.defaults.DefaultProxyGroup;
 import systems.reformcloud.meta.server.defaults.DefaultGroup;
+import systems.reformcloud.meta.web.WebUser;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -28,6 +31,7 @@ public final class CommandCreate extends Command implements Serializable {
             commandSender.sendMessage("create CLIENT <name> <ip>");
             commandSender.sendMessage("create SERVERGROUP <name> <client>");
             commandSender.sendMessage("create PROXYGROUP <name> <client>");
+            commandSender.sendMessage("create WEBUSER <name> <password>");
             return;
         }
 
@@ -77,10 +81,34 @@ public final class CommandCreate extends Command implements Serializable {
                 ReformCloudController.getInstance().getCloudConfiguration().createProxyGroup(new DefaultProxyGroup(args[1], args[2]));
                 break;
             }
+            //create user <name> <pw>
+            case "webuser": {
+                if (args.length != 3) {
+                    commandSender.sendMessage("create user <name> <password>");
+                    return;
+                }
+
+                if (ReformCloudController.getInstance()
+                        .getCloudConfiguration()
+                        .getWebUsers()
+                        .stream()
+                        .filter(e -> e.getUser().equals(args[1]))
+                        .findFirst()
+                        .orElse(null) != null) {
+                    commandSender.sendMessage("WebUser already exists");
+                    return;
+                }
+
+                final WebUser webUser = new WebUser(args[1], StringEncrypt.encrypt(args[2]), new HashMap<>());
+                ReformCloudController.getInstance().getCloudConfiguration().createWebUser(webUser);
+                commandSender.sendMessage("WebUser \"" + webUser.getUser() + " was created successfully with password " + args[2]);
+                break;
+            }
             default:
                 commandSender.sendMessage("create CLIENT <name> <ip>");
                 commandSender.sendMessage("create SERVERGROUP <name> <client>");
                 commandSender.sendMessage("create PROXYGROUP <name> <client>");
+                commandSender.sendMessage("create WEBUSER <name> <password>");
         }
     }
 }

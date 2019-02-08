@@ -116,6 +116,7 @@ systems\reformcloud\utility\TypeTokenAdaptor$6.class
 systems\reformcloud\libloader\libraries\Netty.class
 systems\reformcloud\utility\files\ZoneInformationProtocolUtility.class
 systems\reformcloud\utility\files\FileUtils.class
+systems\reformcloud\cryptic\StringEncrypt.class
 systems\reformcloud\utility\threading\TaskEntry.class
 systems\reformcloud\web\handler\WebServerHandler.class
 systems\reformcloud\addons\extendable\ModulePreLoader.class

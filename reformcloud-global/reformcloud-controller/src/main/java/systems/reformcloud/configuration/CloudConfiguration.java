@@ -9,6 +9,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -138,14 +139,15 @@ public class CloudConfiguration {
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
         String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
 
+        final String web = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
+                + StringUtil.EMPTY
+                + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE);
+
         new Configuration().addProperty("users",
-                Collections.singletonList(new WebUser("administrator",
-                        ReformCloudLibraryService.THREAD_LOCAL_RANDOM
-                                .nextLong(0, Long.MAX_VALUE)
-                                + StringUtil.EMPTY
-                                + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE),
+                Collections.singletonList(new WebUser("administrator", StringEncrypt.encrypt(web),
                         ReformCloudLibraryService.concurrentHashMap()))).saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
 
+        loggerProvider.info("New default WebUser \"administrator\" was created with password \"" + web + "\"");
         this.init(controllerIP, lang);
 
         return true;
@@ -300,6 +302,12 @@ public class CloudConfiguration {
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+    }
+
+    public void createWebUser(final WebUser webUser) {
+        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/users.json"));
+        this.webUsers.add(webUser);
+        configuration.addProperty("users", this.webUsers).saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
     }
 
     public void deleteServerGroup(final ServerGroup serverGroup) throws IOException {

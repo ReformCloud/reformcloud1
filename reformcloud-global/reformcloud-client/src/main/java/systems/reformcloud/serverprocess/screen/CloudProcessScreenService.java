@@ -104,15 +104,11 @@ public class CloudProcessScreenService implements Runnable {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            for (CloudServerStartupHandler cloudServerStartupHandler : this.cloudServerStartupHandlerMap.values())
-                this.readLog(cloudServerStartupHandler);
+        for (CloudServerStartupHandler cloudServerStartupHandler : this.cloudServerStartupHandlerMap.values())
+            this.readLog(cloudServerStartupHandler);
 
-            for (ProxyStartupHandler proxyStartupHandler : this.proxyStartupHandlerMap.values())
-                this.readLog(proxyStartupHandler);
-
-            ReformCloudLibraryService.sleep(50);
-        }
+        for (ProxyStartupHandler proxyStartupHandler : this.proxyStartupHandlerMap.values())
+            this.readLog(proxyStartupHandler);
     }
 
     private synchronized void readLog(final CloudServerStartupHandler cloudServerStartupHandler) {

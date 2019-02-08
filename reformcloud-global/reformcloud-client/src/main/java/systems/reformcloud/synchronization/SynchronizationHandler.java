@@ -22,27 +22,20 @@ public final class SynchronizationHandler implements Serializable, Runnable {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            double cpuUsage = ReformCloudLibraryService.cpuUsage();
-            long memory = ReformCloudLibraryService.usedMemorySystem();
-            int internalMemory = ReformCloudClient.getInstance().getMemory();
+        double cpuUsage = ReformCloudLibraryService.cpuUsage();
+        long memory = ReformCloudLibraryService.usedMemorySystem();
+        int internalMemory = ReformCloudClient.getInstance().getMemory();
 
-            if (lastInfo.getCpuUsage() != cpuUsage || lastInfo.getSystemMemoryUsage() != memory || lastInfo.getUsedMemory() != internalMemory) {
-                lastInfo.setCpuUsage(cpuUsage);
-                lastInfo.setSystemMemoryUsage(memory);
-                lastInfo.setUsedMemory(internalMemory);
+        if (lastInfo.getCpuUsage() != cpuUsage || lastInfo.getSystemMemoryUsage() != memory || lastInfo.getUsedMemory() != internalMemory) {
+            lastInfo.setCpuUsage(cpuUsage);
+            lastInfo.setSystemMemoryUsage(memory);
+            lastInfo.setUsedMemory(internalMemory);
 
-                ReformCloudClient.getInstance().setClientInfo(lastInfo);
+            ReformCloudClient.getInstance().setClientInfo(lastInfo);
 
-                ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous(
-                        "ReformCloudController", new PacketOutSyncUpdateClientInfo(lastInfo)
-                );
-            }
-
-            try {
-                Thread.sleep(3000);
-            } catch (final InterruptedException ignored) {
-            }
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous(
+                    "ReformCloudController", new PacketOutSyncUpdateClientInfo(lastInfo)
+            );
         }
     }
 }

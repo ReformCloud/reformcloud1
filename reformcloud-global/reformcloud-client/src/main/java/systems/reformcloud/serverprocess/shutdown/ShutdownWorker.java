@@ -19,23 +19,16 @@ public final class ShutdownWorker implements Serializable, Runnable {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance().getCloudProcessScreenService();
+        final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance().getCloudProcessScreenService();
 
-            cloudProcessScreenService.getRegisteredServerProcesses().forEach(handler -> {
-                if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive())
-                    handler.shutdown(true);
-            });
+        cloudProcessScreenService.getRegisteredServerProcesses().forEach(handler -> {
+            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive())
+                handler.shutdown(true);
+        });
 
-            cloudProcessScreenService.getRegisteredProxyProcesses().forEach(handler -> {
-                if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive())
-                    handler.shutdown(null, true);
-            });
-
-            try {
-                Thread.sleep(10000);
-            } catch (final InterruptedException ignored) {
-            }
-        }
+        cloudProcessScreenService.getRegisteredProxyProcesses().forEach(handler -> {
+            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive())
+                handler.shutdown(null, true);
+        });
     }
 }

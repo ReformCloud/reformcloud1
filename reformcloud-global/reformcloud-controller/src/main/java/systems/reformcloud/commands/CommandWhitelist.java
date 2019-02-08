@@ -73,7 +73,7 @@ public final class CommandWhitelist extends Command implements Serializable {
                     if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]).getWhitelist().contains(args[2])) {
                         ReformCloudController.getInstance().getCloudConfiguration().removePlayerFromWhitelist(args[1], uuidInput);
                         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
-                        commandSender.sendMessage("Player " + uuidInput + " has been removed from " + args[1] + " whitelist");
+                        commandSender.sendMessage("Player " + args[2] + " has been removed from " + args[1] + " whitelist");
                     } else {
                         commandSender.sendMessage("Player isn't on the whitelist");
                     }

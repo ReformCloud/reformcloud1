@@ -13,9 +13,7 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.netty.out.PacketOutStartGameServer;
-import systems.reformcloud.netty.out.PacketOutStartProxy;
-import systems.reformcloud.netty.out.PacketOutStopProcess;
+import systems.reformcloud.netty.out.*;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -41,6 +39,59 @@ public final class CommandProcess extends Command implements Serializable {
             commandSender.sendMessage("process start <group-name>");
             commandSender.sendMessage("process list");
             commandSender.sendMessage("process list <server/proxy> <name>");
+            commandSender.sendMessage("\n");
+            commandSender.sendMessage("process queue <client> list");
+            commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
+            return;
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("queue") && args[2].equalsIgnoreCase("list")) {
+            Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[1]);
+            if (client == null || client.getClientInfo() == null) {
+                commandSender.sendMessage("Client isn't registered in CloudController");
+                return;
+            }
+
+            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(), new PacketOutGetClientProcessQueue());
+            commandSender.sendMessage("The queue was requested successfully");
+            return;
+        } else if (args.length == 5
+                && args[0].equalsIgnoreCase("queue")
+                && args[2].equalsIgnoreCase("remove")) {
+            Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[1]);
+            if (client == null || client.getClientInfo() == null) {
+                commandSender.sendMessage("Client isn't registered in CloudController");
+                return;
+            }
+
+            switch (args[3].toLowerCase()) {
+                case "proxy": {
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
+                            client.getName(), new PacketOutRemoveProxyQueueProcess(args[4])
+                    );
+                    commandSender.sendMessage("Trying to §cremove§r queue entry §e" + args[4]);
+                    break;
+                }
+
+                case "server": {
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
+                            client.getName(), new PacketOutRemoveServerQueueProcess(args[4])
+                    );
+                    commandSender.sendMessage("Trying to §cremove§r queue entry §e" + args[4]);
+                    break;
+                }
+
+                default: {
+                    commandSender.sendMessage("process stop <name>");
+                    commandSender.sendMessage("process start <group-name>");
+                    commandSender.sendMessage("process list");
+                    commandSender.sendMessage("process list <server/proxy> <name>");
+                    commandSender.sendMessage("\n");
+                    commandSender.sendMessage("process queue <client> list");
+                    commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
+                }
+            }
+
             return;
         }
 
@@ -97,7 +148,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     .getAllRegisteredServerProcesses()
                                     .stream().filter(e -> e.getServerGroup().getName().equalsIgnoreCase(args[2]))
                                     .forEach(e -> connected.add(e));
-                            commandSender.sendMessage("The following servers of the group \"" + args[2].toLowerCase() + "\" are connected");
+                            commandSender.sendMessage("The following servers of the group \"" + args[2] + "\" are connected");
                             connected.forEach(info -> commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | Player=" + info.getOnline() + "/" + info.getServerGroup().getMaxPlayers()));
                             break;
                         }
@@ -109,7 +160,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     .getAllRegisteredProxyProcesses()
                                     .stream().filter(e -> e.getProxyGroup().getName().equalsIgnoreCase(args[2]))
                                     .forEach(e -> connected.add(e));
-                            commandSender.sendMessage("The following proxies of the group \"" + args[2].toLowerCase() + "\" are connected");
+                            commandSender.sendMessage("The following proxies of the group \"" + args[2] + "\" are connected");
                             connected.forEach(info -> commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | Player=" + info.getOnline() + "/" + info.getProxyGroup().getMaxPlayers()));
                             break;
                         }
@@ -164,6 +215,9 @@ public final class CommandProcess extends Command implements Serializable {
                 commandSender.sendMessage("process start <group-name>");
                 commandSender.sendMessage("process list");
                 commandSender.sendMessage("process list <server/proxy> <name>");
+                commandSender.sendMessage("\n");
+                commandSender.sendMessage("process queue <client> list");
+                commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
             }
         }
     }

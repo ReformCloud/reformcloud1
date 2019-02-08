@@ -111,9 +111,6 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
                     .replace("%port%", Integer.toString(inetSocketAddress.getPort())));
         } else {
             channel.close().addListener(ChannelFutureListener.CLOSE_ON_FAILURE).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
-            ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_channel_disconnected()
-                    .replace("%ip%", inetSocketAddress.getAddress().getHostAddress())
-                    .replace("%port%", Integer.toString(inetSocketAddress.getPort())));
         }
     }
 
@@ -127,7 +124,6 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
         List<String> ips = new ArrayList<>();
 
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values().forEach(client -> ips.add(client.getIp()));
-
         for (String string : ips)
             if (ReformCloudLibraryService.check(s -> s.equals(string), ip))
                 return true;

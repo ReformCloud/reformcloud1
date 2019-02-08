@@ -4,6 +4,7 @@
 
 package systems.reformcloud.serverprocess;
 
+import lombok.Getter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
@@ -22,6 +23,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * @author _Klaro | Pasqual K. / created on 29.10.2018
  */
 
+@Getter
 public class CloudProcessStartupHandler implements Runnable {
     private final Queue<ServerStartupInfo> serverStartupInfo = new ConcurrentLinkedDeque<>();
     private final Queue<ProxyStartupInfo> proxyStartupInfo = new ConcurrentLinkedDeque<>();
@@ -104,5 +106,21 @@ public class CloudProcessStartupHandler implements Runnable {
      */
     private void send(String message) {
         ReformCloudClient.getInstance().getLoggerProvider().info(message);
+    }
+
+    public void removeServerProcess(final String name) {
+        final Queue<ServerStartupInfo> infos = this.serverStartupInfo;
+        infos.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
+            this.serverStartupInfo.remove(e);
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSendControllerConsoleMessage("ServerProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3" + ReformCloudClient.getInstance().getCloudConfiguration().getClientName() + "§r queue"));
+        });
+    }
+
+    public void removeProxyProcess(final String name) {
+        final Queue<ProxyStartupInfo> infos = this.proxyStartupInfo;
+        infos.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
+            this.proxyStartupInfo.remove(e);
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSendControllerConsoleMessage("ProxyProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3" + ReformCloudClient.getInstance().getCloudConfiguration().getClientName() + "§r queue"));
+        });
     }
 }

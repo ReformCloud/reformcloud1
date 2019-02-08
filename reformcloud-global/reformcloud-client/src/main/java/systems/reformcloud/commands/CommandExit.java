@@ -21,6 +21,6 @@ public final class CommandExit extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         commandSender.sendMessage("ReformCloud will stop...");
-        System.exit(1);
+        System.exit(0);
     }
 }

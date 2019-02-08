@@ -64,7 +64,12 @@ public class CloudServerStartupHandler {
     public CloudServerStartupHandler(final ServerStartupInfo serverStartupInfo) {
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.serverStartupInfo = serverStartupInfo;
-        this.path = Paths.get("reformcloud/temp/servers/" + serverStartupInfo.getName() + "-" + serverStartupInfo.getUid());
+
+        if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
+            this.path = Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName());
+        } else {
+            this.path = Paths.get("reformcloud/temp/servers/" + serverStartupInfo.getName() + "-" + serverStartupInfo.getUid());
+        }
     }
 
     /**
@@ -76,6 +81,8 @@ public class CloudServerStartupHandler {
     public boolean bootstrap() {
         FileUtils.deleteFullDirectory(path);
         FileUtils.createDirectory(path);
+
+        FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
 
         if (this.serverStartupInfo.getTemplate() != null)
             loaded = this.serverStartupInfo.getServerGroup().getTemplate(this.serverStartupInfo.getTemplate());
@@ -121,11 +128,20 @@ public class CloudServerStartupHandler {
         properties.setProperty("server-name", serverStartupInfo.getName());
         properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/server.properties"))) {
-            properties.store(outputStream, "");
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
-            return false;
+        if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
+            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "configs/server.properties"))) {
+                properties.store(outputStream, "");
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
+                return false;
+            }
+        } else {
+            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/server.properties"))) {
+                properties.store(outputStream, "");
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
+                return false;
+            }
         }
 
         if (!Files.exists(Paths.get(path + "/spigot.jar"))) {

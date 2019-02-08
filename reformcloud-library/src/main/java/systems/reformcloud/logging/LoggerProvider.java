@@ -93,7 +93,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      * @param message
      */
     public void info(String message) {
-        super.log(Level.INFO, message);
+        super.log(Level.INFO, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_INFO.replace("%date%", dateFormat.format(System.currentTimeMillis())) + message) + Ansi.ansi().reset().toString());
@@ -111,7 +111,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      * @param message
      */
     public void warn(String message) {
-        super.log(Level.WARNING, message);
+        super.log(Level.WARNING, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(System.currentTimeMillis())) + message) + Ansi.ansi().reset().toString());
@@ -129,7 +129,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      * @param message
      */
     public void err(String message) {
-        super.log(Level.SEVERE, message);
+        super.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_ERR.replace("%date%", dateFormat.format(System.currentTimeMillis())) + message) + Ansi.ansi().reset().toString());
@@ -147,7 +147,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      * @param message
      */
     public void debug(String message) {
-        super.log(Level.SEVERE, message);
+        super.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(System.currentTimeMillis())) + "§1DEBUG| §r" + message) + Ansi.ansi().reset().toString());
@@ -160,7 +160,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     }
 
     public void coloured(String message) {
-        super.log(Level.INFO, message);
+        super.log(Level.INFO, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(message) + Ansi.ansi().reset().toString());
@@ -206,6 +206,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     public void clearScreen() {
         try {
             this.consoleReader.clearScreen();
+            ReformCloudLibraryService.sendHeader(this);
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not clear screen", ex);
         }
@@ -218,10 +219,10 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      */
     public LoggerProvider emptyLine() {
         try {
-            this.consoleReader.println(StringUtil.EMPTY + ConsoleReader.RESET_LINE);
+            this.consoleReader.println(" ");
             this.complete();
 
-            this.handleAll(StringUtil.EMPTY);
+            this.handleAll("\n");
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
         }
@@ -287,7 +288,6 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     @Override
     public void close() {
         try {
-            this.consoleReader.println(AnsiColourHandler.RESET.toString());
             this.consoleReader.drawLine();
             this.consoleReader.flush();
 
@@ -296,6 +296,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
 
             this.consoleReader.killLine();
             this.consoleReader.close();
+            this.iConsoleInputHandlers.clear();
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while closing logger", ex);
         }

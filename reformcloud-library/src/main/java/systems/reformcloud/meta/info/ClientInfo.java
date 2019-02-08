@@ -20,7 +20,9 @@ import java.util.List;
 public final class ClientInfo implements Serializable {
     private static final long serialVersionUID = 588638903114905632L;
 
+    @Setter
     public int maxMemory, cpuCoresSystem;
+
     private boolean ready;
     private List<String> startedServers;
     private List<String> startedProxies;

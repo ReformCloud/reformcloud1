@@ -70,8 +70,6 @@ public class ReformCloudClient implements Shutdown, Reload {
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
 
-    private final Thread sync;
-
     private CloudConfiguration cloudConfiguration;
 
     private final ClientScreenHandler clientScreenHandler;
@@ -128,20 +126,9 @@ public class ReformCloudClient implements Shutdown, Reload {
         startup.setDaemon(true);
         startup.start();
 
-        sync = new Thread(new SynchronizationHandler());
-        sync.setPriority(Thread.MIN_PRIORITY);
-        sync.setDaemon(true);
-        sync.start();
-
-        Thread shutdown = new Thread(new ShutdownWorker());
-        shutdown.setPriority(Thread.MIN_PRIORITY);
-        shutdown.setDaemon(true);
-        shutdown.start();
-
-        Thread log = new Thread(this.cloudProcessScreenService);
-        log.setPriority(Thread.MIN_PRIORITY);
-        log.setDaemon(true);
-        log.start();
+        this.scheduler.runTaskRepeatAsync(new SynchronizationHandler(), 0, 200);
+        this.scheduler.runTaskRepeatSync(new ShutdownWorker(), 0, 10);
+        this.scheduler.runTaskRepeatAsync(this.cloudProcessScreenService, 0, 50);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "ShutdownHook"));
 
@@ -170,7 +157,10 @@ public class ReformCloudClient implements Shutdown, Reload {
                 .registerHandler("JoinScreen", new PacketInSyncScreenJoin())
                 .registerHandler("ScreenDisable", new PacketInSyncScreenDisable())
                 .registerHandler("ReloadClient", new PacketInSyncUpdateClient())
-                .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand());
+                .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand())
+                .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
+                .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
+                .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess());
     }
 
     private void registerCommands() {
@@ -204,6 +194,8 @@ public class ReformCloudClient implements Shutdown, Reload {
         this.addonParallelLoader.enableAddons();
         this.checkForUpdates();
 
+        this.clientInfo.setMaxMemory(this.cloudConfiguration.getMemory());
+
         this.loggerProvider.info(this.internalCloudNetwork.getLoaded().getGlobal_reload_done());
         this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientUpdateSuccess());
     }
@@ -218,12 +210,9 @@ public class ReformCloudClient implements Shutdown, Reload {
         shutdown = true;
         RUNNING = false;
 
-        if (!this.sync.isInterrupted())
-            this.sync.interrupt();
+        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientDisconnects());
 
-        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutSyncClientDisconnects());
-
-        ReformCloudLibraryService.sleep(2000);
+        ReformCloudLibraryService.sleep(500);
         this.nettySocketClient.close();
 
         this.cloudProcessScreenService.getRegisteredProxyProcesses().forEach(proxyProcess -> {
@@ -236,11 +225,12 @@ public class ReformCloudClient implements Shutdown, Reload {
             serverProcess.shutdown(false);
             this.getLoggerProvider().info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
                     .replace("%name%", serverProcess.getServerStartupInfo().getName()));
-            ReformCloudLibraryService.sleep(1000);
+            ReformCloudLibraryService.sleep(200);
         });
 
         this.addonParallelLoader.disableAddons();
-        ReformCloudLibraryService.sleep(2000);
+        this.loggerProvider.close();
+        ReformCloudLibraryService.sleep(1000);
     }
 
     /**

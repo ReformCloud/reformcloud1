@@ -5,6 +5,9 @@
 package systems.reformcloud;
 
 import systems.reformcloud.addons.AddonParallelLoader;
+import systems.reformcloud.api.RestAPIAuth;
+import systems.reformcloud.api.RestAPIPermissionCheck;
+import systems.reformcloud.api.RestAPIServerList;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.database.DatabaseProvider;
@@ -140,6 +143,13 @@ public class ReformCloudController implements Shutdown, Reload {
             statisticsProvider.addRootStartup();
         }
 
+        if (cloudConfiguration.getWebAddress() != null)
+            reformWebServer = new ReformWebServer(cloudConfiguration.getWebAddress(), ssl,
+                    !cloudConfiguration.getCertFile().equalsIgnoreCase(StringUtil.NULL) ?
+                            new File(cloudConfiguration.getCertFile()) : null,
+                    !cloudConfiguration.getKeyFile().equalsIgnoreCase(StringUtil.NULL) ?
+                            new File(cloudConfiguration.getKeyFile()) : null);
+
         this.preparePacketHandlers();
         this.prepareCommands();
 
@@ -153,34 +163,17 @@ public class ReformCloudController implements Shutdown, Reload {
                 !cloudConfiguration.getKeyFile().equalsIgnoreCase(StringUtil.NULL) ?
                         new File(cloudConfiguration.getKeyFile()) : null);
 
-        if (cloudConfiguration.getWebAddress() != null)
-            reformWebServer = new ReformWebServer(cloudConfiguration.getWebAddress(), ssl,
-                    !cloudConfiguration.getCertFile().equalsIgnoreCase(StringUtil.NULL) ?
-                            new File(cloudConfiguration.getCertFile()) : null,
-                    !cloudConfiguration.getKeyFile().equalsIgnoreCase(StringUtil.NULL) ?
-                            new File(cloudConfiguration.getKeyFile()) : null);
-
         Thread thread = new Thread(this.scheduler);
         thread.setDaemon(true);
         thread.start();
 
-        Thread autoSave = new Thread(() -> {
-            while (Thread.currentThread().isInterrupted()) {
-                this.databaseProviders.forEach(databaseProvider -> databaseProvider.save());
-
-                try {
-                    Thread.sleep(15000);
-                } catch (final InterruptedException ignored) {
-                }
-            }
-        }, "AutoSave");
-        autoSave.setDaemon(true);
-        autoSave.start();
+        this.scheduler.runTaskRepeatAsync(() -> {
+            this.databaseProviders.forEach(databaseProvider -> databaseProvider.save());
+        }, 0, 150000);
+        this.scheduler.runTaskRepeatAsync(cloudProcessOfferService, 0, 250);
 
         this.shutdownHook = new Thread(this::shutdownAll, "Shutdown-Hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);
-
-        this.scheduler.runTaskRepeatAsync(cloudProcessOfferService, 0, 250);
 
         this.addonParallelLoader.enableAddons();
         this.checkForUpdates();
@@ -218,7 +211,15 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerHandler("UpdateClientInfo", new PacketInSyncUpdateClientInfo())
                 .registerHandler("ClientDisconnects", new PacketInSyncClientDisconnects())
                 .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate())
-                .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess());
+                .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess())
+                .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue());
+
+        if (this.reformWebServer != null) {
+            this.reformWebServer.getWebHandlerAdapter()
+                    .registerHandler("/api/auth", new RestAPIAuth())
+                    .registerHandler("/api/permissions", new RestAPIPermissionCheck())
+                    .registerHandler("/api/list/servers", new RestAPIServerList());
+        }
     }
 
     /**
@@ -349,6 +350,7 @@ public class ReformCloudController implements Shutdown, Reload {
             this.reformWebServer.shutdown();
 
         this.nettySocketServer.close();
+        this.loggerProvider.close();
 
         ReformCloudLibraryService.sleep(1000);
     }

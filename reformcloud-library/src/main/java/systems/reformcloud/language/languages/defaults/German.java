@@ -18,7 +18,7 @@ public final class German extends Language implements Serializable {
     public German() {
         super(
                 "§eVerwende den Command §3\"help\" §efür Hilfe.",
-                "Der angegebene Command wurde §cnicht §eals ein interner oder externe Command §rgefunden werden. §eVerwende §3\"help\" §efür Hilfe.",
+                "Der angegebene Command konnte §cnicht§r als ein §einterner §roder §eexterner §rCommand gefunden werden. §eVerwende §3\"help\" §efür Hilfe.",
                 "Lade Client §e[Name=%name%/Address=%ip%]§r...",
                 "Lade ServerGruppe §e[Name=%name%/Clients=%clients%]§r...",
                 "Lade ProxyGruppe §e[Name=%name%/Clients=%clients%]§r...",
@@ -43,8 +43,8 @@ public final class German extends Language implements Serializable {
                 "Spieler §e[Name=%name%/UUID=%uuid%] §rführte den Command §6[Name=%command%] auf §3Proxy/Server §e[Name=%proxy%/%server%] §raus",
                 "Der §eCommand §rwurde mit §ePackets §rausgeführt",
                 "Log für den §3Prozess §e[Name=\"%name%\"]§r: §e%url%",
-                "§eServerProcess §e[Name=%uid%] §rwurde zur Warteschlange hinzugefügt",
-                "§eProxyProcess §e[Name=%uid%] §rwurde zur Warteschlange hinzugefügt",
+                "ServerProzess §e[Name=%uid%] §rwurde zur Warteschlange hinzugefügt",
+                "ProxyProzess §e[Name=%uid%] §rwurde zur Warteschlange hinzugefügt",
                 "Versuche den Prozess §e[Name=%name%] §czustoppen§r...",
                 "ReformCloud kopiert das §eTemplate§r in §e\"%path%\"§r, dies könnte einen kleinen Moment dauern...",
                 "Warte auf Prozess §e[Name=%name%/UID=%uid%/Group=%group%/Service=%type%]§r zum §astarten...",

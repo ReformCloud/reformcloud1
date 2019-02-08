@@ -75,15 +75,19 @@ final class ReformCloudLauncher {
                 loggerProvider.getConsoleReader().setPrompt("");
                 loggerProvider.getConsoleReader().resetPromptLine("", "", 0);
 
-                while ((line = loggerProvider.getConsoleReader().readLine(StringUtil.REFORM_VERSION + "-" + StringUtil.REFORM_SPECIFICATION + "@ReformCloudClient > ")) != null && ReformCloudClient.RUNNING) {
+                while ((line = loggerProvider.getConsoleReader().readLine(StringUtil.REFORM_VERSION + "-" + StringUtil.REFORM_SPECIFICATION + "@ReformCloudClient > ")) != null && !line.trim().isEmpty() && ReformCloudClient.RUNNING) {
                     loggerProvider.getConsoleReader().setPrompt("");
 
-                    if (!commandManager.dispatchCommand(line))
-                        loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getHelp_command_not_found());
+                    try {
+                        if (!commandManager.dispatchCommand(line))
+                            loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getHelp_command_not_found());
+                    } catch (final Throwable throwable) {
+                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while handling command line input", throwable);
+                    }
                 }
             }
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while handling command", throwable);
+            StringUtil.printError(loggerProvider, "Error while reading command line", throwable);
         }
     }
 }

@@ -68,6 +68,8 @@ public class CloudConfiguration {
                 new File("reformcloud/files"),
                 new File("reformcloud/jars"),
                 new File("reformcloud/apis"),
+                new File("reformcloud/static/servers"),
+                new File("reformcloud/static/proxies"),
                 new File("reformcloud/saves/servers/logs"),
                 new File("reformcloud/saves/proxies/logs")
         })
