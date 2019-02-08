@@ -42,7 +42,7 @@ public final class English extends Language implements Serializable {
                 "Process §e[Name=%name%/UID=%uid%]§r was §astarted §ron Client §3%client%",
                 "Process §e[Name=%name%/UID=%uid%]§r was §cstopped §ron Client §3%client%",
                 "Service §e[Name=%name%] §ris now §aready",
-                "Player §e[Name=%name%/UUID=%uuid%] §rexecuted on §3Proxy §e[Name=%proxy%] §rthe command §6[Name=%command%]",
+                "Player §e[Name=%name%/UUID=%uuid%] §rexecuted on §3Proxy §e[Name=%proxy%/Server=%server%] §rthe command §6[Name=%command%]",
                 "The following §ecommand §r was executed via §epacket",
                 "Log for §3process §e[Name=\"%name%\"]§r: §e%url%",
                 "ServerProcess §rwas added to queue: §e%uid%",
