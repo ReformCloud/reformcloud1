@@ -56,13 +56,10 @@ public class PlayerConnectListener implements Listener {
             return;
         }
 
-        List<UUID> online = serverInfo.getOnlinePlayers();
-        online.add(event.getPlayer().getUniqueId());
+        serverInfo.getOnlinePlayers().add(event.getPlayer().getUniqueId());
+        serverInfo.setOnline(serverInfo.getOnline() + 1);
 
-        serverInfo.setOnlinePlayers(online);
-        serverInfo.setOnline(online.size());
-
-        if (online.size() <= serverInfo.getServerGroup().getMaxPlayers())
+        if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers())
             serverInfo.setFull(true);
         else
             serverInfo.setFull(false);
@@ -73,13 +70,11 @@ public class PlayerConnectListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void handle(final PlayerQuitEvent event) {
         final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
-        List<UUID> online = serverInfo.getOnlinePlayers();
-        online.remove(event.getPlayer().getUniqueId());
+        serverInfo.getOnlinePlayers().remove(event.getPlayer().getUniqueId());
 
-        serverInfo.setOnlinePlayers(online);
-        serverInfo.setOnline(online.size());
+        serverInfo.setOnline(serverInfo.getOnline() - 1);
 
-        if (online.size() <= serverInfo.getServerGroup().getMaxPlayers())
+        if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers())
             serverInfo.setFull(true);
         else
             serverInfo.setFull(false);

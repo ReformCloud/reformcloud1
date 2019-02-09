@@ -49,6 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -381,15 +382,13 @@ public class ReformCloudController implements Shutdown, Reload {
 
     public Client getBestClient(List<String> clients, int memory) {
         Client best = null;
-        List<Client> available = new ArrayList<>();
-
-        this.internalCloudNetwork.getClients()
+        List<Client> available = this.internalCloudNetwork.getClients()
                 .values()
                 .stream()
                 .filter(e -> this.channelHandler.isChannelRegistered(e.getName())
                         && e.getClientInfo() != null
                         && clients.contains(e.getName()))
-                .forEach(e -> available.add(e));
+                .collect(Collectors.toList());
 
         if (available.size() == 0)
             return null;

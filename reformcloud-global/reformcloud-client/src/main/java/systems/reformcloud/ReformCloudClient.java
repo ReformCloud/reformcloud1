@@ -13,6 +13,8 @@ import systems.reformcloud.event.events.LoadSuccessEvent;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.info.ClientInfo;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.NettyHandler;
 import systems.reformcloud.netty.NettySocketClient;
 import systems.reformcloud.netty.channel.ChannelHandler;
@@ -39,6 +41,8 @@ import lombok.Setter;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 23.10.2018
@@ -244,8 +248,28 @@ public class ReformCloudClient implements Shutdown, Reload {
      * @see ServerProcessManager#getUsedServerMemory()
      */
     public int getMemory() {
-        return (this.internalCloudNetwork.getServerProcessManager().getUsedProxyMemory()
-                + this.internalCloudNetwork.getServerProcessManager().getUsedServerMemory());
+        int used = 0;
+
+        List<ProxyInfo> infos = this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(e -> e.getCloudProcess().getClient().equals(this.cloudConfiguration.getClientName()))
+                .collect(Collectors.toList());
+        List<ServerInfo> serverInfos = this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredServerProcesses()
+                .stream()
+                .filter(e -> e.getCloudProcess().getClient().equals(this.cloudConfiguration.getClientName()))
+                .collect(Collectors.toList());
+
+        for (ProxyInfo proxyInfo : infos)
+            used = used + proxyInfo.getMaxMemory();
+
+        for (ServerInfo serverInfo : serverInfos)
+            used = used + serverInfo.getMaxMemory();
+
+        return used;
     }
 
     /**

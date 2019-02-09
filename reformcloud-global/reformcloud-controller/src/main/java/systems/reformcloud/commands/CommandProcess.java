@@ -94,6 +94,47 @@ public final class CommandProcess extends Command implements Serializable {
             }
 
             return;
+        } //process start <group> <i>
+        else if (args.length == 3
+                && args[0].equalsIgnoreCase("start")
+                && ReformCloudLibraryService.checkIsInteger(args[2])) {
+            if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().containsKey(args[1])) {
+                final ServerGroup serverGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]);
+                for (int i = 0; i >= Integer.valueOf(args[2]); i++) {
+                    final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
+
+                    if (client != null) {
+                        final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeServerID(serverGroup.getName());
+                        final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                                new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
+                        );
+                        commandSender.sendMessage("Trying to startup serverProcess...");
+                    } else {
+                        commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                    }
+                    ReformCloudLibraryService.sleep(25);
+                }
+            } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
+                final ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
+                for (int i = 0; i >= Integer.valueOf(args[2]); i++) {
+                    final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
+
+                    if (client != null) {
+                        final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeProxyID(proxyGroup.getName());
+                        final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                                new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
+                        );
+                        commandSender.sendMessage("Trying to startup proxyProcess...");
+                    } else {
+                        commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                    }
+                    ReformCloudLibraryService.sleep(25);
+                }
+            } else {
+                commandSender.sendMessage("ServerGroup or ProxyGroup doesn't exists");
+            }
         }
 
         switch (args[0]) {
