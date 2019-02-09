@@ -284,7 +284,7 @@ public final class SignSelector {
                 this.currentLoadingLayout = SignSelector.this.signLayoutConfiguration.getLoadingLayout().getNextLayout();
 
                 ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
-                    if (! e.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()) && ! SignSelector.this.isOnSign(e)) {
+                    if (!e.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()) && !SignSelector.this.isOnSign(e)) {
                         final Sign sign = findFreeSign(e.getServerGroup().getName());
                         if (sign != null)
                             SignSelector.this.updateSign(sign, e);

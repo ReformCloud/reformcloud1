@@ -175,6 +175,7 @@ public class ReformCloudClient implements Shutdown, Reload {
 
     @Override
     public void reloadAll() {
+        RUNNING = false;
         final String oldName = this.cloudConfiguration.getClientName();
 
         this.cloudConfiguration = null;
@@ -196,6 +197,7 @@ public class ReformCloudClient implements Shutdown, Reload {
 
         this.clientInfo.setMaxMemory(this.cloudConfiguration.getMemory());
 
+        RUNNING = true;
         this.loggerProvider.info(this.internalCloudNetwork.getLoaded().getGlobal_reload_done());
         this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientUpdateSuccess());
     }

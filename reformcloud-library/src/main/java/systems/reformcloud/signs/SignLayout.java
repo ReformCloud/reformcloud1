@@ -44,7 +44,6 @@ public class SignLayout {
     @AllArgsConstructor
     @Data
     public static class GroupLayout {
-
         private SignLayout maintenanceLayout, emptyLayout, fullLayout, onlineLayout;
     }
 }

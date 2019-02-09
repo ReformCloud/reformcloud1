@@ -41,7 +41,7 @@ public final class CloudConnectListener implements Listener {
         ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
         if (proxyInfo.getProxyGroup().isMaintenance()
                 && ProxyServer.getInstance().getPlayer(event.getConnection().getUniqueId()) != null
-                && ! ProxyServer.getInstance().getPlayer(event.getConnection().getUniqueId()).hasPermission("reformcloud.join.maintenance")) {
+                && !ProxyServer.getInstance().getPlayer(event.getConnection().getUniqueId()).hasPermission("reformcloud.join.maintenance")) {
             event.setCancelReason(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-maintenance-join-no-permission")));
             event.setCancelled(true);
             return;
