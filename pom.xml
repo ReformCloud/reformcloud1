@@ -61,6 +61,7 @@
         <plugin.jar.version>3.1.1</plugin.jar.version>
         <plugin.antrun.version>1.8</plugin.antrun.version>
         <plugin.maven-source.version>3.0.1</plugin.maven-source.version>
+        <plugin.installer.version>2.5.2</plugin.installer.version>
 
         <dependency.apache-http.version>4.5.6</dependency.apache-http.version>
         <dependency.jline.version>2.14.6</dependency.jline.version>
