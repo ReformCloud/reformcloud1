@@ -34,6 +34,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import systems.reformcloud.utility.map.Trio;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.Map;
@@ -121,10 +122,12 @@ public final class SignSelector {
         return groupLayout != null ? groupLayout : this.signLayoutConfiguration.getDefaultLayout();
     }
 
-    private void set(final org.bukkit.block.Sign sign, final SignLayout layout, final ServerInfo serverInfo, final ServerGroup serverGroup) {
-        if (sign == null) return;
+    private void set(final org.bukkit.block.Sign sign, SignLayout layout, final ServerInfo serverInfo, final ServerGroup serverGroup) {
+        if (sign == null)
+            return;
         org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
-        if (signData == null) return;
+        if (signData == null)
+            return;
 
         if (layout == null && serverInfo == null && serverGroup == null) {
             String[] lines = new String[]{" ", " ", " ", " "};
@@ -141,13 +144,29 @@ public final class SignSelector {
             }
         }
 
-        final String[] lines = layout.getLines().clone();
-
         if (serverInfo == null && serverGroup != null) {
+            final String[] lines = layout.getLines().clone();
+
             for (int i = 0; i < 3; i++)
                 lines[i] = ChatColor.translateAlternateColorCodes('&', lines[i]
                         .replace("%group%", serverGroup.getName()));
+            this.updateSignForAllPlayers(sign, lines);
         } else if (serverInfo != null) {
+            Trio<String, String, SignLayout> templateTrio = this.signLayoutConfiguration
+                    .getGroupTemplateLayouts()
+                    .stream()
+                    .filter(e -> e.getFirst().equals(serverGroup.getName())
+                            && e.getSecond().equals(serverInfo.getCloudProcess().getLoadedTemplate().getName()))
+                    .findFirst()
+                    .orElse(null);
+            if (templateTrio != null) {
+                SignLayout templateLayout = templateTrio.getThird();
+                if (templateLayout != null)
+                    layout = templateLayout;
+            }
+
+            final String[] lines = layout.getLines().clone();
+
             for (int i = 0; i < 4; i++) {
                 lines[i] = ChatColor.translateAlternateColorCodes('&', lines[i]
                         .replace("%group%", serverInfo.getServerGroup().getName())
@@ -157,9 +176,8 @@ public final class SignSelector {
                         .replace("%max_players%", Integer.toString(serverInfo.getServerGroup().getMaxPlayers()))
                         .replace("%client%", serverInfo.getCloudProcess().getClient()));
             }
+            this.updateSignForAllPlayers(sign, lines);
         }
-
-        SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> e.sendSignChange(sign.getLocation(), lines));
     }
 
     private boolean isOnSign(final ServerInfo serverInfo) {
@@ -167,6 +185,23 @@ public final class SignSelector {
             if (sign.getServerInfo() != null && sign.getServerInfo().getCloudProcess().getName().equals(serverInfo.getCloudProcess().getName()))
                 return true;
         return false;
+    }
+
+    private void updateSignForAllPlayers(final org.bukkit.block.Sign sign, final String[] lines) {
+        SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> {
+            if (e.getWorld().getName().equals(sign.getWorld().getName()) && e.getWorld().isChunkLoaded(sign.getChunk())) {
+                e.sendSignChange(sign.getLocation(), lines);
+            }
+        });
+    }
+
+    private void updateAllSigns() {
+        for (Sign sign : this.signMap.values())
+            if (sign.getServerInfo() != null) {
+                org.bukkit.block.Sign bukkitSign = this.toNormalSign(sign.getSignPosition());
+                if (bukkitSign != null)
+                    this.updateSignForAllPlayers(bukkitSign, bukkitSign.getLines());
+            }
     }
 
     public void handleCreateSign(final Sign sign) {

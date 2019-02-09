@@ -75,7 +75,9 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
                     .childOption(ChannelOption.TCP_NODELAY, true)
                     .childOption(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                     .childOption(ChannelOption.AUTO_READ, true)
+
                     .childHandler(this)
+
                     .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                     .option(ChannelOption.AUTO_READ, true)
 

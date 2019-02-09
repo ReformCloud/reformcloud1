@@ -52,7 +52,7 @@ public final class CommandSelectors implements CommandExecutor, Listener {
         if (strings.length >= 3 && strings[0].equalsIgnoreCase("selector")) {
             if (strings[1].equalsIgnoreCase("signs")) {
                 if (strings[2].equalsIgnoreCase("list")) {
-                    if (SignSelector.getInstance() != null) {
+                    if (SignSelector.getInstance() == null) {
                         commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-not-enabled"));
                         return true;
                     }
@@ -61,7 +61,7 @@ public final class CommandSelectors implements CommandExecutor, Listener {
                     SignSelector.getInstance().getSignMap().values().forEach(e -> commandSender.sendMessage("§7   " + e.getUuid() + " | " + e.getSignPosition().getTargetGroup()));
                     return true;
                 } else if (strings[2].equalsIgnoreCase("new") && strings.length == 4) {
-                    if (SignSelector.getInstance() != null) {
+                    if (SignSelector.getInstance() == null) {
                         commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-not-enabled"));
                         return true;
                     }
@@ -86,7 +86,7 @@ public final class CommandSelectors implements CommandExecutor, Listener {
                         return true;
                     }
                 } else if (strings[2].equalsIgnoreCase("remove")) {
-                    if (SignSelector.getInstance() != null) {
+                    if (SignSelector.getInstance() == null) {
                         commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-not-enabled"));
                         return true;
                     }
@@ -107,7 +107,7 @@ public final class CommandSelectors implements CommandExecutor, Listener {
                         return true;
                     }
                 } else if (ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerGroups().containsKey(strings[2])) {
-                    if (SignSelector.getInstance() != null) {
+                    if (SignSelector.getInstance() == null) {
                         commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-not-enabled"));
                         return true;
                     }
@@ -147,7 +147,7 @@ public final class CommandSelectors implements CommandExecutor, Listener {
             final String group = event.getItem().getItemMeta().getDisplayName().split(":")[1].replaceFirst(" ", "");
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 event.setCancelled(true);
-                if (SignSelector.getInstance() != null) {
+                if (SignSelector.getInstance() == null) {
                     player.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-not-enabled"));
                     return;
                 }
@@ -167,7 +167,7 @@ public final class CommandSelectors implements CommandExecutor, Listener {
 
             } else if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 event.setCancelled(true);
-                if (SignSelector.getInstance() != null) {
+                if (SignSelector.getInstance() == null) {
                     player.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-not-enabled"));
                     return;
                 }

@@ -81,7 +81,6 @@ public final class CommandCreate extends Command implements Serializable {
                 ReformCloudController.getInstance().getCloudConfiguration().createProxyGroup(new DefaultProxyGroup(args[1], args[2]));
                 break;
             }
-            //create user <name> <pw>
             case "webuser": {
                 if (args.length != 3) {
                     commandSender.sendMessage("create user <name> <password>");
@@ -101,7 +100,7 @@ public final class CommandCreate extends Command implements Serializable {
 
                 final WebUser webUser = new WebUser(args[1], StringEncrypt.encrypt(args[2]), new HashMap<>());
                 ReformCloudController.getInstance().getCloudConfiguration().createWebUser(webUser);
-                commandSender.sendMessage("WebUser \"" + webUser.getUser() + " was created successfully with password " + args[2]);
+                commandSender.sendMessage("WebUser \"" + webUser.getUser() + "\" was created successfully with password \"" + args[2] + "\"");
                 break;
             }
             default:

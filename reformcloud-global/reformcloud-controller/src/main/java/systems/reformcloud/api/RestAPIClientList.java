@@ -18,12 +18,13 @@ import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
- * @author _Klaro | Pasqual K. / created on 08.02.2019
+ * @author _Klaro | Pasqual K. / created on 09.02.2019
  */
 
-public final class RestAPIServerList implements Serializable, WebHandler {
+public final class RestAPIClientList implements Serializable, WebHandler {
     @Override
     public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
         FullHttpResponse fullHttpResponse = RestAPIUtility.createFullHttpResponse(httpRequest.protocolVersion());
@@ -55,7 +56,7 @@ public final class RestAPIServerList implements Serializable, WebHandler {
             return fullHttpResponse;
         }
 
-        if (!RestAPIUtility.hasPermission(webUser, "web.api.list.servers")) {
+        if (!RestAPIUtility.hasPermission(webUser, "web.api.list.clients")) {
             answer.addProperty("response", Arrays.asList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
@@ -65,8 +66,11 @@ public final class RestAPIServerList implements Serializable, WebHandler {
                 .addProperty("response",
                         ReformCloudController.getInstance()
                                 .getInternalCloudNetwork()
-                                .getServerProcessManager()
-                                .getAllRegisteredServerProcesses()
+                                .getClients()
+                                .values()
+                                .stream()
+                                .filter(e -> e.getClientInfo() != null)
+                                .collect(Collectors.toList())
                 );
         fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
         fullHttpResponse.setStatus(HttpResponseStatus.OK);

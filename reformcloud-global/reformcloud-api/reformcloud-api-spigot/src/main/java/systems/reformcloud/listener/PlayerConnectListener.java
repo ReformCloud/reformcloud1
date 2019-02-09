@@ -44,9 +44,20 @@ public class PlayerConnectListener implements Listener {
             return;
         }
 
+        event.allow();
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void handle(final PlayerJoinEvent event) {
         final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
+
+        if (serverInfo.getOnlinePlayers().contains(event.getPlayer().getUniqueId())) {
+            event.getPlayer().kickPlayer("§cYou're already connected to this server");
+            return;
+        }
+
         List<UUID> online = serverInfo.getOnlinePlayers();
-        online.add(event.getUniqueId());
+        online.add(event.getPlayer().getUniqueId());
 
         serverInfo.setOnlinePlayers(online);
         serverInfo.setOnline(online.size());
@@ -57,8 +68,6 @@ public class PlayerConnectListener implements Listener {
             serverInfo.setFull(false);
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
-
-        event.allow();
     }
 
     @EventHandler(priority = EventPriority.LOW)

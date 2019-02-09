@@ -93,7 +93,7 @@ public class ReformCloudClient implements Shutdown, Reload {
         this.commandManager = commandManager;
         this.loggerProvider = loggerProvider;
 
-        this.cloudConfiguration = new CloudConfiguration();
+        this.cloudConfiguration = new CloudConfiguration(false);
         new ReformCloudLibraryServiceProvider(loggerProvider, this.cloudConfiguration.getControllerKey(), cloudConfiguration.getEthernetAddress().getHost(), eventManager, null);
 
         this.registerNetworkHandlers();
@@ -183,7 +183,7 @@ public class ReformCloudClient implements Shutdown, Reload {
         this.addonParallelLoader.disableAddons();
         this.eventManager.unregisterAllListener();
 
-        this.cloudConfiguration = new CloudConfiguration();
+        this.cloudConfiguration = new CloudConfiguration(true);
         this.cloudConfiguration.setClientName(oldName);
 
         this.addonParallelLoader.loadAddons();

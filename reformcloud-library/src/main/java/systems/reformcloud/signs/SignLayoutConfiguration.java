@@ -6,7 +6,9 @@ package systems.reformcloud.signs;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import systems.reformcloud.utility.map.Trio;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +20,7 @@ import java.util.Map;
 public class SignLayoutConfiguration {
     private SignLayout.GroupLayout defaultLayout;
     private Map<String, SignLayout.GroupLayout> groupLayouts;
+    private List<Trio<String, String, SignLayout>> groupTemplateLayouts;
 
     private SignLayout.LoadingLayout loadingLayout;
 }

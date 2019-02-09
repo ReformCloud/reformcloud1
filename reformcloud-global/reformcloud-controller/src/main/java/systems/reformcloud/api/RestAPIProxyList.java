@@ -20,10 +20,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * @author _Klaro | Pasqual K. / created on 08.02.2019
+ * @author _Klaro | Pasqual K. / created on 09.02.2019
  */
 
-public final class RestAPIServerList implements Serializable, WebHandler {
+public final class RestAPIProxyList implements Serializable, WebHandler {
     @Override
     public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
         FullHttpResponse fullHttpResponse = RestAPIUtility.createFullHttpResponse(httpRequest.protocolVersion());
@@ -55,7 +55,7 @@ public final class RestAPIServerList implements Serializable, WebHandler {
             return fullHttpResponse;
         }
 
-        if (!RestAPIUtility.hasPermission(webUser, "web.api.list.servers")) {
+        if (!RestAPIUtility.hasPermission(webUser, "web.api.list.proxies")) {
             answer.addProperty("response", Arrays.asList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
@@ -66,7 +66,7 @@ public final class RestAPIServerList implements Serializable, WebHandler {
                         ReformCloudController.getInstance()
                                 .getInternalCloudNetwork()
                                 .getServerProcessManager()
-                                .getAllRegisteredServerProcesses()
+                                .getAllRegisteredProxyProcesses()
                 );
         fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
         fullHttpResponse.setStatus(HttpResponseStatus.OK);

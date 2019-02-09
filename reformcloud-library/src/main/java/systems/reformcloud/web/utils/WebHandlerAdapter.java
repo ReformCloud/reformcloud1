@@ -4,6 +4,7 @@
 
 package systems.reformcloud.web.utils;
 
+import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
  */
 
 public class WebHandlerAdapter {
+    @Getter
     private Map<String, WebHandler> webHandlerMap = ReformCloudLibraryService.concurrentHashMap();
 
     /**

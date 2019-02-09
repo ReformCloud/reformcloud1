@@ -16,6 +16,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
 
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -58,5 +59,11 @@ public class WebServerHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
         if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable())
             ctx.channel().close().addListener(ChannelFutureListener.CLOSE_ON_FAILURE).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (!(cause instanceof IOException))
+            cause.printStackTrace();
     }
 }

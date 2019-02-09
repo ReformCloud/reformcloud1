@@ -5,9 +5,8 @@
 package systems.reformcloud;
 
 import systems.reformcloud.addons.AddonParallelLoader;
-import systems.reformcloud.api.RestAPIAuth;
-import systems.reformcloud.api.RestAPIPermissionCheck;
-import systems.reformcloud.api.RestAPIServerList;
+import systems.reformcloud.api.*;
+import systems.reformcloud.api.documentation.RestAPIDocumentation;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.database.DatabaseProvider;
@@ -216,9 +215,25 @@ public class ReformCloudController implements Shutdown, Reload {
 
         if (this.reformWebServer != null) {
             this.reformWebServer.getWebHandlerAdapter()
+                    .registerHandler("/api/documentation", new RestAPIDocumentation())
+
                     .registerHandler("/api/auth", new RestAPIAuth())
+
                     .registerHandler("/api/permissions", new RestAPIPermissionCheck())
-                    .registerHandler("/api/list/servers", new RestAPIServerList());
+
+                    .registerHandler("/api/connected/list/servers", new RestAPIServerList())
+                    .registerHandler("/api/connected/list/proxies", new RestAPIProxyList())
+                    .registerHandler("/api/connected/list/clients", new RestAPIClientList())
+
+                    .registerHandler("/api/groups/list/proxies", new RestAPIProxyGroupList())
+                    .registerHandler("/api/groups/list/servers", new RestAPIServerGroupList())
+                    .registerHandler("/api/groups/list/clients", new RestAPIClients())
+
+                    .registerHandler("/api/start/server", new RestAPIStartGameserver())
+                    .registerHandler("/api/start/proxy", new RestAPIStartProxy())
+
+                    .registerHandler("/api/stop/server", new RestAPIStopServer())
+                    .registerHandler("/api/stop/proxy", new RestAPIStartProxy());
         }
     }
 
@@ -245,7 +260,8 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerCommand(new CommandAddons())
                 .registerCommand(new CommandScreen())
                 .registerCommand(new CommandVersion())
-                .registerCommand(new CommandListGroups());
+                .registerCommand(new CommandListGroups())
+                .registerCommand(new CommandWebPermissions());
     }
 
     /**

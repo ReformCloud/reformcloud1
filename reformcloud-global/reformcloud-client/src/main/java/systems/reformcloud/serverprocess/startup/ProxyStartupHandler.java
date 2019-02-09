@@ -48,6 +48,8 @@ public class ProxyStartupHandler {
     private Process process;
     private int port;
 
+    private boolean toShutdown = false;
+
     private ScreenHandler screenHandler;
     private ProcessStartupStage processStartupStage;
 
@@ -225,6 +227,10 @@ public class ProxyStartupHandler {
      * @see ProxyStartupHandler#isAlive()
      */
     public boolean shutdown(final String message, final boolean update) {
+        if (toShutdown)
+            return true;
+
+        toShutdown = true;
         ReformCloudClient.getInstance().getClientInfo().getStartedProxies().remove(this.proxyStartupInfo.getName());
 
         if (message == null)

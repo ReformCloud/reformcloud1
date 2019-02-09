@@ -5,6 +5,7 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.configurations.Configuration;
@@ -35,11 +36,11 @@ public final class CommandProcess extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length < 1) {
-            commandSender.sendMessage("process stop <name>");
+            commandSender.sendMessage("process stop <name/--all/--empty>");
             commandSender.sendMessage("process start <group-name>");
             commandSender.sendMessage("process list");
             commandSender.sendMessage("process list <server/proxy> <name>");
-            commandSender.sendMessage("\n");
+            commandSender.sendMessage("");
             commandSender.sendMessage("process queue <client> list");
             commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
             return;
@@ -82,11 +83,11 @@ public final class CommandProcess extends Command implements Serializable {
                 }
 
                 default: {
-                    commandSender.sendMessage("process stop <name>");
+                    commandSender.sendMessage("process stop <name/--all/--empty>");
                     commandSender.sendMessage("process start <group-name>");
                     commandSender.sendMessage("process list");
                     commandSender.sendMessage("process list <server/proxy> <name>");
-                    commandSender.sendMessage("\n");
+                    commandSender.sendMessage("");
                     commandSender.sendMessage("process queue <client> list");
                     commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
                 }
@@ -98,6 +99,65 @@ public final class CommandProcess extends Command implements Serializable {
         switch (args[0]) {
             case "stop": {
                 if (args.length == 2) {
+                    if (args[1].equalsIgnoreCase("--all")) {
+                        ReformCloudController.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredServerProcesses()
+                                .forEach(info -> {
+                                    ReformCloudController.getInstance()
+                                            .getChannelHandler()
+                                            .sendPacketAsynchronous(info.getCloudProcess().getClient(),
+                                                    new PacketOutStopProcess(info.getCloudProcess().getName()));
+                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    ReformCloudLibraryService.sleep(25);
+                                });
+                        ReformCloudController.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredProxyProcesses()
+                                .forEach(info -> {
+                                    ReformCloudController.getInstance()
+                                            .getChannelHandler()
+                                            .sendPacketAsynchronous(info.getCloudProcess().getClient(),
+                                                    new PacketOutStopProcess(info.getCloudProcess().getName()));
+                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    ReformCloudLibraryService.sleep(25);
+                                });
+                        return;
+                    }
+
+                    if (args[1].equalsIgnoreCase("--empty")) {
+                        ReformCloudController.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredServerProcesses()
+                                .stream()
+                                .filter(info -> info.getOnline() == 0)
+                                .forEach(info -> {
+                                    ReformCloudController.getInstance()
+                                            .getChannelHandler()
+                                            .sendPacketAsynchronous(info.getCloudProcess().getClient(),
+                                                    new PacketOutStopProcess(info.getCloudProcess().getName()));
+                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    ReformCloudLibraryService.sleep(25);
+                                });
+                        ReformCloudController.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredProxyProcesses()
+                                .stream()
+                                .filter(info -> info.getOnline() == 0)
+                                .forEach(info -> {
+                                    ReformCloudController.getInstance()
+                                            .getChannelHandler()
+                                            .sendPacketAsynchronous(info.getCloudProcess().getClient(),
+                                                    new PacketOutStopProcess(info.getCloudProcess().getName()));
+                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    ReformCloudLibraryService.sleep(25);
+                                });
+                    }
+
                     if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[1]) != null) {
                         final ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[1]);
                         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutStopProcess(proxyInfo.getCloudProcess().getName()));
@@ -211,11 +271,11 @@ public final class CommandProcess extends Command implements Serializable {
                 break;
             }
             default: {
-                commandSender.sendMessage("process stop <name>");
+                commandSender.sendMessage("process stop <name/--all/--empty>");
                 commandSender.sendMessage("process start <group-name>");
                 commandSender.sendMessage("process list");
                 commandSender.sendMessage("process list <server/proxy> <name>");
-                commandSender.sendMessage("\n");
+                commandSender.sendMessage("");
                 commandSender.sendMessage("process queue <client> list");
                 commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
             }

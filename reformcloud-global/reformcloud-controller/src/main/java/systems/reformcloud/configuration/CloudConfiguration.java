@@ -310,6 +310,15 @@ public class CloudConfiguration {
         configuration.addProperty("users", this.webUsers).saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
     }
 
+    public void updateWebUser(final WebUser webUser) {
+        List<WebUser> users = new ArrayList<>(this.webUsers);
+        users.parallelStream().filter(e -> webUser.getUser().equals(e.getUser())).forEach(e -> this.webUsers.remove(e));
+        this.webUsers.add(webUser);
+        Configuration.loadConfiguration(Paths.get("reformcloud/users.json"))
+                .addProperty("users", this.webUsers)
+                .saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
+    }
+
     public void deleteServerGroup(final ServerGroup serverGroup) throws IOException {
         Files.delete(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
 

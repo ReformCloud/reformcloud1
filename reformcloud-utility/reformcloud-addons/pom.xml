@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>reformcloud-addons-signs</module>
+        <module>reformcloud-addons-discordbot</module>
     </modules>
 
     <dependencies>

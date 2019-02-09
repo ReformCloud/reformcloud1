@@ -51,6 +51,8 @@ public class CloudServerStartupHandler {
     private Process process;
     private int port;
 
+    private boolean toShutdown;
+
     private Template loaded;
     private ScreenHandler screenHandler;
 
@@ -253,6 +255,10 @@ public class CloudServerStartupHandler {
      * @see CloudServerStartupHandler#isAlive()
      */
     public boolean shutdown(final boolean update) {
+        if (toShutdown)
+            return true;
+
+        toShutdown = true;
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().remove(this.serverStartupInfo.getName());
 
         this.executeCommand("stop");

@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import org.bukkit.Bukkit;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
@@ -37,6 +36,8 @@ import java.nio.file.Paths;
 @Setter
 public class ReformCloudAPISpigot {
     @Getter
+    @Setter
+    @Deprecated
     public static ReformCloudAPISpigot instance;
 
     private final NettySocketClient nettySocketClient;

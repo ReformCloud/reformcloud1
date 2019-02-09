@@ -37,7 +37,6 @@ public class SpigotBootstrap extends JavaPlugin {
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(new PlayerConnectListener(), this);
 
-        this.registerShutdownHook();
         try {
             new ReformCloudAPISpigot();
         } catch (final Throwable throwable) {
@@ -48,12 +47,7 @@ public class SpigotBootstrap extends JavaPlugin {
 
     @Override
     public void onDisable() {
-    }
-
-    private void registerShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> ReformCloudAPISpigot.getInstance().getChannelHandler()
-                .sendPacketSynchronized("ReformCloudController", new PacketOutInternalProcessRemove(
-                        ReformCloudAPISpigot.getInstance().getServerStartupInfo().getUid(), AuthenticationType.SERVER))));
-        System.out.println("ServerShutdownHook was added.");
+        ReformCloudAPISpigot.getInstance().getNettySocketClient().close();
+        ReformCloudAPISpigot.setInstance(null);
     }
 }

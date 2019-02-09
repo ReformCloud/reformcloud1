@@ -39,7 +39,7 @@ public class CloudConfiguration {
      *
      * @throws Throwable
      */
-    public CloudConfiguration() {
+    public CloudConfiguration(final boolean reload) {
         if (!Files.exists(Paths.get("configuration.properties")) && !Files.exists(Paths.get("ControllerKEY"))) {
             ReformCloudClient.getInstance().getLoggerProvider().err("Please copy the \"ControllerKEY\" file in the root directory of the client");
             ReformCloudLibraryService.sleep(2000);
@@ -51,8 +51,10 @@ public class CloudConfiguration {
             FileUtils.deleteFileIfExists(Paths.get("ControllerKEY"));
         }
 
-        this.clearProxyTemp();
-        this.clearServerTemp();
+        if (!reload) {
+            this.clearProxyTemp();
+            this.clearServerTemp();
+        }
 
         this.defaultInit();
         this.load();

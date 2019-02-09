@@ -37,14 +37,14 @@ public final class SignSelector implements Shutdown {
         else
             throw new InstanceAlreadyExistsException();
 
+        this.signConfiguration = new SignConfiguration();
+        this.signConfiguration.loadAll();
+
         ReformCloudController.getInstance().getNettyHandler()
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("RequestSigns", new PacketInRequestSigns())
                 .registerHandler("RequestSignUpdate", new PacketInRequestSignUpdate());
-
-        this.signConfiguration = new SignConfiguration();
-        this.signConfiguration.loadAll();
     }
 
     /**

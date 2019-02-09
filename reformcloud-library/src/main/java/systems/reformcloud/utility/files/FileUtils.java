@@ -107,7 +107,8 @@ public class FileUtils {
      * @see Files#copy(Path, Path, CopyOption...)
      */
     public static void copyAllFiles(final Path directory, final String targetDirectory, final String excluded) {
-        if (! Files.exists(directory)) return;
+        if (!Files.exists(directory))
+            return;
 
         try {
             Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {

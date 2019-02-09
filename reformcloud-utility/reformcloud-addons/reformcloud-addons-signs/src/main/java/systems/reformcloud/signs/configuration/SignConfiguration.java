@@ -18,7 +18,9 @@ import systems.reformcloud.signs.netty.packets.PacketOutRemoveSign;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.files.FileUtils;
+import systems.reformcloud.utility.map.Trio;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,6 +42,8 @@ public class SignConfiguration {
     public void loadAll() {
         if (!Files.exists(Paths.get("reformcloud/signs")))
             FileUtils.createDirectory(Paths.get("reformcloud/signs"));
+        if (!Files.exists(Paths.get("reformcloud/database/signs")))
+            FileUtils.createDirectory(Paths.get("reformcloud/database/signs"));
 
         if (!Files.exists(Paths.get("reformcloud/signs/" + path))) {
             new Configuration().addProperty("config", new SignLayoutConfiguration(
@@ -49,7 +53,9 @@ public class SignConfiguration {
                             new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
                             new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4)
 
-                    ), ReformCloudLibraryService.concurrentHashMap(), new SignLayout.LoadingLayout(
+                    ), ReformCloudLibraryService.concurrentHashMap(), Collections.singletonList(new Trio<>("Lobby", "default", new SignLayout(
+                    new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "§4§ldefault"}, "STAINED_CLAY", 4
+            ))), new SignLayout.LoadingLayout(
                     4, 0,
                     new SignLayout[]{
                             new SignLayout(new String[]{"§0§m-------------", "  Server", " l", "§0§m-------------"}),
@@ -85,9 +91,9 @@ public class SignConfiguration {
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutCreateSign(sign));
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/signs/database.json"));
+        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/database/signs/database.json"));
         configuration.addProperty("signs", this.signMap.values());
-        configuration.saveAsConfigurationFile(Paths.get("reformcloud/signs/database.json"));
+        configuration.saveAsConfigurationFile(Paths.get("reformcloud/database/signs/database.json"));
     }
 
     /**
@@ -100,20 +106,20 @@ public class SignConfiguration {
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutRemoveSign(sign));
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/signs/database.json"));
+        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/database/signs/database.json"));
         configuration.remove("signs");
         configuration.addProperty("signs", this.signMap.values());
-        configuration.saveAsConfigurationFile(Paths.get("reformcloud/signs/database.json"));
+        configuration.saveAsConfigurationFile(Paths.get("reformcloud/database/signs/database.json"));
     }
 
     /**
      * Loads all signs
      */
     public void loadSigns() {
-        if (! Files.exists(Paths.get("reformcloud/signs/database.json")))
-            new Configuration().addProperty("signs", new ArrayList<>()).saveAsConfigurationFile(Paths.get("reformcloud/signs/database.json"));
+        if (!Files.exists(Paths.get("reformcloud/database/signs/database.json")))
+            new Configuration().addProperty("signs", new ArrayList<>()).saveAsConfigurationFile(Paths.get("reformcloud/database/signs/database.json"));
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/signs/database.json"));
+        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/database/signs/database.json"));
         List<Sign> signs = configuration.getValue("signs", new TypeToken<List<Sign>>() {
         }.getType());
 

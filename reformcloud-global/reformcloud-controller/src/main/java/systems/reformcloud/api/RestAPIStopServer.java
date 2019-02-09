@@ -13,25 +13,30 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.web.WebUser;
+import systems.reformcloud.netty.out.PacketOutStopProcess;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * @author _Klaro | Pasqual K. / created on 08.02.2019
+ * @author _Klaro | Pasqual K. / created on 09.02.2019
  */
 
-public final class RestAPIServerList implements Serializable, WebHandler {
+public final class RestAPIStopServer implements Serializable, WebHandler {
     @Override
     public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
         FullHttpResponse fullHttpResponse = RestAPIUtility.createFullHttpResponse(httpRequest.protocolVersion());
         Configuration answer = RestAPIUtility.createDefaultAnswer();
 
         final HttpHeaders httpHeaders = httpRequest.headers();
-        if (!httpHeaders.contains("-XUser") || !httpHeaders.contains("-XPassword")) {
-            answer.addProperty("response", Arrays.asList("No -XUser or -XPassword provided"));
+        if (!httpHeaders.contains("-XUser")
+                || !httpHeaders.contains("-XPassword")
+                || !httpHeaders.contains("-XServer")) {
+            answer.addProperty("response", Arrays.asList("No -XUser, -XPassword or -XServer provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -55,19 +60,31 @@ public final class RestAPIServerList implements Serializable, WebHandler {
             return fullHttpResponse;
         }
 
-        if (!RestAPIUtility.hasPermission(webUser, "web.api.list.servers")) {
+        if (!RestAPIUtility.hasPermission(webUser, "web.api.stop.server")) {
             answer.addProperty("response", Arrays.asList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
-        answer.addProperty("success", true)
-                .addProperty("response",
-                        ReformCloudController.getInstance()
-                                .getInternalCloudNetwork()
-                                .getServerProcessManager()
-                                .getAllRegisteredServerProcesses()
+        ServerInfo serverInfo = ReformCloudController
+                .getInstance()
+                .getInternalCloudNetwork()
+                .getServerProcessManager()
+                .getRegisteredServerByName(httpHeaders.get("-XServer"));
+        if (serverInfo == null) {
+            answer.addProperty("answer", Arrays.asList("Server not registered in CloudNetwork"));
+            fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
+            return fullHttpResponse;
+        }
+
+        ReformCloudController.getInstance()
+                .getChannelHandler()
+                .sendPacketAsynchronous(
+                        serverInfo.getCloudProcess().getClient(),
+                        new PacketOutStopProcess(serverInfo.getCloudProcess().getName())
                 );
+
+        answer.addBooleanProperty("success", true).addProperty("answer", Arrays.asList("Trying to stop process"));
         fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
         fullHttpResponse.setStatus(HttpResponseStatus.OK);
         return fullHttpResponse;

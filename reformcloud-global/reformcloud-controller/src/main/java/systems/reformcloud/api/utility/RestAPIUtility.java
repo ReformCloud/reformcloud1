@@ -38,7 +38,7 @@ public final class RestAPIUtility implements Serializable {
     public static boolean hasPermission(final WebUser webUser, final String permission) {
         Map<String, Boolean> permissions = webUser.getPermissions();
         if (permissions.containsKey("*") && permissions.get("*"))
-            return permission.contains(permission) && !permissions.get(permission);
+            return true;
 
         return permissions.containsKey(permission) && permissions.get(permission);
     }

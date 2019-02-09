@@ -111,6 +111,7 @@ systems\reformcloud\utility\threading\TaskScheduler$VoidTaskEntry.class
 systems\reformcloud\netty\authentication\AuthenticationHandler.class
 systems\reformcloud\utility\threading\TaskEntryFuture.class
 systems\reformcloud\addons\extendable\AddonExtendable.class
+systems\reformcloud\utility\map\Trio.class
 systems\reformcloud\commands\defaults\CommandSender.class
 systems\reformcloud\utility\TypeTokenAdaptor$6.class
 systems\reformcloud\libloader\libraries\Netty.class

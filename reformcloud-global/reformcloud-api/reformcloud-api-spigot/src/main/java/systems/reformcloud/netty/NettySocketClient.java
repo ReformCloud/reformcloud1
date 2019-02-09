@@ -29,7 +29,7 @@ import java.util.Arrays;
 
 public class NettySocketClient implements AutoCloseable {
     private SslContext sslContext;
-    private final EventLoopGroup eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
+    private EventLoopGroup eventLoopGroup;
 
     /**
      * Connects to the ReformCloudController
@@ -41,6 +41,9 @@ public class NettySocketClient implements AutoCloseable {
      * @param name
      */
     public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler, boolean ssl, String key, String name) {
+        if (eventLoopGroup == null)
+            eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
+
         try {
             if (ssl)
                 sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
@@ -80,5 +83,6 @@ public class NettySocketClient implements AutoCloseable {
     @Override
     public void close() {
         eventLoopGroup.shutdownGracefully();
+        eventLoopGroup = null;
     }
 }
