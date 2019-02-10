@@ -148,7 +148,7 @@ public class CloudServerStartupHandler {
         properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
         if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "configs/server.properties"))) {
+            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/configs/server.properties"))) {
                 properties.store(outputStream, "");
             } catch (final IOException ex) {
                 StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
