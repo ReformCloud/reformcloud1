@@ -9,6 +9,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.CommandHub;
 import systems.reformcloud.commands.CommandJumpto;
 import systems.reformcloud.commands.CommandReformCloud;
+import systems.reformcloud.commands.CommandWhereIAm;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.CloudConnectListener;
@@ -51,7 +52,8 @@ public class BungeecordBootstrap extends Plugin {
         Arrays.asList(
                 new CommandJumpto(),
                 new CommandHub(),
-                new CommandReformCloud()
+                new CommandReformCloud(),
+                new CommandWhereIAm()
         ).forEach(command -> this.getProxy().getPluginManager().registerCommand(this, command));
 
         /*

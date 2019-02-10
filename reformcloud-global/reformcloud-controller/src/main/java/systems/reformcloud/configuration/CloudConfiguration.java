@@ -226,7 +226,7 @@ public class CloudConfiguration {
         String messagePath = "reformcloud/messages.json";
         if (!Files.exists(Paths.get(messagePath))) {
             new Configuration()
-                    .addStringProperty("internal-global-prefix", "§2R§feform§2C§floud §7| ")
+                    .addStringProperty("internal-global-prefix", "§2R§feform§2C§floud §7┃ ")
 
                     .addStringProperty("internal-api-bungee-command-no-permission", "§cYou do not have permission to execute this command")
 

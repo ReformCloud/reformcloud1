@@ -71,6 +71,7 @@
         <dependency.spigot.version>1.8.8</dependency.spigot.version>
         <dependency.lombok.version>1.18.4</dependency.lombok.version>
         <dependency.commons-io.version>2.5</dependency.commons-io.version>
+        <dependency.jda.version>4.ALPHA.0_35</dependency.jda.version>
     </properties>
 
     <dependencies>
