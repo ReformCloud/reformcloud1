@@ -13,6 +13,7 @@ import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.defaults.DefaultProxyGroup;
@@ -54,8 +55,11 @@ public final class CommandCreate extends Command implements Serializable {
             SpigotVersions.sortedByVersion(version).values().forEach(e -> loggerProvider.info("   " + e.name()));
             String provider = cloudConfiguration.readString(loggerProvider, s -> SpigotVersions.getByName(s) != null);
 
+            loggerProvider.info("Please choose a reset type [\"LOBBY\", \"DYNAMIC\", \"STATIC\"]");
+            String resetType = cloudConfiguration.readString(loggerProvider, s -> s.equalsIgnoreCase("dynamic") || s.equalsIgnoreCase("static") || s.equalsIgnoreCase("lobby"));
+
             commandSender.sendMessage("Trying to create new ServerGroup...");
-            ReformCloudController.getInstance().getCloudConfiguration().createServerGroup(new DefaultGroup(name, client, SpigotVersions.getByName(provider)));
+            ReformCloudController.getInstance().getCloudConfiguration().createServerGroup(new DefaultGroup(name, client, SpigotVersions.getByName(provider), ServerModeType.valueOf(resetType)));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("proxygroup")) {
             LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();

@@ -226,7 +226,7 @@ public class CloudConfiguration {
         String messagePath = "reformcloud/messages.json";
         if (!Files.exists(Paths.get(messagePath))) {
             new Configuration()
-                    .addStringProperty("internal-global-prefix", "§4K§clar§4C§cloud | ")
+                    .addStringProperty("internal-global-prefix", "§2R§feform§2C§floud §7| ")
 
                     .addStringProperty("internal-api-bungee-command-no-permission", "§cYou do not have permission to execute this command")
 
@@ -234,7 +234,7 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-bungee-command-hub-not-available", "%prefix% §7There is now hub server available")
 
                     .addStringProperty("internal-api-bungee-command-jumpto-server-player-not-found", "%prefix% §cCould not find player or server to go to")
-                    .addStringProperty("internal-api-bungee-command-jumpto-success", "%prefix% §aYou have been connected to server")
+                    .addStringProperty("internal-api-bungee-command-jumpto-success", "%prefix% §aYou was connected to the server")
 
                     .addStringProperty("internal-api-bungee-command-reformcloud-invalid-syntax", "%prefix% §7/reformcloud <command>")
                     .addStringProperty("internal-api-bungee-command-reformcloud-no-permission", "%prefix% §7Command not allowed")
@@ -260,9 +260,9 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-spigot-command-signs-item-success", "%prefix% §7The Sign-Item was added to your Inventory")
                     .addStringProperty("internal-api-spigot-command-signs-delete-not-exists", "%prefix% §7Sign doesn't exits")
                     .addStringProperty("internal-api-spigot-command-signs-list", "%prefix% §7The Following Signs are registered:")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-1", "%prefix% §7/selectors <help/selector> <signs> <new> <group>")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/selectors <help/selector> <signs> <remove/group-name>")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/selectors <selector> <signs> <list>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-1", "%prefix% §7/selectors selector <signs> new <group>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/selectors selector <signs> remove <group-name>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/selectors selector <signs> list")
 
                     .saveAsConfigurationFile(Paths.get(messagePath));
         }

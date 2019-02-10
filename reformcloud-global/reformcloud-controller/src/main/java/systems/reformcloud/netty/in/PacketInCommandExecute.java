@@ -21,8 +21,8 @@ public class PacketInCommandExecute implements NetworkInboundHandler {
     public void handle(Configuration configuration, List<QueryType> queryTypes) {
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_command_executed()
                 .replace("%name%", configuration.getStringValue("name"))
-                .replace("%uuid%", String.valueOf(configuration.getValue("uuid", UUID.class))
-                .replace("%proxy%", configuration.getStringValue("proxyName")))
+                .replace("%uuid%", String.valueOf(configuration.getValue("uuid", UUID.class)))
+                .replace("%proxy%", configuration.getStringValue("proxyName"))
                 .replace("%command%", configuration.getStringValue("command"))
                 .replace("%server%", configuration.getStringValue("server")));
         ReformCloudController.getInstance().getStatisticsProvider().addIngameCommand();

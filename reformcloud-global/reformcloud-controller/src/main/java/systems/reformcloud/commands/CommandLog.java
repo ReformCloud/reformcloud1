@@ -47,7 +47,7 @@ public final class CommandLog extends Command implements Serializable {
 
         if (args.length != 2) {
             commandSender.sendMessage("log <CONTROLLER>");
-            commandSender.sendMessage("log <CLIENT, SPIGOT, PROXY> <name>");
+            commandSender.sendMessage("log <CLIENT, SERVER, PROXY> <name>");
             return;
         }
 
@@ -65,7 +65,7 @@ public final class CommandLog extends Command implements Serializable {
                 break;
             }
 
-            case "spigot": {
+            case "server": {
                 ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[1]);
                 if (serverInfo != null) {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
@@ -88,7 +88,8 @@ public final class CommandLog extends Command implements Serializable {
             }
 
             default: {
-                commandSender.sendMessage("The serverType is invalid");
+                commandSender.sendMessage("log <CONTROLLER>");
+                commandSender.sendMessage("log <CLIENT, SERVER, PROXY> <name>");
             }
         }
     }
