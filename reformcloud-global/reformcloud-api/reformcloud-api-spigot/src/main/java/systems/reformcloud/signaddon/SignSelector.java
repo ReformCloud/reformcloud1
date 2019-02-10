@@ -66,14 +66,15 @@ public final class SignSelector {
             throw new InstanceAlreadyExistsException();
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutRequestsSigns());
-        SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
-        SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
 
         SpigotBootstrap.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(SpigotBootstrap.getInstance(), () -> {
             if (this.signLayoutConfiguration == null || this.signMap == null) {
                 instance = null;
                 return;
             }
+
+            SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
+            SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
 
             SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new CommandSelectors(), SpigotBootstrap.getInstance());
             SpigotBootstrap.getInstance().getCommand("selectors").setExecutor(new CommandSelectors());
