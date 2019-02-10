@@ -4,18 +4,19 @@
 
 package systems.reformcloud.startup;
 
+import com.sun.corba.se.spi.activation.ServerAlreadyInstalled;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.out.PacketOutStartGameServer;
 import systems.reformcloud.netty.out.PacketOutStartProxy;
 import lombok.Getter;
+import systems.reformcloud.utility.map.Trio;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -24,6 +25,8 @@ import java.util.UUID;
 public class CloudProcessOfferService implements Runnable {
     @Getter
     private Map<String, String> waiting = ReformCloudLibraryService.concurrentHashMap();
+
+    private List<Trio<String, String, Integer>> servers = new ArrayList<>();
 
     private void offerServers() {
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().values().forEach(serverGroup -> {
@@ -37,8 +40,9 @@ public class CloudProcessOfferService implements Runnable {
             final Collection<String> waiting = this.getWaiting(serverGroup.getName());
 
             final int waitingAndOnline = servers.size() + waiting.size();
-            final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeServerID(serverGroup.getName());
+            final String id = Integer.toString(this.nextServerID(serverGroup.getName()));
             final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+            this.registerID(serverGroup.getName(), name, Integer.valueOf(id));
 
             if (waitingAndOnline < serverGroup.getMinOnline() && (serverGroup.getMaxOnline() > waitingAndOnline || serverGroup.getMaxOnline() == -1)) {
                 this.waiting.put(name, serverGroup.getName());
@@ -81,6 +85,24 @@ public class CloudProcessOfferService implements Runnable {
                 collection.add(map.getKey());
 
         return collection;
+    }
+
+    public void unregisterID(final ServerInfo serverInfo) {
+        List<Trio<String, String, Integer>> clone = this.servers;
+        clone.forEach(e -> {
+            if (e.getFirst().equals(serverInfo.getServerGroup().getName()) && e.getSecond().equals(serverInfo.getCloudProcess().getName()))
+                this.servers.remove(e);
+        });
+    }
+
+    public int nextServerID(final String groupName) {
+        List<String> servers = new ArrayList<>();
+        this.servers.stream().filter(e -> e.getFirst().equals(groupName)).forEach(e -> servers.add(e.getSecond()));
+        return servers.size() + 1;
+    }
+
+    public void registerID(final String group, final String name, final int id) {
+        this.servers.add(new Trio<>(group, name, id));
     }
 
     @Override
