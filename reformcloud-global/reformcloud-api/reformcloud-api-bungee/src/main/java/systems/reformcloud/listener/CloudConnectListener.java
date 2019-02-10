@@ -21,6 +21,8 @@ import systems.reformcloud.netty.packets.PacketOutLogoutPlayer;
 import systems.reformcloud.netty.packets.PacketOutProxyInfoUpdate;
 import systems.reformcloud.netty.packets.PacketOutSendControllerConsoleMessage;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
  */
@@ -83,14 +85,16 @@ public final class CloudConnectListener implements Listener {
 
     @EventHandler(priority = - 127)
     public void handle(final ServerKickEvent event) {
-        final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions());
-        if (serverInfo != null) {
-            event.setCancelServer(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
-            event.setCancelled(true);
-        } else {
-            event.setCancelled(false);
-            event.setCancelServer(null);
-            event.getPlayer().disconnect(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server")));
-        }
+        BungeecordBootstrap.getInstance().getProxy().getScheduler().schedule(BungeecordBootstrap.getInstance(), () -> {
+            final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions());
+            if (serverInfo != null) {
+                event.setCancelServer(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
+                event.setCancelled(true);
+            } else {
+                event.setCancelled(false);
+                event.setCancelServer(null);
+                event.getPlayer().disconnect(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server")));
+            }
+        }, 60, TimeUnit.MILLISECONDS);
     }
 }
