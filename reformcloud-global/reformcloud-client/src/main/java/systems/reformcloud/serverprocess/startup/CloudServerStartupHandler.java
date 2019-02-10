@@ -242,7 +242,7 @@ public class CloudServerStartupHandler {
                 serverStartupInfo.getUid(), serverStartupInfo.getName(), serverInfo, port
         );
         ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
-        ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutAddProcess(serverInfo));
+        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutAddProcess(serverInfo));
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().registerServerProcess(serverStartupInfo.getName(), this);
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().add(serverInfo.getCloudProcess().getName());

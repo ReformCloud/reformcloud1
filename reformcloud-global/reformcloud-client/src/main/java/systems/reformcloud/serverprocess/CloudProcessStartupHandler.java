@@ -94,6 +94,11 @@ public class CloudProcessStartupHandler implements Runnable {
                         this.proxyStartupInfo.add(proxyStartupInfo);
                     }
                 }
+
+                try {
+                    Thread.sleep(2000);
+                } catch (final InterruptedException ignored) {
+                }
             }
         }
     }
