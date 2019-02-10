@@ -111,8 +111,13 @@ public class CloudServerStartupHandler {
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
-        FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
-        FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
+        if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
+            FileUtils.copyCompiledFile("reformcloud/configs/spigot.yml", path + "/spigot.yml");
+            FileUtils.copyCompiledFile("reformcloud/configs/server.properties", path + "/server.properties");
+        } else {
+            FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
+            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
+        }
 
         this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
                 .getServerProcessManager().nextFreePort(serverStartupInfo.getServerGroup().getStartPort());
