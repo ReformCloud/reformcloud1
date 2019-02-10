@@ -77,6 +77,10 @@ public final class Configuration {
         return jsonObject.has(key) ? jsonObject.get(key).getAsString() : StringUtil.NULL;
     }
 
+    public Long getLongValue(String key) {
+        return jsonObject.has(key) ? jsonObject.get(key).getAsLong() : 0L;
+    }
+
     public int getIntegerValue(String key) {
         return jsonObject.has(key) ? jsonObject.get(key).getAsInt() : 0;
     }

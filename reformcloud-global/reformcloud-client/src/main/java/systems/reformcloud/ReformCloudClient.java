@@ -19,6 +19,7 @@ import systems.reformcloud.netty.NettyHandler;
 import systems.reformcloud.netty.NettySocketClient;
 import systems.reformcloud.netty.channel.ChannelHandler;
 import systems.reformcloud.netty.packets.in.*;
+import systems.reformcloud.netty.packets.sync.in.PacketInSyncControllerTime;
 import systems.reformcloud.netty.packets.sync.in.PacketInSyncScreenDisable;
 import systems.reformcloud.netty.packets.sync.in.PacketInSyncScreenJoin;
 import systems.reformcloud.netty.packets.sync.in.PacketInSyncUpdateClient;
@@ -80,6 +81,9 @@ public class ReformCloudClient implements Shutdown, Reload {
     private CloudConfiguration cloudConfiguration;
 
     private final ClientScreenHandler clientScreenHandler;
+
+    @Setter
+    private long internalTime = System.currentTimeMillis();
 
     /**
      * Creates a new Instance of the {ReformCloudClient}
@@ -166,6 +170,7 @@ public class ReformCloudClient implements Shutdown, Reload {
                 .registerHandler("ReloadClient", new PacketInSyncUpdateClient())
                 .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand())
                 .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
+                .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
                 .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess());
     }

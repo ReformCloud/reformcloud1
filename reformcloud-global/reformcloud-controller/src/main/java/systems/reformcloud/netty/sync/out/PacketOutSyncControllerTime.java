@@ -20,7 +20,7 @@ public final class PacketOutSyncControllerTime extends Packet implements Seriali
     public PacketOutSyncControllerTime() {
         super(
                 "SyncControllerTime",
-                new Configuration().addLongProperty("tine", System.currentTimeMillis()),
+                new Configuration().addLongProperty("time", System.currentTimeMillis()),
                 Arrays.asList(QueryType.COMPLETE),
                 PacketSender.CONTROLLER
         );

@@ -47,6 +47,9 @@ public class ReformCloudAPISpigot {
     private ServerInfo serverInfo;
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
+    @Setter
+    private long internalTime = System.currentTimeMillis();
+
     /**
      * Creates a new ReformCloud Spigot instance
      *
@@ -75,6 +78,7 @@ public class ReformCloudAPISpigot {
                 .registerHandler("Signs", new PacketInRequestSigns())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("CreateSign", new PacketInCreateSign())
+                .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("PlayerAccepted", new PacketInPlayerAccepted());
 
         this.nettySocketClient = new NettySocketClient();

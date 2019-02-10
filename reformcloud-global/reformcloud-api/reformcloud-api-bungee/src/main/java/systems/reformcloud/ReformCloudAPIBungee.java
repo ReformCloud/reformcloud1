@@ -45,6 +45,8 @@ public class ReformCloudAPIBungee {
     private ProxyInfo proxyInfo;
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
+    private long internalTime = System.currentTimeMillis();
+
     /**
      * Creates a new BungeeCord Plugin instance
      *
@@ -70,6 +72,7 @@ public class ReformCloudAPIBungee {
                 .registerHandler("ProcessAdd", new PacketInProcessAdd())
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("UpdateAll", new PacketInUpdateAll())
+                .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
