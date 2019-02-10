@@ -94,13 +94,12 @@ public final class CommandProcess extends Command implements Serializable {
             }
 
             return;
-        } //process start <group> <i>
-        else if (args.length == 3
+        } else if (args.length == 3
                 && args[0].equalsIgnoreCase("start")
                 && ReformCloudLibraryService.checkIsInteger(args[2])) {
             if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().containsKey(args[1])) {
                 final ServerGroup serverGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]);
-                for (int i = 0; i >= Integer.valueOf(args[2]); i++) {
+                for (int i = 0; i <= Integer.valueOf(args[2]); i++) {
                     final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
                     if (client != null) {
@@ -117,7 +116,7 @@ public final class CommandProcess extends Command implements Serializable {
                 }
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
                 final ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
-                for (int i = 0; i >= Integer.valueOf(args[2]); i++) {
+                for (int i = 0; i <= Integer.valueOf(args[2]); i++) {
                     final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
 
                     if (client != null) {
@@ -135,6 +134,7 @@ public final class CommandProcess extends Command implements Serializable {
             } else {
                 commandSender.sendMessage("ServerGroup or ProxyGroup doesn't exists");
             }
+            return;
         }
 
         switch (args[0]) {

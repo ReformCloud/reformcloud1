@@ -5,12 +5,14 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.out.PacketOutCopyServerIntoTemplate;
+import systems.reformcloud.netty.out.PacketOutExecuteCommand;
 
 import java.io.Serializable;
 
@@ -29,6 +31,11 @@ public final class CommandCopy extends Command implements Serializable {
             if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[0]) != null) {
                 final ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[0]);
                 if (serverInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
+                            serverInfo.getCloudProcess().getClient(),
+                            new PacketOutExecuteCommand("save-all", "server", serverInfo.getCloudProcess().getName())
+                    );
+                    ReformCloudLibraryService.sleep(20);
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(), "server", serverInfo.getServerGroup().getName()));
                     commandSender.sendMessage("The Client tries to copy the template.");
                 } else {

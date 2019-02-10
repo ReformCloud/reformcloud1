@@ -5,11 +5,16 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.enums.TemplateBackend;
+import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.defaults.DefaultProxyGroup;
+import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.defaults.DefaultGroup;
 import systems.reformcloud.meta.web.WebUser;
 
@@ -101,6 +106,49 @@ public final class CommandCreate extends Command implements Serializable {
                 final WebUser webUser = new WebUser(args[1], StringEncrypt.encrypt(args[2]), new HashMap<>());
                 ReformCloudController.getInstance().getCloudConfiguration().createWebUser(webUser);
                 commandSender.sendMessage("WebUser \"" + webUser.getUser() + "\" was created successfully with password \"" + args[2] + "\"");
+                break;
+            }
+            case "template": {
+                if (args.length != 3) {
+                    commandSender.sendMessage("create TEMPLATE <group> <name>");
+                    return;
+                }
+
+                ServerGroup serverGroup = ReformCloudController
+                        .getInstance()
+                        .getInternalCloudNetwork()
+                        .getServerGroups()
+                        .get(args[1]);
+                if (serverGroup != null) {
+                    if (serverGroup.getTemplate(args[2]) != null) {
+                        commandSender.sendMessage("Template already exists");
+                        return;
+                    }
+
+                    serverGroup.getTemplates().add(new Template(args[2], null, TemplateBackend.CLIENT));
+                    ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
+                    commandSender.sendMessage("Template was created successfully");
+                    return;
+                } else {
+                    ProxyGroup proxyGroup = ReformCloudController
+                            .getInstance()
+                            .getInternalCloudNetwork()
+                            .getProxyGroups()
+                            .get(args[1]);
+                    if (proxyGroup == null) {
+                        commandSender.sendMessage("Group doesn't exists");
+                        return;
+                    }
+
+                    if (proxyGroup.getTemplate(args[2]) != null) {
+                        commandSender.sendMessage("Template already exists");
+                        return;
+                    }
+
+                    proxyGroup.getTemplates().add(new Template(args[2], null, TemplateBackend.CLIENT));
+                    ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
+                    commandSender.sendMessage("Template was created successfully");
+                }
                 break;
             }
             default:

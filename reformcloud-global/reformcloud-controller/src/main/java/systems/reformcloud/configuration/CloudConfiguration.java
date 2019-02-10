@@ -319,6 +319,34 @@ public class CloudConfiguration {
                 .saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
     }
 
+    public void updateServerGroup(final ServerGroup serverGroup) {
+        try {
+            Files.delete(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        new Configuration().addProperty("group", serverGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
+        ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().remove(serverGroup.getName());
+        ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().put(serverGroup.getName(), serverGroup);
+
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+    }
+
+    public void updateProxyGroup(final ProxyGroup proxyGroup) {
+        try {
+            Files.delete(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        new Configuration().addProperty("group", proxyGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
+        ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().remove(proxyGroup.getName());
+        ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().put(proxyGroup.getName(), proxyGroup);
+
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+    }
+
     public void deleteServerGroup(final ServerGroup serverGroup) throws IOException {
         Files.delete(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
 
