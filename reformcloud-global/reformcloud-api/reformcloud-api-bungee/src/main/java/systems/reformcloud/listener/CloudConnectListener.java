@@ -6,10 +6,7 @@ package systems.reformcloud.listener;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.event.LoginEvent;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerKickEvent;
+import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
@@ -85,16 +82,17 @@ public final class CloudConnectListener implements Listener {
 
     @EventHandler(priority = - 127)
     public void handle(final ServerKickEvent event) {
-        BungeecordBootstrap.getInstance().getProxy().getScheduler().schedule(BungeecordBootstrap.getInstance(), () -> {
+        if (event.getCancelServer() != null) {
             final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions());
             if (serverInfo != null) {
-                event.setCancelServer(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
                 event.setCancelled(true);
+                event.setCancelServer(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
+                event.setKickReasonComponent(event.getKickReasonComponent());
             } else {
                 event.setCancelled(false);
                 event.setCancelServer(null);
                 event.getPlayer().disconnect(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server")));
             }
-        }, 60, TimeUnit.MILLISECONDS);
+        }
     }
 }

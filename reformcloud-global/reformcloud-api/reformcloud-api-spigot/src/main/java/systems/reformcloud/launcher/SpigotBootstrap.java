@@ -48,7 +48,6 @@ public class SpigotBootstrap extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.getServer().getOnlinePlayers().forEach(e -> e.kickPlayer(ChatColor.translateAlternateColorCodes('&', ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server"))));
         ReformCloudAPISpigot.getInstance().getNettySocketClient().close();
         ReformCloudAPISpigot.setInstance(null);
     }
