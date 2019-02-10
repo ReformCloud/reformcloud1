@@ -207,6 +207,7 @@ public class CloudServerStartupHandler {
                         "-XX:-UseAdaptiveSizePolicy",
                         "-XX:CompileThreshold=100",
                         "-Dcom.mojang.eula.agree=true",
+                        "-Djline.terminal=jline.UnsupportedTerminal",
                         "-Xmx" + this.serverStartupInfo.getServerGroup().getMemory() + "M",
                         StringUtil.JAVA_JAR,
                         "spigot.jar",

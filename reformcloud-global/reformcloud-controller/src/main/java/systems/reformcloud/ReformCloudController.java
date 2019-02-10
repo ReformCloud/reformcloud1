@@ -212,7 +212,8 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerHandler("ClientDisconnects", new PacketInSyncClientDisconnects())
                 .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate())
                 .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess())
-                .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue());
+                .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue())
+                .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate());
 
         if (this.reformWebServer != null) {
             this.reformWebServer.getWebHandlerAdapter()

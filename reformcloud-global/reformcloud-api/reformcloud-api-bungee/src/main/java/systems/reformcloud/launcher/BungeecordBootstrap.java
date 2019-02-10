@@ -11,6 +11,7 @@ import systems.reformcloud.commands.CommandJumpto;
 import systems.reformcloud.commands.CommandReformCloud;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.CloudAddonsListener;
+import systems.reformcloud.listener.CloudConnectListener;
 import systems.reformcloud.listener.CloudProcessListener;
 import systems.reformcloud.listener.CloudProxyPingListener;
 import systems.reformcloud.netty.authentication.enums.AuthenticationType;
@@ -43,7 +44,8 @@ public class BungeecordBootstrap extends Plugin {
         Arrays.asList(
                 new CloudProxyPingListener(),
                 new CloudProcessListener(),
-                new CloudAddonsListener()
+                new CloudAddonsListener(),
+                new CloudConnectListener()
         ).forEach(listener -> this.getProxy().getPluginManager().registerListener(this, listener));
 
         Arrays.asList(

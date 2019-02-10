@@ -66,8 +66,6 @@ public class ReformCloudAPIBungee {
         this.proxyStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getProxyStartupInfoType());
         this.proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getProxyInfoType());
 
-        BungeecordBootstrap.getInstance().getProxy().getPluginManager().registerListener(BungeecordBootstrap.getInstance(), new CloudConnectListener());
-
         this.getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
                 .registerHandler("ProcessAdd", new PacketInProcessAdd())
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())

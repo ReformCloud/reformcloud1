@@ -142,8 +142,10 @@ public class ChannelHandler {
      */
     public boolean sendPacketSynchronized(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel))
-            for (Packet packet : packets)
+            for (Packet packet : packets) {
                 this.sendPacketSynchronized(channel, packet);
+                ReformCloudLibraryService.sleep(10);
+            }
 
         return this.channelHandlerContextMap.containsKey(channel);
     }

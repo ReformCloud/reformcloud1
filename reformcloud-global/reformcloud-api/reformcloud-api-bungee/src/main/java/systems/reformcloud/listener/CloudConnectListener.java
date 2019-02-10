@@ -56,14 +56,14 @@ public final class CloudConnectListener implements Listener {
 
         event.setCancelled(false);
         proxyInfo.getOnlinePlayers().add(event.getConnection().getUniqueId());
+        proxyInfo.setOnline(proxyInfo.getOnline() + 1);
 
-        if (proxyInfo.getProxyGroup().getMaxPlayers() <= BungeecordBootstrap.getInstance().getProxy().getPlayers().size())
+        if (proxyInfo.getProxyGroup().getMaxPlayers() <= proxyInfo.getOnline())
             proxyInfo.setFull(true);
         else
             proxyInfo.setFull(false);
 
-        proxyInfo.setOnline(proxyInfo.getOnline() + 1);
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutLoginPlayer(event.getConnection().getUniqueId()), new PacketOutProxyInfoUpdate(proxyInfo), new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getConnection().getName() + "/UUID=" + event.getConnection().getUniqueId() + "/IP=" + event.getConnection().getAddress().getAddress().getHostAddress() + "] is now connected"));
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutLoginPlayer(event.getConnection().getUniqueId()), new PacketOutProxyInfoUpdate(proxyInfo), new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getConnection().getName() + "/UUID=" + event.getConnection().getUniqueId() + "/IP=" + event.getConnection().getAddress().getAddress().getHostAddress() + "] is now connected"));
     }
 
     @EventHandler(priority = - 128)
