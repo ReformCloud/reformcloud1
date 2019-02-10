@@ -306,7 +306,7 @@ public final class SignSelector {
                     if (!e.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
                             && !SignSelector.this.isOnSign(e)) {
                         final Sign sign = findFreeSign(e.getServerGroup().getName());
-                        if (sign != null && !sign.getServerInfo().getServerGroup().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getName()))
+                        if (sign != null && !sign.getServerInfo().getServerGroup().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getName()))
                             SignSelector.this.updateSign(sign, e);
                     }
                 });
