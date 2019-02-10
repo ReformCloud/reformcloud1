@@ -38,7 +38,7 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LIC
 
 ## Support
 
-If you have questions, found a bug or have a suggestion, feel free to join our [Discord Server](https://discord.gg/fwe2CHD)
+If you have questions, found a bug or have a suggestion, feel free to join our [Discord Server](https://discord.gg/uskXdVZ)
 
 ## Developers
 

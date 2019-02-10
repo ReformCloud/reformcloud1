@@ -64,7 +64,7 @@ public final class ReformCloudLibraryService {
                         "                                                                                              \n" +
                         "                                     The official CloudSystem                               \n" +
                         "      __________________________________________________________________________________________ \n\n" +
-                        "                            Support Discord: https://discord.gg/fwe2CHD      \n"
+                                "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
 
@@ -78,7 +78,7 @@ public final class ReformCloudLibraryService {
                         "                                                                                              \n" +
                         "                                     §rThe official CloudSystem                               \n" +
                         "      __________________________________________________________________________________________ \n\n" +
-                        "                            Support Discord: https://discord.gg/fwe2CHD      \n"
+                                "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
 

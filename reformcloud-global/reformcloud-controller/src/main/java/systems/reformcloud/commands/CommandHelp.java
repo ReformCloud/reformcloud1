@@ -34,6 +34,6 @@ public final class CommandHelp extends Command implements Serializable {
         commandSender.sendMessage("Ram: " + decimalFormat.format(ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.usedMemorySystem())) + "MB/" + decimalFormat.format(ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.maxMemorySystem())) + "MB");
         commandSender.sendMessage("CPU (System/Internal): " + decimalFormat.format(ReformCloudLibraryService.cpuUsage()) + "/" + decimalFormat.format(ReformCloudLibraryService.internalCpuUsage()));
         commandSender.sendMessage("Threads: " + Thread.getAllStackTraces().size());
-        commandSender.sendMessage("For further information please contact us on our Discord (\"https://discord.gg/fwe2CHD\")");
+        commandSender.sendMessage("For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
     }
 }
