@@ -35,7 +35,7 @@ public final class CommandCopy extends Command implements Serializable {
                             serverInfo.getCloudProcess().getClient(),
                             new PacketOutExecuteCommand("save-all", "server", serverInfo.getCloudProcess().getName())
                     );
-                    ReformCloudLibraryService.sleep(20);
+                    ReformCloudLibraryService.sleep(100);
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(), "server", serverInfo.getServerGroup().getName()));
                     commandSender.sendMessage("The Client tries to copy the template.");
                 } else {
