@@ -406,7 +406,7 @@ public class CloudConfiguration {
         Configuration.loadConfiguration(Paths.get("reformcloud/groups/proxies/" + group + ".json")).addProperty("group", proxyGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
     }
 
-    private String readString(final LoggerProvider loggerProvider, Checkable<String> checkable) {
+    public String readString(final LoggerProvider loggerProvider, Checkable<String> checkable) {
         String readLine = loggerProvider.readLine();
         while (readLine == null || !checkable.isChecked(readLine) || readLine.trim().isEmpty()) {
             loggerProvider.info("Input invalid, please try again");

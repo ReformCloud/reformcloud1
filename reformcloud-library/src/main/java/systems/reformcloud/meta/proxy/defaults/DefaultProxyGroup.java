@@ -41,7 +41,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
         );
     }
 
-    public DefaultProxyGroup(final String name, final String client) {
+    public DefaultProxyGroup(final String name, final String client, ProxyVersions proxyVersions) {
         super(
                 name,
                 Collections.singletonList(client),

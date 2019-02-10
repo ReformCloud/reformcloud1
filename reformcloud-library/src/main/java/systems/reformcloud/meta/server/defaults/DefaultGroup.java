@@ -20,7 +20,7 @@ import java.util.Collections;
 public class DefaultGroup extends ServerGroup implements Serializable {
     private static final long serialVersionUID = -1234409573533112793L;
 
-    public DefaultGroup(final String name, final String client) {
+    public DefaultGroup(final String name, final String client, SpigotVersions spigotVersions) {
         super(
                 name,
                 "ReformCloud",
@@ -35,7 +35,7 @@ public class DefaultGroup extends ServerGroup implements Serializable {
                 true,
                 false,
                 ServerModeType.DYNAMIC,
-                SpigotVersions.SPIGOT_1_8_8
+                spigotVersions
         );
     }
 }
