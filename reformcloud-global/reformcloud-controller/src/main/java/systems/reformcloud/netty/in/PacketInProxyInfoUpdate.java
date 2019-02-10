@@ -8,9 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ProxyInfo;
-import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.out.PacketOutServerInfoUpdate;
 import systems.reformcloud.netty.out.PacketOutUpdateAll;
 import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.TypeTokenAdaptor;
@@ -25,7 +23,7 @@ import java.util.List;
 public final class PacketInProxyInfoUpdate implements Serializable, NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration, List<QueryType> queryTypes) {
-        final ProxyInfo proxyInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getProxyInfoType());
+        final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getProxyInfoType());
 
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().updateProxyInfo(proxyInfo);
 
