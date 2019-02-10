@@ -114,7 +114,7 @@ public final class CommandProcess extends Command implements Serializable {
                     } else {
                         commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                     }
-                    ReformCloudLibraryService.sleep(500);
+                    ReformCloudLibraryService.sleep(100);
                 }
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
                 final ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
@@ -131,7 +131,7 @@ public final class CommandProcess extends Command implements Serializable {
                     } else {
                         commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                     }
-                    ReformCloudLibraryService.sleep(500);
+                    ReformCloudLibraryService.sleep(100);
                 }
             } else {
                 commandSender.sendMessage("ServerGroup or ProxyGroup doesn't exists");
@@ -153,7 +153,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(500);
+                                    ReformCloudLibraryService.sleep(100);
                                 });
                         ReformCloudController.getInstance()
                                 .getInternalCloudNetwork()
@@ -165,7 +165,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(500);
+                                    ReformCloudLibraryService.sleep(100);
                                 });
                         return;
                     }
@@ -183,7 +183,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(500);
+                                    ReformCloudLibraryService.sleep(100);
                                 });
                         ReformCloudController.getInstance()
                                 .getInternalCloudNetwork()
@@ -197,7 +197,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(500);
+                                    ReformCloudLibraryService.sleep(100);
                                 });
                     }
 
@@ -288,7 +288,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
                             commandSender.sendMessage("Trying to startup serverProcess...");
-                            ReformCloudLibraryService.sleep(500);
+                            ReformCloudLibraryService.sleep(100);
                         } else {
                             commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                         }
@@ -303,7 +303,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
                             commandSender.sendMessage("Trying to startup proxyProcess...");
-                            ReformCloudLibraryService.sleep(500);
+                            ReformCloudLibraryService.sleep(100);
                         } else {
                             commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                         }
