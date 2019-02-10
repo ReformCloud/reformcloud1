@@ -5,6 +5,7 @@
 package systems.reformcloud.launcher;
 
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.libloader.LibraryLoader;
@@ -47,7 +48,7 @@ public class SpigotBootstrap extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.getServer().getOnlinePlayers().forEach(e -> e.kickPlayer(""));
+        this.getServer().getOnlinePlayers().forEach(e -> e.kickPlayer(ChatColor.translateAlternateColorCodes('&', ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server"))));
         ReformCloudAPISpigot.getInstance().getNettySocketClient().close();
         ReformCloudAPISpigot.setInstance(null);
     }
