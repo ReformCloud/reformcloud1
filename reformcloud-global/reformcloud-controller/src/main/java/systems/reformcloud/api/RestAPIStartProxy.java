@@ -83,8 +83,11 @@ public final class RestAPIStartProxy implements Serializable, WebHandler {
         final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
 
         if (client != null) {
-            final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeServerID(proxyGroup.getName());
+            final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextProxyID(proxyGroup.getName()));
             final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+            ReformCloudController.getInstance().getCloudProcessOfferService().registerProxyID(
+                    proxyGroup.getName(), name, Integer.valueOf(id)
+            );
             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
             );

@@ -31,6 +31,8 @@ public class PacketInRemoveProcess implements NetworkInboundHandler {
             if (serverInfo == null)
                 return;
 
+            ReformCloudController.getInstance().getCloudProcessOfferService().unregisterID(serverInfo);
+
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_stopped()
                     .replace("%name%", serverInfo.getCloudProcess().getName())
                     .replace("%uid%", serverInfo.getCloudProcess().getProcessUID() + "")
@@ -50,6 +52,8 @@ public class PacketInRemoveProcess implements NetworkInboundHandler {
 
             if (proxyInfo == null)
                 return;
+
+            ReformCloudController.getInstance().getCloudProcessOfferService().unregisterProxyID(proxyInfo);
 
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_stopped()
                     .replace("%name%", proxyInfo.getCloudProcess().getName())

@@ -9,12 +9,14 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.out.PacketOutStartGameServer;
 import systems.reformcloud.netty.out.PacketOutStartProxy;
 import lombok.Getter;
 import systems.reformcloud.utility.map.Trio;
 
+import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,6 +29,7 @@ public class CloudProcessOfferService implements Runnable {
     private Map<String, String> waiting = ReformCloudLibraryService.concurrentHashMap();
 
     private List<Trio<String, String, Integer>> servers = new ArrayList<>();
+    private List<Trio<String, String, Integer>> proxies = new ArrayList<>();
 
     private void offerServers() {
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().values().forEach(serverGroup -> {
@@ -65,8 +68,9 @@ public class CloudProcessOfferService implements Runnable {
             final Collection<String> waiting = this.getWaiting(proxyGroup.getName());
 
             final int waitingAndOnline = proxies.size() + waiting.size();
-            final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeProxyID(proxyGroup.getName());
+            final String id = Integer.toString(this.nextProxyID(proxyGroup.getName()));
             final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+            this.registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
 
             if (waitingAndOnline < proxyGroup.getMinOnline() && (proxyGroup.getMaxOnline() > waitingAndOnline || proxyGroup.getMaxOnline() == -1)) {
                 this.waiting.put(name, proxyGroup.getName());
@@ -96,13 +100,41 @@ public class CloudProcessOfferService implements Runnable {
     }
 
     public int nextServerID(final String groupName) {
-        List<String> servers = new ArrayList<>();
-        this.servers.stream().filter(e -> e.getFirst().equals(groupName)).forEach(e -> servers.add(e.getSecond()));
-        return servers.size() + 1;
+        List<Integer> servers = new ArrayList<>();
+        this.servers.stream().filter(e -> e.getFirst().equals(groupName)).forEach(e -> servers.add(e.getThird()));
+
+        int id = 1;
+        while (servers.contains(id))
+            id++;
+
+        return id;
     }
 
     public void registerID(final String group, final String name, final int id) {
         this.servers.add(new Trio<>(group, name, id));
+    }
+
+    public void unregisterProxyID(final ProxyInfo proxyInfo) {
+        List<Trio<String, String, Integer>> clone = this.proxies;
+        clone.forEach(e -> {
+            if (e.getFirst().equals(proxyInfo.getProxyGroup().getName()) && e.getSecond().equals(proxyInfo.getCloudProcess().getName()))
+                this.proxies.remove(e);
+        });
+    }
+
+    public int nextProxyID(final String groupName) {
+        List<Integer> servers = new ArrayList<>();
+        this.proxies.stream().filter(e -> e.getFirst().equals(groupName)).forEach(e -> servers.add(e.getThird()));
+
+        int id = 1;
+        while (servers.contains(id))
+            id++;
+
+        return id;
+    }
+
+    public void registerProxyID(final String group, final String name, final int id) {
+        this.proxies.add(new Trio<>(group, name, id));
     }
 
     @Override

@@ -17,6 +17,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.netty.out.*;
 
 import java.io.Serializable;
+import java.sql.Ref;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +106,11 @@ public final class CommandProcess extends Command implements Serializable {
                     final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
                     if (client != null) {
-                        final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeServerID(serverGroup.getName());
+                        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextServerID(serverGroup.getName()));
                         final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                        ReformCloudController.getInstance().getCloudProcessOfferService().registerID(
+                                serverGroup.getName(), name, Integer.valueOf(id)
+                        );
                         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(client.getName(),
                                 new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                         );
@@ -122,8 +126,9 @@ public final class CommandProcess extends Command implements Serializable {
                     final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
 
                     if (client != null) {
-                        final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeProxyID(proxyGroup.getName());
+                        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextProxyID(proxyGroup.getName()));
                         final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                        ReformCloudController.getInstance().getCloudProcessOfferService().registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
                         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(client.getName(),
                                 new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                         );
@@ -282,8 +287,9 @@ public final class CommandProcess extends Command implements Serializable {
                         final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
                         if (client != null) {
-                            final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeServerID(serverGroup.getName());
+                            final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextServerID(serverGroup.getName()));
                             final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                            ReformCloudController.getInstance().getCloudProcessOfferService().registerID(serverGroup.getName(), name, Integer.valueOf(id));
                             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
@@ -297,8 +303,9 @@ public final class CommandProcess extends Command implements Serializable {
                         final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
 
                         if (client != null) {
-                            final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeProxyID(proxyGroup.getName());
+                            final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextProxyID(proxyGroup.getName()));
                             final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                            ReformCloudController.getInstance().getCloudProcessOfferService().registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
                             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );

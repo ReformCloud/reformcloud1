@@ -81,8 +81,11 @@ public final class RestAPIStartGameserver implements Serializable, WebHandler {
         final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
         if (client != null) {
-            final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeServerID(serverGroup.getName());
+            final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextServerID(serverGroup.getName()));
             final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+            ReformCloudController.getInstance().getCloudProcessOfferService().registerID(
+                    serverGroup.getName(), name, Integer.valueOf(id)
+            );
             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
             );

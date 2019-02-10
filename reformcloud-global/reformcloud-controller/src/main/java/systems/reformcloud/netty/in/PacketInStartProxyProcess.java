@@ -13,6 +13,7 @@ import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.netty.out.PacketOutStartProxy;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.sql.Ref;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -35,8 +36,11 @@ public class PacketInStartProxyProcess implements NetworkInboundHandler {
         final Collection<String> waiting = ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting(proxyGroup.getName());
 
         final int waitingAndOnline = proxies.size() + waiting.size();
-        final String id = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeProxyID(proxyGroup.getName());
+        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextProxyID(proxyGroup.getName()));
         final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+        ReformCloudController.getInstance().getCloudProcessOfferService().registerProxyID(
+                proxyGroup.getName(), name, Integer.valueOf(id)
+        );
 
         if (proxyGroup.getMaxOnline() > waitingAndOnline || proxyGroup.getMaxOnline() == -1) {
             if (configuration.contains("template")) {

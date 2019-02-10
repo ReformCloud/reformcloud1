@@ -333,28 +333,6 @@ public class ServerProcessManager {
         return this.ports.contains(port);
     }
 
-    public String nextFreeServerID(final String groupName) {
-        int id = 1;
-        List<Integer> ids = new ArrayList<>();
-        this.serverProcessUIDMap.values().stream().filter(e -> e.getServerGroup().getName().equals(groupName)).forEach(e -> ids.add(e.getCloudProcess().getProcessID()));
-        while (ids.contains(id)) {
-            id++;
-        }
-
-        return Integer.toString(id);
-    }
-
-    public String nextFreeProxyID(final String groupName) {
-        int id = 1;
-        List<Integer> ids = new ArrayList<>();
-        this.proxyProcessUIDMap.values().stream().filter(e -> e.getProxyGroup().getName().equals(groupName)).forEach(e -> ids.add(e.getCloudProcess().getProcessID()));
-        while (ids.contains(id)) {
-            id++;
-        }
-
-        return Integer.toString(id);
-    }
-
     /**
      * Get next free port
      *
