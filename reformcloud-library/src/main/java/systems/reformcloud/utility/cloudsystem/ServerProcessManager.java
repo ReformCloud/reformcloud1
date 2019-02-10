@@ -306,6 +306,23 @@ public class ServerProcessManager {
         return null;
     }
 
+    public ServerInfo nextFreeLobby(final Collection<String> permissions, final String current) {
+        for (ServerInfo serverInfo : this.serverProcessUIDMap.values()) {
+            if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
+                    || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)
+                    || serverInfo.getCloudProcess().getName().equals(current)) {
+                continue;
+            }
+
+            if (serverInfo.getServerGroup().getJoin_permission() == null && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
+                return serverInfo;
+            else if (permissions.contains(serverInfo.getServerGroup().getJoin_permission()) && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
+                return serverInfo;
+        }
+
+        return null;
+    }
+
     /**
      * Get if the given port is already registered
      *

@@ -27,15 +27,25 @@ public final class CommandCompleter implements Serializable, Completer {
         if (buffer.isEmpty() || buffer.indexOf(' ') == -1) {
             String s = buffer.toLowerCase();
             List<String> completer = new ArrayList<>();
-            commandManager.getCommands().forEach(command -> {
-                Arrays.asList(command.getAliases()).forEach(alias -> {
-                    if (alias.toLowerCase().startsWith(s.toLowerCase()))
-                        completer.add(alias.toLowerCase());
-                });
+            if (!buffer.trim().isEmpty()) {
+                commandManager.getCommands().forEach(command -> {
+                    Arrays.asList(command.getAliases()).forEach(alias -> {
+                        if (alias.toLowerCase().startsWith(s.toLowerCase()))
+                            completer.add(alias.toLowerCase());
+                    });
 
-                if (command.getName().toLowerCase().startsWith(s.toLowerCase()))
+                    if (command.getName().toLowerCase().startsWith(s.toLowerCase()))
+                        completer.add(s.toLowerCase());
+                });
+            } else {
+                commandManager.getCommands().forEach(command -> {
+                    Arrays.asList(command.getAliases()).forEach(alias -> {
+                        completer.add(alias.toLowerCase());
+                    });
+
                     completer.add(s.toLowerCase());
-            });
+                });
+            }
             candidates.addAll(completer);
         }
 

@@ -83,7 +83,7 @@ public final class CloudConnectListener implements Listener {
     @EventHandler(priority = - 127)
     public void handle(final ServerKickEvent event) {
         if (event.getCancelServer() != null) {
-            final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions());
+            final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions(), event.getPlayer().getServer().getInfo().getName());
             if (serverInfo != null) {
                 event.setCancelled(true);
                 event.setCancelServer(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
