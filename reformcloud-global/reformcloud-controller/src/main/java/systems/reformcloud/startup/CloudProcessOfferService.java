@@ -104,10 +104,8 @@ public class CloudProcessOfferService implements Runnable {
         this.servers.stream().filter(e -> e.getFirst().equals(groupName)).forEach(e -> servers.add(e.getThird()));
 
         int id = 1;
-        while (servers.contains(id)) {
+        while (servers.contains(id))
             id++;
-            ReformCloudController.getInstance().getLoggerProvider().err(id + "");
-        }
 
         return id;
     }
