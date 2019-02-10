@@ -33,8 +33,15 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
                     && DiscordAddon.getInstance().getJda() != null
                     && DiscordAddon.getInstance().getTextChannel() != null) {
                 StringBuilder stringBuilder = new StringBuilder();
-                while (!consoleMessages.isEmpty() && stringBuilder.length() < 2000)
-                    stringBuilder.append(consoleMessages.poll()).append("\n");
+                while (!consoleMessages.isEmpty() && stringBuilder.length() < 1995) {
+                    String message = consoleMessages.poll();
+                    if (message.length() + stringBuilder.length() < 1995)
+                        stringBuilder.append(consoleMessages.poll()).append("\n");
+                    else {
+                        consoleMessages.add(message);
+                        break;
+                    }
+                }
 
                 if (stringBuilder.length() != -1 && stringBuilder.length() != 0)
                     DiscordAddon.getInstance().getTextChannel().sendMessage(stringBuilder.substring(0)).queue();
