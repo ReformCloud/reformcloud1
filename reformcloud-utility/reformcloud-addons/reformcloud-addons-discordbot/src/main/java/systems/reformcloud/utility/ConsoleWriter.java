@@ -6,7 +6,6 @@ package systems.reformcloud.utility;
 
 import systems.reformcloud.DiscordAddon;
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 
 import java.io.Serializable;
@@ -50,6 +49,6 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
 
     @Override
     public void handle(String message) {
-        consoleMessages.add(AnsiColourHandler.stripColor(message));
+        consoleMessages.add(message);
     }
 }
