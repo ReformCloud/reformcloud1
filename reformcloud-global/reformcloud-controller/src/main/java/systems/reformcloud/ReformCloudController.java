@@ -370,7 +370,6 @@ public class ReformCloudController implements Shutdown, Reload {
             this.reformWebServer.shutdown();
 
         this.nettySocketServer.close();
-        this.loggerProvider.close();
 
         ReformCloudLibraryService.sleep(1000);
     }

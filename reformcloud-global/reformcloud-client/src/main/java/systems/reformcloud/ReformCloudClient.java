@@ -235,7 +235,6 @@ public class ReformCloudClient implements Shutdown, Reload {
         });
 
         this.addonParallelLoader.disableAddons();
-        this.loggerProvider.close();
         ReformCloudLibraryService.sleep(1000);
     }
 

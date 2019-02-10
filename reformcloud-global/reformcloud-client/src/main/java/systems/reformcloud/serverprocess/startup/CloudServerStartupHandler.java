@@ -118,11 +118,20 @@ public class CloudServerStartupHandler {
                 .getServerProcessManager().nextFreePort(serverStartupInfo.getServerGroup().getStartPort());
 
         Properties properties = new Properties();
-        try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/server.properties")))) {
-            properties.load(inputStreamReader);
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
-            return false;
+        if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
+            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/configs/server.properties")))) {
+                properties.load(inputStreamReader);
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
+                return false;
+            }
+        } else {
+            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/server.properties")))) {
+                properties.load(inputStreamReader);
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
+                return false;
+            }
         }
 
         properties.setProperty("server-ip", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
