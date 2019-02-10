@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.CommandManager;
+import systems.reformcloud.commands.completer.CommandCompleter;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.utility.StringUtil;
@@ -60,6 +61,8 @@ final class ReformCloudLauncher {
 
         final CommandManager commandManager = new CommandManager();
         final LoggerProvider loggerProvider = new LoggerProvider();
+
+        loggerProvider.getConsoleReader().addCompleter(new CommandCompleter(commandManager));
 
         ReformCloudLibraryService.sendHeader(loggerProvider);
 
