@@ -243,8 +243,14 @@ public class ProxyStartupHandler {
         else
             this.executeCommand(message.startsWith(" ") ? "end" + message : "end " + message);
 
-        if (this.isAlive())
-            this.process.destroyForcibly();
+        try {
+            if (this.isAlive()) {
+                this.process.destroyForcibly().waitFor();
+            }
+        } catch (final Throwable throwable) {
+            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error on Proxy shutdown", throwable);
+        }
+
         ReformCloudLibraryService.sleep(50);
 
         this.screenHandler.disableScreen();

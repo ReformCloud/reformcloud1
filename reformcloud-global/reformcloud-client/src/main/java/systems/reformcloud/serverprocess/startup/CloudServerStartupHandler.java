@@ -284,8 +284,15 @@ public class CloudServerStartupHandler {
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().remove(this.serverStartupInfo.getName());
 
         this.executeCommand("stop");
-        if (this.isAlive())
-            this.process.destroyForcibly();
+
+        try {
+            if (this.isAlive()) {
+                this.process.destroyForcibly().waitFor();
+            }
+        } catch (final Throwable throwable) {
+            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error on CloudServer shutdown", throwable);
+        }
+
         ReformCloudLibraryService.sleep(50);
 
         this.screenHandler.disableScreen();
