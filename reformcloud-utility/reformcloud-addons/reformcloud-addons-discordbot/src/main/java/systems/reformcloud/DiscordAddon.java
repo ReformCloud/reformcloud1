@@ -38,6 +38,7 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
     @Override
     public void onAddonClazzPrepare() {
         instance = this;
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
     }
 
     @Override
