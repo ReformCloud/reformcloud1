@@ -153,7 +153,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(45);
+                                    ReformCloudLibraryService.sleep(500);
                                 });
                         ReformCloudController.getInstance()
                                 .getInternalCloudNetwork()
@@ -165,7 +165,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(45);
+                                    ReformCloudLibraryService.sleep(500);
                                 });
                         return;
                     }
@@ -183,7 +183,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(45);
+                                    ReformCloudLibraryService.sleep(500);
                                 });
                         ReformCloudController.getInstance()
                                 .getInternalCloudNetwork()
@@ -197,7 +197,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
-                                    ReformCloudLibraryService.sleep(45);
+                                    ReformCloudLibraryService.sleep(500);
                                 });
                     }
 

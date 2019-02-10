@@ -143,6 +143,7 @@ public final class CommandSelectors implements CommandExecutor, Listener {
                 && event.getItem().getType().equals(Material.NAME_TAG)
                 && event.getItem().hasItemMeta()
                 && event.getItem().getItemMeta().getDisplayName().startsWith("§7Create/Delete Sign")
+                && event.getClickedBlock() != null
                 && event.getClickedBlock().getState() instanceof org.bukkit.block.Sign) {
             final String group = event.getItem().getItemMeta().getDisplayName().split(":")[1].replaceFirst(" ", "");
             if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
