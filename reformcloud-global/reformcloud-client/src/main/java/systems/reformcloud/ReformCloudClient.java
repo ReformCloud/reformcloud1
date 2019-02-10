@@ -40,6 +40,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.management.InstanceAlreadyExistsException;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -295,6 +298,21 @@ public class ReformCloudClient implements Shutdown, Reload {
         } else {
             loggerProvider.info(this.internalCloudNetwork.getLoaded().getVersion_update());
         }
+    }
+
+    public boolean isPortUseable(final int port) {
+        boolean useable = false;
+        try {
+            Socket socket = new Socket(this.cloudConfiguration.getStartIP(), port);
+            if (socket.isClosed() && !socket.isConnected())
+                useable = true;
+
+            socket.close();
+        } catch (final IOException ignored) {
+            useable = true;
+        }
+
+        return useable;
     }
 
     private NettyHandler getNettyHandler() {

@@ -105,6 +105,10 @@ public class ProxyStartupHandler {
         this.processStartupStage = ProcessStartupStage.PREPARING;
         this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
                 .getServerProcessManager().nextFreePort(proxyStartupInfo.getProxyGroup().getStartPort());
+        while (!ReformCloudClient.getInstance().isPortUseable(port)) {
+            port++;
+            ReformCloudLibraryService.sleep(20);
+        }
 
         if (!Files.exists(Paths.get(path + "/server-icon.png")))
             FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/server-icon.png");

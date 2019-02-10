@@ -124,6 +124,10 @@ public class CloudServerStartupHandler {
 
         this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
                 .getServerProcessManager().nextFreePort(serverStartupInfo.getServerGroup().getStartPort());
+        while (!ReformCloudClient.getInstance().isPortUseable(port)) {
+            port++;
+            ReformCloudLibraryService.sleep(20);
+        }
 
         Properties properties = new Properties();
         if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
