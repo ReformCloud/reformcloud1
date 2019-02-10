@@ -6,6 +6,7 @@ package systems.reformcloud.utility;
 
 import systems.reformcloud.DiscordAddon;
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 
 import java.io.Serializable;
@@ -36,9 +37,9 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
                 while (!consoleMessages.isEmpty() && stringBuilder.length() < 1995) {
                     String message = consoleMessages.poll();
                     if (message.length() + stringBuilder.length() < 1995)
-                        stringBuilder.append(consoleMessages.poll()).append("\n");
+                        stringBuilder.append(message).append("\n");
                     else {
-                        consoleMessages.add(message);
+                        consoleMessages.offer(message);
                         break;
                     }
                 }
@@ -48,7 +49,7 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
             }
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             } catch (final InterruptedException ignored) {
             }
         }
@@ -56,6 +57,6 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
 
     @Override
     public void handle(String message) {
-        consoleMessages.add(message);
+        consoleMessages.offer(AnsiColourHandler.stripColor(message));
     }
 }
