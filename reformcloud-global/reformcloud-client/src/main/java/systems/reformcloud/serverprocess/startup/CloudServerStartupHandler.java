@@ -280,11 +280,9 @@ public class CloudServerStartupHandler {
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().remove(this.serverStartupInfo.getName());
 
         this.executeCommand("stop");
-        ReformCloudLibraryService.sleep(250);
-
         if (this.isAlive())
             this.process.destroyForcibly();
-        ReformCloudLibraryService.sleep(250);
+        ReformCloudLibraryService.sleep(50);
 
         this.screenHandler.disableScreen();
 
@@ -295,12 +293,11 @@ public class CloudServerStartupHandler {
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
                 && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
             FileUtils.copyAllFiles(path, "reformcloud/templates/" + serverStartupInfo.getServerGroup().getName(), "spigot.jar");
-            ReformCloudLibraryService.sleep(250);
         }
 
         FileUtils.deleteFullDirectory(path);
 
-        ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
                 new PacketOutRemoveProcess(ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(this.serverStartupInfo.getUid()))
         );
 

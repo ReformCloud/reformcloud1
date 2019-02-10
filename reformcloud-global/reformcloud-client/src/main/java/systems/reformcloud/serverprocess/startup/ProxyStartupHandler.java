@@ -239,11 +239,9 @@ public class ProxyStartupHandler {
         else
             this.executeCommand(message.startsWith(" ") ? "end" + message : "end " + message);
 
-        ReformCloudLibraryService.sleep(250);
-
         if (this.isAlive())
             this.process.destroyForcibly();
-        ReformCloudLibraryService.sleep(250);
+        ReformCloudLibraryService.sleep(50);
 
         this.screenHandler.disableScreen();
 
@@ -262,7 +260,7 @@ public class ProxyStartupHandler {
         final ProxyInfo proxyInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
                 .getServerProcessManager().getRegisteredProxyByUID(this.proxyStartupInfo.getUid());
 
-        ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
                 new PacketOutRemoveProcess(proxyInfo));
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterProxyProcess(this.proxyStartupInfo.getName());
