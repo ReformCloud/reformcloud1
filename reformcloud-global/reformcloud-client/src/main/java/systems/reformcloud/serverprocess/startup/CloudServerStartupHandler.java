@@ -107,7 +107,7 @@ public class CloudServerStartupHandler {
             FileUtils.createDirectory(Paths.get(path + "/plugins"));
 
         if (!Files.exists(Paths.get(path + "/configs")))
-            FileUtils.createDirectory(Paths.get(path + "/plugins"));
+            FileUtils.createDirectory(Paths.get(path + "/configs"));
 
         FileUtils.createDirectory(Paths.get(path + "/reformcloud"));
 
