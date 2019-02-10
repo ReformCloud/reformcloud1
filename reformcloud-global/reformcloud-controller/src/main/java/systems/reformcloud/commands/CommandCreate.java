@@ -43,7 +43,7 @@ public final class CommandCreate extends Command implements Serializable {
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance().getCloudConfiguration();
 
             loggerProvider.info("Please enter the name of the ServerGroup");
-            String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(s) != null);
+            String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(s) == null);
             loggerProvider.info("Please enter the client of the ServerGroup");
             String client = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) != null);
 
@@ -62,7 +62,7 @@ public final class CommandCreate extends Command implements Serializable {
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance().getCloudConfiguration();
 
             loggerProvider.info("Please enter the name of the ProxyGroup");
-            String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(s) != null);
+            String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(s) == null);
             loggerProvider.info("Please enter the client of the ProxyGroup");
             String client = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) != null);
 
@@ -78,7 +78,7 @@ public final class CommandCreate extends Command implements Serializable {
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance().getCloudConfiguration();
 
             loggerProvider.info("Please enter the name of the client");
-            String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) != null);
+            String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) == null);
             loggerProvider.info("Please enter the name of the client");
             String ip = cloudConfiguration.readString(loggerProvider, s -> s.split("\\.").length == 4);
 
