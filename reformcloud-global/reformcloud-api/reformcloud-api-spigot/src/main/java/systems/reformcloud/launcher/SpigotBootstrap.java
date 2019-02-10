@@ -47,6 +47,7 @@ public class SpigotBootstrap extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.getServer().getOnlinePlayers().forEach(e -> e.kickPlayer(""));
         ReformCloudAPISpigot.getInstance().getNettySocketClient().close();
         ReformCloudAPISpigot.setInstance(null);
     }
