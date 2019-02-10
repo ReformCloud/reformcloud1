@@ -24,7 +24,8 @@ public final class PacketOutStartGameServer extends Packet {
                 new Configuration().addProperty("group", group).addStringProperty("name", processName).addProperty("serverProcess", serverProcess).addConfigurationProperty("preConfig", configuration).addIntegerProperty("id", Integer.valueOf(id)),
                 Arrays.asList(QueryType.COMPLETE, QueryType.NO_RESULT), PacketSender.CONTROLLER);
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_server_added_to_queue()
-                .replace("%uid%", String.valueOf(serverProcess)));
+                .replace("%uid%", String.valueOf(serverProcess))
+                .replace("%name%", processName));
     }
 
     public PacketOutStartGameServer(final ServerGroup group, final String processName, final UUID serverProcess, final Configuration configuration, final String id, final String template) {
@@ -32,6 +33,7 @@ public final class PacketOutStartGameServer extends Packet {
                 new Configuration().addProperty("group", group).addStringProperty("name", processName).addStringProperty("template", template).addProperty("serverProcess", serverProcess).addConfigurationProperty("preConfig", configuration).addIntegerProperty("id", Integer.valueOf(id)),
                 Arrays.asList(QueryType.COMPLETE, QueryType.NO_RESULT), PacketSender.CONTROLLER);
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_server_added_to_queue()
-                .replace("%uid%", String.valueOf(serverProcess)));
+                .replace("%uid%", String.valueOf(serverProcess))
+                .replace("%name%", processName));
     }
 }

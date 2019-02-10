@@ -24,7 +24,8 @@ public final class PacketOutStartProxy extends Packet {
                 new Configuration().addProperty("group", group).addStringProperty("name", processName).addProperty("proxyProcess", proxyProcess).addConfigurationProperty("preConfig", configuration).addIntegerProperty("id", Integer.valueOf(id)),
                 Arrays.asList(QueryType.COMPLETE, QueryType.NO_RESULT), PacketSender.CONTROLLER);
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_proxy_added_to_queue()
-                .replace("%uid%", String.valueOf(proxyProcess)));
+                .replace("%uid%", String.valueOf(proxyProcess))
+                .replace("%name%", processName));
     }
 
     public PacketOutStartProxy(final ProxyGroup group, final String processName, final UUID proxyProcess, final Configuration configuration, final String id, final String template) {
@@ -32,6 +33,7 @@ public final class PacketOutStartProxy extends Packet {
                 new Configuration().addProperty("group", group).addStringProperty("name", processName).addStringProperty("template", template).addProperty("proxyProcess", proxyProcess).addConfigurationProperty("preConfig", configuration).addIntegerProperty("id", Integer.valueOf(id)),
                 Arrays.asList(QueryType.COMPLETE, QueryType.NO_RESULT), PacketSender.CONTROLLER);
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_proxy_added_to_queue()
-                .replace("%uid%", String.valueOf(proxyProcess)));
+                .replace("%uid%", String.valueOf(proxyProcess))
+                .replace("%name%", processName));
     }
 }
