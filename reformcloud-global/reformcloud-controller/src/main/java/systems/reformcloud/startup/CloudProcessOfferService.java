@@ -92,7 +92,7 @@ public class CloudProcessOfferService implements Runnable {
     }
 
     public void unregisterID(final ServerInfo serverInfo) {
-        List<Trio<String, String, Integer>> clone = this.servers;
+        List<Trio<String, String, Integer>> clone = new ArrayList<>(this.servers);
         clone.forEach(e -> {
             if (e.getFirst().equals(serverInfo.getServerGroup().getName()) && e.getSecond().equals(serverInfo.getCloudProcess().getName()))
                 this.servers.remove(e);
@@ -115,7 +115,7 @@ public class CloudProcessOfferService implements Runnable {
     }
 
     public void unregisterProxyID(final ProxyInfo proxyInfo) {
-        List<Trio<String, String, Integer>> clone = this.proxies;
+        List<Trio<String, String, Integer>> clone = new ArrayList<>(this.proxies);
         clone.forEach(e -> {
             if (e.getFirst().equals(proxyInfo.getProxyGroup().getName()) && e.getSecond().equals(proxyInfo.getCloudProcess().getName()))
                 this.proxies.remove(e);
