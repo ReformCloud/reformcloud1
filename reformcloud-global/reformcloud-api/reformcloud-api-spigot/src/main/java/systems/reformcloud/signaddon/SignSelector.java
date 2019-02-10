@@ -34,7 +34,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import systems.reformcloud.utility.map.Trio;
+import systems.reformcloud.signs.map.TemplateMap;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.util.Map;
@@ -102,15 +102,27 @@ public final class SignSelector {
     }
 
     private void setEmpty(final Sign sign) {
-        set(toNormalSign(sign.getSignPosition()), this.getGroupLayout(sign).getEmptyLayout(), sign.getServerInfo(), null);
+        SignLayout.TemplateLayout templateLayout = this.isTemplateLayoutAvailable(sign.getServerInfo());
+        if (templateLayout != null)
+            set(toNormalSign(sign.getSignPosition()), templateLayout.getEmptyLayout(), sign.getServerInfo(), null);
+        else
+            set(toNormalSign(sign.getSignPosition()), this.getGroupLayout(sign).getEmptyLayout(), sign.getServerInfo(), null);
     }
 
     private void setFull(final Sign sign) {
-        set(toNormalSign(sign.getSignPosition()), this.getGroupLayout(sign).getFullLayout(), sign.getServerInfo(), null);
+        SignLayout.TemplateLayout templateLayout = this.isTemplateLayoutAvailable(sign.getServerInfo());
+        if (templateLayout != null)
+            set(toNormalSign(sign.getSignPosition()), templateLayout.getFullLayout(), sign.getServerInfo(), null);
+        else
+            set(toNormalSign(sign.getSignPosition()), this.getGroupLayout(sign).getFullLayout(), sign.getServerInfo(), null);
     }
 
     private void setOnline(final Sign sign) {
-        set(toNormalSign(sign.getSignPosition()), this.getGroupLayout(sign).getOnlineLayout(), sign.getServerInfo(), null);
+        SignLayout.TemplateLayout templateLayout = this.isTemplateLayoutAvailable(sign.getServerInfo());
+        if (templateLayout != null)
+            set(toNormalSign(sign.getSignPosition()), templateLayout.getOnlineLayout(), sign.getServerInfo(), null);
+        else
+            set(toNormalSign(sign.getSignPosition()), this.getGroupLayout(sign).getOnlineLayout(), sign.getServerInfo(), null);
     }
 
     private void setLoading(final Sign sign, SignLayout animation) {
@@ -152,19 +164,6 @@ public final class SignSelector {
                         .replace("%group%", serverGroup.getName()));
             this.updateSignForAllPlayers(sign, lines);
         } else if (serverInfo != null) {
-            Trio<String, String, SignLayout> templateTrio = this.signLayoutConfiguration
-                    .getGroupTemplateLayouts()
-                    .stream()
-                    .filter(e -> e.getFirst().equals(serverGroup.getName())
-                            && e.getSecond().equals(serverInfo.getCloudProcess().getLoadedTemplate().getName()))
-                    .findFirst()
-                    .orElse(null);
-            if (templateTrio != null) {
-                SignLayout templateLayout = templateTrio.getThird();
-                if (templateLayout != null)
-                    layout = templateLayout;
-            }
-
             final String[] lines = layout.getLines().clone();
 
             for (int i = 0; i < 4; i++) {
@@ -185,6 +184,26 @@ public final class SignSelector {
             if (sign.getServerInfo() != null && sign.getServerInfo().getCloudProcess().getName().equals(serverInfo.getCloudProcess().getName()))
                 return true;
         return false;
+    }
+
+    private SignLayout.TemplateLayout isTemplateLayoutAvailable(ServerInfo serverInfo) {
+        if (serverInfo == null)
+            return null;
+
+        TemplateMap<String, String, SignLayout.TemplateLayout> templateTemplateMap = this.signLayoutConfiguration
+                .getGroupTemplateLayouts()
+                .stream()
+                .filter(e -> e.getGroup().equals(serverInfo.getServerGroup().getName())
+                        && e.getTemplate().equals(serverInfo.getCloudProcess().getLoadedTemplate().getName()))
+                .findFirst()
+                .orElse(null);
+        if (templateTemplateMap != null) {
+            SignLayout.TemplateLayout templateLayout = templateTemplateMap.getLayout();
+            if (templateLayout != null)
+                return templateLayout;
+        }
+
+        return null;
     }
 
     private void updateSignForAllPlayers(final org.bukkit.block.Sign sign, final String[] lines) {

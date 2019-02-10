@@ -2,7 +2,7 @@
   Copyright © 2019 Pasqual K. | All rights reserved
  */
 
-package systems.reformcloud.utility.map;
+package systems.reformcloud.signs.map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +15,8 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter
-public final class Trio<F, S, T> implements Serializable {
-    private F first;
-    private S second;
-    private T third;
+public final class TemplateMap<F, S, T> implements Serializable {
+    private F group;
+    private S template;
+    private T layout;
 }

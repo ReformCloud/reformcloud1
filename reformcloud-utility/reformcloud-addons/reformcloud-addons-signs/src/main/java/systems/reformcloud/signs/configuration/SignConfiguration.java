@@ -18,9 +18,8 @@ import systems.reformcloud.signs.netty.packets.PacketOutRemoveSign;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.files.FileUtils;
-import systems.reformcloud.utility.map.Trio;
+import systems.reformcloud.signs.map.TemplateMap;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,8 +52,10 @@ public class SignConfiguration {
                             new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
                             new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4)
 
-                    ), ReformCloudLibraryService.concurrentHashMap(), Collections.singletonList(new Trio<>("Lobby", "default", new SignLayout(
-                    new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "§4§ldefault"}, "STAINED_CLAY", 4
+                    ), ReformCloudLibraryService.concurrentHashMap(), Collections.singletonList(new TemplateMap<>("Lobby", "default", new SignLayout.TemplateLayout(
+                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
+                    new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
+                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4)
             ))), new SignLayout.LoadingLayout(
                     4, 0,
                     new SignLayout[]{

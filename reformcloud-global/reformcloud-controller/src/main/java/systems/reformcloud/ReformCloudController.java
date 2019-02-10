@@ -353,6 +353,7 @@ public class ReformCloudController implements Shutdown, Reload {
                     new PacketOutStopProcess(e.getCloudProcess().getName()));
             this.loggerProvider.info(this.getLoadedLanguage().getController_servprocess_stopped()
                         .replace("%name%", e.getCloudProcess().getName()));
+            ReformCloudLibraryService.sleep(40);
         });
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> {
@@ -360,6 +361,7 @@ public class ReformCloudController implements Shutdown, Reload {
                     new PacketOutStopProcess(e.getCloudProcess().getName()));
             this.loggerProvider.info(this.getLoadedLanguage().getController_proxyprocess_stopped()
                     .replace("%name%", e.getCloudProcess().getName()));
+            ReformCloudLibraryService.sleep(40);
         });
 
         this.loggerProvider.info(this.getLoadedLanguage().getWaiting_for_tasks());

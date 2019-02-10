@@ -46,4 +46,10 @@ public class SignLayout {
     public static class GroupLayout {
         private SignLayout maintenanceLayout, emptyLayout, fullLayout, onlineLayout;
     }
+
+    @AllArgsConstructor
+    @Data
+    public static class TemplateLayout {
+        private SignLayout emptyLayout, fullLayout, onlineLayout;
+    }
 }
