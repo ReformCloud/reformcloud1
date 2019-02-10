@@ -114,7 +114,7 @@ public final class CommandProcess extends Command implements Serializable {
                     } else {
                         commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                     }
-                    ReformCloudLibraryService.sleep(25);
+                    ReformCloudLibraryService.sleep(100);
                 }
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
                 final ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
@@ -131,7 +131,7 @@ public final class CommandProcess extends Command implements Serializable {
                     } else {
                         commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                     }
-                    ReformCloudLibraryService.sleep(35);
+                    ReformCloudLibraryService.sleep(100);
                 }
             } else {
                 commandSender.sendMessage("ServerGroup or ProxyGroup doesn't exists");
