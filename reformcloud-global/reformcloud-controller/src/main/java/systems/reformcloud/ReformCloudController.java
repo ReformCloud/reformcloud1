@@ -38,6 +38,7 @@ import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
 import systems.reformcloud.utility.threading.scheduler.Scheduler;
+import systems.reformcloud.utility.time.TimeSync;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
 import lombok.Getter;
@@ -171,6 +172,7 @@ public class ReformCloudController implements Shutdown, Reload {
             this.databaseProviders.forEach(databaseProvider -> databaseProvider.save());
         }, 0, 150000);
         this.scheduler.runTaskRepeatAsync(cloudProcessOfferService, 0, 250);
+        this.scheduler.runTaskRepeatAsync(new TimeSync(), 0, 5000);
 
         this.shutdownHook = new Thread(this::shutdownAll, "Shutdown-Hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);

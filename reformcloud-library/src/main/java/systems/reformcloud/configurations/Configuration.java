@@ -53,6 +53,11 @@ public final class Configuration {
         return this;
     }
 
+    public Configuration addLongProperty(String key, Long value) {
+        this.jsonObject.addProperty(key, value);
+        return this;
+    }
+
     public Configuration addConfigurationProperty(String key, Configuration value) {
         this.jsonObject.add(key, value.jsonObject);
         return this;
