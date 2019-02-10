@@ -44,6 +44,16 @@ public enum AnsiColourHandler {
         return input.replaceAll("\u001B\\[[;\\d]*m", "");
     }
 
+    public static String stripColourCodes(String input) {
+        if (input == null)
+            throw new IllegalStateException("text");
+
+        for (AnsiColourHandler consoleColour : values())
+            input = input.replace('§' + "" + consoleColour.index, "");
+
+        return input;
+    }
+
     public static String toColouredString(String text) {
         if (text == null)
             throw new IllegalStateException("text");

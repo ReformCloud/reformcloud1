@@ -57,6 +57,6 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
 
     @Override
     public void handle(String message) {
-        consoleMessages.offer(AnsiColourHandler.stripColor(message));
+        consoleMessages.offer(AnsiColourHandler.stripColourCodes(message));
     }
 }
