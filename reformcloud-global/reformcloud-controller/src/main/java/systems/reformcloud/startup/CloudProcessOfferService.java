@@ -45,10 +45,10 @@ public class CloudProcessOfferService implements Runnable {
             final int waitingAndOnline = servers.size() + waiting.size();
             final String id = Integer.toString(this.nextServerID(serverGroup.getName()));
             final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
-            this.registerID(serverGroup.getName(), name, Integer.valueOf(id));
 
             if (waitingAndOnline < serverGroup.getMinOnline() && (serverGroup.getMaxOnline() > waitingAndOnline || serverGroup.getMaxOnline() == -1)) {
                 this.waiting.put(name, serverGroup.getName());
+                this.registerID(serverGroup.getName(), name, Integer.valueOf(id));
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                         new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                 );
@@ -70,10 +70,10 @@ public class CloudProcessOfferService implements Runnable {
             final int waitingAndOnline = proxies.size() + waiting.size();
             final String id = Integer.toString(this.nextProxyID(proxyGroup.getName()));
             final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
-            this.registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
 
             if (waitingAndOnline < proxyGroup.getMinOnline() && (proxyGroup.getMaxOnline() > waitingAndOnline || proxyGroup.getMaxOnline() == -1)) {
                 this.waiting.put(name, proxyGroup.getName());
+                this.registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(startup.getName(),
                         new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                 );
@@ -105,7 +105,7 @@ public class CloudProcessOfferService implements Runnable {
 
         int id = 1;
         while (servers.contains(id)) {
-            id = id + 1;
+            id++;
             ReformCloudController.getInstance().getLoggerProvider().err(id + "");
         }
 
@@ -130,7 +130,7 @@ public class CloudProcessOfferService implements Runnable {
 
         int id = 1;
         while (servers.contains(id))
-            id = id + 1;
+            id++;
 
         return id;
     }
