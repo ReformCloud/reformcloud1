@@ -101,7 +101,7 @@ public final class CommandProcess extends Command implements Serializable {
                 && ReformCloudLibraryService.checkIsInteger(args[2])) {
             if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().containsKey(args[1])) {
                 final ServerGroup serverGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]);
-                for (int i = 0; i < Integer.valueOf(args[2]); i++) {
+                for (int i = 0; i <= Integer.valueOf(args[2]); i++) {
                     final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
                     if (client != null) {
@@ -118,7 +118,7 @@ public final class CommandProcess extends Command implements Serializable {
                 }
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
                 final ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
-                for (int i = 0; i < Integer.valueOf(args[2]); i++) {
+                for (int i = 0; i <= Integer.valueOf(args[2]); i++) {
                     final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
 
                     if (client != null) {
@@ -288,7 +288,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
                             commandSender.sendMessage("Trying to startup serverProcess...");
-                            ReformCloudLibraryService.sleep(100);
+                            ReformCloudLibraryService.sleep(500);
                         } else {
                             commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                         }
@@ -303,7 +303,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
                             commandSender.sendMessage("Trying to startup proxyProcess...");
-                            ReformCloudLibraryService.sleep(100);
+                            ReformCloudLibraryService.sleep(500);
                         } else {
                             commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                         }

@@ -58,7 +58,7 @@ public final class CommandWhereIAm extends Command implements Serializable {
                 ChatColor.translateAlternateColorCodes('&',
                         ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() +
                                 "You are currently connected to §e" + serverInfo.getCloudProcess().getName() +
-                                " on ServerGroup " + serverInfo.getServerGroup().getName() + " (Process UniqueID: " +
+                                " §7on ServerGroup §e" + serverInfo.getServerGroup().getName() + "§7 (Process UniqueID: §e" +
                                 serverInfo.getCloudProcess().getProcessUID() + ")")
                 )
         );
