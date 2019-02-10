@@ -10,15 +10,16 @@ import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 
 import java.io.Serializable;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
 public final class ConsoleWriter implements Serializable, Runnable, IConsoleInputHandler {
-    private Queue<String> consoleMessages = new ConcurrentLinkedDeque<>();
+    private Deque<String> consoleMessages = new LinkedList<>();
 
     public ConsoleWriter() {
         ReformCloudController.getInstance().getLoggerProvider().registerLoggerHandler(this);
@@ -35,11 +36,14 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
                     && DiscordAddon.getInstance().getTextChannel() != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 while (!consoleMessages.isEmpty() && stringBuilder.length() < 1995) {
-                    String message = consoleMessages.poll();
+                    String message = consoleMessages.pollFirst();
+                    if (message == null)
+                        continue;
+
                     if (message.length() + stringBuilder.length() < 1995)
                         stringBuilder.append(message).append("\n");
                     else {
-                        consoleMessages.offer(message);
+                        consoleMessages.addFirst(message);
                         break;
                     }
                 }

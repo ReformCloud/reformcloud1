@@ -288,6 +288,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
                             commandSender.sendMessage("Trying to startup serverProcess...");
+                            ReformCloudLibraryService.sleep(100);
                         } else {
                             commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                         }
@@ -302,6 +303,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
                             commandSender.sendMessage("Trying to startup proxyProcess...");
+                            ReformCloudLibraryService.sleep(100);
                         } else {
                             commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
                         }
