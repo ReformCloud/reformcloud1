@@ -112,8 +112,8 @@ public class CloudServerStartupHandler {
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
         if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            FileUtils.copyCompiledFile("reformcloud/configs/spigot.yml", path + "/spigot.yml");
-            FileUtils.copyCompiledFile("reformcloud/configs/server.properties", path + "/server.properties");
+            FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/configs/spigot.yml");
+            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/configs/server.properties");
         } else {
             FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
             FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
