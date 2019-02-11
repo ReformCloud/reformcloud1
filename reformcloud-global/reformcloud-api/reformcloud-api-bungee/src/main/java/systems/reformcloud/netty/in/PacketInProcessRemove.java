@@ -4,17 +4,14 @@
 
 package systems.reformcloud.netty.in;
 
+import net.md_5.bungee.api.ProxyServer;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.internal.events.CloudProxyRemoveEvent;
 import systems.reformcloud.internal.events.CloudServerRemoveEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-import net.md_5.bungee.api.ProxyServer;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018
@@ -22,7 +19,7 @@ import java.util.List;
 
 public class PacketInProcessRemove implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
             final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
             ProxyServer.getInstance().getPluginManager().callEvent(new CloudServerRemoveEvent(serverInfo));

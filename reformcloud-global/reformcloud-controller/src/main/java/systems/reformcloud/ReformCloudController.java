@@ -4,9 +4,12 @@
 
 package systems.reformcloud;
 
+import lombok.Getter;
+import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
+import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.database.DatabaseProvider;
@@ -41,9 +44,6 @@ import systems.reformcloud.utility.threading.scheduler.Scheduler;
 import systems.reformcloud.utility.time.TimeSync;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
-import lombok.Getter;
-import lombok.Setter;
-import systems.reformcloud.commands.*;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.io.File;
@@ -172,7 +172,7 @@ public class ReformCloudController implements Shutdown, Reload {
             this.databaseProviders.forEach(databaseProvider -> databaseProvider.save());
         }, 0, 150000);
         this.scheduler.runTaskRepeatAsync(cloudProcessOfferService, 0, 250);
-        this.scheduler.runTaskRepeatAsync(new TimeSync(), 0, 500);
+        this.scheduler.runTaskRepeatAsync(new TimeSync(), 0, 40);
 
         this.shutdownHook = new Thread(this::shutdownAll, "Shutdown-Hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);

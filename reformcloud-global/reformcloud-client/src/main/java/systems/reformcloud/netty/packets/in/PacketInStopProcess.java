@@ -7,11 +7,8 @@ package systems.reformcloud.netty.packets.in;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -19,7 +16,7 @@ import java.util.List;
 
 public class PacketInStopProcess implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         if (ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerHandler(configuration.getStringValue("name")) != null) {
             final CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerHandler(configuration.getStringValue("name"));
             cloudServerStartupHandler.shutdown(true);

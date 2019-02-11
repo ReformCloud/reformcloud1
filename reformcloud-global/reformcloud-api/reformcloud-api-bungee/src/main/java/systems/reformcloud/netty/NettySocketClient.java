@@ -4,14 +4,6 @@
 
 package systems.reformcloud.netty;
 
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.netty.authentication.enums.AuthenticationType;
-import systems.reformcloud.netty.channel.ChannelHandler;
-import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
-import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -20,8 +12,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-
-import java.util.Arrays;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.netty.authentication.enums.AuthenticationType;
+import systems.reformcloud.netty.channel.ChannelHandler;
+import systems.reformcloud.netty.packet.Packet;
+import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 /**
  * @author _Klaro | Pasqual K. / created on 01.11.2018
@@ -72,8 +68,8 @@ public class NettySocketClient implements AutoCloseable {
                     new Configuration()
                             .addStringProperty("key", key)
                             .addStringProperty("name", name)
-                            .addProperty("AuthenticationType", AuthenticationType.PROXY),
-                    Arrays.asList(QueryType.COMPLETE, QueryType.NO_RESULT), PacketSender.PROCESS_PROXY));
+                            .addProperty("AuthenticationType", AuthenticationType.PROXY)
+            ));
         } catch (final Throwable ignored) {
         }
     }

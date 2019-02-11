@@ -8,9 +8,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.channel.ChannelReader;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +17,7 @@ import java.util.Set;
  */
 
 public class NettyHandler {
-    private Map<String, NetworkInboundHandler> nettyAdaptorMap = ReformCloudLibraryService.concurrentHashMap();
+    private Map<String, NetworkInboundHandler> networkInboundHandlerMap = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * Handel the incoming packet by calling the registered {@link NetworkInboundHandler}
@@ -27,12 +25,11 @@ public class NettyHandler {
      *
      * @param type
      * @param configuration
-     * @param queryTypes
      * @return if the Handler is registered
      */
-    public boolean handle(String type, Configuration configuration, List<QueryType> queryTypes) {
-        if (this.nettyAdaptorMap.containsKey(type)) {
-            this.nettyAdaptorMap.get(type).handle(configuration, queryTypes);
+    public boolean handle(String type, Configuration configuration) {
+        if (this.networkInboundHandlerMap.containsKey(type)) {
+            this.networkInboundHandlerMap.get(type).handle(configuration);
             return true;
         } else {
             return false;
@@ -43,7 +40,7 @@ public class NettyHandler {
      * Clears all Handlers
      */
     public void clearHandlers() {
-        this.nettyAdaptorMap.clear();
+        this.networkInboundHandlerMap.clear();
     }
 
     /**
@@ -53,7 +50,7 @@ public class NettyHandler {
      * @return the registered {@link NetworkInboundHandler} or null if the Handler isn't registered
      */
     public NetworkInboundHandler getHandler(String type) {
-        return nettyAdaptorMap.getOrDefault(type, null);
+        return networkInboundHandlerMap.getOrDefault(type, null);
     }
 
     /**
@@ -63,7 +60,7 @@ public class NettyHandler {
      * @param networkInboundHandler
      */
     public NettyHandler registerHandler(String type, NetworkInboundHandler networkInboundHandler) {
-        this.nettyAdaptorMap.put(type, networkInboundHandler);
+        this.networkInboundHandlerMap.put(type, networkInboundHandler);
         return this;
     }
 
@@ -73,7 +70,7 @@ public class NettyHandler {
      * @param type
      */
     public NettyHandler unregisterHandler(String type) {
-        this.nettyAdaptorMap.remove(type);
+        this.networkInboundHandlerMap.remove(type);
         return this;
     }
 
@@ -83,7 +80,7 @@ public class NettyHandler {
      * @return {@link Set<String>} with HandleName of all {@link NetworkInboundHandler}
      */
     public Set<String> getHandlers() {
-        return this.nettyAdaptorMap.keySet();
+        return this.networkInboundHandlerMap.keySet();
     }
 
     /**
@@ -93,6 +90,6 @@ public class NettyHandler {
      * @return if the handler is registered
      */
     public boolean isHandlerRegistered(final String name) {
-        return this.nettyAdaptorMap.containsKey(name);
+        return this.networkInboundHandlerMap.containsKey(name);
     }
 }

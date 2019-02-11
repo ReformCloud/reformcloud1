@@ -11,10 +11,8 @@ import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -24,7 +22,7 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
     private static final long serialVersionUID = -6533784184811381053L;
 
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(configuration.getStringValue("name"));
         if (client != null) {
             final ClientInfo clientInfo = client.getClientInfo();

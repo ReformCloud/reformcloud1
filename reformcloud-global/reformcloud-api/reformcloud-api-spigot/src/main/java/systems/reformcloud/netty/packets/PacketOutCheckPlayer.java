@@ -7,10 +7,7 @@ package systems.reformcloud.netty.packets;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
-import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -20,6 +17,6 @@ import java.util.UUID;
 public final class PacketOutCheckPlayer extends Packet {
 
     public PacketOutCheckPlayer(final UUID uuid) {
-        super("PlayerAccepted", new Configuration().addStringProperty("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()).addProperty("uuid", uuid), Collections.singletonList(QueryType.COMPLETE), PacketSender.PROCESS_SERVER);
+        super("PlayerAccepted", new Configuration().addStringProperty("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()).addProperty("uuid", uuid));
     }
 }

@@ -7,9 +7,7 @@ package systems.reformcloud.netty.in;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,7 +16,7 @@ import java.util.UUID;
 
 public class PacketInCommandExecute implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_command_executed()
                 .replace("%name%", configuration.getStringValue("name"))
                 .replace("%uuid%", String.valueOf(configuration.getValue("uuid", UUID.class)))

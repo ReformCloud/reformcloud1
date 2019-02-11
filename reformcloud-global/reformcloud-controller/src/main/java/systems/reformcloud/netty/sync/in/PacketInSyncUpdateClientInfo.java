@@ -9,11 +9,9 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
 import systems.reformcloud.netty.out.PacketOutUpdateAll;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 02.02.2019
@@ -23,7 +21,7 @@ public final class PacketInSyncUpdateClientInfo implements Serializable, Network
     private static final long serialVersionUID = -8551248371013672598L;
 
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(configuration.getStringValue("from"));
         if (client == null)
             return;

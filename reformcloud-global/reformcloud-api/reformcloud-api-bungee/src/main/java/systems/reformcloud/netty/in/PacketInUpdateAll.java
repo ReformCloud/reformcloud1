@@ -8,10 +8,7 @@ import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 25.11.2018
@@ -19,7 +16,7 @@ import java.util.List;
 
 public class PacketInUpdateAll implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
 

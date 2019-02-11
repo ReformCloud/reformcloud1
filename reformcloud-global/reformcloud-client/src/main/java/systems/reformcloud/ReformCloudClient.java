@@ -4,6 +4,8 @@
 
 package systems.reformcloud;
 
+import lombok.Getter;
+import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
@@ -37,13 +39,10 @@ import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.threading.scheduler.Scheduler;
 import systems.reformcloud.versioneering.VersionController;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -318,6 +317,11 @@ public class ReformCloudClient implements Shutdown, Reload {
         }
 
         return useable;
+    }
+
+    public void updateInternalTime(final long controller) {
+        this.internalTime = controller;
+        this.loggerProvider.setControllerTime(controller);
     }
 
     private NettyHandler getNettyHandler() {

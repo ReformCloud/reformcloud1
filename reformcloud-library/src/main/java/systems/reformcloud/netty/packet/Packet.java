@@ -4,20 +4,16 @@
 
 package systems.reformcloud.netty.packet;
 
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
-import systems.reformcloud.utility.TypeTokenAdaptor;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -30,19 +26,13 @@ public class Packet implements Serializable {
 
     private Configuration configuration;
     private String type;
-    private List<QueryType> queryTypes;
-    private PacketSender packetSender;
-
-    private UUID responseUUID = UUID.randomUUID();
 
     public Packet() {
     }
 
-    public Packet(@NonNull final String type, @NonNull Configuration configuration, @NonNull List<QueryType> queryTypes, @NonNull PacketSender packetSender) {
+    public Packet(@NonNull final String type, @NonNull Configuration configuration) {
         this.type = type;
         this.configuration = configuration;
-        this.queryTypes = queryTypes;
-        this.packetSender = packetSender;
     }
 
     public void read(@NonNull ByteBuf byteBuf) {
@@ -50,8 +40,6 @@ public class Packet implements Serializable {
             final Packet packet = ReformCloudLibraryService.GSON.fromJson(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8), TypeTokenAdaptor.getPacketType());
             this.configuration = packet.configuration;
             this.type = packet.type;
-            this.queryTypes = packet.queryTypes;
-            this.packetSender = packet.packetSender;
         }
     }
 

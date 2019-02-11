@@ -7,12 +7,10 @@ package systems.reformcloud.netty.packets.sync.in;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 05.02.2019
@@ -22,7 +20,7 @@ public final class PacketInSyncScreenDisable implements Serializable, NetworkInb
     private static final long serialVersionUID = -918967605207956872L;
 
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         if (configuration.getStringValue("name").equalsIgnoreCase(ReformCloudClient.getInstance().getCloudConfiguration().getClientName())) {
             ReformCloudClient.getInstance().getClientScreenHandler().getScreenHandler().disableScreen();
             return;

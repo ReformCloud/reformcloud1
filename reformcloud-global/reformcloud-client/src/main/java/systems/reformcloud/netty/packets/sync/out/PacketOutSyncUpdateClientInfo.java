@@ -8,11 +8,8 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
 import java.io.Serializable;
-import java.util.Collections;
 
 /**
  * @author _Klaro | Pasqual K. / created on 02.02.2019
@@ -26,9 +23,7 @@ public final class PacketOutSyncUpdateClientInfo extends Packet implements Seria
                 "UpdateClientInfo",
                 new Configuration()
                         .addStringProperty("from", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                        .addProperty("info", clientInfo),
-                Collections.singletonList(QueryType.COMPLETE),
-                PacketSender.CLIENT
+                        .addProperty("info", clientInfo)
         );
     }
 }

@@ -4,6 +4,7 @@
 
 package systems.reformcloud.netty.in;
 
+import net.md_5.bungee.api.ProxyServer;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.internal.events.CloudProxyAddEvent;
@@ -12,11 +13,7 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-import net.md_5.bungee.api.ProxyServer;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018
@@ -24,7 +21,7 @@ import java.util.List;
 
 public class PacketInProcessAdd implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
             final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
             final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());

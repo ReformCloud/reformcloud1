@@ -4,21 +4,18 @@
 
 package systems.reformcloud.netty.channel;
 
-import lombok.Setter;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.AllArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.IncomingPacketEvent;
 import systems.reformcloud.event.events.PacketHandleSuccessEvent;
-import systems.reformcloud.netty.NettyHandler;
 import systems.reformcloud.netty.authentication.AuthenticationHandler;
 import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.AccessChecker;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.AllArgsConstructor;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -44,12 +41,6 @@ public class ChannelReader extends SimpleChannelInboundHandler {
         if (incomingPacketEvent.isCancelled())
             return;
 
-        if (!packet.getQueryTypes().contains(QueryType.COMPLETE))
-            return;
-
-        packet.getQueryTypes().remove(QueryType.COMPLETE);
-        packet.getConfiguration().addProperty("responseUUID", packet.getResponseUUID());
-
         final String address = ((InetSocketAddress) channelHandlerContext.channel().remoteAddress()).getAddress().getHostAddress();
 
         if (packet.getType().equalsIgnoreCase("InitializeCloudNetwork") && ReformCloudLibraryServiceProvider.getInstance().getControllerIP() != null
@@ -67,7 +58,7 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                     packet, channelHandlerContext, channelHandler);
         }
 
-        if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration(), packet.getQueryTypes()))
+        if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration()))
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(true, packet));
         else
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(false, packet));

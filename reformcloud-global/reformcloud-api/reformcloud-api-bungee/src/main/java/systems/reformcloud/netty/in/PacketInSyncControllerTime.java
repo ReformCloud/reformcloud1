@@ -7,10 +7,8 @@ package systems.reformcloud.netty.in;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
@@ -18,7 +16,7 @@ import java.util.List;
 
 public final class PacketInSyncControllerTime implements Serializable, NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         ReformCloudAPIBungee.getInstance().setInternalTime(configuration.getLongValue("time"));
     }
 }

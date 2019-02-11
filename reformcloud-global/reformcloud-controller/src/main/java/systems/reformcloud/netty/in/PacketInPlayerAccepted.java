@@ -8,11 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
 import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,8 +17,8 @@ import java.util.UUID;
 
 public class PacketInPlayerAccepted implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(configuration.getStringValue("name"),
-                new Packet("PlayerAccepted", new Configuration().addBooleanProperty("accepted", ReformCloudController.getInstance().getUuid().contains(configuration.getValue("uuid", UUID.class))).addProperty("uuid", configuration.getValue("uuid", UUID.class)), Collections.singletonList(QueryType.COMPLETE), PacketSender.PROCESS_SERVER));
+                new Packet("PlayerAccepted", new Configuration().addBooleanProperty("accepted", ReformCloudController.getInstance().getUuid().contains(configuration.getValue("uuid", UUID.class))).addProperty("uuid", configuration.getValue("uuid", UUID.class))));
     }
 }

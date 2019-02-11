@@ -9,10 +9,8 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,7 +19,7 @@ import java.util.UUID;
 
 public class PacketInStartGameServer implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         final ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getServerGroupType());
 
         ReformCloudClient.getInstance().getCloudProcessStartupHandler().offerServerProcess(new ServerStartupInfo(

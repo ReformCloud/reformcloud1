@@ -36,7 +36,7 @@ public class AddonExample extends ControllerAddonImpl {
         this.getInternalReformCloudSystem().getEventManager().registerListener(new Listener("Another cool event", EventTargetType.INCOMING_PACKET) {
             @Override
             public void handle(IncomingPacketEvent event) {
-                ReformCloudController.getInstance().getLoggerProvider().info("Is there a packet incoming (" + event.getPacket().getPacketSender().name() + ")");
+                ReformCloudController.getInstance().getLoggerProvider().info("There is a packet incoming (" + event.getPacket().getType() + ")");
             }
         });
     }

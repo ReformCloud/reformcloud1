@@ -7,11 +7,9 @@ package systems.reformcloud.netty.packets.in;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.netty.packets.out.PacketOutClientProcessQueue;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.02.2019
@@ -19,7 +17,7 @@ import java.util.List;
 
 public final class PacketInGetClientProcessQueue implements Serializable, NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous(
                 "ReformCloudController",
                 new PacketOutClientProcessQueue(

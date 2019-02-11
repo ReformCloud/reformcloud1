@@ -7,10 +7,7 @@ package systems.reformcloud.netty.packets;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.authentication.enums.AuthenticationType;
 import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
-import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -19,6 +16,6 @@ import java.util.UUID;
 
 public final class PacketOutInternalProcessRemove extends Packet {
     public PacketOutInternalProcessRemove(final UUID processUID, final AuthenticationType authenticationType) {
-        super("InternalProcessRemove", new Configuration().addProperty("uid", processUID).addStringProperty("type", authenticationType.name()), Collections.singletonList(QueryType.COMPLETE), PacketSender.PROCESS_SERVER);
+        super("InternalProcessRemove", new Configuration().addProperty("uid", processUID).addStringProperty("type", authenticationType.name()));
     }
 }

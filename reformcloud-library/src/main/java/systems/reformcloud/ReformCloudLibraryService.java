@@ -8,13 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.sun.management.OperatingSystemMXBean;
-import systems.reformcloud.logging.LoggerProvider;
-import systems.reformcloud.netty.NettyHandler;
-import systems.reformcloud.netty.channel.ChannelHandler;
-import systems.reformcloud.netty.channel.ChannelReader;
-import systems.reformcloud.netty.handler.Decoder;
-import systems.reformcloud.netty.handler.Encoder;
-import systems.reformcloud.utility.StringUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
@@ -28,6 +21,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.netty.channel.ChannelHandler;
+import systems.reformcloud.netty.channel.ChannelReader;
+import systems.reformcloud.netty.handler.Decoder;
+import systems.reformcloud.netty.handler.Encoder;
 import systems.reformcloud.utility.checkable.Checkable;
 
 import java.lang.management.ManagementFactory;
@@ -67,6 +65,7 @@ public final class ReformCloudLibraryService {
                                 "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
+
 
     public static void sendHeader(final LoggerProvider loggerProvider) {
         System.out.println(" ");

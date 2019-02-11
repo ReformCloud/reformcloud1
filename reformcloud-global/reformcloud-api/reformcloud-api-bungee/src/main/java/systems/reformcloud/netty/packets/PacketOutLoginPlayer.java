@@ -6,10 +6,7 @@ package systems.reformcloud.netty.packets;
 
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
-import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -18,6 +15,6 @@ import java.util.UUID;
 
 public final class PacketOutLoginPlayer extends Packet {
     public PacketOutLoginPlayer(final UUID uuid) {
-        super("LoginPlayer", new Configuration().addProperty("uuid", uuid), Collections.singletonList(QueryType.COMPLETE), PacketSender.PROCESS_PROXY);
+        super("LoginPlayer", new Configuration().addProperty("uuid", uuid));
     }
 }

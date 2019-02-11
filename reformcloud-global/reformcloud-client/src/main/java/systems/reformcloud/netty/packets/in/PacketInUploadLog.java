@@ -8,7 +8,6 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.netty.packets.out.PacketOutGetLog;
 import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
@@ -18,7 +17,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.01.2019
@@ -28,7 +26,7 @@ public final class PacketInUploadLog implements Serializable, NetworkInboundHand
     private static final long serialVersionUID = 4582766821019976794L;
 
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         final String name = configuration.getStringValue("name");
         final String type = configuration.getStringValue("type");
 

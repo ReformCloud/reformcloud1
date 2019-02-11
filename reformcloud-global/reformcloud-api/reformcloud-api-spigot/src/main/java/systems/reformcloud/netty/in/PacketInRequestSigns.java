@@ -7,12 +7,10 @@ package systems.reformcloud.netty.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ import java.util.UUID;
 
 public class PacketInRequestSigns implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         SignSelector.getInstance().setSignLayoutConfiguration(configuration.getValue("configuration", TypeTokenAdaptor.getSignLayoutConfigType()));
         SignSelector.getInstance().setSignMap(configuration.getValue("signs", new TypeToken<Map<UUID, Sign>>() {
         }.getType()));

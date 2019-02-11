@@ -11,10 +11,8 @@ import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -23,7 +21,7 @@ import java.util.Queue;
 
 public final class PacketInClientProcessQueue implements Serializable, NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         final LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
         loggerProvider.info("ProcessQueue of Client §3" + configuration.getStringValue("name") + ":");
 

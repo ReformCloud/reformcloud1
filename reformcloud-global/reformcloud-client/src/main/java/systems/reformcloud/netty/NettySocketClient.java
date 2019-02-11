@@ -4,17 +4,6 @@
 
 package systems.reformcloud.netty;
 
-import lombok.Setter;
-import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.netty.authentication.enums.AuthenticationType;
-import systems.reformcloud.netty.channel.ChannelHandler;
-import systems.reformcloud.netty.handler.ControllerDisconnectHandler;
-import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
-import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -24,8 +13,15 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import lombok.Getter;
-
-import java.util.Arrays;
+import lombok.Setter;
+import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.netty.authentication.enums.AuthenticationType;
+import systems.reformcloud.netty.channel.ChannelHandler;
+import systems.reformcloud.netty.handler.ControllerDisconnectHandler;
+import systems.reformcloud.netty.packet.Packet;
+import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 /**
  * @author _Klaro | Pasqual K. / created on 24.10.2018
@@ -90,8 +86,8 @@ public class NettySocketClient implements AutoCloseable {
                     new Configuration()
                             .addStringProperty("key", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
                             .addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                            .addProperty("AuthenticationType", AuthenticationType.INTERNAL),
-                    Arrays.asList(QueryType.COMPLETE, QueryType.NO_RESULT), PacketSender.CLIENT));
+                            .addProperty("AuthenticationType", AuthenticationType.INTERNAL)
+            ));
 
             ReformCloudClient.getInstance().getLoggerProvider()
                     .info("ReformCloud is now §aready§r and §aconnected§r to §e" + ethernetAddress.getHost() + ":" + ethernetAddress.getPort());

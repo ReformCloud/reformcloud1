@@ -6,16 +6,13 @@ package systems.reformcloud.netty.in;
 
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.internal.events.CloudServerInfoUpdateEvent;
+import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 12.12.2018
@@ -23,7 +20,7 @@ import java.util.List;
 
 public class PacketInServerInfoUpdate implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
         final InternalCloudNetwork internalCloudNetwork = configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType());
 

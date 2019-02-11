@@ -9,13 +9,10 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.netty.out.PacketOutStartProxy;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
-import java.sql.Ref;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,7 +21,7 @@ import java.util.UUID;
 
 public class PacketInStartProxyProcess implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         final ProxyGroup proxyGroup = configuration.getValue("group", TypeTokenAdaptor.getProxyGroupType());
         final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
 

@@ -9,10 +9,8 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.netty.out.PacketOutStopProcess;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,7 +19,7 @@ import java.util.UUID;
 
 public class PacketInRemoveInternalProcess implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         switch (configuration.getStringValue("type").toLowerCase()) {
             case "proxy": {
                 final ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByUID(configuration.getValue("uid", UUID.class));

@@ -4,6 +4,7 @@
 
 package systems.reformcloud.netty.authentication;
 
+import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
@@ -11,11 +12,6 @@ import systems.reformcloud.netty.authentication.enums.AuthenticationType;
 import systems.reformcloud.netty.authentication.interfaces.AuthenticationManager;
 import systems.reformcloud.netty.channel.ChannelHandler;
 import systems.reformcloud.netty.packet.Packet;
-import systems.reformcloud.netty.packet.enums.PacketSender;
-import systems.reformcloud.netty.packet.enums.QueryType;
-import io.netty.channel.ChannelHandlerContext;
-
-import java.util.Arrays;
 
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
@@ -34,7 +30,7 @@ public class AuthenticationHandler implements AuthenticationManager {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork()), Arrays.asList(QueryType.COMPLETE, QueryType.RESULT), PacketSender.CONTROLLER
+                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();
@@ -46,7 +42,7 @@ public class AuthenticationHandler implements AuthenticationManager {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork()), Arrays.asList(QueryType.COMPLETE, QueryType.RESULT), PacketSender.CONTROLLER
+                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();
@@ -58,7 +54,7 @@ public class AuthenticationHandler implements AuthenticationManager {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork()), Arrays.asList(QueryType.COMPLETE, QueryType.RESULT), PacketSender.CONTROLLER
+                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();

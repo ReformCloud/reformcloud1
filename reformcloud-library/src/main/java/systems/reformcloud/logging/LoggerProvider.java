@@ -4,16 +4,9 @@
 
 package systems.reformcloud.logging;
 
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.logging.enums.AnsiColourHandler;
-import systems.reformcloud.logging.handlers.IConsoleInputHandler;
-import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.runtime.Reload;
-import systems.reformcloud.utility.runtime.Shutdown;
-import systems.reformcloud.utility.time.DateProvider;
 import jline.console.ConsoleReader;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -22,6 +15,14 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.logging.enums.AnsiColourHandler;
+import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.runtime.Reload;
+import systems.reformcloud.utility.runtime.Shutdown;
+import systems.reformcloud.utility.time.DateProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,13 +47,14 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     private ConsoleReader consoleReader;
     private final DateFormat dateFormat = DateProvider.getDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
+    @Setter
+    private long controllerTime = System.currentTimeMillis();
+
     private List<IConsoleInputHandler> iConsoleInputHandlers = new ArrayList<>();
 
     /**
      * Creates a new instance of the {@link LoggerProvider}
      *
-     * @throws IllegalAccessException
-     * @throws NoSuchFieldException
      * @throws IOException
      */
     public LoggerProvider() throws IOException {
@@ -96,7 +98,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         super.log(Level.INFO, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_INFO.replace("%date%", dateFormat.format(System.currentTimeMillis())) + message) + Ansi.ansi().reset().toString());
+                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_INFO.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
             this.complete();
 
             this.handleAll(AnsiColourHandler.stripColor(message));
@@ -114,7 +116,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         super.log(Level.WARNING, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(System.currentTimeMillis())) + message) + Ansi.ansi().reset().toString());
+                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
             this.complete();
 
             this.handleAll(AnsiColourHandler.stripColor(message));
@@ -132,7 +134,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         super.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_ERR.replace("%date%", dateFormat.format(System.currentTimeMillis())) + message) + Ansi.ansi().reset().toString());
+                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_ERR.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
             this.complete();
 
             this.handleAll(AnsiColourHandler.stripColor(message));
@@ -150,7 +152,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         super.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(System.currentTimeMillis())) + "§1DEBUG| §r" + message) + Ansi.ansi().reset().toString());
+                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(controllerTime)) + "§1DEBUG| §r" + message) + Ansi.ansi().reset().toString());
             this.complete();
 
             this.handleAll(AnsiColourHandler.stripColor(message));

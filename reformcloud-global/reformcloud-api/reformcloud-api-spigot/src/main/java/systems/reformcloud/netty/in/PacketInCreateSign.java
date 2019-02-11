@@ -7,11 +7,8 @@ package systems.reformcloud.netty.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.signs.Sign;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 12.12.2018
@@ -19,7 +16,7 @@ import java.util.List;
 
 public class PacketInCreateSign implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         if (SignSelector.getInstance() != null) {
             SignSelector.getInstance().handleCreateSign(configuration.getValue("sign", new TypeToken<Sign>() {
             }.getType()));

@@ -11,12 +11,9 @@ import systems.reformcloud.event.events.ProcessUnregistersEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 import systems.reformcloud.netty.out.PacketOutProcessRemove;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018
@@ -24,7 +21,7 @@ import java.util.List;
 
 public class PacketInRemoveProcess implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
             final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
 

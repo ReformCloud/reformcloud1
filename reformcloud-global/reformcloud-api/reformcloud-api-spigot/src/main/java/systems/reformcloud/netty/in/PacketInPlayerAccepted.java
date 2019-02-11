@@ -4,12 +4,10 @@
 
 package systems.reformcloud.netty.in;
 
-import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.packet.enums.QueryType;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,7 +16,7 @@ import java.util.UUID;
 
 public class PacketInPlayerAccepted implements NetworkInboundHandler {
     @Override
-    public void handle(Configuration configuration, List<QueryType> queryTypes) {
+    public void handle(Configuration configuration) {
         if (configuration.getBooleanValue("accepted")) {
             SpigotBootstrap.getInstance().getAcceptedPlayers().add(configuration.getValue("uuid", UUID.class));
             SpigotBootstrap.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(SpigotBootstrap.getInstance(), () -> {
