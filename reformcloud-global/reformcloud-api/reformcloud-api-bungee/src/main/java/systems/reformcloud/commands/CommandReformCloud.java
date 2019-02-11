@@ -69,7 +69,7 @@ public final class CommandReformCloud extends Command {
                 ReformCloudAPIBungee.getInstance().getChannelHandler()
                         .sendPacketAsynchronous("ReformCloudController",
                                 new PacketOutDispatchConsoleCommand("copy " + strings[1]));
-                commandSender.sendMessage(TextComponent.fromLegacyText("The Client tries to copy the template."));
+                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
             } else
                 commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name>"));
 

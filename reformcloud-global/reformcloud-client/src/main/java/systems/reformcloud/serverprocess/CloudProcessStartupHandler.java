@@ -55,8 +55,11 @@ public class CloudProcessStartupHandler implements Runnable {
                 while (!this.serverStartupInfo.isEmpty()) {
                     final ServerStartupInfo serverStartupInfo = this.serverStartupInfo.poll();
 
-                    if (!Files.exists(Paths.get( "reformcloud/templates/" + serverStartupInfo.getServerGroup().getName())))
+                    boolean firstStart = false;
+                    if (!Files.exists(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName()))) {
                         FileUtils.createDirectory(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/plugins"));
+                        firstStart = true;
+                    }
 
                     if (!ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().isNameServerProcessRegistered(serverStartupInfo.getName())
                             && (ReformCloudClient.getInstance().getMemory() + serverStartupInfo.getServerGroup().getMemory()) <
@@ -67,7 +70,7 @@ public class CloudProcessStartupHandler implements Runnable {
                                 .replace("%group%", serverStartupInfo.getServerGroup().getName())
                                 .replace("%type%", "CloudServer"));
 
-                        if (!new CloudServerStartupHandler(serverStartupInfo).bootstrap())
+                        if (!new CloudServerStartupHandler(serverStartupInfo, firstStart).bootstrap())
                             this.serverStartupInfo.add(serverStartupInfo);
                     } else
                         this.serverStartupInfo.add(serverStartupInfo);
