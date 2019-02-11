@@ -37,7 +37,7 @@ public final class CommandProcess extends Command implements Serializable {
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length < 1) {
             commandSender.sendMessage("process stop <name/--all/--empty>");
-            commandSender.sendMessage("process start <group-name>");
+            commandSender.sendMessage("process stopGroup <group>");
             commandSender.sendMessage("process start <group-name> <number>");
             commandSender.sendMessage("process list");
             commandSender.sendMessage("process list <server/proxy> <name>");
@@ -85,7 +85,7 @@ public final class CommandProcess extends Command implements Serializable {
 
                 default: {
                     commandSender.sendMessage("process stop <name/--all/--empty>");
-                    commandSender.sendMessage("process start <group-name>");
+                    commandSender.sendMessage("process stopGroup <group>");
                     commandSender.sendMessage("process start <group-name> <number>");
                     commandSender.sendMessage("process list");
                     commandSender.sendMessage("process list <server/proxy> <name>");
@@ -361,7 +361,7 @@ public final class CommandProcess extends Command implements Serializable {
             }
             default: {
                 commandSender.sendMessage("process stop <name/--all/--empty>");
-                commandSender.sendMessage("process start <group-name>");
+                commandSender.sendMessage("process stopGroup <group>");
                 commandSender.sendMessage("process start <group-name> <number>");
                 commandSender.sendMessage("process list");
                 commandSender.sendMessage("process list <server/proxy> <name>");

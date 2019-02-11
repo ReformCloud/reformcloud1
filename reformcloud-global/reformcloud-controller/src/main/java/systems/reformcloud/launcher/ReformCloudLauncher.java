@@ -4,6 +4,7 @@
 
 package systems.reformcloud.launcher;
 
+import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -14,7 +15,6 @@ import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.time.DateProvider;
-import io.netty.util.ResourceLeakDetector;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,6 +32,9 @@ final class ReformCloudLauncher {
      * @param args
      * @throws Throwable
      */
+
+    private static ReformCloudLauncher instance;
+
     public static synchronized void main(String[] args) throws Throwable {
         final List<String> options = Arrays.asList(args);
 
@@ -52,12 +55,12 @@ final class ReformCloudLauncher {
         System.out.println("\nTrying to startup ReformCloudController...");
         System.out.println("Startup time: " + DateProvider.formatByDefaultFormat(current) + "\n");
 
-        new LibraryLoader().loadJarFileAndInjectLibraries();
-
         if (Files.exists(Paths.get("reformcloud/logs")))
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));
 
         System.out.println();
+
+        new LibraryLoader().loadJarFileAndInjectLibraries();
 
         final CommandManager commandManager = new CommandManager();
         final LoggerProvider loggerProvider = new LoggerProvider();
@@ -93,6 +96,12 @@ final class ReformCloudLauncher {
             }
         } catch (final Throwable throwable) {
             StringUtil.printError(loggerProvider, "Error while reading command line", throwable);
+        }
+    }
+
+    public class Test {
+        public Test() {
+
         }
     }
 }

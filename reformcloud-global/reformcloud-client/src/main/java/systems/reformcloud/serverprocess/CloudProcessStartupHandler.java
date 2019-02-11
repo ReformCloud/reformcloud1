@@ -74,11 +74,6 @@ public class CloudProcessStartupHandler implements Runnable {
                             this.serverStartupInfo.add(serverStartupInfo);
                     } else
                         this.serverStartupInfo.add(serverStartupInfo);
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (final InterruptedException ignored) {
-                    }
                 }
 
                 while (!this.proxyStartupInfo.isEmpty()) {
@@ -101,15 +96,10 @@ public class CloudProcessStartupHandler implements Runnable {
                     } else {
                         this.proxyStartupInfo.add(proxyStartupInfo);
                     }
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (final InterruptedException ignored) {
-                    }
                 }
 
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (final InterruptedException ignored) {
                 }
             }

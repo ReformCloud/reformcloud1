@@ -70,6 +70,8 @@ public class ReformCloudAPISpigot implements Listener {
             throw new InstanceAlreadyExistsException();
         ReformCloudLibraryService.sendHeader();
 
+        SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(this, SpigotBootstrap.getInstance());
+
         Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/config.json"));
 
         final EthernetAddress ethernetAddress = configuration.getValue("address", TypeTokenAdaptor.getEthernetAddressType());
