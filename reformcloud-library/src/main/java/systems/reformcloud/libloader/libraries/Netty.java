@@ -26,7 +26,7 @@ public final class Netty extends Dependency implements Serializable {
 
     @Override
     public String getName() {
-        return "network-all";
+        return "netty-all";
     }
 
     @Override
