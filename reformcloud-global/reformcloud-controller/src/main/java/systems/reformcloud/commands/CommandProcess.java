@@ -203,6 +203,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
                                     ReformCloudLibraryService.sleep(100);
                                 });
+                        return;
                     }
 
                     if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[1]) != null) {
@@ -219,6 +220,43 @@ public final class CommandProcess extends Command implements Serializable {
                 } else {
                     commandSender.sendMessage("process stop <name>");
                 }
+            }
+            case "stopgroup": {
+                if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]) != null) {
+                    ReformCloudController.getInstance()
+                            .getInternalCloudNetwork()
+                            .getServerProcessManager()
+                            .getAllRegisteredServerProcesses()
+                            .stream()
+                            .filter(e -> e.getServerGroup().getName().equals(args[1]))
+                            .forEach(e -> {
+                                ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                                        e.getCloudProcess().getClient(),
+                                        new PacketOutStopProcess(e.getCloudProcess().getName())
+                                );
+                                commandSender.sendMessage("Trying to stop " + e.getCloudProcess().getName() + "...");
+                                ReformCloudLibraryService.sleep(100);
+                            });
+                    break;
+                } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]) != null) {
+                    ReformCloudController.getInstance()
+                            .getInternalCloudNetwork()
+                            .getServerProcessManager()
+                            .getAllRegisteredProxyProcesses()
+                            .stream()
+                            .filter(e -> e.getProxyGroup().getName().equals(args[1]))
+                            .forEach(e -> {
+                                ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                                        e.getCloudProcess().getClient(),
+                                        new PacketOutStopProcess(e.getCloudProcess().getName())
+                                );
+                                commandSender.sendMessage("Trying to stop " + e.getCloudProcess().getName() + "...");
+                                ReformCloudLibraryService.sleep(100);
+                            });
+                    break;
+                } else
+                    commandSender.sendMessage("ServerGroup or ProxyGroup isn't registered");
+                break;
             }
             case "list": {
                 if (args.length != 3) {

@@ -14,6 +14,9 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -119,6 +122,33 @@ public class FileUtils {
                             Path target = Paths.get(targetDirectory, directory.relativize(file).toString());
                             Path parent = target.getParent();
                             if (parent != null && ! Files.exists(parent))
+                                Files.createDirectories(parent);
+                            Files.copy(file, target, StandardCopyOption.REPLACE_EXISTING);
+                            return FileVisitResult.CONTINUE;
+                        }
+                    }
+            );
+        } catch (final IOException ex) {
+            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not copy files", ex);
+        }
+    }
+
+    public static void copyAllFiles(final Path directory, final String targetDirectory, final String... excluded) {
+        if (!Files.exists(directory))
+            return;
+
+        List<Path> continueFile = new ArrayList<>();
+        Arrays.stream(excluded).forEach(e -> continueFile.add(Paths.get(e)));
+
+        try {
+            Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                            if (continueFile.contains(file.getFileName()))
+                                return FileVisitResult.CONTINUE;
+                            Path target = Paths.get(targetDirectory, directory.relativize(file).toString());
+                            Path parent = target.getParent();
+                            if (parent != null && !Files.exists(parent))
                                 Files.createDirectories(parent);
                             Files.copy(file, target, StandardCopyOption.REPLACE_EXISTING);
                             return FileVisitResult.CONTINUE;

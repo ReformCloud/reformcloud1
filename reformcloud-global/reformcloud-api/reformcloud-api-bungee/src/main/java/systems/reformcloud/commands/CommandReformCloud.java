@@ -39,24 +39,17 @@ public final class CommandReformCloud extends Command {
             return;
         }
 
-        if (strings.length == 0) {
-            final String prefix = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + "§7";
+        final String prefix = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + "§7";
 
+        if (strings.length == 0) {
             commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
             commandSender.sendMessage(
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud process <start/stop> <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud clear \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud update \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name> \n")),
                     new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
                     new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud execute <server/proxy> <name> <command> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud delete <servergroup/proxygroup/client> <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud exit \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud reload\n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud create client <name> <ip> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud create servergroup <name> <client> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud create proxygroup <name> <client> <host> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud copy <serverName> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud info"))
+                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud process <start/stop> <group/name> \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud reload \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud version"))
             );
             return;
         }
@@ -66,15 +59,83 @@ public final class CommandReformCloud extends Command {
             return;
         }
 
-        if (strings[0].equalsIgnoreCase("info")) {
+        if (strings[0].equalsIgnoreCase("version")) {
             commandSender.sendMessage(TextComponent.fromLegacyText("You are using the ReformCloud V" + StringUtil.REFORM_VERSION + "@" + StringUtil.REFORM_SPECIFICATION));
             return;
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        Arrays.stream(strings).forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+        if (strings[0].equalsIgnoreCase("copy")) {
+            if (strings.length == 2) {
+                ReformCloudAPIBungee.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous("ReformCloudController",
+                                new PacketOutDispatchConsoleCommand("copy " + strings[1]));
+                commandSender.sendMessage(TextComponent.fromLegacyText("The Client tries to copy the template."));
+            } else
+                commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name>"));
 
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
-        commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-command-success")));
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("whitelist")) {
+            if (strings.length == 4) {
+                StringBuilder stringBuilder = new StringBuilder();
+                Arrays.stream(strings).forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+
+                ReformCloudAPIBungee.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous("ReformCloudController",
+                                new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
+                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+            } else
+                commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud whitelist <add/remove> <proxyGroup/--all> <name>"));
+
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("execute")) {
+            if (strings.length > 3) {
+                StringBuilder stringBuilder = new StringBuilder();
+                Arrays.stream(strings).forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+
+                ReformCloudAPIBungee.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous("ReformCloudController",
+                                new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
+                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+            } else
+                commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud execute <server/proxy> <name> <command>"));
+
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("process")) {
+            if (strings.length == 3) {
+                StringBuilder stringBuilder = new StringBuilder();
+                Arrays.stream(strings).forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+
+                ReformCloudAPIBungee.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous("ReformCloudController",
+                                new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
+                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+            } else
+                commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud process <start/stop> <group/name>"));
+
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("reload")) {
+            ReformCloudAPIBungee.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous("ReformCloudController",
+                            new PacketOutDispatchConsoleCommand("reload"));
+            commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+        }
+
+        commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
+        commandSender.sendMessage(
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud execute <server/proxy> <name> <command> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud process <start/stop> <group/name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud reload \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud version"))
+        );
     }
 }

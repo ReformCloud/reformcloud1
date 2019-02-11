@@ -17,8 +17,6 @@ public class PacketExample extends Packet { //Class can be final
         super(
                 "Example", //Type of the packet, packet will be handled by this name
                 new Configuration().addStringProperty("URLClassPath", StringUtil.NULL) //What is in the packet, main message, information
-                //Query type(s) of packet !!HAS TO CONTAIN COMPLETE !!
-                //PacketSender of packet
         );
     }
 }

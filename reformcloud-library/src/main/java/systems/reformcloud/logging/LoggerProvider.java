@@ -24,9 +24,7 @@ import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.time.DateProvider;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -46,6 +44,8 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
 
     private ConsoleReader consoleReader;
     private final DateFormat dateFormat = DateProvider.getDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+
+    protected final File debugLogFile = new File("klarcloud/logs/debug-" + System.currentTimeMillis() + ".log");
 
     @Setter
     private long controllerTime = System.currentTimeMillis();
@@ -143,24 +143,6 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         }
     }
 
-    /**
-     * Prints a debug to the console
-     *
-     * @param message
-     */
-    public void debug(String message) {
-        super.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
-        try {
-            this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(controllerTime)) + "§1DEBUG| §r" + message) + Ansi.ansi().reset().toString());
-            this.complete();
-
-            this.handleAll(AnsiColourHandler.stripColor(message));
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
-    }
-
     public void coloured(String message) {
         super.log(Level.INFO, AnsiColourHandler.stripColor(message));
         try {
@@ -240,6 +222,20 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
             this.complete();
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+        }
+    }
+
+    public void debug(String msg) {
+        try {
+            if (!debugLogFile.exists())
+                debugLogFile.createNewFile();
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(debugLogFile, true));
+            bufferedWriter.append(msg + "\n");
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (final IOException ex) {
+            StringUtil.printError(this, "Error while writing to debug log", ex);
         }
     }
 

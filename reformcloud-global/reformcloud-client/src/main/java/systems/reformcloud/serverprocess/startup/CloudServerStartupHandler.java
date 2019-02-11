@@ -58,14 +58,17 @@ public class CloudServerStartupHandler {
 
     private ProcessStartupStage processStartupStage;
 
+    private boolean firstGroupStart;
+
     /**
      * Creates a instance of a CloudServerStartupHandler
      *
      * @param serverStartupInfo
      */
-    public CloudServerStartupHandler(final ServerStartupInfo serverStartupInfo) {
+    public CloudServerStartupHandler(final ServerStartupInfo serverStartupInfo, final boolean firstGroupStart) {
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.serverStartupInfo = serverStartupInfo;
+        this.firstGroupStart = firstGroupStart;
 
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
             this.path = Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName());
@@ -240,6 +243,12 @@ public class CloudServerStartupHandler {
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Could not launch ServerStartup", ex);
             return false;
+        }
+
+        if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
+                && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)
+                && firstGroupStart) {
+            FileUtils.copyAllFiles(path, "reformcloud/templates/" + serverStartupInfo.getServerGroup().getName(), "spigot.jar");
         }
 
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().registerServerProcess(
