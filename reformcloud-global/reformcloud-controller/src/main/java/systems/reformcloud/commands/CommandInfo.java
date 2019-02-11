@@ -35,6 +35,9 @@ public final class CommandInfo extends Command implements Serializable {
         commandSender.sendMessage("Player login: " + stats.getLogin());
         commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
         commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
+        commandSender.sendMessage("GameServer online time: " + stats.getServerOnlineTime());
+        commandSender.sendMessage("GameServer walked distance: " + stats.getWalkedDistance());
+        commandSender.sendMessage("GameServer placed blocks: " + stats.getBlocksPlaced());
         commandSender.sendMessage("For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
     }
 }

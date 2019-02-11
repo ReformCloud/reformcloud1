@@ -11,6 +11,7 @@ import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.database.DatabaseProvider;
+import systems.reformcloud.meta.server.stats.TempServerStats;
 
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -42,6 +43,9 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
                     0,
                     System.currentTimeMillis(),
                     System.currentTimeMillis(),
+                    0,
+                    0,
+                    0,
                     0
             )).saveAsConfigurationFile(Paths.get("reformcloud/database/stats/Stats.json"));
         }
@@ -104,6 +108,13 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
         this.stats.setLastStartup(System.currentTimeMillis());
     }
 
+    public void updateServerStats(final TempServerStats tempServerStats) {
+        this.stats.setBlocksPlaced(this.stats.getBlocksPlaced() + tempServerStats.blocksPlaced);
+        this.stats.setWalkedDistance(this.stats.getWalkedDistance() + tempServerStats.distanceWalked);
+        if (tempServerStats.onlineTime != 0)
+            this.stats.setServerOnlineTime(this.stats.getServerOnlineTime() + tempServerStats.onlineTime);
+    }
+
     public void setLastShutdown() {
         if (!checkAvailable())
             return;
@@ -119,7 +130,7 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
     @Data
     public final class Stats {
         private int startup, rootStartup, login, consoleCommands, ingameCommands;
-        private long firstStartup, lastStartup, lastShutdown;
+        private long firstStartup, lastStartup, lastShutdown, serverOnlineTime, walkedDistance, blocksPlaced;
 
         public String getFirstStartup() {
             return getDateFormatted(firstStartup);

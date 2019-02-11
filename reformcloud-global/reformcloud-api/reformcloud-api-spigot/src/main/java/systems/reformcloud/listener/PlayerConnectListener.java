@@ -74,5 +74,6 @@ public class PlayerConnectListener implements Listener {
             serverInfo.setFull(false);
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
+        ReformCloudAPISpigot.getInstance().updateTempStats();
     }
 }

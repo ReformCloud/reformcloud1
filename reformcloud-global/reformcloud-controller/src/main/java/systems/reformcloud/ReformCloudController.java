@@ -214,6 +214,7 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue())
                 .registerHandler("ExceptionThrown", new PacketInSyncExceptionThrown())
                 .registerHandler("IconSizeIncorrect", new PacketInIconSizeIncorrect())
+                .registerHandler("UpdateTempServerStats", new PacketInUpdateServerTempStats())
                 .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate());
 
         if (this.reformWebServer != null) {

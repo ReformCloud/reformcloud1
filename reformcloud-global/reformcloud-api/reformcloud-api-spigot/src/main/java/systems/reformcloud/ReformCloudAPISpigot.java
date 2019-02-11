@@ -6,6 +6,10 @@ package systems.reformcloud;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.launcher.SpigotBootstrap;
@@ -13,6 +17,7 @@ import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.meta.server.stats.TempServerStats;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
@@ -21,6 +26,7 @@ import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.packets.PacketOutStartGameServer;
 import systems.reformcloud.network.packets.PacketOutStartProxy;
+import systems.reformcloud.network.packets.PacketOutUpdateServerTempStats;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -34,7 +40,7 @@ import java.nio.file.Paths;
 
 @Getter
 @Setter
-public class ReformCloudAPISpigot {
+public class ReformCloudAPISpigot implements Listener {
     @Getter
     @Setter
     @Deprecated
@@ -46,6 +52,8 @@ public class ReformCloudAPISpigot {
     private final ServerStartupInfo serverStartupInfo;
     private ServerInfo serverInfo;
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
+
+    private final TempServerStats tempServerStats = new TempServerStats();
 
     @Setter
     private long internalTime = System.currentTimeMillis();
@@ -86,6 +94,13 @@ public class ReformCloudAPISpigot {
                 ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.serverStartupInfo.getName()
         );
+    }
+
+    public void updateTempStats() {
+        if (this.tempServerStats.hasChanges()) {
+            this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutUpdateServerTempStats(this.tempServerStats));
+            this.tempServerStats.reset();
+        }
     }
 
     public void setCloudServerMOTDandSendUpdatePacket(final String newMOTD) {
@@ -145,5 +160,17 @@ public class ReformCloudAPISpigot {
 
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    @EventHandler
+    public void handle(final PlayerMoveEvent event) {
+        if (!event.isCancelled())
+            this.tempServerStats.addWalkedDistance(event.getFrom().distance(event.getTo()));
+    }
+
+    @EventHandler
+    public void handle(final BlockPlaceEvent event) {
+        if (!event.isCancelled())
+            this.tempServerStats.addPlacedBlock();
     }
 }

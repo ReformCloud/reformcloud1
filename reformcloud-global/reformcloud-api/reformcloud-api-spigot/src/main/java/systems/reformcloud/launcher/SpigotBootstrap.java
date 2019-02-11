@@ -25,8 +25,12 @@ public class SpigotBootstrap extends JavaPlugin {
 
     private List<UUID> acceptedPlayers = new ArrayList<>();
 
+    @Deprecated
+    private long start;
+
     @Override
     public void onLoad() {
+        this.start = System.currentTimeMillis();
         new LibraryLoader().loadJarFileAndInjectLibraries();
         instance = this;
     }
@@ -45,6 +49,8 @@ public class SpigotBootstrap extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        ReformCloudAPISpigot.getInstance().getTempServerStats().addOnlineTime(this.start);
+        ReformCloudAPISpigot.getInstance().updateTempStats();
         ReformCloudAPISpigot.getInstance().getNettySocketClient().close();
         ReformCloudAPISpigot.setInstance(null);
     }

@@ -5,11 +5,11 @@
 package systems.reformcloud.configurations;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -39,31 +39,49 @@ public final class Configuration {
     }
 
     public Configuration addStringProperty(String key, String value) {
+        if (key == null || value == null)
+            return this;
+
         this.jsonObject.addProperty(key, value);
         return this;
     }
 
     public Configuration addIntegerProperty(String key, Integer value) {
+        if (key == null || value == null)
+            return this;
+
         this.jsonObject.addProperty(key, value);
         return this;
     }
 
     public Configuration addBooleanProperty(String key, Boolean value) {
+        if (key == null || value == null)
+            return this;
+
         this.jsonObject.addProperty(key, value);
         return this;
     }
 
     public Configuration addLongProperty(String key, Long value) {
+        if (key == null || value == null)
+            return this;
+
         this.jsonObject.addProperty(key, value);
         return this;
     }
 
     public Configuration addConfigurationProperty(String key, Configuration value) {
+        if (key == null || value == null)
+            return this;
+
         this.jsonObject.add(key, value.jsonObject);
         return this;
     }
 
     public Configuration addProperty(String key, Object value) {
+        if (key == null || value == null)
+            return this;
+
         this.jsonObject.add(key, ReformCloudLibraryService.GSON.toJsonTree(value));
         return this;
     }
