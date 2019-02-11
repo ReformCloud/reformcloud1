@@ -4,21 +4,18 @@
 
 package systems.reformcloud.startup;
 
-import com.sun.corba.se.spi.activation.ServerAlreadyInstalled;
+import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.netty.out.PacketOutStartGameServer;
-import systems.reformcloud.netty.out.PacketOutStartProxy;
-import lombok.Getter;
+import systems.reformcloud.network.out.PacketOutStartGameServer;
+import systems.reformcloud.network.out.PacketOutStartProxy;
 import systems.reformcloud.utility.map.Trio;
 
-import java.lang.reflect.Proxy;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018

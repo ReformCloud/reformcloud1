@@ -4,11 +4,6 @@
 
 package systems.reformcloud.commands;
 
-import systems.reformcloud.ReformCloudAPISpigot;
-import systems.reformcloud.netty.packets.PacketOutCreateSign;
-import systems.reformcloud.netty.packets.PacketOutDeleteSign;
-import systems.reformcloud.signaddon.SignSelector;
-import systems.reformcloud.signs.Sign;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -21,6 +16,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import systems.reformcloud.ReformCloudAPISpigot;
+import systems.reformcloud.network.packets.PacketOutCreateSign;
+import systems.reformcloud.network.packets.PacketOutDeleteSign;
+import systems.reformcloud.signaddon.SignSelector;
+import systems.reformcloud.signs.Sign;
 
 import java.util.Set;
 import java.util.UUID;

@@ -6,19 +6,20 @@ package systems.reformcloud.listener;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.event.*;
+import net.md_5.bungee.api.event.LoginEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.netty.packets.PacketOutLoginPlayer;
-import systems.reformcloud.netty.packets.PacketOutLogoutPlayer;
-import systems.reformcloud.netty.packets.PacketOutProxyInfoUpdate;
-import systems.reformcloud.netty.packets.PacketOutSendControllerConsoleMessage;
-
-import java.util.concurrent.TimeUnit;
+import systems.reformcloud.network.packets.PacketOutLoginPlayer;
+import systems.reformcloud.network.packets.PacketOutLogoutPlayer;
+import systems.reformcloud.network.packets.PacketOutProxyInfoUpdate;
+import systems.reformcloud.network.packets.PacketOutSendControllerConsoleMessage;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018

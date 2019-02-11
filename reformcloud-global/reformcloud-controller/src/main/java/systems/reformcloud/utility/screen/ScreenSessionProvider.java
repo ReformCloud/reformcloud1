@@ -5,8 +5,8 @@
 package systems.reformcloud.utility.screen;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.netty.sync.out.PacketOutSyncScreenDisable;
-import systems.reformcloud.netty.sync.out.PacketOutSyncScreenJoin;
+import systems.reformcloud.network.sync.out.PacketOutSyncScreenDisable;
+import systems.reformcloud.network.sync.out.PacketOutSyncScreenJoin;
 
 import java.io.Serializable;
 import java.util.Map;

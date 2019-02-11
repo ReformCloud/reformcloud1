@@ -5,7 +5,7 @@
 package systems.reformcloud.signs.netty.packets;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.netty.packet.Packet;
+import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.signs.SignLayoutConfiguration;
 

@@ -4,6 +4,7 @@
 
 package systems.reformcloud.serverprocess.startup;
 
+import lombok.Getter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -15,18 +16,16 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.netty.packets.out.PacketOutAddProcess;
-import systems.reformcloud.netty.packets.out.PacketOutRemoveProcess;
-import systems.reformcloud.netty.packets.out.PacketOutSendControllerConsoleMessage;
-import systems.reformcloud.netty.packets.out.PacketOutUpdateInternalCloudNetwork;
+import systems.reformcloud.network.packets.out.*;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
-import lombok.Getter;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -112,6 +111,19 @@ public class ProxyStartupHandler {
 
         if (!Files.exists(Paths.get(path + "/server-icon.png")))
             FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/server-icon.png");
+
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new File(path + "/server-icon.png"));
+            if (bufferedImage.getWidth() != 64 || bufferedImage.getHeight() != 64) {
+                ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                        new PacketOutIconSizeIncorrect(this.proxyStartupInfo.getName()));
+                FileUtils.deleteFileIfExists(Paths.get(path + "/server-icon.png"));
+                FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/server-icon.png");
+            }
+        } catch (final IOException ex) {
+            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error while reading image", ex);
+            return false;
+        }
 
         if (!Files.exists(Paths.get(path + "/config.yml")))
             FileUtils.copyCompiledFile("reformcloud/config.yml", path + "/config.yml");

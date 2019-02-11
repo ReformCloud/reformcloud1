@@ -5,6 +5,7 @@
 package systems.reformcloud.utility;
 
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -12,12 +13,11 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
-import systems.reformcloud.netty.authentication.enums.AuthenticationType;
-import systems.reformcloud.netty.packet.Packet;
+import systems.reformcloud.network.authentication.enums.AuthenticationType;
+import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.signs.SignLayoutConfiguration;
-import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
-import lombok.Getter;
+import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
 import java.lang.reflect.Type;
 

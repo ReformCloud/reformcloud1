@@ -9,7 +9,7 @@ import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
-import systems.reformcloud.netty.packets.PacketOutCommandExecute;
+import systems.reformcloud.network.packets.PacketOutCommandExecute;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018

@@ -8,8 +8,8 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.netty.out.PacketOutExecuteClientCommand;
-import systems.reformcloud.netty.out.PacketOutExecuteCommand;
+import systems.reformcloud.network.out.PacketOutExecuteClientCommand;
+import systems.reformcloud.network.out.PacketOutExecuteCommand;
 import systems.reformcloud.utility.screen.ScreenHandler;
 
 import java.io.Serializable;

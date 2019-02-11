@@ -4,10 +4,10 @@
 
 package systems.reformcloud.event.events;
 
-import systems.reformcloud.event.utility.Event;
-import systems.reformcloud.netty.packet.Packet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import systems.reformcloud.event.utility.Event;
+import systems.reformcloud.network.packet.Packet;
 
 import java.io.Serializable;
 

@@ -5,13 +5,10 @@
 package systems.reformcloud.launcher;
 
 import lombok.Getter;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.PlayerConnectListener;
-import systems.reformcloud.netty.authentication.enums.AuthenticationType;
-import systems.reformcloud.netty.packets.PacketOutInternalProcessRemove;
 
 import java.util.ArrayList;
 import java.util.List;

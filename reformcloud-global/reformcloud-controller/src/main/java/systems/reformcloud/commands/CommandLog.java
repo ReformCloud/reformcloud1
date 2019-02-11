@@ -11,7 +11,7 @@ import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.netty.out.PacketOutUploadLog;
+import systems.reformcloud.network.out.PacketOutUploadLog;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.IOException;

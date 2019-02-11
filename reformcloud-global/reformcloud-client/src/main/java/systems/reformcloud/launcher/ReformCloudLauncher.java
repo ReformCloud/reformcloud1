@@ -4,6 +4,7 @@
 
 package systems.reformcloud.launcher;
 
+import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -11,10 +12,10 @@ import systems.reformcloud.commands.CommandManager;
 import systems.reformcloud.commands.completer.CommandCompleter;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.network.packets.sync.out.PacketOutSyncExceptionThrown;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.time.DateProvider;
-import io.netty.util.ResourceLeakDetector;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -48,6 +49,17 @@ final class ReformCloudLauncher {
         }
 
         final long current = System.currentTimeMillis();
+
+        Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
+            if (t instanceof ThreadDeath)
+                return;
+
+            if (ReformCloudClient.getInstance() != null) {
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Exception caught", t);
+                ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSyncExceptionThrown(t));
+            } else
+                t.printStackTrace(System.err);
+        });
 
         System.out.println("Trying to startup ReformCloudClient...");
         System.out.println("Startup time: " + DateProvider.formatByDefaultFormat(current));

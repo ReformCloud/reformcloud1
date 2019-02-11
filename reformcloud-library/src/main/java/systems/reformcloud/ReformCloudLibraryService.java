@@ -22,10 +22,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import systems.reformcloud.logging.LoggerProvider;
-import systems.reformcloud.netty.channel.ChannelHandler;
-import systems.reformcloud.netty.channel.ChannelReader;
-import systems.reformcloud.netty.handler.Decoder;
-import systems.reformcloud.netty.handler.Encoder;
+import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.network.channel.ChannelReader;
+import systems.reformcloud.network.handler.Decoder;
+import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.utility.checkable.Checkable;
 
 import java.lang.management.ManagementFactory;

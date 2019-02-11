@@ -6,11 +6,10 @@ package systems.reformcloud.examples.event;
 
 import systems.reformcloud.event.Listener;
 import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.LoadSuccessEvent;
 import systems.reformcloud.event.events.*;
-import systems.reformcloud.netty.channel.ChannelHandler;
-import systems.reformcloud.netty.channel.ChannelReader;
-import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.network.channel.ChannelReader;
+import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018

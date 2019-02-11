@@ -4,26 +4,25 @@
 
 package systems.reformcloud;
 
-import systems.reformcloud.launcher.BungeecordBootstrap;
+import lombok.Getter;
+import lombok.Setter;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
-import systems.reformcloud.listener.CloudConnectListener;
+import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
-import systems.reformcloud.netty.NettyHandler;
-import systems.reformcloud.netty.NettySocketClient;
-import systems.reformcloud.netty.channel.ChannelHandler;
-import systems.reformcloud.netty.in.*;
-import systems.reformcloud.netty.packets.PacketOutStartGameServer;
-import systems.reformcloud.netty.packets.PacketOutStartProxy;
+import systems.reformcloud.network.NettyHandler;
+import systems.reformcloud.network.NettySocketClient;
+import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.network.in.*;
+import systems.reformcloud.network.packets.PacketOutStartGameServer;
+import systems.reformcloud.network.packets.PacketOutStartProxy;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
-import lombok.Getter;
-import lombok.Setter;
+import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.nio.file.Paths;

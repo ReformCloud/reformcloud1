@@ -4,24 +4,18 @@
 
 package systems.reformcloud.listener;
 
-import systems.reformcloud.ReformCloudAPISpigot;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.launcher.SpigotBootstrap;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.meta.enums.ServerModeType;
-import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.netty.packets.PacketOutCheckPlayer;
-import systems.reformcloud.netty.packets.PacketOutServerInfoUpdate;
-import systems.reformcloud.netty.packets.PacketOutStartGameServer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.List;
-import java.util.UUID;
+import systems.reformcloud.ReformCloudAPISpigot;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.launcher.SpigotBootstrap;
+import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.network.packets.PacketOutCheckPlayer;
+import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018

@@ -14,9 +14,8 @@ import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.meta.info.ProxyInfo;
-import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.web.WebUser;
-import systems.reformcloud.netty.out.PacketOutStopProcess;
+import systems.reformcloud.network.out.PacketOutStopProcess;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;

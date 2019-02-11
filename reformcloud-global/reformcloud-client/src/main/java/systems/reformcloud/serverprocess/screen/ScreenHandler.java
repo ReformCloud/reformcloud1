@@ -5,7 +5,7 @@
 package systems.reformcloud.serverprocess.screen;
 
 import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.netty.packets.sync.out.PacketOutSyncScreenUpdate;
+import systems.reformcloud.network.packets.sync.out.PacketOutSyncScreenUpdate;
 
 import java.io.Serializable;
 import java.util.Queue;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * @author _Klaro | Pasqual K. / created on 05.02.2019
  */
 
-public final class ScreenHandler implements Serializable {
+public class ScreenHandler implements Serializable {
     private final Queue<String> log = new ConcurrentLinkedDeque<>();
     private boolean enabled = false;
 

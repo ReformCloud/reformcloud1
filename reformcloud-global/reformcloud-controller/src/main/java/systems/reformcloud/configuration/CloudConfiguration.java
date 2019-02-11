@@ -5,6 +5,7 @@
 package systems.reformcloud.configuration;
 
 import com.google.gson.reflect.TypeToken;
+import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -19,13 +20,12 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.defaults.LobbyGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
-import systems.reformcloud.netty.out.PacketOutStopProcess;
-import systems.reformcloud.netty.out.PacketOutUpdateAll;
+import systems.reformcloud.network.out.PacketOutStopProcess;
+import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
-import lombok.Getter;
 import systems.reformcloud.utility.files.FileUtils;
 
 import java.io.File;

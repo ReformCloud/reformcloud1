@@ -23,19 +23,36 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${plugin.jar.version}</version>
-        <configuration>
-          <archive>
-            <manifestEntries>
-              <Main-Class>systems.reformcloud.launcher.ReformCloudLauncher</Main-Class>
-              <Version>${project.version}</Version>
-              <Implementation-Version>${service.version}</Implementation-Version>
-              <Specification-Version>${service.type}</Specification-Version>
-            </manifestEntries>
-          </archive>
-        </configuration>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${plugin.installer.version}</version>
+          <executions>
+              <execution>
+                  <phase>install</phase>
+                  <goals>
+                      <goal>install-file</goal>
+                  </goals>
+                  <configuration>
+                      <file>${project.build.finalName}.${project.packaging}</file>
+                      <generatePom>false</generatePom>
+                      <pomFile>pom.xml</pomFile>
+                  </configuration>
+              </execution>
+          </executions>
       </plugin>
+        <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>${plugin.jar.version}</version>
+            <configuration>
+                <archive>
+                    <manifestEntries>
+                        <Main-Class>systems.reformcloud.launcher.ReformCloudLauncher</Main-Class>
+                        <Version>${project.version}</Version>
+                        <Implementation-Version>${service.version}</Implementation-Version>
+                        <Specification-Version>${service.type}</Specification-Version>
+                    </manifestEntries>
+                </archive>
+            </configuration>
+        </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>${plugin.antrun.version}</version>

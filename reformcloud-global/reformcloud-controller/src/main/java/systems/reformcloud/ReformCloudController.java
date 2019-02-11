@@ -22,18 +22,15 @@ import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.client.Client;
-import systems.reformcloud.netty.NettyHandler;
-import systems.reformcloud.netty.NettySocketServer;
-import systems.reformcloud.netty.channel.ChannelHandler;
-import systems.reformcloud.netty.in.*;
-import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
-import systems.reformcloud.netty.out.PacketOutStopProcess;
-import systems.reformcloud.netty.out.PacketOutUpdateAll;
-import systems.reformcloud.netty.sync.in.PacketInSyncClientDisconnects;
-import systems.reformcloud.netty.sync.in.PacketInSyncClientReloadSuccess;
-import systems.reformcloud.netty.sync.in.PacketInSyncScreenUpdate;
-import systems.reformcloud.netty.sync.in.PacketInSyncUpdateClientInfo;
-import systems.reformcloud.netty.sync.out.PacketOutSyncUpdateClient;
+import systems.reformcloud.network.NettyHandler;
+import systems.reformcloud.network.NettySocketServer;
+import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.network.in.*;
+import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.out.PacketOutStopProcess;
+import systems.reformcloud.network.out.PacketOutUpdateAll;
+import systems.reformcloud.network.sync.in.*;
+import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.startup.CloudProcessOfferService;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -215,6 +212,8 @@ public class ReformCloudController implements Shutdown, Reload {
                 .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate())
                 .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess())
                 .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue())
+                .registerHandler("ExceptionThrown", new PacketInSyncExceptionThrown())
+                .registerHandler("IconSizeIncorrect", new PacketInIconSizeIncorrect())
                 .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate());
 
         if (this.reformWebServer != null) {

@@ -9,7 +9,7 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
-import systems.reformcloud.netty.packets.out.PacketOutSendControllerConsoleMessage;
+import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
 import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
 import systems.reformcloud.utility.files.FileUtils;

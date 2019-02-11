@@ -7,7 +7,7 @@ package systems.reformcloud.synchronization;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.info.ClientInfo;
-import systems.reformcloud.netty.packets.sync.out.PacketOutSyncUpdateClientInfo;
+import systems.reformcloud.network.packets.sync.out.PacketOutSyncUpdateClientInfo;
 
 import java.io.Serializable;
 

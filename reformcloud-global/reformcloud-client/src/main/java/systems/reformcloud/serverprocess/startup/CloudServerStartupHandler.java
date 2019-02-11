@@ -4,6 +4,7 @@
 
 package systems.reformcloud.serverprocess.startup;
 
+import lombok.Getter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -16,17 +17,16 @@ import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.netty.packets.out.PacketOutAddProcess;
-import systems.reformcloud.netty.packets.out.PacketOutRemoveProcess;
-import systems.reformcloud.netty.packets.out.PacketOutSendControllerConsoleMessage;
-import systems.reformcloud.netty.packets.out.PacketOutUpdateInternalCloudNetwork;
+import systems.reformcloud.network.packets.out.PacketOutAddProcess;
+import systems.reformcloud.network.packets.out.PacketOutRemoveProcess;
+import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
+import systems.reformcloud.network.packets.out.PacketOutUpdateInternalCloudNetwork;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
-import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;

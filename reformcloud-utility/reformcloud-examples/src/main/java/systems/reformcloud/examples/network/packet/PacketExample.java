@@ -5,7 +5,7 @@
 package systems.reformcloud.examples.network.packet;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.netty.packet.Packet;
+import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.StringUtil;
 
 /**

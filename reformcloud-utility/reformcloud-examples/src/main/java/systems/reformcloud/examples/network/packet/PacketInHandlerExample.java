@@ -5,7 +5,7 @@
 package systems.reformcloud.examples.network.packet;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018

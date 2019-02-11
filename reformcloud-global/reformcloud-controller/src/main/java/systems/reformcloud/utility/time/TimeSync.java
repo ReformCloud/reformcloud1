@@ -5,7 +5,7 @@
 package systems.reformcloud.utility.time;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.netty.sync.out.PacketOutSyncControllerTime;
+import systems.reformcloud.network.sync.out.PacketOutSyncControllerTime;
 
 import java.io.Serializable;
 

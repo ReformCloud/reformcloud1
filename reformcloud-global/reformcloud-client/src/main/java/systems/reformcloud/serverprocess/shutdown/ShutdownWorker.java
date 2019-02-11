@@ -19,6 +19,9 @@ public final class ShutdownWorker implements Serializable, Runnable {
 
     @Override
     public void run() {
+        if (!ReformCloudClient.RUNNING || ReformCloudClient.getInstance().isShutdown())
+            return;
+
         final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance().getCloudProcessScreenService();
 
         cloudProcessScreenService.getRegisteredServerProcesses().forEach(handler -> {

@@ -4,12 +4,12 @@
 
 package systems.reformcloud.commands;
 
-import systems.reformcloud.ReformCloudAPIBungee;
-import systems.reformcloud.netty.packets.PacketOutDispatchConsoleCommand;
-import systems.reformcloud.utility.StringUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
+import systems.reformcloud.ReformCloudAPIBungee;
+import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
+import systems.reformcloud.utility.StringUtil;
 
 import java.util.Arrays;
 

@@ -9,6 +9,25 @@
   <artifactId>reformcloud-api-spigot</artifactId>
   <build>
     <finalName>ReformAPISpigot</finalName>
+      <plugins>
+          <plugin>
+              <artifactId>maven-install-plugin</artifactId>
+              <version>${plugin.installer.version}</version>
+              <executions>
+                  <execution>
+                      <phase>install</phase>
+                      <goals>
+                          <goal>install-file</goal>
+                      </goals>
+                      <configuration>
+                          <file>${project.build.finalName}.${project.packaging}</file>
+                          <generatePom>false</generatePom>
+                          <pomFile>pom.xml</pomFile>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
+      </plugins>
   </build>
   <repositories>
     <repository>

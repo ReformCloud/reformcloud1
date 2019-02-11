@@ -7,7 +7,7 @@ package systems.reformcloud.signs.netty.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.netty.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.signs.SignSelector;
 import systems.reformcloud.signs.netty.packets.PacketOutRemoveSign;

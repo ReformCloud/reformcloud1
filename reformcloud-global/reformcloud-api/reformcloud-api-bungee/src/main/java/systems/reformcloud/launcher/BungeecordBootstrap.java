@@ -4,6 +4,9 @@
 
 package systems.reformcloud.launcher;
 
+import lombok.Getter;
+import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.api.plugin.Plugin;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.CommandHub;
@@ -15,11 +18,8 @@ import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.CloudConnectListener;
 import systems.reformcloud.listener.CloudProcessListener;
 import systems.reformcloud.listener.CloudProxyPingListener;
-import systems.reformcloud.netty.authentication.enums.AuthenticationType;
-import systems.reformcloud.netty.packets.PacketOutInternalProcessRemove;
-import lombok.Getter;
-import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.api.plugin.Plugin;
+import systems.reformcloud.network.authentication.enums.AuthenticationType;
+import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 
 import java.util.Arrays;
 

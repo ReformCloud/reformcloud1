@@ -7,7 +7,7 @@ package systems.reformcloud.commands;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
-import systems.reformcloud.netty.out.PacketOutExecuteCommand;
+import systems.reformcloud.network.out.PacketOutExecuteCommand;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;

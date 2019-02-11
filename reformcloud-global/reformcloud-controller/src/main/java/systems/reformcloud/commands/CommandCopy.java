@@ -11,8 +11,8 @@ import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.netty.out.PacketOutCopyServerIntoTemplate;
-import systems.reformcloud.netty.out.PacketOutExecuteCommand;
+import systems.reformcloud.network.out.PacketOutCopyServerIntoTemplate;
+import systems.reformcloud.network.out.PacketOutExecuteCommand;
 
 import java.io.Serializable;
 
