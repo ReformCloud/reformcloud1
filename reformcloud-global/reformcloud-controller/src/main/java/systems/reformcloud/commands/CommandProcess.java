@@ -143,7 +143,7 @@ public final class CommandProcess extends Command implements Serializable {
             return;
         }
 
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "stop": {
                 if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("--all")) {
@@ -256,6 +256,7 @@ public final class CommandProcess extends Command implements Serializable {
                     break;
                 } else
                     commandSender.sendMessage("ServerGroup or ProxyGroup isn't registered");
+
                 break;
             }
             case "list": {

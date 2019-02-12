@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 
 public final class TempServerStats implements Serializable {
-    public long blocksPlaced, distanceWalked, onlineTime;
+    public long blocksPlaced = 0L, distanceWalked = 0L, onlineTime = 0L;
     private double walkedDistanceTemp = 0D;
 
     public void addWalkedDistance(final double distance) {
@@ -37,12 +37,5 @@ public final class TempServerStats implements Serializable {
 
     public boolean hasChanges() {
         return this.blocksPlaced != 0 || this.distanceWalked != 0;
-    }
-
-    public TempServerStats clone() {
-        TempServerStats tempServerStats = new TempServerStats();
-        tempServerStats.distanceWalked = distanceWalked;
-        tempServerStats.blocksPlaced = blocksPlaced;
-        return tempServerStats;
     }
 }

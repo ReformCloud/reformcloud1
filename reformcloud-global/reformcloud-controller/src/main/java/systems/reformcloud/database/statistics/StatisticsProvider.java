@@ -34,7 +34,7 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
 
     @Override
     public void load() {
-        if (!Files.exists(Paths.get("reformcloud/database/stats/Stats.json"))) {
+        if (!Files.exists(Paths.get("reformcloud/database/stats/stats.json"))) {
             new Configuration().addProperty("stats", new Stats(
                     0,
                     0,
@@ -47,10 +47,10 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
                     0,
                     0,
                     0
-            )).saveAsConfigurationFile(Paths.get("reformcloud/database/stats/Stats.json"));
+            )).saveAsConfigurationFile(Paths.get("reformcloud/database/stats/stats.json"));
         }
 
-        this.stats = Configuration.loadConfiguration(Paths.get("reformcloud/database/stats/Stats.json"))
+        this.stats = Configuration.loadConfiguration(Paths.get("reformcloud/database/stats/stats.json"))
                 .getValue("stats", new TypeToken<Stats>() {
                 }.getType());
     }
@@ -61,9 +61,9 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
             return;
 
         this.setLastShutdown();
-        Configuration.loadConfiguration(Paths.get("reformcloud/database/stats/Stats.json"))
+        Configuration.loadConfiguration(Paths.get("reformcloud/database/stats/stats.json"))
                 .addProperty("stats", this.stats)
-                .saveAsConfigurationFile(Paths.get("reformcloud/database/stats/Stats.json"));
+                .saveAsConfigurationFile(Paths.get("reformcloud/database/stats/stats.json"));
     }
 
     public void addLogin() {
@@ -109,6 +109,9 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
     }
 
     public void updateServerStats(final TempServerStats tempServerStats) {
+        if (!checkAvailable())
+            return;
+
         this.stats.setBlocksPlaced(this.stats.getBlocksPlaced() + tempServerStats.blocksPlaced);
         this.stats.setWalkedDistance(this.stats.getWalkedDistance() + tempServerStats.distanceWalked);
         if (tempServerStats.onlineTime != 0)
