@@ -300,7 +300,7 @@ public final class SignSelector {
 
         @Override
         public void run() {
-            while (true) {
+            while (ReformCloudAPISpigot.getInstance() != null) {
                 this.currentLoadingLayout = SignSelector.this.signLayoutConfiguration.getLoadingLayout().getNextLayout();
 
                 ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {

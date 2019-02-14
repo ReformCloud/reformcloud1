@@ -7,8 +7,11 @@ package systems.reformcloud.launcher;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.PlayerConnectListener;
+import systems.reformcloud.network.authentication.enums.AuthenticationType;
+import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +54,8 @@ public class SpigotBootstrap extends JavaPlugin {
     public void onDisable() {
         ReformCloudAPISpigot.getInstance().getTempServerStats().addOnlineTime(this.start);
         ReformCloudAPISpigot.getInstance().updateTempStats();
-        ReformCloudAPISpigot.getInstance().getNettySocketClient().close();
-        ReformCloudAPISpigot.setInstance(null);
+        ReformCloudLibraryService.sleep(1000);
+        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutInternalProcessRemove(ReformCloudAPISpigot.getInstance().getServerStartupInfo().getUid(), AuthenticationType.SERVER));
+        ReformCloudLibraryService.sleep(1000000000);
     }
 }

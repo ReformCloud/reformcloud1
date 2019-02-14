@@ -9,7 +9,6 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.commands.completer.CommandCompleter;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncExceptionThrown;
@@ -73,8 +72,6 @@ final class ReformCloudLauncher {
 
         final LoggerProvider loggerProvider = new LoggerProvider();
         final CommandManager commandManager = new CommandManager();
-
-        loggerProvider.getConsoleReader().addCompleter(new CommandCompleter(commandManager));
 
         ReformCloudLibraryService.sendHeader(loggerProvider);
 

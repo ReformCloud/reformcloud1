@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.event.EventHandler;
@@ -38,8 +39,7 @@ import java.nio.file.Paths;
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-@Getter
-@Setter
+@Data
 public class ReformCloudAPISpigot implements Listener {
     @Getter
     @Setter
