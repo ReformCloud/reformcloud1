@@ -14,7 +14,6 @@ import systems.reformcloud.event.events.IncomingPacketEvent;
 import systems.reformcloud.event.events.PacketHandleSuccessEvent;
 import systems.reformcloud.network.authentication.AuthenticationHandler;
 import systems.reformcloud.network.packet.Packet;
-import systems.reformcloud.utility.AccessChecker;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class ChannelReader extends SimpleChannelInboundHandler {
             channelHandler.registerChannel("ReformCloudController", channelHandlerContext);
         }
 
-        if (!new AccessChecker().checkChannel(channelHandler.getChannelList(), channelHandlerContext).isAccepted()) {
+        if (!channelHandler.getChannelList().contains(channelHandlerContext)) {
             if (!packet.getType().equalsIgnoreCase("Auth") || !packet.getConfiguration().contains("AuthenticationType")) {
                 channelHandlerContext.channel().close();
                 return;
