@@ -12,7 +12,7 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public class PacketInExecuteCommand implements NetworkInboundHandler {
+public final class PacketInExecuteCommand implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.getStringValue("type").equalsIgnoreCase("proxy"))

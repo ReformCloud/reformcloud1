@@ -19,7 +19,7 @@ import systems.reformcloud.utility.screen.ScreenSessionProvider;
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-public class PacketInRemoveProcess implements NetworkInboundHandler {
+public final class PacketInRemoveProcess implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {

@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 14.12.2018
  */
 
-public class PacketInLogoutPlayer implements NetworkInboundHandler {
+public final class PacketInLogoutPlayer implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getUuid().remove(configuration.getValue("uuid", UUID.class));

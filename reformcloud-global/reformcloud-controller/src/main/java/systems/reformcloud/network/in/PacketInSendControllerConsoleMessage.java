@@ -12,7 +12,7 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public class PacketInSendControllerConsoleMessage implements NetworkInboundHandler {
+public final class PacketInSendControllerConsoleMessage implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getLoggerProvider().info(configuration.getStringValue("message"));

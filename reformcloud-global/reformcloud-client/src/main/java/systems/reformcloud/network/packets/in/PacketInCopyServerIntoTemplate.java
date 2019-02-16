@@ -14,7 +14,7 @@ import java.nio.file.Paths;
  * @author _Klaro | Pasqual K. / created on 16.12.2018
  */
 
-public class PacketInCopyServerIntoTemplate implements NetworkInboundHandler {
+public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         switch (configuration.getStringValue("type").toLowerCase()) {

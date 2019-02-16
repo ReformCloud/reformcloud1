@@ -17,7 +17,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 29.10.2018
  */
 
-public class PacketInStartProxy implements NetworkInboundHandler {
+public final class PacketInStartProxy implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         final ProxyGroup proxyGroup = configuration.getValue("group", TypeTokenAdaptor.getProxyGroupType());

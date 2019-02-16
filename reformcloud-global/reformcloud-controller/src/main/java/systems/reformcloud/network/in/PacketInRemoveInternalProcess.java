@@ -17,7 +17,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public class PacketInRemoveInternalProcess implements NetworkInboundHandler {
+public final class PacketInRemoveInternalProcess implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         switch (configuration.getStringValue("type").toLowerCase()) {

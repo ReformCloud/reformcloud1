@@ -17,7 +17,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 29.10.2018
  */
 
-public class PacketInStartGameServer implements NetworkInboundHandler {
+public final class PacketInStartGameServer implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         final ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getServerGroupType());

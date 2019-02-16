@@ -26,6 +26,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
+import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 
 import java.io.File;
@@ -136,6 +137,13 @@ public class CloudConfiguration {
 
         new Configuration().addProperty("group", new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in))).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/Proxy.json"));
 
+        loggerProvider.info("Do you want to load the sign addon [\"yes\", \"no\"]");
+        String signs = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
+        if (Boolean.parseBoolean(signs)) {
+            //TODO
+            DownloadManager.downloadAndDisconnect("SignAddon", "", "addons/SignAddon.jar");
+        }
+        
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
         String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
 

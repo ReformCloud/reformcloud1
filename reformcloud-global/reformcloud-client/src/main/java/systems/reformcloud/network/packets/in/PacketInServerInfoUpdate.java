@@ -15,7 +15,7 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
  * @author _Klaro | Pasqual K. / created on 12.12.2018
  */
 
-public class PacketInServerInfoUpdate implements NetworkInboundHandler {
+public final class PacketInServerInfoUpdate implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         final InternalCloudNetwork internalCloudNetwork = configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType());

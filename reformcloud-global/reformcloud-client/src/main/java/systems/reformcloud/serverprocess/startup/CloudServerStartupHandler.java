@@ -100,7 +100,12 @@ public class CloudServerStartupHandler {
         if (loaded.getTemplateBackend().equals(TemplateBackend.URL)
                 && loaded.getTemplate_url() != null) {
             new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplate_url());
-            ZoneInformationProtocolUtility.extract(path + "/loaded.zip", path + "");
+            try {
+                ZoneInformationProtocolUtility.unZip(new File(path + "/loaded.zip"), path + "");
+            } catch (final Exception ex) {
+                ex.printStackTrace();
+                return false;
+            }
         } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
             FileUtils.copyAllFiles(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName()), path + StringUtil.EMPTY);
         } else

@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>reformcloud-examples</module>
-        <module>reformcloud-installer</module>
         <module>reformcloud-addons</module>
     </modules>
 

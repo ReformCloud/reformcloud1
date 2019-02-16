@@ -18,7 +18,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-public class PacketInAddProcess implements NetworkInboundHandler {
+public final class PacketInAddProcess implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {

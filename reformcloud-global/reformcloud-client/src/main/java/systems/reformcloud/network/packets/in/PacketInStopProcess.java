@@ -14,7 +14,7 @@ import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public class PacketInStopProcess implements NetworkInboundHandler {
+public final class PacketInStopProcess implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         if (ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerHandler(configuration.getStringValue("name")) != null) {
