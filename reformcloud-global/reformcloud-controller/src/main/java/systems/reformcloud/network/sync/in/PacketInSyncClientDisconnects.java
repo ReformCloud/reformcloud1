@@ -35,6 +35,7 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                     ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
                             serverInfo.getCloudProcess().getProcessUID(), serverInfo.getCloudProcess().getName(), serverInfo.getPort()
                     );
+                    ReformCloudController.getInstance().getCloudProcessOfferService().unregisterID(serverInfo);
                 }
             });
 
@@ -44,6 +45,7 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                     ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterProxyProcess(
                             proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(), proxyInfo.getPort()
                     );
+                    ReformCloudController.getInstance().getCloudProcessOfferService().unregisterProxyID(proxyInfo);
                 }
             });
         }

@@ -23,4 +23,19 @@ public class Client implements Serializable {
 
     private String name, ip;
     private ClientInfo clientInfo;
+
+    public ClientState getCurrentState() {
+        if (clientInfo == null)
+            return ClientState.DISCONNECTED;
+        else if (clientInfo.isReady())
+            return ClientState.READY;
+
+        return ClientState.CONNECTED;
+    }
+
+    public enum ClientState {
+        DISCONNECTED,
+        CONNECTED,
+        READY
+    }
 }
