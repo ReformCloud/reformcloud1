@@ -28,28 +28,28 @@ import java.lang.reflect.Type;
 public final class TypeTokenAdaptor {
     @Getter
     private static final Type
-            serverGroupType = new TypeToken<ServerGroup>() {
+            SERVER_GROUP_TYPE = new TypeToken<ServerGroup>() {
     }.getType(),
-            proxyGroupType = new TypeToken<ProxyGroup>() {
+            PROXY_GROUP_TYPE = new TypeToken<ProxyGroup>() {
             }.getType(),
-            serverInfoType = new TypeToken<ServerInfo>() {
+            SERVER_INFO_TYPE = new TypeToken<ServerInfo>() {
             }.getType(),
-            proxyInfoType = new TypeToken<ProxyInfo>() {
+            PROXY_INFO_TYPE = new TypeToken<ProxyInfo>() {
             }.getType(),
-            serverStartupInfoType = new TypeToken<ServerStartupInfo>() {
+            SERVER_STARTUP_INFO_TYPE = new TypeToken<ServerStartupInfo>() {
             }.getType(),
-            proxyStartupInfoType = new TypeToken<ProxyStartupInfo>() {
+            PROXY_STARTUP_INFO_TYPE = new TypeToken<ProxyStartupInfo>() {
             }.getType(),
-            internalCloudNetworkType = new TypeToken<InternalCloudNetwork>() {
+            INTERNAL_CLOUD_NETWORK_TYPE = new TypeToken<InternalCloudNetwork>() {
             }.getType(),
-            packetType = new TypeToken<Packet>() {
+            PACKET_TYPE = new TypeToken<Packet>() {
             }.getType(),
-            ethernetAddressType = new TypeToken<EthernetAddress>() {
+            ETHERNET_ADDRESS_TYPE = new TypeToken<EthernetAddress>() {
             }.getType(),
-            authenticationType = new TypeToken<AuthenticationType>() {
+            AUTHENTICATION_TYPE = new TypeToken<AuthenticationType>() {
             }.getType(),
-            signLayoutConfigType = new TypeToken<SignLayoutConfiguration>() {
+            SIGN_LAYOUT_CONFIG_TYPE = new TypeToken<SignLayoutConfiguration>() {
             }.getType(),
-            clientInfoType = new TypeToken<ClientInfo>() {
+            CLIENT_INFO_TYPE = new TypeToken<ClientInfo>() {
             }.getType();
 }

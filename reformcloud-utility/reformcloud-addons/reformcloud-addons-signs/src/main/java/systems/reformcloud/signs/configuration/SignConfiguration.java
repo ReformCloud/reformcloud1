@@ -13,12 +13,12 @@ import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.signs.SignLayout;
 import systems.reformcloud.signs.SignLayoutConfiguration;
+import systems.reformcloud.signs.map.TemplateMap;
 import systems.reformcloud.signs.netty.packets.PacketOutCreateSign;
 import systems.reformcloud.signs.netty.packets.PacketOutRemoveSign;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.files.FileUtils;
-import systems.reformcloud.signs.map.TemplateMap;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,7 +78,7 @@ public class SignConfiguration {
             )).saveAsConfigurationFile(Paths.get("reformcloud/signs/" + path));
         }
 
-        this.signLayoutConfiguration = Configuration.loadConfiguration(Paths.get("reformcloud/signs/" + path)).getValue("config", TypeTokenAdaptor.getSignLayoutConfigType());
+        this.signLayoutConfiguration = Configuration.loadConfiguration(Paths.get("reformcloud/signs/" + path)).getValue("config", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
         this.loadSigns();
     }
 

@@ -21,8 +21,8 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 public class PacketInServerInfoUpdate implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
-        final InternalCloudNetwork internalCloudNetwork = configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType());
+        final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+        final InternalCloudNetwork internalCloudNetwork = configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE());
 
         ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(internalCloudNetwork);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);

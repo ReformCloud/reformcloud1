@@ -21,7 +21,7 @@ import java.util.UUID;
 public class PacketInRequestSigns implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        SignSelector.getInstance().setSignLayoutConfiguration(configuration.getValue("configuration", TypeTokenAdaptor.getSignLayoutConfigType()));
+        SignSelector.getInstance().setSignLayoutConfiguration(configuration.getValue("configuration", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE()));
         SignSelector.getInstance().setSignMap(configuration.getValue("signs", new TypeToken<Map<UUID, Sign>>() {
         }.getType()));
     }

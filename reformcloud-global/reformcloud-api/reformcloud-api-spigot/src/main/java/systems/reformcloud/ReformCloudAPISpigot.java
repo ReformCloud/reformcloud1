@@ -82,11 +82,11 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
 
         Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/config.json"));
 
-        final EthernetAddress ethernetAddress = configuration.getValue("address", TypeTokenAdaptor.getEthernetAddressType());
+        final EthernetAddress ethernetAddress = configuration.getValue("address", TypeTokenAdaptor.getETHERNET_ADDRESS_TYPE());
         new ReformCloudLibraryServiceProvider(new LoggerProvider(), configuration.getStringValue("controllerKey"), ethernetAddress.getHost(), new EventManager(), null);
 
-        this.serverStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getServerStartupInfoType());
-        this.serverInfo = configuration.getValue("info", TypeTokenAdaptor.getServerInfoType());
+        this.serverStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getSERVER_STARTUP_INFO_TYPE());
+        this.serverInfo = configuration.getValue("info", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
         this.getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
                 .registerHandler("UpdateAll", new PacketInUpdateAll())

@@ -21,7 +21,7 @@ import java.io.Serializable;
 public final class PacketInProxyInfoUpdate implements Serializable, NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getProxyInfoType());
+        final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
 
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().updateProxyInfo(proxyInfo);
 

@@ -24,7 +24,7 @@ import java.net.InetSocketAddress;
 public class PacketInInitializeInternal implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
+        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
 
         BungeecordBootstrap.getInstance().getProxy().getPluginManager().callEvent(new CloudNetworkInitializeEvent(
                 ReformCloudAPIBungee.getInstance().getInternalCloudNetwork())

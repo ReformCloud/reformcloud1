@@ -53,7 +53,7 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                 return;
             }
 
-            new AuthenticationHandler().handleAuth(packet.getConfiguration().getValue("AuthenticationType", TypeTokenAdaptor.getAuthenticationType()),
+            new AuthenticationHandler().handleAuth(packet.getConfiguration().getValue("AuthenticationType", TypeTokenAdaptor.getAUTHENTICATION_TYPE()),
                     packet, channelHandlerContext, channelHandler);
         }
 

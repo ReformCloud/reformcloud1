@@ -26,7 +26,7 @@ public final class PacketInSyncUpdateClientInfo implements Serializable, Network
         if (client == null)
             return;
 
-        client.setClientInfo(configuration.getValue("info", TypeTokenAdaptor.getClientInfoType()));
+        client.setClientInfo(configuration.getValue("info", TypeTokenAdaptor.getCLIENT_INFO_TYPE()));
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
     }
 }

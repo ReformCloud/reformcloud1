@@ -18,8 +18,8 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 public class PacketInUpdateAll implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
-        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
+        ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
 
         if (ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getProcessUID()) != null)
             ReformCloudAPISpigot.getInstance().setServerInfo(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getProcessUID()));

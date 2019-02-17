@@ -20,7 +20,7 @@ import java.util.UUID;
 public final class PacketInStartProxy implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        final ProxyGroup proxyGroup = configuration.getValue("group", TypeTokenAdaptor.getProxyGroupType());
+        final ProxyGroup proxyGroup = configuration.getValue("group", TypeTokenAdaptor.getPROXY_GROUP_TYPE());
 
         ReformCloudClient.getInstance().getCloudProcessStartupHandler().offerProxyProcess(new ProxyStartupInfo(
                 configuration.getValue("proxyProcess", UUID.class), configuration.getStringValue("name"), (configuration.contains("template") ? configuration.getStringValue("template") : null), proxyGroup, configuration.getConfiguration("preConfig"), configuration.getIntegerValue("id")

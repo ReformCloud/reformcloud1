@@ -23,7 +23,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
-            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
+            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
             if (serverInfo == null)
                 return;
@@ -45,7 +45,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                 );
             }
         } else {
-            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getProxyInfoType());
+            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
 
             if (proxyInfo == null)
                 return;

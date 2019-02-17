@@ -22,7 +22,7 @@ import java.util.UUID;
 public final class PacketInStartGameProcess implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        final ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getServerGroupType());
+        final ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getSERVER_GROUP_TYPE());
         final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
         if (client == null)

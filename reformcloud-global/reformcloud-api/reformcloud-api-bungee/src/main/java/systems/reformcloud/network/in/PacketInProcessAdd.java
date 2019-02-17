@@ -23,7 +23,7 @@ public class PacketInProcessAdd implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
-            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
+            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
             final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
 
             if (proxyGroup == null || proxyGroup.getDisabledServerGroups().contains(serverInfo.getServerGroup().getName()))
@@ -31,7 +31,7 @@ public class PacketInProcessAdd implements NetworkInboundHandler {
 
             ProxyServer.getInstance().getPluginManager().callEvent(new CloudServerAddEvent(serverInfo));
         } else {
-            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getProxyInfoType());
+            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
             ProxyServer.getInstance().getPluginManager().callEvent(new CloudProxyAddEvent(proxyInfo));
         }
     }

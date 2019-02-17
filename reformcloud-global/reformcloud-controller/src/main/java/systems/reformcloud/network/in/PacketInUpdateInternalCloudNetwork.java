@@ -18,7 +18,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 public final class PacketInUpdateInternalCloudNetwork implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
+        ReformCloudController.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));

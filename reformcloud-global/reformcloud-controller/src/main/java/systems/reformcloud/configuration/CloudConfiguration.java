@@ -199,7 +199,7 @@ public class CloudConfiguration {
                 if (file.getName().endsWith(".json")) {
                     try {
                         configuration = Configuration.loadConfiguration(file);
-                        ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getServerGroupType());
+                        ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getSERVER_GROUP_TYPE());
                         serverGroups.add(serverGroup);
                     } catch (final Throwable throwable) {
                         StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load ServerGroup", throwable);
@@ -219,7 +219,7 @@ public class CloudConfiguration {
                 if (file.getName().endsWith(".json")) {
                     try {
                         configuration = Configuration.loadConfiguration(file);
-                        ProxyGroup proxyGroup = configuration.getValue("group", TypeTokenAdaptor.getProxyGroupType());
+                        ProxyGroup proxyGroup = configuration.getValue("group", TypeTokenAdaptor.getPROXY_GROUP_TYPE());
                         proxyGroups.add(proxyGroup);
                     } catch (final Throwable throwable) {
                         StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load ProxyGroup", throwable);

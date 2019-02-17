@@ -22,7 +22,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
-            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getServerInfoType());
+            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
             if (serverInfo == null)
                 return;
@@ -41,7 +41,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting().remove(serverInfo.getCloudProcess().getName());
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessAdd(serverInfo));
         } else {
-            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getProxyInfoType());
+            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
 
             ProcessRegisterEvent processRegisterEvent = new ProcessRegisterEvent(false, true, false, proxyInfo.getCloudProcess().getName());
             ReformCloudController.getInstance().getEventManager().callEvent(EventTargetType.PROCESS_REGISTERED, processRegisterEvent);

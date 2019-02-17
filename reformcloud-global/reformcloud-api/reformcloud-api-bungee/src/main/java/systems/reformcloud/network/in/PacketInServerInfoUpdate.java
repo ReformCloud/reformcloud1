@@ -17,7 +17,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 public class PacketInServerInfoUpdate implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
+        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork());
     }
 }
