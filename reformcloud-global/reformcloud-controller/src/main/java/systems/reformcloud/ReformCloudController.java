@@ -12,6 +12,7 @@ import systems.reformcloud.api.documentation.RestAPIDocumentation;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
+import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.database.DatabaseProvider;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
@@ -23,13 +24,21 @@ import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ClientInfo;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketServer;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.out.PacketOutStartGameServer;
+import systems.reformcloud.network.out.PacketOutStartProxy;
 import systems.reformcloud.network.out.PacketOutStopProcess;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
+import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.sync.in.*;
 import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.startup.CloudProcessOfferService;
@@ -45,6 +54,7 @@ import systems.reformcloud.web.ReformWebServer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,7 +65,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ReformCloudController implements Shutdown, Reload {
+public class ReformCloudController implements Shutdown, Reload, IAPIService {
     public static volatile boolean RUNNING = false;
 
     @Getter
@@ -178,6 +188,8 @@ public class ReformCloudController implements Shutdown, Reload {
         this.checkForUpdates();
 
         RUNNING = true;
+
+        IAPIService.instance.set(this);
 
         loggerProvider.info(this.getLoadedLanguage().getLoading_done()
                     .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
@@ -424,8 +436,261 @@ public class ReformCloudController implements Shutdown, Reload {
         return best;
     }
 
+    @Override
+    public void startGameServer(final String serverGroupName) {
+        this.startGameServer(serverGroupName, new Configuration());
+    }
+
+    @Override
+    public void startGameServer(final String serverGroupName, final Configuration preConfig) {
+        final ServerGroup serverGroup = this.internalCloudNetwork.getServerGroups().getOrDefault(serverGroupName, null);
+        this.startGameServer(serverGroup, preConfig);
+    }
+
+    @Override
+    public void startGameServer(final ServerGroup serverGroup) {
+        this.startGameServer(serverGroup.getName(), new Configuration());
+    }
+
+    @Override
+    public void startGameServer(final ServerGroup serverGroup, final Configuration preConfig) {
+        final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
+
+        if (client == null)
+            return;
+
+        final Collection<String> servers = ReformCloudController.getInstance().getInternalCloudNetwork()
+                .getServerProcessManager().getOnlineServers(serverGroup.getName());
+        final Collection<String> waiting = ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting(serverGroup.getName());
+
+        final int waitingAndOnline = servers.size() + waiting.size();
+        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextServerID(serverGroup.getName()));
+        final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+        ReformCloudController.getInstance().getCloudProcessOfferService().registerID(serverGroup.getName(), name, Integer.valueOf(id));
+
+        if (serverGroup.getMaxOnline() > waitingAndOnline || serverGroup.getMaxOnline() == -1) {
+            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                    new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), preConfig, id)
+            );
+        }
+    }
+
+    @Override
+    public void startGameServer(final ServerGroup serverGroup, final Configuration preConfig, final String template) {
+        final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
+
+        if (client == null)
+            return;
+
+        final Collection<String> servers = ReformCloudController.getInstance().getInternalCloudNetwork()
+                .getServerProcessManager().getOnlineServers(serverGroup.getName());
+        final Collection<String> waiting = ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting(serverGroup.getName());
+
+        final int waitingAndOnline = servers.size() + waiting.size();
+        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextServerID(serverGroup.getName()));
+        final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+        ReformCloudController.getInstance().getCloudProcessOfferService().registerID(serverGroup.getName(), name, Integer.valueOf(id));
+
+        if (serverGroup.getMaxOnline() > waitingAndOnline || serverGroup.getMaxOnline() == -1) {
+            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                    new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), preConfig, id, template)
+            );
+        }
+    }
+
+    @Override
+    public void startProxy(final String proxyGroupName) {
+        this.startProxy(proxyGroupName, new Configuration());
+    }
+
+    @Override
+    public void startProxy(final String proxyGroupName, final Configuration preConfig) {
+        final ProxyGroup proxyGroup = this.internalCloudNetwork.getProxyGroups().getOrDefault(proxyGroupName, null);
+        final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
+
+        if (client == null)
+            return;
+
+        final Collection<String> proxies = ReformCloudController.getInstance().getInternalCloudNetwork()
+                .getServerProcessManager().getOnlineServers(proxyGroup.getName());
+        final Collection<String> waiting = ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting(proxyGroup.getName());
+
+        final int waitingAndOnline = proxies.size() + waiting.size();
+        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextProxyID(proxyGroup.getName()));
+        final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+        ReformCloudController.getInstance().getCloudProcessOfferService().registerProxyID(
+                proxyGroup.getName(), name, Integer.valueOf(id)
+        );
+
+        if (proxyGroup.getMaxOnline() > waitingAndOnline || proxyGroup.getMaxOnline() == -1) {
+            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                    new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), preConfig, id)
+            );
+        }
+    }
+
+    @Override
+    public void startProxy(ProxyGroup proxyGroup) {
+        this.startProxy(proxyGroup.getName(), new Configuration());
+    }
+
+    @Override
+    public void startProxy(ProxyGroup proxyGroup, Configuration preConfig) {
+        this.startProxy(proxyGroup.getName(), preConfig);
+    }
+
+    @Override
+    public void startProxy(ProxyGroup proxyGroup, Configuration preConfig, String template) {
+        final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
+
+        if (client == null)
+            return;
+
+        final Collection<String> proxies = ReformCloudController.getInstance().getInternalCloudNetwork()
+                .getServerProcessManager().getOnlineServers(proxyGroup.getName());
+        final Collection<String> waiting = ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting(proxyGroup.getName());
+
+        final int waitingAndOnline = proxies.size() + waiting.size();
+        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextProxyID(proxyGroup.getName()));
+        final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+        ReformCloudController.getInstance().getCloudProcessOfferService().registerProxyID(
+                proxyGroup.getName(), name, Integer.valueOf(id)
+        );
+
+        if (proxyGroup.getMaxOnline() > waitingAndOnline || proxyGroup.getMaxOnline() == -1) {
+            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                    new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), preConfig, id, template)
+            );
+        }
+    }
+
+    @Override
+    public int getMaxPlayers() {
+        int max = 0;
+        for (ProxyGroup proxyGroup : this.internalCloudNetwork.getProxyGroups().values())
+            max += proxyGroup.getMaxPlayers();
+
+        return max;
+    }
+
+    @Override
+    public int getOnlineCount() {
+        int online = 0;
+        for (ProxyInfo proxyInfo : this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses())
+            online += proxyInfo.getOnline();
+
+        return online;
+    }
+
+    @Override
+    public List<Client> getAllClients() {
+        return new ArrayList<>(this.internalCloudNetwork.getClients().values());
+    }
+
+    @Override
+    public List<Client> getAllConnectedClients() {
+        return this.internalCloudNetwork
+                .getClients()
+                .values()
+                .stream()
+                .filter(e -> e.getClientInfo() != null)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ServerGroup> getAllServerGroups() {
+        return new ArrayList<>(this.internalCloudNetwork.getServerGroups().values());
+    }
+
+    @Override
+    public List<ProxyGroup> getAllProxyGroups() {
+        return new ArrayList<>(this.internalCloudNetwork.getProxyGroups().values());
+    }
+
+    @Override
+    public List<ServerInfo> getAllRegisteredServers() {
+        return this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses();
+    }
+
+    @Override
+    public List<ProxyInfo> getAllRegisteredProxies() {
+        return this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses();
+    }
+
+    @Override
+    public List<ServerInfo> getAllRegisteredServers(String groupName) {
+        return null;
+    }
+
+    @Override
+    public List<ProxyInfo> getAllRegisteredProxies(String groupName) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(e -> e.getProxyGroup().getName().equals(groupName))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean sendPacket(String subChannel, Packet packet) {
+        return this.channelHandler.sendPacketAsynchronous(subChannel, packet);
+    }
+
+    @Override
+    public boolean sendPacketSync(String subChannel, Packet packet) {
+        return this.channelHandler.sendPacketSynchronized(subChannel, packet);
+    }
+
+    @Override
+    public void sendPacketToAll(Packet packet) {
+        this.channelHandler.sendToAllAsynchronous(packet);
+    }
+
+    @Override
+    public void sendPacketToAllSync(Packet packet) {
+        this.channelHandler.sendToAllSynchronized(packet);
+    }
+
+    @Override
+    public Client getClient(String name) {
+        return this.internalCloudNetwork.getClients().getOrDefault(name, null);
+    }
+
+    @Override
+    public ClientInfo getConnectedClient(String name) {
+        Client client = this.internalCloudNetwork
+                .getClients()
+                .values()
+                .stream()
+                .filter(e -> e.getName().equals(name) && e.getClientInfo() != null)
+                .findFirst()
+                .orElse(null);
+
+        if (client == null)
+            return null;
+
+        return client.getClientInfo();
+    }
+
+    @Override
+    public ServerGroup getServerGroup(String name) {
+        return this.internalCloudNetwork.getServerGroups().getOrDefault(name, null);
+    }
+
+    @Override
+    public ProxyGroup getProxyGroup(String name) {
+        return this.internalCloudNetwork.getProxyGroups().getOrDefault(name, null);
+    }
+
+    @Override
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    @Override
+    public void removeInternalProcess() {
+        System.exit(0);
     }
 
     public Language getLoadedLanguage() {

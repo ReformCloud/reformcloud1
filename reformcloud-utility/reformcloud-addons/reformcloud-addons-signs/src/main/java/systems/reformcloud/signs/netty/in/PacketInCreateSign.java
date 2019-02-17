@@ -16,7 +16,7 @@ import systems.reformcloud.signs.netty.packets.PacketOutCreateSign;
  * @author _Klaro | Pasqual K. / created on 12.12.2018
  */
 
-public class PacketInCreateSign implements NetworkInboundHandler {
+public final class PacketInCreateSign implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         SignSelector.getInstance().getSignConfiguration().addSign(configuration.getValue("sign", new TypeToken<Sign>() {

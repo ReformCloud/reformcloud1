@@ -14,7 +14,7 @@ import systems.reformcloud.signs.netty.packets.PacketOutSendSigns;
  * @author _Klaro | Pasqual K. / created on 12.01.2019
  */
 
-public class PacketInRequestSignUpdate implements NetworkInboundHandler {
+public final class PacketInRequestSignUpdate implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
