@@ -7,6 +7,8 @@ package systems.reformcloud.network.in;
 import net.md_5.bungee.api.ProxyServer;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.internal.events.CloudNetworkInitializeEvent;
+import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -23,6 +25,10 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getInternalCloudNetworkType()));
+
+        BungeecordBootstrap.getInstance().getProxy().getPluginManager().callEvent(new CloudNetworkInitializeEvent(
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork())
+        );
 
         final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
         if (proxyGroup == null)

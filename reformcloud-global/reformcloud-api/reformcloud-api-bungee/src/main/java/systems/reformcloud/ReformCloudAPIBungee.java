@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
+import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.info.ProxyInfo;
@@ -24,7 +25,6 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
-import javax.management.InstanceAlreadyExistsException;
 import java.nio.file.Paths;
 
 /**

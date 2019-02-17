@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.CommandSelectors;
+import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.internal.events.CloudServerAddEvent;
 import systems.reformcloud.internal.events.CloudServerInfoUpdateEvent;
 import systems.reformcloud.internal.events.CloudServerRemoveEvent;
@@ -36,7 +37,6 @@ import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.signs.SignPosition;
 import systems.reformcloud.signs.map.TemplateMap;
 
-import javax.management.InstanceAlreadyExistsException;
 import java.util.Map;
 import java.util.UUID;
 

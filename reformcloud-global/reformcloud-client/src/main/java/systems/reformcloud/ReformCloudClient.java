@@ -12,6 +12,7 @@ import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.LoadSuccessEvent;
+import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.info.ClientInfo;
@@ -40,7 +41,6 @@ import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.threading.scheduler.Scheduler;
 import systems.reformcloud.versioneering.VersionController;
 
-import javax.management.InstanceAlreadyExistsException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;

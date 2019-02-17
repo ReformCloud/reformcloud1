@@ -17,6 +17,7 @@ import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.LoadSuccessEvent;
+import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
@@ -42,7 +43,6 @@ import systems.reformcloud.utility.time.TimeSync;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
 
-import javax.management.InstanceAlreadyExistsException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
