@@ -71,6 +71,7 @@ public final class CommandProcess extends Command implements Serializable {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
                             client.getName(), new PacketOutRemoveProxyQueueProcess(args[4])
                     );
+                    ReformCloudController.getInstance().getCloudProcessOfferService().removeWaitingProcess(args[4]);
                     commandSender.sendMessage("Trying to §cremove§r queue entry §e" + args[4]);
                     break;
                 }
@@ -79,6 +80,7 @@ public final class CommandProcess extends Command implements Serializable {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
                             client.getName(), new PacketOutRemoveServerQueueProcess(args[4])
                     );
+                    ReformCloudController.getInstance().getCloudProcessOfferService().removeWaitingProcess(args[4]);
                     commandSender.sendMessage("Trying to §cremove§r queue entry §e" + args[4]);
                     break;
                 }

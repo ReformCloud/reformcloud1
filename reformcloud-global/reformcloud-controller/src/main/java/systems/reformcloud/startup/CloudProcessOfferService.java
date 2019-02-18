@@ -134,6 +134,24 @@ public class CloudProcessOfferService implements Runnable {
         this.proxies.add(new Trio<>(group, name, id));
     }
 
+    public void removeWaitingProcess(String name) {
+        for (Map.Entry<String, String> map : this.waiting.entrySet())
+            if (map.getValue().equals(name))
+                this.waiting.remove(map.getKey());
+
+        List<Trio<String, String, Integer>> clone = new ArrayList<>(this.proxies);
+        clone.forEach(e -> {
+            if (e.getSecond().equals(name))
+                this.proxies.remove(e);
+        });
+
+        List<Trio<String, String, Integer>> cloneServers = new ArrayList<>(this.servers);
+        cloneServers.forEach(e -> {
+            if (e.getSecond().equals(name))
+                this.servers.remove(e);
+        });
+    }
+
     @Override
     public void run() {
         this.offerServers();

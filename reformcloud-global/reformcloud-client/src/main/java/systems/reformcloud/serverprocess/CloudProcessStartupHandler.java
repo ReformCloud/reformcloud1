@@ -50,7 +50,6 @@ public class CloudProcessStartupHandler implements Runnable {
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             while (ReformCloudClient.RUNNING) {
-                ReformCloudLibraryService.sleep(Thread.currentThread(), 750L);
 
                 while (!this.serverStartupInfo.isEmpty()) {
                     final ServerStartupInfo serverStartupInfo = this.serverStartupInfo.poll();
@@ -63,7 +62,9 @@ public class CloudProcessStartupHandler implements Runnable {
 
                     if (!ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().isNameServerProcessRegistered(serverStartupInfo.getName())
                             && (ReformCloudClient.getInstance().getMemory() + serverStartupInfo.getServerGroup().getMemory()) <
-                            ReformCloudClient.getInstance().getCloudConfiguration().getMemory() && (ReformCloudClient.getInstance().getCloudConfiguration().getCpu() == 0D || ReformCloudLibraryService.cpuUsage() <= ReformCloudClient.getInstance().getCloudConfiguration().getCpu())) {
+                            ReformCloudClient.getInstance().getCloudConfiguration().getMemory()
+                            && (ReformCloudClient.getInstance().getCloudConfiguration().getCpu() == 0D
+                            || ReformCloudLibraryService.cpuUsage() <= ReformCloudClient.getInstance().getCloudConfiguration().getCpu())) {
                         this.send(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_wait_start()
                                 .replace("%name%", serverStartupInfo.getName())
                                 .replace("%uid%", String.valueOf(serverStartupInfo.getUid()))
