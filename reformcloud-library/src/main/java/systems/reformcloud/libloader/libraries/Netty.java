@@ -21,7 +21,7 @@ public final class Netty extends Dependency implements Serializable {
 
     @Override
     public String getGroupID() {
-        return "io.network";
+        return "io.netty";
     }
 
     @Override
