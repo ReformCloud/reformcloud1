@@ -21,27 +21,12 @@
             <name>Pasqual K. | _Klaro</name>
             <organization>ReformCloud</organization>
             <url>https://gitlab.com/_Klaro</url>
-            <!-- //TODO: change url -->
-            <organizationUrl>https://klarcloudservice.de</organizationUrl>
-            <email>info@klarcloudservice.de</email>
+            <organizationUrl>https://reformcloud.systems</organizationUrl>
+            <email>info@reformcloud.systems</email>
             <timezone>Europe/Berlin</timezone>
             <roles>
                 <role>owner</role>
                 <role>developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>manu</id>
-            <name>Emmanuel L. | rexlManu</name>
-            <organization>ReformCloud</organization>
-            <url>https://gitlab.com/rexlManu</url>
-            <!-- //TODO: change url -->
-            <organizationUrl>https://klarcloudservice.de</organizationUrl>
-            <email>info@klarcloudservice.de</email>
-            <timezone>Europe/Berlin</timezone>
-            <roles>
-                <role>developer</role>
-                <role>management</role>
             </roles>
         </developer>
     </developers>

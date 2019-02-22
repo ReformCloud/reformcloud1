@@ -19,8 +19,7 @@ import java.io.File;
 public final class VersionUpdater {
     public void update() {
         if (!VersionLoader.getNewestVersion().equalsIgnoreCase(StringUtil.REFORM_VERSION)) {
-            //TODO: change link
-            DownloadManager.downloadSilentAndDisconnect("https://dl.klarcloudservice.de/update/latest/" + whereIAm() + ".jar", whereIAm() + "-Update-" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong() + ".jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/update/latest/" + whereIAm() + ".jar", whereIAm() + "-Update-" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong() + ".jar");
             FileUtils.deleteOnExit(new File(FileUtils.getInternalFileName()));
             System.exit(1);
         }

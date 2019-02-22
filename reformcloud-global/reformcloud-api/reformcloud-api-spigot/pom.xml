@@ -15,8 +15,7 @@
         <repository>
             <id>reformcloud-repo</id>
             <name>ReformCloud</name>
-            <!-- //TODO: change url -->
-            <url>https://repo.klarcloudservice.de/repo</url>
+            <url>https://repo.reformcloud.systems</url>
         </repository>
     </repositories>
 

@@ -22,8 +22,7 @@ import java.nio.charset.StandardCharsets;
 final class VersionLoader {
     static String getNewestVersion() {
         try {
-            //TODO: change link
-            URLConnection urlConnection = new URL("https://dl.klarcloudservice.de/update/internal/version.json").openConnection();
+            URLConnection urlConnection = new URL("https://internal.reformcloud.systems/update/version.json").openConnection();
             urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             urlConnection.setUseCaches(false);
             urlConnection.connect();
