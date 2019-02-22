@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 public class NettyHandler {
     private Map<String, NetworkInboundHandler> networkInboundHandlerMap = ReformCloudLibraryService.concurrentHashMap();
+    private Map<String, NetworkQueryInboundHandler> networkQueryInboundHandlerMap = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * Handel the incoming packet by calling the registered {@link NetworkInboundHandler}
@@ -62,6 +64,19 @@ public class NettyHandler {
     public NettyHandler registerHandler(String type, NetworkInboundHandler networkInboundHandler) {
         this.networkInboundHandlerMap.put(type, networkInboundHandler);
         return this;
+    }
+
+    public NettyHandler registerQueryHandler(String type, NetworkQueryInboundHandler networkQueryInboundHandler) {
+        this.networkQueryInboundHandlerMap.put(type, networkQueryInboundHandler);
+        return this;
+    }
+
+    public boolean isQueryHandlerRegistered(String type) {
+        return this.networkQueryInboundHandlerMap.containsKey(type);
+    }
+
+    public NetworkQueryInboundHandler getQueryHandler(String type) {
+        return this.networkQueryInboundHandlerMap.getOrDefault(type, null);
     }
 
     /**

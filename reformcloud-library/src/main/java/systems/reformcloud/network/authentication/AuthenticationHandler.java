@@ -21,7 +21,6 @@ public class AuthenticationHandler implements AuthenticationManager {
 
     @Override
     public void handleAuth(AuthenticationType authenticationType, Packet packet, ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler) {
-
         String name = packet.getConfiguration().getStringValue("name");
         switch (authenticationType) {
             case SERVER: {

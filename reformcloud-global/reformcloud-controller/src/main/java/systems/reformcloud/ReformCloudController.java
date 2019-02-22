@@ -39,6 +39,7 @@ import systems.reformcloud.network.out.PacketOutStartProxy;
 import systems.reformcloud.network.out.PacketOutStopProcess;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.query.in.PacketInQueryGetPlayer;
 import systems.reformcloud.network.sync.in.*;
 import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.startup.CloudProcessOfferService;
@@ -228,7 +229,9 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerHandler("IconSizeIncorrect", new PacketInIconSizeIncorrect())
                 .registerHandler("UpdateTempServerStats", new PacketInUpdateServerTempStats())
                 .registerHandler("NameToUUID", new PacketInSyncNameToUUID())
-                .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate());
+                .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
+
+                .registerQueryHandler("QueryGetPlayer", new PacketInQueryGetPlayer());
 
         if (this.reformWebServer != null) {
             this.reformWebServer.getWebHandlerAdapter()

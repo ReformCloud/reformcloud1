@@ -14,6 +14,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -26,6 +27,8 @@ public class Packet implements Serializable {
 
     private Configuration configuration;
     private String type;
+
+    private UUID result;
 
     public Packet() {
     }
@@ -74,5 +77,9 @@ public class Packet implements Serializable {
         } while ((read & 0b10000000) != 0);
 
         return result;
+    }
+
+    public Packet emptyPacket() {
+        return new Packet("undefined", new Configuration());
     }
 }

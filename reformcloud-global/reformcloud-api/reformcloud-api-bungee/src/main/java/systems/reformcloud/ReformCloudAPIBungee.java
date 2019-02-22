@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.api.IAPIService;
@@ -26,6 +27,7 @@ import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packets.PacketOutStartGameServer;
 import systems.reformcloud.network.packets.PacketOutStartProxy;
+import systems.reformcloud.player.DefaultPlayer;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -87,6 +89,14 @@ public class ReformCloudAPIBungee implements IAPIService {
                 ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.proxyStartupInfo.getName()
         );
+
+        this.getChannelHandler().sendPacketQuery("ReformController", "Proxy-01", new Packet(
+                "QueryGetPlayer", new Configuration()
+        ), (configuration1, result) -> {
+            DefaultPlayer defaultPlayer = configuration.getValue("result", new TypeToken<DefaultPlayer>() {
+            }.getType());
+            System.out.println(defaultPlayer.getName());
+        });
 
         IAPIService.instance.set(this);
     }

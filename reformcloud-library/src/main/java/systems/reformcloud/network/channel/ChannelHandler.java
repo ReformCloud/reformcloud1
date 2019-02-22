@@ -5,17 +5,16 @@
 package systems.reformcloud.network.channel;
 
 import io.netty.channel.ChannelHandlerContext;
+import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.OutGoingPacketEvent;
+import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.threading.TaskScheduler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -23,6 +22,10 @@ import java.util.Set;
 
 public class ChannelHandler {
     private Map<String, ChannelHandlerContext> channelHandlerContextMap = ReformCloudLibraryService.concurrentHashMap();
+    private TaskScheduler packetTask = new TaskScheduler(1);
+
+    @Getter
+    private Map<UUID, Packet> results = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * Get a specific {@link ChannelHandlerContext} by name
@@ -190,6 +193,37 @@ public class ChannelHandler {
         });
 
         return this.channelHandlerContextMap.containsKey(channel);
+    }
+
+    public boolean sendPacketQuery(final String channel, final String from, final Packet packet, final NetworkQueryInboundHandler handler) {
+        if (!this.channelHandlerContextMap.containsKey(channel))
+            return false;
+
+        UUID result = UUID.randomUUID();
+        packet.setResult(result);
+        packet.getConfiguration().addStringProperty("from", from);
+        results.put(result, null);
+
+        packetTask.schedule(() -> this.channelHandlerContextMap.get(channel).channel().writeAndFlush(packet));
+
+        int i = 0;
+
+        while (results.get(result) == null) {
+            i++;
+
+            if (i >= 100000) {
+                this.results.put(result, new Packet().emptyPacket());
+                break;
+            }
+
+            try {
+                Thread.sleep(0, 50000);
+            } catch (final InterruptedException ignored) {
+            }
+        }
+
+        handler.handle(this.results.get(result).getConfiguration(), result);
+        return true;
     }
 
     /**
