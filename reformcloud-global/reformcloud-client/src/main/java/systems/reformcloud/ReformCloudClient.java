@@ -7,6 +7,7 @@ package systems.reformcloud;
 import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
+import systems.reformcloud.api.EventAdapter;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.event.EventManager;
@@ -113,6 +114,8 @@ public class ReformCloudClient implements Shutdown, Reload {
         loggerProvider.registerLoggerHandler(clientScreenHandler);
 
         this.addonParallelLoader.loadAddons();
+
+        new EventAdapter();
 
         this.clientInfo = new ClientInfo(
                 cloudConfiguration.getMemory(),

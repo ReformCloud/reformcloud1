@@ -4,7 +4,7 @@
 
 package systems.reformcloud.network.packets.sync.in;
 
-import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.api.EventAdapter;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
@@ -17,6 +17,6 @@ import java.io.Serializable;
 public final class PacketInSyncUpdateClient implements Serializable, NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudClient.getInstance().reloadAll();
+        EventAdapter.instance.get().handleReload();
     }
 }

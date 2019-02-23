@@ -33,6 +33,7 @@ final class VersionLoader {
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while checking newest version", ex);
         }
+
         return StringUtil.NULL;
     }
 }

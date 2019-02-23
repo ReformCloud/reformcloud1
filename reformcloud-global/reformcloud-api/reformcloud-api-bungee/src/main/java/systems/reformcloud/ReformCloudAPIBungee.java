@@ -69,7 +69,7 @@ public class ReformCloudAPIBungee implements IAPIService {
 
         ReformCloudLibraryService.sendHeader();
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/config.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
 
         final EthernetAddress ethernetAddress = configuration.getValue("address", TypeTokenAdaptor.getETHERNET_ADDRESS_TYPE());
         new ReformCloudLibraryServiceProvider(new LoggerProvider(), configuration.getStringValue("controllerKey"), ethernetAddress.getHost(), new EventManager(), null);

@@ -116,7 +116,7 @@ public class CloudConfiguration {
         loggerProvider.info("Please provide the ip of the client");
         String ip = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
 
-        new Configuration().addProperty("client", Collections.singletonList(new Client(clientName, ip, null))).saveAsConfigurationFile(Paths.get("reformcloud/clients.json"));
+        new Configuration().addProperty("client", Collections.singletonList(new Client(clientName, ip, null))).write(Paths.get("reformcloud/clients.json"));
 
         loggerProvider.info("How many mb ram should the default Lobby-Group have?");
         int lobbyMemory = this.readInt(loggerProvider, integer -> integer >= 50);
@@ -127,7 +127,7 @@ public class CloudConfiguration {
         SpigotVersions.sortedByVersion(version).values().forEach(e -> loggerProvider.info("   " + e.name()));
         String provider = this.readString(loggerProvider, s -> SpigotVersions.getByName(s) != null);
 
-        new Configuration().addProperty("group", new LobbyGroup(SpigotVersions.getByName(provider), lobbyMemory, clientName)).saveAsConfigurationFile(Paths.get("reformcloud/groups/servers/Lobby.json"));
+        new Configuration().addProperty("group", new LobbyGroup(SpigotVersions.getByName(provider), lobbyMemory, clientName)).write(Paths.get("reformcloud/groups/servers/Lobby.json"));
 
         loggerProvider.info("How many mb ram should the default Proxy-Group have?");
         int memory = this.readInt(loggerProvider, integer -> integer >= 50);
@@ -135,7 +135,7 @@ public class CloudConfiguration {
         ProxyVersions.sorted().values().forEach(e -> loggerProvider.info("   " + e.name()));
         String in = this.readString(loggerProvider, s -> ProxyVersions.getByName(s) != null);
 
-        new Configuration().addProperty("group", new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in))).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/Proxy.json"));
+        new Configuration().addProperty("group", new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in))).write(Paths.get("reformcloud/groups/proxies/Proxy.json"));
 
         loggerProvider.info("Do you want to load the sign addon [\"yes\", \"no\"]");
         String signs = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
@@ -153,7 +153,7 @@ public class CloudConfiguration {
 
         new Configuration().addProperty("users",
                 Collections.singletonList(new WebUser("administrator", StringEncrypt.encrypt(web),
-                        ReformCloudLibraryService.concurrentHashMap()))).saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
+                        ReformCloudLibraryService.concurrentHashMap()))).write(Paths.get("reformcloud/users.json"));
 
         loggerProvider.info("New default WebUser \"administrator\" was created with password \"" + web + "\"");
         this.init(controllerIP, lang);
@@ -181,10 +181,10 @@ public class CloudConfiguration {
         this.keyFile = properties.getProperty("ssl.keyFilePath", StringUtil.NULL);
         this.loadedLang = properties.getProperty("general.language");
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/clients.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/clients.json"));
         this.clients = configuration.getValue("client", new TypeToken<List<Client>>() {
         }.getType());
-        this.webUsers = Configuration.loadConfiguration(Paths.get("reformcloud/users.json")).getValue("users", new TypeToken<List<WebUser>>() {
+        this.webUsers = Configuration.parse(Paths.get("reformcloud/users.json")).getValue("users", new TypeToken<List<WebUser>>() {
         }.getType());
 
         this.controllerKey = FileUtils.readFileAsString(new File("reformcloud/files/ControllerKEY"));
@@ -198,7 +198,7 @@ public class CloudConfiguration {
             for (File file : dir.listFiles()) {
                 if (file.getName().endsWith(".json")) {
                     try {
-                        configuration = Configuration.loadConfiguration(file);
+                        configuration = Configuration.parse(file);
                         ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getSERVER_GROUP_TYPE());
                         serverGroups.add(serverGroup);
                     } catch (final Throwable throwable) {
@@ -218,7 +218,7 @@ public class CloudConfiguration {
             for (File file : dir.listFiles()) {
                 if (file.getName().endsWith(".json")) {
                     try {
-                        configuration = Configuration.loadConfiguration(file);
+                        configuration = Configuration.parse(file);
                         ProxyGroup proxyGroup = configuration.getValue("group", TypeTokenAdaptor.getPROXY_GROUP_TYPE());
                         proxyGroups.add(proxyGroup);
                     } catch (final Throwable throwable) {
@@ -272,15 +272,15 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/selectors selector <signs> remove <group-name>")
                     .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/selectors selector <signs> list")
 
-                    .saveAsConfigurationFile(Paths.get(messagePath));
+                    .write(Paths.get(messagePath));
         }
 
-        ReformCloudController.getInstance().getInternalCloudNetwork().setMessages(Configuration.loadConfiguration(Paths.get(messagePath)));
+        ReformCloudController.getInstance().getInternalCloudNetwork().setMessages(Configuration.parse(Paths.get(messagePath)));
         ReformCloudController.getInstance().getInternalCloudNetwork().setPrefix(ReformCloudController.getInstance().getInternalCloudNetwork().getMessages().getStringValue("internal-global-prefix"));
     }
 
     public void createServerGroup(final ServerGroup serverGroup) {
-        new Configuration().addProperty("group", serverGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
+        new Configuration().addProperty("group", serverGroup).write(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
         ReformCloudController.getInstance().getLoggerProvider().info("Loading ServerGroup [Name=" + serverGroup.getName() + "/Clients=" + serverGroup.getClients() + "]...");
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().put(serverGroup.getName(), serverGroup);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
@@ -289,7 +289,7 @@ public class CloudConfiguration {
     }
 
     public void createProxyGroup(final ProxyGroup proxyGroup) {
-        new Configuration().addProperty("group", proxyGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
+        new Configuration().addProperty("group", proxyGroup).write(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
         ReformCloudController.getInstance().getLoggerProvider().info("Loading ProxyGroup [Name=" + proxyGroup.getName() + "/Clients=" + proxyGroup.getClients() + "]...");
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().put(proxyGroup.getName(), proxyGroup);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
@@ -298,12 +298,12 @@ public class CloudConfiguration {
     }
 
     public void createClient(final Client client) {
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/clients.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/clients.json"));
 
         List<Client> clients = configuration.getValue("client", new TypeToken<List<Client>>() {
         }.getType());
         clients.add(client);
-        configuration.addProperty("client", clients).saveAsConfigurationFile(Paths.get("reformcloud/clients.json"));
+        configuration.addProperty("client", clients).write(Paths.get("reformcloud/clients.json"));
 
         ReformCloudController.getInstance().getLoggerProvider().info("Loading Client [Name=" + client.getName() + "/Address=" + client.getIp() + "]...");
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients().put(client.getName(), client);
@@ -313,18 +313,18 @@ public class CloudConfiguration {
     }
 
     public void createWebUser(final WebUser webUser) {
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/users.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/users.json"));
         this.webUsers.add(webUser);
-        configuration.addProperty("users", this.webUsers).saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
+        configuration.addProperty("users", this.webUsers).write(Paths.get("reformcloud/users.json"));
     }
 
     public void updateWebUser(final WebUser webUser) {
         List<WebUser> users = new ArrayList<>(this.webUsers);
         users.parallelStream().filter(e -> webUser.getUser().equals(e.getUser())).forEach(e -> this.webUsers.remove(e));
         this.webUsers.add(webUser);
-        Configuration.loadConfiguration(Paths.get("reformcloud/users.json"))
+        Configuration.parse(Paths.get("reformcloud/users.json"))
                 .addProperty("users", this.webUsers)
-                .saveAsConfigurationFile(Paths.get("reformcloud/users.json"));
+                .write(Paths.get("reformcloud/users.json"));
     }
 
     public void updateServerGroup(final ServerGroup serverGroup) {
@@ -334,7 +334,7 @@ public class CloudConfiguration {
             e.printStackTrace();
         }
 
-        new Configuration().addProperty("group", serverGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
+        new Configuration().addProperty("group", serverGroup).write(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().remove(serverGroup.getName());
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().put(serverGroup.getName(), serverGroup);
 
@@ -348,7 +348,7 @@ public class CloudConfiguration {
             e.printStackTrace();
         }
 
-        new Configuration().addProperty("group", proxyGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
+        new Configuration().addProperty("group", proxyGroup).write(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().remove(proxyGroup.getName());
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().put(proxyGroup.getName(), proxyGroup);
 
@@ -388,12 +388,12 @@ public class CloudConfiguration {
     }
 
     public void deleteClient(final Client client) {
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/clients.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/clients.json"));
 
         List<Client> clients = configuration.getValue("client", new TypeToken<List<Client>>() {
         }.getType());
         clients.remove(client);
-        configuration.addProperty("client", clients).saveAsConfigurationFile(Paths.get("reformcloud/clients.json"));
+        configuration.addProperty("client", clients).write(Paths.get("reformcloud/clients.json"));
 
         ReformCloudController.getInstance().getLoggerProvider().info("Deleting Client [Name=" + client.getName() + "/Address=" + client.getIp() + "]...");
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients().remove(client.getName());
@@ -405,13 +405,13 @@ public class CloudConfiguration {
     public void addPlayerToWhitelist(final String group, UUID playerUuid) {
         ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(group);
         proxyGroup.getWhitelist().add(playerUuid);
-        Configuration.loadConfiguration(Paths.get("reformcloud/groups/proxies/" + group + ".json")).addProperty("group", proxyGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
+        Configuration.parse(Paths.get("reformcloud/groups/proxies/" + group + ".json")).addProperty("group", proxyGroup).write(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
     }
 
     public void removePlayerFromWhitelist(final String group, final UUID playerUuid) {
         ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(group);
         proxyGroup.getWhitelist().remove(playerUuid);
-        Configuration.loadConfiguration(Paths.get("reformcloud/groups/proxies/" + group + ".json")).addProperty("group", proxyGroup).saveAsConfigurationFile(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
+        Configuration.parse(Paths.get("reformcloud/groups/proxies/" + group + ".json")).addProperty("group", proxyGroup).write(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
     }
 
     public String readString(final LoggerProvider loggerProvider, Checkable<String> checkable) {

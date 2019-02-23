@@ -29,10 +29,10 @@ public final class DiscordConfig implements Serializable {
                             "NTQ0MTIyMTMwMzEzMjQ4NzY5.D0Ggvg.eMhB10edmYVmYo1-zg_u2nUNsD0",
                             "535909711178891279",
                             "ReformCloud - The official CloudSystem"
-                    )).saveAsConfigurationFile(Paths.get("reformcloud/addons/discord/config.json"));
+                    )).write(Paths.get("reformcloud/addons/discord/config.json"));
         }
 
-        this.discordInformations = Configuration.loadConfiguration(Paths.get("reformcloud/addons/discord/config.json"))
+        this.discordInformations = Configuration.parse(Paths.get("reformcloud/addons/discord/config.json"))
                 .getValue("config", new TypeToken<DiscordInformations>() {
                 }.getType());
     }

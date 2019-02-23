@@ -9,6 +9,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.AllArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.api.IEventHandler;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.IncomingPacketEvent;
 import systems.reformcloud.event.events.PacketHandleSuccessEvent;
@@ -66,6 +67,12 @@ public class ChannelReader extends SimpleChannelInboundHandler {
 
             return;
         }
+
+        if (packet.getConfiguration().contains("from"))
+            IEventHandler.instance.get().handleCustomPacket(packet.getConfiguration().getStringValue("from"),
+                    packet.getType(), packet.getConfiguration());
+        else
+            IEventHandler.instance.get().handleCustomPacket("unknown", packet.getType(), packet.getConfiguration());
 
         if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration()))
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(true, packet));

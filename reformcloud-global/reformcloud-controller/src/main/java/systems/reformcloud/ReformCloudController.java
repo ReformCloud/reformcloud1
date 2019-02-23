@@ -9,6 +9,7 @@ import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
+import systems.reformcloud.api.network.event.EventAdapter;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
@@ -151,6 +152,8 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 && StringUtil.OS_NAME.toLowerCase().contains("linux")) {
             statisticsProvider.addRootStartup();
         }
+
+        new EventAdapter();
 
         if (cloudConfiguration.getWebAddress() != null)
             reformWebServer = new ReformWebServer(cloudConfiguration.getWebAddress(), ssl,

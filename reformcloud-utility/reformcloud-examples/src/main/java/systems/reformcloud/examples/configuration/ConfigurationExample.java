@@ -27,10 +27,10 @@ public class ConfigurationExample {
                     .addConfigurationProperty("config", new Configuration()) //Adds a full configuration
 
                     .addIntegerProperty("int", 1) //Adds an Integer into the configuration
-                    .saveAsConfigurationFile(Paths.get("URLClassPath.json")); //saves it as a file : !! Don't forget the .json !!
+                    .write(Paths.get("URLClassPath.json")); //saves it as a file : !! Don't forget the .json !!
         }
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("URLClassPath.json")); //loads an existing configuration
+        Configuration configuration = Configuration.parse(Paths.get("URLClassPath.json")); //loads an existing configuration
 
         configuration.getStringValue("key"); //returns the given String
 

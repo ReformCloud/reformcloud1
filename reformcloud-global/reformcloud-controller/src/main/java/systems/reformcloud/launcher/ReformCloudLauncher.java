@@ -31,9 +31,6 @@ final class ReformCloudLauncher {
      * @param args
      * @throws Throwable
      */
-
-    private static ReformCloudLauncher instance;
-
     public static synchronized void main(String[] args) throws Throwable {
         final List<String> options = Arrays.asList(args);
 
@@ -93,12 +90,6 @@ final class ReformCloudLauncher {
             }
         } catch (final Throwable throwable) {
             StringUtil.printError(loggerProvider, "Error while reading command line", throwable);
-        }
-    }
-
-    public class Test {
-        public Test() {
-
         }
     }
 }

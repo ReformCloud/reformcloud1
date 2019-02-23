@@ -5,8 +5,7 @@
 package systems.reformcloud.configurations;
 
 import com.google.gson.JsonObject;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
@@ -25,8 +24,7 @@ import java.nio.file.Path;
  * Class to create easier Configuration files
  */
 
-@Getter
-@Setter
+@Data
 public final class Configuration {
     protected JsonObject jsonObject;
 
@@ -119,7 +117,7 @@ public final class Configuration {
         return jsonObject.has(key) ? new Configuration(jsonObject.get(key).getAsJsonObject()) : null;
     }
 
-    private boolean saveAsConfigurationFile(File backend) {
+    private boolean write(File backend) {
         if (backend.exists())
             backend.delete();
 
@@ -132,11 +130,11 @@ public final class Configuration {
         return false;
     }
 
-    public boolean saveAsConfigurationFile(Path path) {
-        return this.saveAsConfigurationFile(path.toFile());
+    public boolean write(Path path) {
+        return this.write(path.toFile());
     }
 
-    public static Configuration loadConfiguration(File file) {
+    public static Configuration parse(File file) {
         try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8.name()); BufferedReader bufferedReader = new BufferedReader(reader)) {
             return new Configuration(ReformCloudLibraryService.PARSER.parse(bufferedReader).getAsJsonObject());
         } catch (final IOException ex) {
@@ -145,8 +143,8 @@ public final class Configuration {
         return new Configuration();
     }
 
-    public static Configuration loadConfiguration(Path path) {
-        return loadConfiguration(path.toFile());
+    public static Configuration parse(Path path) {
+        return parse(path.toFile());
     }
 
     @Deprecated

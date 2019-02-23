@@ -36,16 +36,16 @@ public final class LanguageManager implements Serializable {
 
         if (!Files.exists(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json"))) {
             if (lang.equalsIgnoreCase("german")) {
-                new Configuration().addProperty("lang", new German()).saveAsConfigurationFile(Paths.get("reformcloud/language/german.json"));
+                new Configuration().addProperty("lang", new German()).write(Paths.get("reformcloud/language/german.json"));
             } else if (lang.equalsIgnoreCase("english")) {
-                new Configuration().addProperty("lang", new English()).saveAsConfigurationFile(Paths.get("reformcloud/language/english.json"));
+                new Configuration().addProperty("lang", new English()).write(Paths.get("reformcloud/language/english.json"));
             } else {
                 this.loaded = new English();
                 return;
             }
         }
 
-        loaded = Configuration.loadConfiguration(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json")).getValue("lang", new TypeToken<Language>() {
+        loaded = Configuration.parse(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json")).getValue("lang", new TypeToken<Language>() {
         }.getType());
     }
 }

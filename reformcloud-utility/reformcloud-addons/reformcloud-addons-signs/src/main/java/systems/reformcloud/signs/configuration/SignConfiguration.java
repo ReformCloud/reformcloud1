@@ -75,10 +75,10 @@ public class SignConfiguration {
                             new SignLayout(new String[]{"§0§m-------------", "  Server", " ", "§0§m-------------"}),
                             new SignLayout(new String[]{"§0§m-------------", "  Server", " ", "§0§m-------------"})
                     })
-            )).saveAsConfigurationFile(Paths.get("reformcloud/signs/" + path));
+            )).write(Paths.get("reformcloud/signs/" + path));
         }
 
-        this.signLayoutConfiguration = Configuration.loadConfiguration(Paths.get("reformcloud/signs/" + path)).getValue("config", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
+        this.signLayoutConfiguration = Configuration.parse(Paths.get("reformcloud/signs/" + path)).getValue("config", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
         this.loadSigns();
     }
 
@@ -92,9 +92,9 @@ public class SignConfiguration {
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutCreateSign(sign));
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/database/signs/database.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/database/signs/database.json"));
         configuration.addProperty("signs", this.signMap.values());
-        configuration.saveAsConfigurationFile(Paths.get("reformcloud/database/signs/database.json"));
+        configuration.write(Paths.get("reformcloud/database/signs/database.json"));
     }
 
     /**
@@ -107,10 +107,10 @@ public class SignConfiguration {
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutRemoveSign(sign));
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/database/signs/database.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/database/signs/database.json"));
         configuration.remove("signs");
         configuration.addProperty("signs", this.signMap.values());
-        configuration.saveAsConfigurationFile(Paths.get("reformcloud/database/signs/database.json"));
+        configuration.write(Paths.get("reformcloud/database/signs/database.json"));
     }
 
     /**
@@ -118,9 +118,9 @@ public class SignConfiguration {
      */
     public void loadSigns() {
         if (!Files.exists(Paths.get("reformcloud/database/signs/database.json")))
-            new Configuration().addProperty("signs", new ArrayList<>()).saveAsConfigurationFile(Paths.get("reformcloud/database/signs/database.json"));
+            new Configuration().addProperty("signs", new ArrayList<>()).write(Paths.get("reformcloud/database/signs/database.json"));
 
-        Configuration configuration = Configuration.loadConfiguration(Paths.get("reformcloud/database/signs/database.json"));
+        Configuration configuration = Configuration.parse(Paths.get("reformcloud/database/signs/database.json"));
         List<Sign> signs = configuration.getValue("signs", new TypeToken<List<Sign>>() {
         }.getType());
 

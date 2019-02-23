@@ -47,10 +47,10 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
                     0,
                     0,
                     0
-            )).saveAsConfigurationFile(Paths.get("reformcloud/database/stats/stats.json"));
+            )).write(Paths.get("reformcloud/database/stats/stats.json"));
         }
 
-        this.stats = Configuration.loadConfiguration(Paths.get("reformcloud/database/stats/stats.json"))
+        this.stats = Configuration.parse(Paths.get("reformcloud/database/stats/stats.json"))
                 .getValue("stats", new TypeToken<Stats>() {
                 }.getType());
     }
@@ -61,9 +61,9 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
             return;
 
         this.setLastShutdown();
-        Configuration.loadConfiguration(Paths.get("reformcloud/database/stats/stats.json"))
+        Configuration.parse(Paths.get("reformcloud/database/stats/stats.json"))
                 .addProperty("stats", this.stats)
-                .saveAsConfigurationFile(Paths.get("reformcloud/database/stats/stats.json"));
+                .write(Paths.get("reformcloud/database/stats/stats.json"));
     }
 
     public void addLogin() {

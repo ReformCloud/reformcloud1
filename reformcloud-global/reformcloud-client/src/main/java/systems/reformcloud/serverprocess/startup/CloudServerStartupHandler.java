@@ -222,7 +222,7 @@ public class CloudServerStartupHandler {
                 .addStringProperty("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
                 .addProperty("startupInfo", serverStartupInfo)
 
-                .saveAsConfigurationFile(Paths.get(path + "/reformcloud/config.json"));
+                .write(Paths.get(path + "/reformcloud/config.json"));
 
         this.screenHandler = new ScreenHandler(serverInfo.getCloudProcess().getName());
 

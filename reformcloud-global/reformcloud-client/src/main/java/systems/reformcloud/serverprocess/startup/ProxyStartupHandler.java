@@ -188,7 +188,7 @@ public class ProxyStartupHandler {
                 .addBooleanProperty("ssl", ReformCloudClient.getInstance().getNettySocketClient().getSslContext() != null)
                 .addProperty("startupInfo", proxyStartupInfo)
 
-                .saveAsConfigurationFile(Paths.get(path + "/reformcloud/config.json"));
+                .write(Paths.get(path + "/reformcloud/config.json"));
 
         this.screenHandler = new ScreenHandler(proxyInfo.getCloudProcess().getName());
 
