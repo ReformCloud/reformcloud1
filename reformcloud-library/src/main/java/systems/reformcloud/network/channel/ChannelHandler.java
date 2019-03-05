@@ -206,7 +206,7 @@ public class ChannelHandler {
         UUID result = UUID.randomUUID();
         packet.setResult(result);
         packet.getConfiguration().addStringProperty("from", from);
-        results.put(result, null);
+        results.put(result, new Packet().emptyPacket());
 
         packetTask.schedule(() -> {
             this.channelHandlerContextMap.get(channel).channel().writeAndFlush(packet);
@@ -218,10 +218,8 @@ public class ChannelHandler {
         while (results.get(result) == null) {
             i++;
 
-            if (i >= 100000) {
-                this.results.put(result, new Packet().emptyPacket());
+            if (i >= 100000)
                 break;
-            }
 
             try {
                 Thread.sleep(0, 50000);
