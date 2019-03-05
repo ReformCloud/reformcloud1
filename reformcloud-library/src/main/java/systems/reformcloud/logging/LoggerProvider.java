@@ -306,7 +306,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
 
     public String uploadLog(String input) {
         HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost("https://paste.reformcloud.systems/documents");
+        HttpPost post = new HttpPost("https://paste.reformcloud.systems");
 
         try {
             post.setEntity(new StringEntity(input.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")));
