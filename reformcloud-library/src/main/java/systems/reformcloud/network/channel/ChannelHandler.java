@@ -196,15 +196,22 @@ public class ChannelHandler {
     }
 
     public boolean sendPacketQuery(final String channel, final String from, final Packet packet, final NetworkQueryInboundHandler handler) {
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5sending query");
+
         if (!this.channelHandlerContextMap.containsKey(channel))
             return false;
+
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5channel izz da");
 
         UUID result = UUID.randomUUID();
         packet.setResult(result);
         packet.getConfiguration().addStringProperty("from", from);
         results.put(result, null);
 
-        packetTask.schedule(() -> this.channelHandlerContextMap.get(channel).channel().writeAndFlush(packet));
+        packetTask.schedule(() -> {
+            this.channelHandlerContextMap.get(channel).channel().writeAndFlush(packet);
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5sended in task");
+        });
 
         int i = 0;
 
@@ -222,6 +229,7 @@ public class ChannelHandler {
             }
         }
 
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5finished");
         handler.handle(this.results.get(result).getConfiguration(), result);
         return true;
     }
