@@ -316,6 +316,8 @@ public class CloudServerStartupHandler {
 
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
                 && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+            FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName()));
+            FileUtils.createDirectory(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName()));
             FileUtils.copyAllFiles(path, "reformcloud/templates/" + serverStartupInfo.getServerGroup().getName(), "spigot.jar");
         }
 
@@ -329,6 +331,7 @@ public class CloudServerStartupHandler {
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
                 this.serverStartupInfo.getUid(), this.serverStartupInfo.getName(), this.port
         );
+
         if (update)
             ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
 

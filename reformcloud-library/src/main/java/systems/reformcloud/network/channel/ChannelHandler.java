@@ -215,7 +215,7 @@ public class ChannelHandler {
 
         int i = 0;
 
-        while (results.get(result) == null) {
+        while (results.get(result).getResult() == null) {
             i++;
 
             if (i >= 100000)

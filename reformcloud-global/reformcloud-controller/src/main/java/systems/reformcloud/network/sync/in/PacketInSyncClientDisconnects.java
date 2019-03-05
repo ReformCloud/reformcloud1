@@ -37,6 +37,10 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                     );
                     ReformCloudController.getInstance().getCloudProcessOfferService().unregisterID(serverInfo);
                 }
+
+                if (ReformCloudController.getInstance().getScreenSessionProvider().isInScreen(s)) {
+                    ReformCloudController.getInstance().getScreenSessionProvider().leaveScreen();
+                }
             });
 
             clientInfo.getStartedProxies().forEach(s -> {
@@ -46,6 +50,10 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                             proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(), proxyInfo.getPort()
                     );
                     ReformCloudController.getInstance().getCloudProcessOfferService().unregisterProxyID(proxyInfo);
+                }
+
+                if (ReformCloudController.getInstance().getScreenSessionProvider().isInScreen(s)) {
+                    ReformCloudController.getInstance().getScreenSessionProvider().leaveScreen();
                 }
             });
         }
