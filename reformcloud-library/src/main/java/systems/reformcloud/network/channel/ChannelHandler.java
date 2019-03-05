@@ -222,7 +222,7 @@ public class ChannelHandler {
                 break;
 
             try {
-                Thread.sleep(0, 50000);
+                Thread.sleep(0, 500000);
             } catch (final InterruptedException ignored) {
             }
         }
