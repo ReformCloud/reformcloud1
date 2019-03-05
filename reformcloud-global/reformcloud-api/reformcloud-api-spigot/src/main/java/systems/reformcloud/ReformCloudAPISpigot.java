@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import systems.reformcloud.api.IAPIService;
+import systems.reformcloud.api.IEventHandler;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -27,6 +28,7 @@ import systems.reformcloud.meta.server.stats.TempServerStats;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
+import systems.reformcloud.network.api.event.NetworkEventHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.packet.Packet;
@@ -87,6 +89,8 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
 
         this.serverStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getSERVER_STARTUP_INFO_TYPE());
         this.serverInfo = configuration.getValue("info", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+
+        IEventHandler.instance.set(new NetworkEventHandler());
 
         this.getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
                 .registerHandler("UpdateAll", new PacketInUpdateAll())

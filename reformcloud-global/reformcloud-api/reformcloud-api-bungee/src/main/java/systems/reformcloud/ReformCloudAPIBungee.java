@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.api.IAPIService;
+import systems.reformcloud.api.IEventHandler;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -22,6 +23,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
+import systems.reformcloud.network.api.event.NetworkEventAdapter;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.packet.Packet;
@@ -76,6 +78,8 @@ public class ReformCloudAPIBungee implements IAPIService {
 
         this.proxyStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getPROXY_STARTUP_INFO_TYPE());
         this.proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());
+
+        IEventHandler.instance.set(new NetworkEventAdapter());
 
         this.getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
                 .registerHandler("ProcessAdd", new PacketInProcessAdd())
