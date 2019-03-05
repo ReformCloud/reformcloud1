@@ -59,7 +59,7 @@ public final class RestAPIStopServer implements Serializable, WebHandler {
             return fullHttpResponse;
         }
 
-        if (!RestAPIUtility.hasPermission(webUser, "web.api.stop.server")) {
+        if (!RestAPIUtility.hasPermission(webUser, "web.api.stop.serve")) {
             answer.addProperty("response", Arrays.asList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;

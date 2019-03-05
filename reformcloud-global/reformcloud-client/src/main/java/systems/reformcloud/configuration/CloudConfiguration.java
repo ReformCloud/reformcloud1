@@ -41,7 +41,7 @@ public class CloudConfiguration {
      */
     public CloudConfiguration(final boolean reload) {
         if (!Files.exists(Paths.get("configuration.properties")) && !Files.exists(Paths.get("ControllerKEY"))) {
-            ReformCloudClient.getInstance().getLoggerProvider().err("Please copy the \"ControllerKEY\" file in the root directory of the client");
+            ReformCloudClient.getInstance().getLoggerProvider().serve("Please copy the \"ControllerKEY\" file in the root directory of the client");
             ReformCloudLibraryService.sleep(2000);
             System.exit(-1);
             return;

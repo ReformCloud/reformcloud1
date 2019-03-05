@@ -58,12 +58,18 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                     packet, channelHandlerContext, channelHandler);
         }
 
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Receiving packet |:" + packet.getType());
+
         if (packet.getResult() != null) {
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Packet is query packet");
             if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().isQueryHandlerRegistered(packet.getType())) {
                 ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
                         .getQueryHandler(packet.getType()).handle(packet.getConfiguration(), packet.getResult());
-            } else
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Packet has query handler");
+            } else  {
                 channelHandler.getResults().put(packet.getResult(), packet);
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Packet was query send");
+            }
 
             return;
         }
@@ -93,7 +99,7 @@ public class ChannelReader extends SimpleChannelInboundHandler {
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         if (!(cause instanceof IOException)) {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().err("An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.");
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.");
             cause.printStackTrace();
         }
     }

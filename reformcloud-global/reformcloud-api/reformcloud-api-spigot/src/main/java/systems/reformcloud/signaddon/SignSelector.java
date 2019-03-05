@@ -170,7 +170,7 @@ public final class SignSelector {
             for (int i = 0; i < 4; i++) {
                 lines[i] = ChatColor.translateAlternateColorCodes('&', lines[i]
                         .replace("%group%", serverInfo.getServerGroup().getName())
-                        .replace("%server%", serverInfo.getCloudProcess().getName())
+                        .replace("%serve%", serverInfo.getCloudProcess().getName())
                         .replace("%motd%", serverInfo.getMotd())
                         .replace("%online_players%", Integer.toString(serverInfo.getOnlinePlayers().size()))
                         .replace("%max_players%", Integer.toString(serverInfo.getServerGroup().getMaxPlayers()))

@@ -18,18 +18,18 @@ import java.io.Serializable;
 
 public final class CommandExecute extends Command implements Serializable {
     public CommandExecute() {
-        super("execute", "Executes a command on a server or proxy", "reformcloud.command.execute", new String[]{"exec"});
+        super("execute", "Executes a command on a serve or proxy", "reformcloud.command.execute", new String[]{"exec"});
     }
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length < 3) {
-            commandSender.sendMessage("execute <server/proxy> <name/--all> <command>");
+            commandSender.sendMessage("execute <serve/proxy> <name/--all> <command>");
             return;
         }
 
         switch (args[0].toLowerCase()) {
-            case "server": {
+            case "serve": {
                 if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[1]) != null) {
                     StringBuilder stringBuilder = new StringBuilder();
                     for (short i = 2; i < args.length; i++)
@@ -74,7 +74,7 @@ public final class CommandExecute extends Command implements Serializable {
                 break;
             }
             default: {
-                commandSender.sendMessage("execute <server/proxy> <name> <command>");
+                commandSender.sendMessage("execute <serve/proxy> <name> <command>");
             }
         }
     }

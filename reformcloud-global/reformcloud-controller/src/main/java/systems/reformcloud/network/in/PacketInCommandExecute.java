@@ -22,7 +22,7 @@ public final class PacketInCommandExecute implements NetworkInboundHandler {
                 .replace("%uuid%", String.valueOf(configuration.getValue("uuid", UUID.class)))
                 .replace("%proxy%", configuration.getStringValue("proxyName"))
                 .replace("%command%", configuration.getStringValue("command"))
-                .replace("%server%", configuration.getStringValue("server")));
+                .replace("%serve%", configuration.getStringValue("serve")));
         ReformCloudController.getInstance().getStatisticsProvider().addIngameCommand();
     }
 }

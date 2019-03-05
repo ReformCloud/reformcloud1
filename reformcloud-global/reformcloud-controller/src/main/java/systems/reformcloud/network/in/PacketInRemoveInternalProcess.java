@@ -30,7 +30,7 @@ public final class PacketInRemoveInternalProcess implements NetworkInboundHandle
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutStopProcess(proxyInfo.getCloudProcess().getName()));
                 break;
             }
-            case "server": {
+            case "serve": {
                 final ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(configuration.getValue("uid", UUID.class));
 
                 if (serverInfo == null)

@@ -130,7 +130,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      *
      * @param message
      */
-    public void err(String message) {
+    public void serve(String message) {
         super.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
@@ -160,7 +160,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(cause.getMessage()).append("\n");
         Arrays.stream(cause.getStackTrace()).forEach(e -> stringBuilder.append("    " + e).append("\n"));
-        this.err(stringBuilder.substring(0));
+        this.serve(stringBuilder.substring(0));
 
         this.handleAll(stringBuilder.substring(0));
     }

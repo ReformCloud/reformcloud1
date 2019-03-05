@@ -80,8 +80,8 @@ public class CloudConfiguration {
 
         Properties properties = new Properties();
 
-        properties.setProperty("server.ip", ip);
-        properties.setProperty("server.port", 5000 + StringUtil.EMPTY);
+        properties.setProperty("serve.ip", ip);
+        properties.setProperty("serve.port", 5000 + StringUtil.EMPTY);
 
         properties.setProperty("webServer.enabled", true + StringUtil.EMPTY);
         properties.setProperty("webServer.ip", ip);
@@ -91,7 +91,7 @@ public class CloudConfiguration {
         properties.setProperty("ssl.keyFilePath", StringUtil.NULL);
 
         properties.setProperty("general.language", lang.toLowerCase());
-        properties.setProperty("general.server-separator", "-");
+        properties.setProperty("general.serve-separator", "-");
 
         try (OutputStream outputStream = Files.newOutputStream(Paths.get("configuration.properties"))) {
             properties.store(outputStream, "ReformCloud default Configuration");
@@ -169,10 +169,10 @@ public class CloudConfiguration {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load configuration", ex);
         }
 
-        this.host = properties.getProperty("server.ip");
-        this.nettyAddress = new EthernetAddress(this.host, Integer.parseInt(properties.getProperty("server.port")));
+        this.host = properties.getProperty("serve.ip");
+        this.nettyAddress = new EthernetAddress(this.host, Integer.parseInt(properties.getProperty("serve.port")));
 
-        this.splitter = properties.getProperty("general.server-separator");
+        this.splitter = properties.getProperty("general.serve-separator");
 
         if (Boolean.parseBoolean(properties.getProperty("webServer.enabled"))) {
             this.webAddress = new EthernetAddress(properties.getProperty("webServer.ip"), Integer.parseInt(properties.getProperty("webServer.port")));
@@ -203,7 +203,7 @@ public class CloudConfiguration {
                         serverGroups.add(serverGroup);
                     } catch (final Throwable throwable) {
                         StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load ServerGroup", throwable);
-                        ReformCloudController.getInstance().getLoggerProvider().err("Failed to load ServerGroup " + file.getName() + "!");
+                        ReformCloudController.getInstance().getLoggerProvider().serve("Failed to load ServerGroup " + file.getName() + "!");
                     }
                 }
             }
@@ -223,7 +223,7 @@ public class CloudConfiguration {
                         proxyGroups.add(proxyGroup);
                     } catch (final Throwable throwable) {
                         StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load ProxyGroup", throwable);
-                        ReformCloudController.getInstance().getLoggerProvider().err("Failed to load DefaultProxyGroup " + file.getName() + "!");
+                        ReformCloudController.getInstance().getLoggerProvider().serve("Failed to load DefaultProxyGroup " + file.getName() + "!");
                     }
                 }
             }
@@ -238,25 +238,25 @@ public class CloudConfiguration {
 
                     .addStringProperty("internal-api-bungee-command-no-permission", "§cYou do not have permission to execute this command")
 
-                    .addStringProperty("internal-api-bungee-command-hub-already", "%prefix% §7You are already connected to a hub server")
-                    .addStringProperty("internal-api-bungee-command-hub-not-available", "%prefix% §7There is now hub server available")
+                    .addStringProperty("internal-api-bungee-command-hub-already", "%prefix% §7You are already connected to a hub serve")
+                    .addStringProperty("internal-api-bungee-command-hub-not-available", "%prefix% §7There is now hub serve available")
 
-                    .addStringProperty("internal-api-bungee-command-jumpto-server-player-not-found", "%prefix% §cCould not find player or server to go to")
-                    .addStringProperty("internal-api-bungee-command-jumpto-success", "%prefix% §aYou was connected to the server")
+                    .addStringProperty("internal-api-bungee-command-jumpto-serve-player-not-found", "%prefix% §cCould not find player or serve to go to")
+                    .addStringProperty("internal-api-bungee-command-jumpto-success", "%prefix% §aYou was connected to the serve")
 
                     .addStringProperty("internal-api-bungee-command-reformcloud-invalid-syntax", "%prefix% §7/reformcloud <command>")
                     .addStringProperty("internal-api-bungee-command-reformcloud-no-permission", "%prefix% §7Command not allowed")
                     .addStringProperty("internal-api-bungee-command-reformcloud-command-success", "%prefix% §7Command has been executed successfully \n §7Please check the Controller Console for more details")
 
                     .addStringProperty("internal-api-bungee-maintenance-join-no-permission", "§cWhitelist is enabled, but you are not added")
-                    .addStringProperty("internal-api-bungee-connect-hub-no-server", "%prefix% §7There is no hub server available")
+                    .addStringProperty("internal-api-bungee-connect-hub-no-serve", "%prefix% §7There is no hub serve available")
 
-                    .addStringProperty("internal-api-bungee-startup-server", "%prefix% §7ServerProcess §6%server-name% §7is starting...")
+                    .addStringProperty("internal-api-bungee-startup-serve", "%prefix% §7ServerProcess §6%serve-name% §7is starting...")
                     .addStringProperty("internal-api-bungee-startup-proxy", "%prefix% §7ProxyProcess §6%proxy-name% §7is starting...")
-                    .addStringProperty("internal-api-bungee-remove-server", "%prefix% §7ServerProcess §6%server-name% §7is stopping...")
+                    .addStringProperty("internal-api-bungee-remove-serve", "%prefix% §7ServerProcess §6%serve-name% §7is stopping...")
                     .addStringProperty("internal-api-bungee-remove-proxy", "%prefix% §7ProxyProcess §6%proxy-name% §7is stopping...")
 
-                    .addStringProperty("internal-api-spigot-connect-no-permission", "%prefix% §cYou do not have permission to join this server")
+                    .addStringProperty("internal-api-spigot-connect-no-permission", "%prefix% §cYou do not have permission to join this serve")
                     .addStringProperty("internal-api-spigot-connect-only-proxy", "%prefix% §cOnly Proxy join allowed")
 
                     .addStringProperty("internal-api-spigot-command-signs-not-enabled", "%prefix% §7Signs aren't enabled")

@@ -34,7 +34,7 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
     private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup(), bossGroup = ReformCloudLibraryService.eventLoopGroup();
 
     /**
-     * Prepares a socket server by using io.network and binds him using
+     * Prepares a socket serve by using io.network and binds him using
      * {@link ServerBootstrap} synchronized on the main thread. This
      * is blocking and will await the bind. If ssl is enabled the
      * {@link SslContext} will be prepared first by using an self-
@@ -53,7 +53,7 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
      *                              will be added to every channel, which tries to
      *                              connect to the ReformCloudController
      * @param ethernetAddress    Main address where the cloud tries to bind
-     *                              the socket server to. Please make sure that
+     *                              the socket serve to. Please make sure that
      *                              the port is not in use, yet
      */
     public NettySocketServer(boolean ssl, EthernetAddress ethernetAddress, File cert, File key) {
@@ -90,14 +90,14 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
                                     .replace("%ip%", ethernetAddress.getHost())
                                     .replace("%port%", Integer.toString(ethernetAddress.getPort())));
                         else
-                            ReformCloudController.getInstance().getLoggerProvider().err(ReformCloudController.getInstance().getLoadedLanguage().getNetty_server_bound()
+                            ReformCloudController.getInstance().getLoggerProvider().serve(ReformCloudController.getInstance().getLoadedLanguage().getNetty_server_bound()
                                     .replace("%ip%", ethernetAddress.getHost())
                                     .replace("%port%", Integer.toString(ethernetAddress.getPort())));
                     }).addListener(ChannelFutureListener.CLOSE_ON_FAILURE).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
 
             channelFuture.sync().channel().closeFuture();
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while binding socket server", throwable);
+            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while binding socket serve", throwable);
         }
     }
 

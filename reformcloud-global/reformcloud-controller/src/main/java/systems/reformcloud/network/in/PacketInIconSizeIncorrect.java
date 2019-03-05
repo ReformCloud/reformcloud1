@@ -17,7 +17,7 @@ import java.io.Serializable;
 public final class PacketInIconSizeIncorrect implements Serializable, NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().err("The icon size of proxy " +
+        ReformCloudController.getInstance().getLoggerProvider().serve("The icon size of proxy " +
                 configuration.getStringValue("name") + " is not 64x64. " +
                 "Please correct the mistake, otherwise the icon cannot be used");
     }

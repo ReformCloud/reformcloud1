@@ -81,7 +81,7 @@ public class EventExample extends Listener {
 
     /**
      * Get called when a process was registered in the cloud and the register packet comes
-     * !! NOTE: If you cancel this event, you can't join this server because it will not be registered in the BungeeCord !!
+     * !! NOTE: If you cancel this event, you can't join this serve because it will not be registered in the BungeeCord !!
      */
     @Override
     public void handle(ProcessRegisterEvent event) {

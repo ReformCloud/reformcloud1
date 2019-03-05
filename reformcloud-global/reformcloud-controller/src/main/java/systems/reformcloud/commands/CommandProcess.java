@@ -40,10 +40,10 @@ public final class CommandProcess extends Command implements Serializable {
             commandSender.sendMessage("process stopGroup <group>");
             commandSender.sendMessage("process start <group-name> <number>");
             commandSender.sendMessage("process list");
-            commandSender.sendMessage("process list <server/proxy> <name>");
+            commandSender.sendMessage("process list <serve/proxy> <name>");
             commandSender.sendMessage("");
             commandSender.sendMessage("process queue <client> list");
-            commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
+            commandSender.sendMessage("process queue <client> remove <proxy/serve> <name>");
             return;
         }
 
@@ -76,7 +76,7 @@ public final class CommandProcess extends Command implements Serializable {
                     break;
                 }
 
-                case "server": {
+                case "serve": {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
                             client.getName(), new PacketOutRemoveServerQueueProcess(args[4])
                     );
@@ -90,10 +90,10 @@ public final class CommandProcess extends Command implements Serializable {
                     commandSender.sendMessage("process stopGroup <group>");
                     commandSender.sendMessage("process start <group-name> <number>");
                     commandSender.sendMessage("process list");
-                    commandSender.sendMessage("process list <server/proxy> <name>");
+                    commandSender.sendMessage("process list <serve/proxy> <name>");
                     commandSender.sendMessage("");
                     commandSender.sendMessage("process queue <client> list");
-                    commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
+                    commandSender.sendMessage("process queue <client> remove <proxy/serve> <name>");
                 }
             }
 
@@ -288,7 +288,7 @@ public final class CommandProcess extends Command implements Serializable {
                     });
                 } else {
                     switch (args[1].toLowerCase()) {
-                        case "server": {
+                        case "serve": {
                             List<ServerInfo> connected = new ArrayList<>();
                             ReformCloudController.getInstance()
                                     .getInternalCloudNetwork()
@@ -313,7 +313,7 @@ public final class CommandProcess extends Command implements Serializable {
                             break;
                         }
                         default: {
-                            commandSender.sendMessage("process list <server/proxy> <name>");
+                            commandSender.sendMessage("process list <serve/proxy> <name>");
                             break;
                         }
                     }
@@ -367,10 +367,10 @@ public final class CommandProcess extends Command implements Serializable {
                 commandSender.sendMessage("process stopGroup <group>");
                 commandSender.sendMessage("process start <group-name> <number>");
                 commandSender.sendMessage("process list");
-                commandSender.sendMessage("process list <server/proxy> <name>");
+                commandSender.sendMessage("process list <serve/proxy> <name>");
                 commandSender.sendMessage("");
                 commandSender.sendMessage("process queue <client> list");
-                commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
+                commandSender.sendMessage("process queue <client> remove <proxy/serve> <name>");
             }
         }
     }

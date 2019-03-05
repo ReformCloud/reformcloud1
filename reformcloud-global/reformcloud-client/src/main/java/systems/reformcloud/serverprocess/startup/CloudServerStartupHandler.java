@@ -124,10 +124,10 @@ public class CloudServerStartupHandler {
         this.processStartupStage = ProcessStartupStage.PREPARING;
         if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
             FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/configs/spigot.yml");
-            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/configs/server.properties");
+            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/configs/serve.properties");
         } else {
             FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
-            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
+            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/serve.properties");
         }
 
         this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
@@ -139,17 +139,17 @@ public class CloudServerStartupHandler {
 
         Properties properties = new Properties();
         if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/configs/server.properties")))) {
+            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/configs/serve.properties")))) {
                 properties.load(inputStreamReader);
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load serve.properties", ex);
                 return false;
             }
         } else {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/server.properties")))) {
+            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/serve.properties")))) {
                 properties.load(inputStreamReader);
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load serve.properties", ex);
                 return false;
             }
         }
@@ -160,17 +160,17 @@ public class CloudServerStartupHandler {
         properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
         if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/configs/server.properties"))) {
+            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/configs/serve.properties"))) {
                 properties.store(outputStream, "");
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store serve.properties", ex);
                 return false;
             }
         } else {
-            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/server.properties"))) {
+            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/serve.properties"))) {
                 properties.store(outputStream, "");
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store serve.properties", ex);
                 return false;
             }
         }

@@ -39,7 +39,7 @@ public class LoggerProviderImplementationExample extends LoggerProvider {
     }
 
     @Override
-    public void err(String message) {
+    public void serve(String message) {
         try {
             this.getConsoleReader() //Returns the ConsoleReader of the Cloud
                     .println(AnsiColourHandler.toColouredString("§cI am red §rI have the default colour, because of a reset :("
@@ -48,6 +48,6 @@ public class LoggerProviderImplementationExample extends LoggerProvider {
         } catch (final IOException ignored) {
         }
 
-        super.err(message);
+        super.serve(message);
     }
 }

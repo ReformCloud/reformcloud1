@@ -46,7 +46,7 @@ public final class CommandReformCloud extends Command {
             commandSender.sendMessage(
                     new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name> \n")),
                     new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud execute <server/proxy> <name> <command> \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud execute <serve/proxy> <name> <command> \n")),
                     new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud process <start/stop> <group/name> \n")),
                     new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud reload \n")),
                     new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud version"))
@@ -101,7 +101,7 @@ public final class CommandReformCloud extends Command {
                                 new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
                 commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
             } else
-                commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud execute <server/proxy> <name> <command>"));
+                commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud execute <serve/proxy> <name> <command>"));
 
             return;
         }
@@ -132,7 +132,7 @@ public final class CommandReformCloud extends Command {
         commandSender.sendMessage(
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name> \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud execute <server/proxy> <name> <command> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud execute <serve/proxy> <name> <command> \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud process <start/stop> <group/name> \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud reload \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud version"))

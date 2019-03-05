@@ -41,8 +41,8 @@ public final class CloudProcessListener implements Listener {
         }
 
         ProxyServer.getInstance().getPlayers().forEach(proxiedPlayer -> {
-            if (proxiedPlayer.hasPermission("reformcloud.notify.server"))
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-startup-server").replaceAll("%server-name%", event.getServerInfo().getCloudProcess().getName())));
+            if (proxiedPlayer.hasPermission("reformcloud.notify.serve"))
+                proxiedPlayer.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-startup-serve").replaceAll("%server-name%", event.getServerInfo().getCloudProcess().getName())));
         });
     }
 
@@ -65,8 +65,8 @@ public final class CloudProcessListener implements Listener {
         }
 
         ProxyServer.getInstance().getPlayers().forEach(proxiedPlayer -> {
-            if (proxiedPlayer.hasPermission("reformcloud.notify.server"))
-                proxiedPlayer.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-remove-server").replaceAll("%server-name%", event.getServerInfo().getCloudProcess().getName())));
+            if (proxiedPlayer.hasPermission("reformcloud.notify.serve"))
+                proxiedPlayer.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-remove-serve").replaceAll("%server-name%", event.getServerInfo().getCloudProcess().getName())));
         });
     }
 

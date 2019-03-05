@@ -40,20 +40,20 @@ public final class StringUtil {
     public static void printError(final LoggerProvider loggerProvider, final String whoIAm, final Throwable cause) {
         try {
             for (String s : StringUtil.unusedErrorComment)
-                loggerProvider.err(s);
+                loggerProvider.serve(s);
         } catch (final Throwable ignored) {
-            loggerProvider.err("No comment :(");
+            loggerProvider.serve("No comment :(");
         }
 
-        loggerProvider.emptyLine().err("---------------------------------------------------");
-        loggerProvider.emptyLine().err(whoIAm);
-        loggerProvider.err("If you have an addon which changes something and you see it in the Exception dump below, please report it to the author");
-        loggerProvider.err("If you are unsure or still think that this is a ReformCloud Bug, please visit and report to https://discord.gg/uskXdVZ");
-        loggerProvider.err("Be sure to include ALL relevant console errors and Log files");
-        loggerProvider.err("Reform Version: " + REFORM_VERSION);
-        loggerProvider.err("Reform Specification: " + REFORM_SPECIFICATION);
+        loggerProvider.emptyLine().serve("---------------------------------------------------");
+        loggerProvider.emptyLine().serve(whoIAm);
+        loggerProvider.serve("If you have an addon which changes something and you see it in the Exception dump below, please report it to the author");
+        loggerProvider.serve("If you are unsure or still think that this is a ReformCloud Bug, please visit and report to https://discord.gg/uskXdVZ");
+        loggerProvider.serve("Be sure to include ALL relevant console errors and Log files");
+        loggerProvider.serve("Reform Version: " + REFORM_VERSION);
+        loggerProvider.serve("Reform Specification: " + REFORM_SPECIFICATION);
         loggerProvider.emptyLine();
         loggerProvider.exception(cause);
-        loggerProvider.emptyLine().err("---------------------------------------------------");
+        loggerProvider.emptyLine().serve("---------------------------------------------------");
     }
 }

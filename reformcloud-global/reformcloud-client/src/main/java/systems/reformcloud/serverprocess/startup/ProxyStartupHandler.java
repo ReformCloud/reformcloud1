@@ -114,16 +114,16 @@ public class ProxyStartupHandler {
             ReformCloudLibraryService.sleep(20);
         }
 
-        if (!Files.exists(Paths.get(path + "/server-icon.png")))
-            FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/server-icon.png");
+        if (!Files.exists(Paths.get(path + "/serve-icon.png")))
+            FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/serve-icon.png");
 
         try {
-            BufferedImage bufferedImage = ImageIO.read(new File(path + "/server-icon.png"));
+            BufferedImage bufferedImage = ImageIO.read(new File(path + "/serve-icon.png"));
             if (bufferedImage.getWidth() != 64 || bufferedImage.getHeight() != 64) {
                 ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
                         new PacketOutIconSizeIncorrect(this.proxyStartupInfo.getName()));
-                FileUtils.deleteFileIfExists(Paths.get(path + "/server-icon.png"));
-                FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/server-icon.png");
+                FileUtils.deleteFileIfExists(Paths.get(path + "/serve-icon.png"));
+                FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/serve-icon.png");
             }
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error while reading image", ex);

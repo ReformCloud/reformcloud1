@@ -55,7 +55,7 @@ public final class RestAPIServerGroupList implements Serializable, WebHandler {
             return fullHttpResponse;
         }
 
-        if (!RestAPIUtility.hasPermission(webUser, "web.api.list.groups.server")) {
+        if (!RestAPIUtility.hasPermission(webUser, "web.api.list.groups.serve")) {
             answer.addProperty("response", Arrays.asList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;

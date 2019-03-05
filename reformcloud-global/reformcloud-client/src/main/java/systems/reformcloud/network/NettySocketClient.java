@@ -95,9 +95,9 @@ public class NettySocketClient implements AutoCloseable {
             connections = -1;
         } catch (final Throwable throwable) {
             connections++;
-            ReformCloudClient.getInstance().getLoggerProvider().err("ReformCloud could not connect to " + ethernetAddress.getHost() + ":" + ethernetAddress.getPort());
+            ReformCloudClient.getInstance().getLoggerProvider().serve("ReformCloud could not connect to " + ethernetAddress.getHost() + ":" + ethernetAddress.getPort());
             if (throwable.getCause() != null) {
-                ReformCloudClient.getInstance().getLoggerProvider().err("The following error occurred: " + throwable.getCause().toString());
+                ReformCloudClient.getInstance().getLoggerProvider().serve("The following error occurred: " + throwable.getCause().toString());
             }
         }
     }
