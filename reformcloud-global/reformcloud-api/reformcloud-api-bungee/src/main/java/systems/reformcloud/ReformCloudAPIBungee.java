@@ -94,7 +94,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 configuration.getStringValue("controllerKey"), this.proxyStartupInfo.getName()
         );
 
-        this.getChannelHandler().sendPacketQuery("ReformController", "Proxy-01", new Packet(
+        this.getChannelHandler().sendPacketQuery("ReformCloudController", "Proxy-01", new Packet(
                 "QueryGetPlayer", new Configuration()
         ), (configuration1, result) -> {
             DefaultPlayer defaultPlayer = configuration.getValue("result", new TypeToken<DefaultPlayer>() {

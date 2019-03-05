@@ -306,14 +306,14 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
 
     public String uploadLog(String input) {
         HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost("https://haste.reformcloud.systems/documents");
+        HttpPost post = new HttpPost("https://paste.reformcloud.systems/documents");
 
         try {
             post.setEntity(new StringEntity(input.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")));
 
             HttpResponse response = client.execute(post);
             final String result = EntityUtils.toString(response.getEntity());
-            return "https://haste.reformcloud.systems/" + ReformCloudLibraryService.PARSER.parse(result).getAsJsonObject().get("key").getAsString();
+            return "https://paste.reformcloud.systems/" + ReformCloudLibraryService.PARSER.parse(result).getAsJsonObject().get("key").getAsString();
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while uploading log", ex);
         }
