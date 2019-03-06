@@ -79,7 +79,7 @@ public final class PacketFuture implements Serializable {
 
     private Packet syncUninterruptedly() {
         try {
-            return this.completableFuture.get(10, TimeUnit.SECONDS);
+            return this.completableFuture.get(20, TimeUnit.SECONDS);
         } catch (final InterruptedException | ExecutionException | TimeoutException ex) {
             return Packet.emptyPacket();
         }
