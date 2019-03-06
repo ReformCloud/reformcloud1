@@ -9,10 +9,7 @@ import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 
 import java.io.Serializable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 06.03.2019
@@ -22,13 +19,16 @@ import java.util.concurrent.TimeoutException;
 public final class PacketFuture implements Serializable {
     private CompletableFuture<Packet> completableFuture;
 
+    private final ExecutorService executorService;
+
     private NetworkQueryInboundHandler onSuccess, onFailure;
 
     private ChannelHandler channelHandler;
     private Packet sentPacket;
 
-    public PacketFuture(ChannelHandler channelHandler, Packet packet) {
+    public PacketFuture(ChannelHandler channelHandler, Packet packet, ExecutorService executorService) {
         this.completableFuture = new CompletableFuture<>();
+        this.executorService = executorService;
         this.channelHandler = channelHandler;
         this.sentPacket = packet;
     }
@@ -49,36 +49,35 @@ public final class PacketFuture implements Serializable {
         return this;
     }
 
-    public Packet send(String to) {
-        this.channelHandler.sendPacketSynchronized(to, sentPacket);
+    public void send(String to) {
+        this.executorService.execute(() -> {
+            this.channelHandler.sendPacketSynchronized(to, sentPacket);
 
-        Packet packet = this.syncUninterruptedly();
-        if (this.onSuccess != null && this.onFailure != null) {
-            if (packet.getResult() == null)
-                this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-            else
-                this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
-        }
-
-        return packet;
+            Packet packet = this.syncUninterruptedly();
+            if (this.onSuccess != null && this.onFailure != null) {
+                if (packet.getResult() == null)
+                    this.onFailure.handle(packet.getConfiguration(), packet.getResult());
+                else
+                    this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
+            }
+        });
     }
 
-    public Packet send(String to, long timeout, TimeUnit timeUnit) {
-        this.channelHandler.sendPacketSynchronized(to, sentPacket);
+    public void send(String to, long timeout, TimeUnit timeUnit) {
+        executorService.execute(() -> {
+            this.channelHandler.sendPacketSynchronized(to, sentPacket);
 
-        Packet packet = this.syncUninterruptedly(timeout, timeUnit);
-        if (this.onSuccess != null && this.onFailure != null) {
-            if (packet.getResult() == null)
-                this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-            else
-                this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
-        }
-
-        return packet;
+            Packet packet = this.syncUninterruptedly(timeout, timeUnit);
+            if (this.onSuccess != null && this.onFailure != null) {
+                if (packet.getResult() == null)
+                    this.onFailure.handle(packet.getConfiguration(), packet.getResult());
+                else
+                    this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
+            }
+        });
     }
 
     private Packet syncUninterruptedly() {
-        System.out.println(Thread.currentThread().getName());
         try {
             return this.completableFuture.get(20, TimeUnit.SECONDS);
         } catch (final InterruptedException | ExecutionException | TimeoutException ex) {

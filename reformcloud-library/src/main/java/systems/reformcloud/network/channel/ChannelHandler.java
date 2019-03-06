@@ -17,6 +17,8 @@ import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -27,6 +29,8 @@ public class ChannelHandler {
 
     @Getter
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
+
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     /**
      * Get a specific {@link ChannelHandlerContext} by name
@@ -218,7 +222,7 @@ public class ChannelHandler {
         UUID result = UUID.randomUUID();
         this.toQueryPacket(packet, result, from);
 
-        PacketFuture packetFuture = new PacketFuture(this, packet);
+        PacketFuture packetFuture = new PacketFuture(this, packet, this.executorService);
         packetFuture.whenCompleted(handler, onFailure);
 
         this.results.put(result, packetFuture);
