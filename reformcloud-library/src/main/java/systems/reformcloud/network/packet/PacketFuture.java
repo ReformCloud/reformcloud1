@@ -28,6 +28,7 @@ public final class PacketFuture implements Serializable {
     private Packet sentPacket;
 
     public PacketFuture(ChannelHandler channelHandler, Packet packet) {
+        this.completableFuture = new CompletableFuture<>();
         this.channelHandler = channelHandler;
         this.sentPacket = packet;
     }

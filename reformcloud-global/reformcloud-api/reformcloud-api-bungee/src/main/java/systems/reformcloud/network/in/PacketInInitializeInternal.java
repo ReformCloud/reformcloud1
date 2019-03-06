@@ -67,6 +67,6 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
             DefaultPlayer defaultPlayer = resultConfiguration.getValue("result", new TypeToken<DefaultPlayer>() {
             }.getType());
             System.out.println(defaultPlayer.getName());
-        }, ((configuration1, resultID) -> System.out.println("Failure")));
+        }, (configuration1, resultID) -> System.out.println("Failure"));
     }
 }
