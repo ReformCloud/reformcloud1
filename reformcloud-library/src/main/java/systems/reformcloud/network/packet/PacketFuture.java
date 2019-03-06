@@ -78,6 +78,7 @@ public final class PacketFuture implements Serializable {
     }
 
     private Packet syncUninterruptedly() {
+        System.out.println(Thread.currentThread().getName());
         try {
             return this.completableFuture.get(20, TimeUnit.SECONDS);
         } catch (final InterruptedException | ExecutionException | TimeoutException ex) {
