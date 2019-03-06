@@ -43,6 +43,7 @@ public class Packet implements Serializable {
             final Packet packet = ReformCloudLibraryService.GSON.fromJson(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8), TypeTokenAdaptor.getPACKET_TYPE());
             this.configuration = packet.configuration;
             this.type = packet.type;
+            this.result = packet.result;
         }
     }
 
