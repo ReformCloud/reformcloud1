@@ -19,4 +19,8 @@ public final class Trio<F, S, T> implements Serializable {
     private F first;
     private S second;
     private T third;
+
+    public Trio<F, T, S> clone() {
+        return new Trio(first, second, third);
+    }
 }

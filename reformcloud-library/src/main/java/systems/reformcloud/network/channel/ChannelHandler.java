@@ -12,6 +12,7 @@ import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.OutGoingPacketEvent;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class ChannelHandler {
     private TaskScheduler packetTask = new TaskScheduler(1);
 
     @Getter
-    private Map<UUID, Packet> results = ReformCloudLibraryService.concurrentHashMap();
+    private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * Get a specific {@link ChannelHandlerContext} by name
@@ -195,7 +196,9 @@ public class ChannelHandler {
         return this.channelHandlerContextMap.containsKey(channel);
     }
 
-    public boolean sendPacketQuery(final String channel, final String from, final Packet packet, final NetworkQueryInboundHandler handler) {
+    public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
+                                       final NetworkQueryInboundHandler handler,
+                                       final NetworkQueryInboundHandler onFailure) {
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5sending query");
 
         if (!this.channelHandlerContextMap.containsKey(channel))
@@ -204,31 +207,14 @@ public class ChannelHandler {
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5channel izz da");
 
         UUID result = UUID.randomUUID();
-        packet.setResult(result);
-        packet.getConfiguration().addStringProperty("from", from);
-        results.put(result, new Packet().emptyPacket());
+        this.toQueryPacket(packet, result, from);
 
-        packetTask.schedule(() -> {
-            this.channelHandlerContextMap.get(channel).channel().writeAndFlush(packet);
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5sended in task");
-        });
+        PacketFuture packetFuture = new PacketFuture(this, packet);
+        packetFuture.whenCompleted(handler, onFailure);
 
-        int i = 0;
+        this.results.put(result, packetFuture);
+        packetFuture.send(channel);
 
-        while (results.get(result).getResult() == null) {
-            i++;
-
-            if (i >= 100000)
-                break;
-
-            try {
-                Thread.sleep(0, 500000);
-            } catch (final InterruptedException ignored) {
-            }
-        }
-
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5finished");
-        handler.handle(this.results.get(result).getConfiguration(), result);
         return true;
     }
 
@@ -282,5 +268,10 @@ public class ChannelHandler {
     public void sendToAllAsynchronous(Packet... packets) {
         for (Packet packet : packets)
             this.sendToAllAsynchronous(packet);
+    }
+
+    public void toQueryPacket(Packet packet, UUID resultID, String component) {
+        packet.setResult(resultID);
+        packet.getConfiguration().addStringProperty("from", component);
     }
 }

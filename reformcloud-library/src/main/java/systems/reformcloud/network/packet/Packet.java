@@ -79,7 +79,7 @@ public class Packet implements Serializable {
         return result;
     }
 
-    public Packet emptyPacket() {
+    public static Packet emptyPacket() {
         return new Packet("undefined", new Configuration());
     }
 }
