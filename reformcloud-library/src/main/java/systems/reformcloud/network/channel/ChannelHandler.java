@@ -4,6 +4,7 @@
 
 package systems.reformcloud.network.channel;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
@@ -23,7 +24,6 @@ import java.util.*;
 
 public class ChannelHandler {
     private Map<String, ChannelHandlerContext> channelHandlerContextMap = ReformCloudLibraryService.concurrentHashMap();
-    private TaskScheduler packetTask = new TaskScheduler(1);
 
     @Getter
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
@@ -135,9 +135,18 @@ public class ChannelHandler {
             return false;
 
         if (this.channelHandlerContextMap.containsKey(channel))
-            this.channelHandlerContextMap.get(channel).writeAndFlush(packet);
+            this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
 
         return this.channelHandlerContextMap.containsKey(channel);
+    }
+
+    private void sendPacket(Packet packet, ChannelHandlerContext channelHandlerContext) {
+        if (channelHandlerContext.channel().eventLoop().inEventLoop()) {
+            channelHandlerContext.channel().writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        } else {
+            channelHandlerContext.channel().eventLoop().execute(() -> channelHandlerContext.channel()
+                    .writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE));
+        }
     }
 
     /**
@@ -173,7 +182,7 @@ public class ChannelHandler {
 
         TaskScheduler.runtimeScheduler().schedule(() -> {
             if (this.channelHandlerContextMap.containsKey(channel))
-                this.channelHandlerContextMap.get(channel).writeAndFlush(packet);
+                this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
         });
 
         return this.channelHandlerContextMap.containsKey(channel);
@@ -190,7 +199,7 @@ public class ChannelHandler {
         TaskScheduler.runtimeScheduler().schedule(() -> {
             if (this.channelHandlerContextMap.containsKey(channel))
                 for (Packet packet : packets)
-                    this.sendPacketAsynchronous(channel, packet);
+                    this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
         });
 
         return this.channelHandlerContextMap.containsKey(channel);
@@ -230,7 +239,7 @@ public class ChannelHandler {
         if (outGoingPacketEvent.isCancelled())
             return;
 
-        this.channelHandlerContextMap.values().forEach((consumer -> consumer.channel().writeAndFlush(packet)));
+        this.channelHandlerContextMap.values().forEach(consumer -> this.sendPacket(packet, consumer));
     }
 
     /**
@@ -246,7 +255,7 @@ public class ChannelHandler {
             return;
 
         TaskScheduler.runtimeScheduler().schedule(() ->
-                this.channelHandlerContextMap.values().forEach((consumer -> consumer.channel().writeAndFlush(packet)))
+                this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket(packet, consumer)))
         );
     }
 

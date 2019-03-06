@@ -38,6 +38,12 @@ public class Packet implements Serializable {
         this.configuration = configuration;
     }
 
+    public Packet(@NonNull final String type, @NonNull Configuration configuration, @NonNull UUID resultID) {
+        this.type = type;
+        this.configuration = configuration;
+        this.result = resultID;
+    }
+
     public void read(@NonNull ByteBuf byteBuf) {
         if (byteBuf.readableBytes() != 0) {
             final Packet packet = ReformCloudLibraryService.GSON.fromJson(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8), TypeTokenAdaptor.getPACKET_TYPE());
