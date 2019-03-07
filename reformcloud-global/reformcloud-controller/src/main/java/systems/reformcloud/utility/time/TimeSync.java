@@ -17,6 +17,6 @@ public final class TimeSync implements Serializable, Runnable {
     @Override
     public void run() {
         ReformCloudController.getInstance().getLoggerProvider().setControllerTime(System.currentTimeMillis());
-        ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutSyncControllerTime());
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutSyncControllerTime());
     }
 }

@@ -4,7 +4,6 @@
 
 package systems.reformcloud.network.in;
 
-import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.ProxyServer;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.configurations.Configuration;
@@ -14,7 +13,6 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
-import systems.reformcloud.player.DefaultPlayer;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.net.InetSocketAddress;
@@ -60,20 +58,5 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
                     }
                 }
         );
-
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync("ReformCloudController", "Proxy-01", new Packet(
-                "QueryGetPlayer", new Configuration()
-        ), (resultConfiguration, result) -> {
-            DefaultPlayer defaultPlayer = resultConfiguration.getValue("result", new TypeToken<DefaultPlayer>() {
-            }.getType());
-            System.out.println(defaultPlayer.getName());
-        }, (configuration1, resultID) -> System.out.println("Failure"));
-
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync("ReformCloudController",
-                ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName(), new Packet(
-                        "QueryGetProxyConfig", new Configuration()
-                ), (configuration1, resultID) -> {
-                    String motd = configuration1.getStringValue("MOTD");
-                }, ((configuration1, resultID) -> System.out.println("Fail")));
     }
 }
