@@ -91,7 +91,7 @@ public class CloudConfiguration {
         properties.setProperty("ssl.keyFilePath", StringUtil.NULL);
 
         properties.setProperty("general.language", lang.toLowerCase());
-        properties.setProperty("general.serve-separator", "-");
+        properties.setProperty("general.server-separator", "-");
 
         try (OutputStream outputStream = Files.newOutputStream(Paths.get("configuration.properties"))) {
             properties.store(outputStream, "ReformCloud default Configuration");
@@ -238,10 +238,10 @@ public class CloudConfiguration {
 
                     .addStringProperty("internal-api-bungee-command-no-permission", "§cYou do not have permission to execute this command")
 
-                    .addStringProperty("internal-api-bungee-command-hub-already", "%prefix% §7You are already connected to a hub serve")
-                    .addStringProperty("internal-api-bungee-command-hub-not-available", "%prefix% §7There is now hub serve available")
+                    .addStringProperty("internal-api-bungee-command-hub-already", "%prefix% §7You are already connected to a hub server")
+                    .addStringProperty("internal-api-bungee-command-hub-not-available", "%prefix% §7There is now hub server available")
 
-                    .addStringProperty("internal-api-bungee-command-jumpto-server-player-not-found", "%prefix% §cCould not find player or serve to go to")
+                    .addStringProperty("internal-api-bungee-command-jumpto-server-player-not-found", "%prefix% §cCould not find player or server to go to")
                     .addStringProperty("internal-api-bungee-command-jumpto-success", "%prefix% §aYou was connected to the server")
 
                     .addStringProperty("internal-api-bungee-command-reformcloud-invalid-syntax", "%prefix% §7/reformcloud <command>")
@@ -256,7 +256,7 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-bungee-remove-server", "%prefix% §7ServerProcess §6%server-name% §7is stopping...")
                     .addStringProperty("internal-api-bungee-remove-proxy", "%prefix% §7ProxyProcess §6%proxy-name% §7is stopping...")
 
-                    .addStringProperty("internal-api-spigot-connect-no-permission", "%prefix% §cYou do not have permission to join this serve")
+                    .addStringProperty("internal-api-spigot-connect-no-permission", "%prefix% §cYou do not have permission to join this server")
                     .addStringProperty("internal-api-spigot-connect-only-proxy", "%prefix% §cOnly Proxy join allowed")
 
                     .addStringProperty("internal-api-spigot-command-signs-not-enabled", "%prefix% §7Signs aren't enabled")

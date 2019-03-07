@@ -32,7 +32,7 @@ public final class PacketInClientProcessQueue implements Serializable, NetworkIn
 
         loggerProvider.info(" - ServerProcesses: ");
         if (servers.isEmpty()) {
-            loggerProvider.info("    There are §c0§r serve processes in the §3Client§r queue");
+            loggerProvider.info("    There are §c0§r server processes in the §3Client§r queue");
         } else {
             servers.forEach(e -> loggerProvider.info("    - " + e.getName() + " | Group: " + e.getServerGroup().getName() + " | UID: " + e.getUid()));
         }

@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 public final class CommandCopy extends Command implements Serializable {
     public CommandCopy() {
-        super("copy", "Copies a serve or proxy into the template", "reformcloud.command.copy", new String[0]);
+        super("copy", "Copies a server or proxy into the template", "reformcloud.command.copy", new String[0]);
     }
 
     @Override
@@ -33,13 +33,13 @@ public final class CommandCopy extends Command implements Serializable {
                 if (serverInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend().equals(TemplateBackend.CLIENT)) {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
                             serverInfo.getCloudProcess().getClient(),
-                            new PacketOutExecuteCommand("save-all", "serve", serverInfo.getCloudProcess().getName())
+                            new PacketOutExecuteCommand("save-all", "server", serverInfo.getCloudProcess().getName())
                     );
                     ReformCloudLibraryService.sleep(100);
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(), "serve", serverInfo.getServerGroup().getName()));
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(), "server", serverInfo.getServerGroup().getName()));
                     commandSender.sendMessage("The Client tries to copy the template.");
                 } else {
-                    commandSender.sendMessage("You can't copy a serve if the template backend is not the client.");
+                    commandSender.sendMessage("You can't copy a server if the template backend is not the client.");
                 }
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]) != null) {
                 final ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]);
@@ -47,10 +47,10 @@ public final class CommandCopy extends Command implements Serializable {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(proxyInfo.getCloudProcess().getName() + "-" + proxyInfo.getCloudProcess().getProcessUID(), "proxy", proxyInfo.getProxyGroup().getName()));
                     commandSender.sendMessage("The Client tries to copy the template.");
                 } else {
-                    commandSender.sendMessage("You can't copy a serve if the template backend is not the client.");
+                    commandSender.sendMessage("You can't copy a server if the template backend is not the client.");
                 }
             } else {
-                commandSender.sendMessage("The serve or proxy isn't connected to Controller.");
+                commandSender.sendMessage("The server or proxy isn't connected to Controller.");
             }
         } else {
             commandSender.sendMessage("copy <name>");

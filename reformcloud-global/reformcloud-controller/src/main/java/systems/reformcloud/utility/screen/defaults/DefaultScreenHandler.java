@@ -49,7 +49,7 @@ public final class DefaultScreenHandler extends ScreenHandler implements Seriali
                         new PacketOutExecuteCommand(cmd, "proxy", name));
                 break;
             }
-            case "serve": {
+            case "server": {
                 final ServerInfo serverInfo = ReformCloudController.getInstance()
                         .getInternalCloudNetwork()
                         .getServerProcessManager()
@@ -58,7 +58,7 @@ public final class DefaultScreenHandler extends ScreenHandler implements Seriali
                     return;
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
-                        new PacketOutExecuteCommand(cmd, "serve", name));
+                        new PacketOutExecuteCommand(cmd, "server", name));
                 break;
             }
             case "client": {

@@ -27,7 +27,7 @@ public final class CommandLog extends Command implements Serializable {
     private static final long serialVersionUID = 8869467720046339074L;
 
     public CommandLog() {
-        super("log", "Uploads a log of a specific serve/proxy/client", "reformcloud.command.log", new String[0]);
+        super("log", "Uploads a log of a specific server/proxy/client", "reformcloud.command.log", new String[0]);
     }
 
     @Override
@@ -65,13 +65,13 @@ public final class CommandLog extends Command implements Serializable {
                 break;
             }
 
-            case "serve": {
+            case "server": {
                 ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[1]);
                 if (serverInfo != null) {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
                             new PacketOutUploadLog(serverInfo.getCloudProcess().getName(), "spigot"));
                 } else {
-                    commandSender.sendMessage("This serve isn't registered");
+                    commandSender.sendMessage("This server isn't registered");
                 }
                 break;
             }

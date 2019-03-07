@@ -33,7 +33,7 @@ public class PlayerConnectListener implements Listener {
 
         if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isMaintenance()
                 && SpigotBootstrap.getInstance().getServer().getPlayer(event.getUniqueId()) != null
-                && !SpigotBootstrap.getInstance().getServer().getPlayer(event.getUniqueId()).hasPermission("reformcloud.join.serve.maintenance")) {
+                && !SpigotBootstrap.getInstance().getServer().getPlayer(event.getUniqueId()).hasPermission("reformcloud.join.server.maintenance")) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission"));
             return;
         }
@@ -46,7 +46,7 @@ public class PlayerConnectListener implements Listener {
         final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
 
         if (serverInfo.getOnlinePlayers().contains(event.getPlayer().getUniqueId())) {
-            event.getPlayer().kickPlayer("§cYou're already connected to this serve");
+            event.getPlayer().kickPlayer("§cYou're already connected to this server");
             return;
         }
 

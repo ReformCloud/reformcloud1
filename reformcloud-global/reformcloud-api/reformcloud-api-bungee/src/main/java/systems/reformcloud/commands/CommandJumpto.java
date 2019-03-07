@@ -33,7 +33,7 @@ public final class CommandJumpto extends Command implements TabExecutor {
         if (strings.length == 1) {
             if (BungeecordBootstrap.getInstance().getProxy().getServers().get(strings[0]) == null
                     && BungeecordBootstrap.getInstance().getProxy().getPlayer(strings[0]) == null) {
-                commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-jumpto-serve-player-not-found")));
+                commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-jumpto-server-player-not-found")));
                 return;
             }
 

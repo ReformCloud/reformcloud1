@@ -24,7 +24,7 @@ public final class CommandScreen extends Command implements Serializable {
     private static final long serialVersionUID = -1318658988288270472L;
 
     public CommandScreen() {
-        super("screen", "Opens the screen of a serve, client or proxy", "reformcloud.command.screen", new String[]{"srn"});
+        super("screen", "Opens the screen of a server, client or proxy", "reformcloud.command.screen", new String[]{"srn"});
     }
 
     @Override
@@ -50,19 +50,19 @@ public final class CommandScreen extends Command implements Serializable {
             screenSessionProvider.leaveScreen();
 
             switch (args[1].toLowerCase()) {
-                case "serve": {
+                case "server": {
                     final ServerInfo serverInfo = ReformCloudController.getInstance()
                             .getInternalCloudNetwork()
                             .getServerProcessManager()
                             .getRegisteredServerByName(args[2]);
                     if (serverInfo == null) {
-                        commandSender.sendMessage("The serve §e[\"" + args[2] + "\"]§r is not §cconnected§r to the controller");
+                        commandSender.sendMessage("The server §e[\"" + args[2] + "\"]§r is not §cconnected§r to the controller");
                         return;
                     }
 
                     screenSessionProvider.joinScreen(serverInfo.getCloudProcess().getName(),
                             new DefaultScreenHandler(
-                                    serverInfo.getCloudProcess().getClient(), "serve", serverInfo.getCloudProcess().getName()
+                                    serverInfo.getCloudProcess().getClient(), "server", serverInfo.getCloudProcess().getName()
                             )
                     );
                     break;
@@ -100,9 +100,9 @@ public final class CommandScreen extends Command implements Serializable {
                     break;
                 }
                 default: {
-                    commandSender.sendMessage("screen <serve, proxy, client> <name>");
+                    commandSender.sendMessage("screen <server, proxy, client> <name>");
                     commandSender.sendMessage("screen execute <command>");
-                    commandSender.sendMessage("screen switch <serve, proxy, client> <name>");
+                    commandSender.sendMessage("screen switch <server, proxy, client> <name>");
                     commandSender.sendMessage("screen leave");
                     break;
                 }
@@ -126,33 +126,33 @@ public final class CommandScreen extends Command implements Serializable {
         }
 
         if (args.length != 2) {
-            commandSender.sendMessage("screen <serve, proxy, client> <name>");
+            commandSender.sendMessage("screen <server, proxy, client> <name>");
             commandSender.sendMessage("screen execute <command>");
-            commandSender.sendMessage("screen switch <serve, proxy, client> <name>");
+            commandSender.sendMessage("screen switch <server, proxy, client> <name>");
             commandSender.sendMessage("screen leave");
             return;
         }
 
         if (screenSessionProvider.isInScreen()) {
             commandSender.sendMessage("You're already in a screen session. Type \"screen leave\"" +
-                    " or \"screen switch <serve/proxy> <name>\" to leave the current screen session or switch to another");
+                    " or \"screen switch <server/proxy> <name>\" to leave the current screen session or switch to another");
             return;
         }
 
         switch (args[0].toLowerCase()) {
-            case "serve": {
+            case "server": {
                 final ServerInfo serverInfo = ReformCloudController.getInstance()
                         .getInternalCloudNetwork()
                         .getServerProcessManager()
                         .getRegisteredServerByName(args[1]);
                 if (serverInfo == null) {
-                    commandSender.sendMessage("The serve §e[\"" + args[1] + "\"]§r is not §cconnected§r to the controller");
+                    commandSender.sendMessage("The server §e[\"" + args[1] + "\"]§r is not §cconnected§r to the controller");
                     return;
                 }
 
                 screenSessionProvider.joinScreen(serverInfo.getCloudProcess().getName(),
                         new DefaultScreenHandler(
-                                serverInfo.getCloudProcess().getClient(), "serve", serverInfo.getCloudProcess().getName()
+                                serverInfo.getCloudProcess().getClient(), "server", serverInfo.getCloudProcess().getName()
                         )
                 );
                 break;
@@ -189,9 +189,9 @@ public final class CommandScreen extends Command implements Serializable {
                 break;
             }
             default: {
-                commandSender.sendMessage("screen <serve, proxy, client> <name>");
+                commandSender.sendMessage("screen <server, proxy, client> <name>");
                 commandSender.sendMessage("screen execute <command>");
-                commandSender.sendMessage("screen switch <serve, proxy, client> <name>");
+                commandSender.sendMessage("screen switch <server, proxy, client> <name>");
                 commandSender.sendMessage("screen leave");
                 break;
             }

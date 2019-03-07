@@ -40,7 +40,7 @@ public final class German extends Language implements Serializable {
                 "Prozess §e[Name=%name%/UID=%uid%]§r wurde §agestartet §rauf Client §3%client%",
                 "Prozess §e[Name=%name%/UID=%uid%]§r wurde §cgestoppt §rauf Client §3%client%",
                 "Service §e[Name=%name%] §rist nun §abereit",
-                "Spieler §e[Name=%name%/UUID=%uuid%] §rführte den Command §6[Name=%command%] auf §3Proxy §e[Name=%proxy%/Server=%serve%] §raus",
+                "Spieler §e[Name=%name%/UUID=%uuid%] §rführte den Command §6[Name=%command%] auf §3Proxy §e[Name=%proxy%/Server=%server%] §raus",
                 "Der §eCommand §rwurde mit §ePackets §rausgeführt",
                 "Log für den §3Prozess §e[Name=\"%name%\"]§r: §e%url%",
                 "ServerProzess §e[Name=%uid%] §rwurde zur Warteschlange hinzugefügt",

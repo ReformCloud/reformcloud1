@@ -12,11 +12,11 @@
 
 config-version: 8
 messages:
-  whitelist: You are not whitelisted on this serve!
+  whitelist: You are not whitelisted on this server!
   unknown-command: Unknown command. Type "/help" for help.
   server-full: ReformCloud | CloudServer is not available, because it's full
   outdated-client: Outdated client! Please use {0}
-  outdated-server: Outdated serve! I'm still on {0}
+  outdated-server: Outdated server! I'm still on {0}
   restart: ReformCloud | CloudServer restarting
 settings:
   save-user-cache-on-stop-only: false

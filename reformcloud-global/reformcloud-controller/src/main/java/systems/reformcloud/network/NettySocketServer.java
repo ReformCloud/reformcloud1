@@ -34,7 +34,7 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
     private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup(), bossGroup = ReformCloudLibraryService.eventLoopGroup();
 
     /**
-     * Prepares a socket serve by using io.network and binds him using
+     * Prepares a socket server by using io.network and binds him using
      * {@link ServerBootstrap} synchronized on the main thread. This
      * is blocking and will await the bind. If ssl is enabled the
      * {@link SslContext} will be prepared first by using an self-
@@ -53,7 +53,7 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
      *                              will be added to every channel, which tries to
      *                              connect to the ReformCloudController
      * @param ethernetAddress    Main address where the cloud tries to bind
-     *                              the socket serve to. Please make sure that
+     *                              the socket server to. Please make sure that
      *                              the port is not in use, yet
      */
     public NettySocketServer(boolean ssl, EthernetAddress ethernetAddress, File cert, File key) {
@@ -97,7 +97,7 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
 
             channelFuture.sync().channel().closeFuture();
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while binding socket serve", throwable);
+            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while binding socket server", throwable);
         }
     }
 

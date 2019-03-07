@@ -18,7 +18,7 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
     @Override
     public void handle(Configuration configuration) {
         switch (configuration.getStringValue("type").toLowerCase()) {
-            case "serve": {
+            case "server": {
                 FileUtils.copyAllFiles(Paths.get("reformcloud/temp/servers/" + configuration.getStringValue("name")), "reformcloud/templates/" + configuration.getStringValue("group"), "spigot.jar");
                 break;
             }

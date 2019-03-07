@@ -92,7 +92,7 @@ public final class CloudConnectListener implements Listener {
             } else {
                 event.setCancelled(false);
                 event.setCancelServer(null);
-                event.setKickReasonComponent(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-serve")));
+                event.setKickReasonComponent(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server")));
             }
         }
     }
