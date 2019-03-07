@@ -43,7 +43,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     private static final long serialVersionUID = 3076534030843453815L;
 
     private ConsoleReader consoleReader;
-    private final DateFormat dateFormat = DateProvider.getDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+    private final DateFormat dateFormat = DateProvider.getDateFormat("MM/dd/yyyy HH:mm:ss");
 
     protected final File debugLogFile = new File("klarcloud/logs/debug-" + System.currentTimeMillis() + ".log");
 

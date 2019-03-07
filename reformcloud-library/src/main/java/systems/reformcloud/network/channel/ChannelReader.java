@@ -58,17 +58,12 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                     packet, channelHandlerContext, channelHandler);
         }
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Receiving packet |:" + packet.getType());
-
         if (packet.getResult() != null) {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Packet is query packet");
             if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().isQueryHandlerRegistered(packet.getType())) {
                 ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
                         .getQueryHandler(packet.getType()).handle(packet.getConfiguration(), packet.getResult());
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Packet has query handler");
-            } else {
+            } else if (channelHandler.getResults().containsKey(packet.getResult())) {
                 channelHandler.getResults().get(packet.getResult()).handleIncoming(packet);
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("Packet was query send and handeled");
             }
 
             return;

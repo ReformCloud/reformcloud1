@@ -68,5 +68,12 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
             }.getType());
             System.out.println(defaultPlayer.getName());
         }, (configuration1, resultID) -> System.out.println("Failure"));
+
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync("ReformCloudController",
+                ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName(), new Packet(
+                        "QueryGetProxyConfig", new Configuration()
+                ), (configuration1, resultID) -> {
+                    String motd = configuration1.getStringValue("MOTD");
+                }, ((configuration1, resultID) -> System.out.println("Fail")));
     }
 }

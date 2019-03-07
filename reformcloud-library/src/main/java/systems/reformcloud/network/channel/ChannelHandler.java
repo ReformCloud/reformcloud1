@@ -212,12 +212,8 @@ public class ChannelHandler {
     public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
                                        final NetworkQueryInboundHandler handler,
                                        final NetworkQueryInboundHandler onFailure) {
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5sending query");
-
         if (!this.channelHandlerContextMap.containsKey(channel))
             return false;
-
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().coloured("§5channel izz da");
 
         UUID result = UUID.randomUUID();
         this.toQueryPacket(packet, result, from);
