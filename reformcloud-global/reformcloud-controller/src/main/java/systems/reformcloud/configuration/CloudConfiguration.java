@@ -45,7 +45,6 @@ import java.util.*;
 public class CloudConfiguration {
     private EthernetAddress nettyAddress;
     private EthernetAddress webAddress;
-    private boolean autoUpdate;
     private String controllerKey, host, splitter, certFile, keyFile, loadedLang;
     private List<Client> clients;
     private List<ServerGroup> serverGroups = new ArrayList<>();
