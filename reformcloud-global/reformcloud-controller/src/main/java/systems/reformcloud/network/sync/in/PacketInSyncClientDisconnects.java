@@ -26,7 +26,6 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
         Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(configuration.getStringValue("name"));
         if (client != null) {
             final ClientInfo clientInfo = client.getClientInfo();
-            ReformCloudController.getInstance().getChannelHandler().unregisterChannel(client.getName());
             client.setClientInfo(null);
 
             clientInfo.getStartedServers().forEach(s -> {

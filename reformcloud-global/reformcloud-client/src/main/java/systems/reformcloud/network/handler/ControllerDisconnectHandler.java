@@ -23,7 +23,6 @@ public final class ControllerDisconnectHandler extends ChannelInboundHandlerAdap
         if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable()
                 && ReformCloudClient.getInstance().getNettySocketClient().getConnections() == -1
                 && ReformCloudClient.RUNNING) {
-            ReformCloudClient.getInstance().getChannelHandler().unregisterChannel("ReformCloudController");
             ReformCloudClient.getInstance().getNettySocketClient().close();
             ReformCloudLibraryService.sleep(1000);
             ReformCloudClient.getInstance().connect(ReformCloudClient.getInstance().isSsl());
