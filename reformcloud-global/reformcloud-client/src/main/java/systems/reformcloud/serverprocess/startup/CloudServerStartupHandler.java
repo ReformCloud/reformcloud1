@@ -297,6 +297,9 @@ public class CloudServerStartupHandler {
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().remove(this.serverStartupInfo.getName());
 
         this.executeCommand("save-all");
+
+        ReformCloudLibraryService.sleep(2000);
+
         this.executeCommand("stop");
 
         ReformCloudLibraryService.sleep(1000);
