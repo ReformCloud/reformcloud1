@@ -10,6 +10,7 @@ import lombok.Setter;
 import systems.reformcloud.player.version.SpigotVersion;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -25,6 +26,8 @@ public class DefaultPlayer implements Serializable {
     private String name;
 
     private UUID uniqueID;
+    private Map<String, Object> playerMeta;
+    private long lastLogin;
 
     @Setter
     private SpigotVersion spigotVersion;

@@ -4,7 +4,7 @@ An efficient Minecraft-Network Management System
 
 <!-- //TODO: Change URL -->
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9500818dfbb246ce9f0872bbde6fa28a)](https://www.codacy.com?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=_Klaro/KlarCloudService-2.0&amp;utm_campaign=Badge_Grade)
-[![pipeline status](https://gitlab.com/_Klaro/KlarCloudService-2.0/badges/master/pipeline.svg)](https://gitlab.com/_Klaro/KlarCloudService-2.0/commits/master)
+[![pipeline status](https://gitlab.com/_Klaro/reformcloud/badges/master/pipeline.svg)](https://gitlab.com/_Klaro/reformcloud/commits/master)
 
 ![LICENCE](https://img.shields.io/badge/license-Apache--2.0-brightgreen.svg)
 
