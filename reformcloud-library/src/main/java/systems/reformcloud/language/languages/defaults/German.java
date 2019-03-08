@@ -48,7 +48,7 @@ public final class German extends Language implements Serializable {
                 "Versuche den Prozess §e[Name=%name%] §czustoppen§r...",
                 "ReformCloud kopiert das §eTemplate§r in §e\"%path%\"§r, dies könnte einen kleinen Moment dauern...",
                 "Warte auf Prozess §e[Name=%name%/UID=%uid%/Group=%group%/Service=%type%]§r zum §astarten...",
-                "Channel §e[Address=%ip%/Port=%port%]§r wurde §cgetrennt",
+                "Channel §e[Address=%ip%/Port=%port%/Service=%name%]§r wurde §cgetrennt",
                 "Du wurdest aus dem jetzigen §3Screen§r §crausgeworfen§r, da der zugehörige Prozess die Verbindung §cgetrennt§r hat",
                 "Der Client §3%name%§r wurde§a erfolgreich§r neugeladen",
                 "ReformCloud wurde §aerfolgreich§r auf §e%ip%:%port%§r gebunden"

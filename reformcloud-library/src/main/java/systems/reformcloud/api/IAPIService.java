@@ -13,8 +13,11 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.player.implementations.OfflinePlayer;
+import systems.reformcloud.player.implementations.OnlinePlayer;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -43,6 +46,26 @@ public interface IAPIService {
     void startProxy(ProxyGroup proxyGroup, Configuration preConfig);
 
     void startProxy(ProxyGroup proxyGroup, Configuration preConfig, String template);
+
+    OnlinePlayer getOnlinePlayer(UUID uniqueId);
+
+    OnlinePlayer getOnlinePlayer(String name);
+
+    OfflinePlayer getOfflinePlayer(UUID uniqueId);
+
+    OfflinePlayer getOfflinePlayer(String name);
+
+    void updateOnlinePlayer(OnlinePlayer onlinePlayer);
+
+    void updateOfflinePlayer(OfflinePlayer offlinePlayer);
+
+    boolean isOnline(UUID uniqueId);
+
+    boolean isOnline(String name);
+
+    boolean isRegistered(UUID uniqueId);
+
+    boolean isRegistered(String name);
 
     int getMaxPlayers();
 

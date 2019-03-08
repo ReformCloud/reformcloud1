@@ -15,6 +15,9 @@ import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.player.DefaultPlayer;
+import systems.reformcloud.player.implementations.OfflinePlayer;
+import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -49,6 +52,12 @@ public final class TypeTokenAdaptor {
             AUTHENTICATION_TYPE = new TypeToken<AuthenticationType>() {
             }.getType(),
             SIGN_LAYOUT_CONFIG_TYPE = new TypeToken<SignLayoutConfiguration>() {
+            }.getType(),
+            OFFLINE_PLAYER_TYPE = new TypeToken<OfflinePlayer>() {
+            }.getType(),
+            ONLINE_PLAYER_TYPE = new TypeToken<OnlinePlayer>() {
+            }.getType(),
+            DEFAULT_PLAYER_TYPE = new TypeToken<DefaultPlayer>() {
             }.getType(),
             CLIENT_INFO_TYPE = new TypeToken<ClientInfo>() {
             }.getType();

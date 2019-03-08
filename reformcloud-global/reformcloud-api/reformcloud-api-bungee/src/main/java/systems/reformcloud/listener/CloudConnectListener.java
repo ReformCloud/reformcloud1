@@ -16,10 +16,12 @@ import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.network.packets.PacketOutLoginPlayer;
-import systems.reformcloud.network.packets.PacketOutLogoutPlayer;
-import systems.reformcloud.network.packets.PacketOutProxyInfoUpdate;
-import systems.reformcloud.network.packets.PacketOutSendControllerConsoleMessage;
+import systems.reformcloud.network.packets.*;
+import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
+import systems.reformcloud.player.implementations.OfflinePlayer;
+import systems.reformcloud.player.implementations.OnlinePlayer;
+import systems.reformcloud.player.version.SpigotVersion;
+import systems.reformcloud.utility.TypeTokenAdaptor;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
@@ -29,16 +31,43 @@ public final class CloudConnectListener implements Listener {
     @EventHandler(priority = - 127)
     public void handle(final ServerConnectEvent event) {
         if (event.getPlayer().getServer() == null) {
+            ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
+
             final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions());
-            if (serverInfo != null)
-                event.setTarget(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
-            else event.setCancelled(true);
+            if (serverInfo == null)
+                event.setCancelled(true);
+
+            ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync(
+                    "ReformCloudController",
+                    proxyInfo.getCloudProcess().getName(),
+                    new PacketOutQueryGetPlayer(
+                            event.getPlayer().getUniqueId(),
+                            SpigotVersion.getByProtocolId(event.getPlayer().getPendingConnection().getVersion()),
+                            event.getPlayer().getName()
+                    ), (configuration, resultID) -> {
+                        OfflinePlayer offlinePlayer = configuration.getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
+                        OnlinePlayer onlinePlayer = new OnlinePlayer(
+                                event.getPlayer().getName(),
+                                offlinePlayer.getUniqueID(),
+                                offlinePlayer.getSpigotVersion(),
+                                serverInfo.getCloudProcess().getName(),
+                                proxyInfo.getCloudProcess().getName()
+                        );
+
+                        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                                new PacketOutUpdateOnlinePlayer(onlinePlayer));
+
+                        event.setCancelled(false);
+                        event.setTarget(BungeecordBootstrap.getInstance().getProxy().getServerInfo(serverInfo.getCloudProcess().getName()));
+                    }, (configuration, resultID) -> event.setCancelled(true)
+            );
         }
     }
 
     @EventHandler(priority = - 128)
     public void handle(final LoginEvent event) {
         ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
+
         if (proxyInfo.getProxyGroup().isMaintenance()
                 && ProxyServer.getInstance().getPlayer(event.getConnection().getUniqueId()) != null
                 && !ProxyServer.getInstance().getPlayer(event.getConnection().getUniqueId()).hasPermission("reformcloud.join.maintenance")) {

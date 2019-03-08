@@ -36,6 +36,8 @@ import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.packets.PacketOutStartGameServer;
 import systems.reformcloud.network.packets.PacketOutStartProxy;
 import systems.reformcloud.network.packets.PacketOutUpdateServerTempStats;
+import systems.reformcloud.player.implementations.OfflinePlayer;
+import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -43,6 +45,7 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -174,6 +177,56 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
     @Override
     public void startProxy(final ProxyGroup proxyGroup, final Configuration preConfig, final String template) {
         this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutStartProxy(proxyGroup, preConfig, template));
+    }
+
+    @Override
+    public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
+        return null;
+    }
+
+    @Override
+    public OnlinePlayer getOnlinePlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
+        return null;
+    }
+
+    @Override
+    public OfflinePlayer getOfflinePlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
+
+    }
+
+    @Override
+    public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
+
+    }
+
+    @Override
+    public boolean isOnline(UUID uniqueId) {
+        return false;
+    }
+
+    @Override
+    public boolean isOnline(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isRegistered(UUID uniqueId) {
+        return false;
+    }
+
+    @Override
+    public boolean isRegistered(String name) {
+        return false;
     }
 
     @Override

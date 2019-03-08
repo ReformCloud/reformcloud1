@@ -15,6 +15,7 @@ import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.database.DatabaseProvider;
+import systems.reformcloud.database.player.PlayerDatabase;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.enums.EventTargetType;
@@ -40,9 +41,12 @@ import systems.reformcloud.network.out.PacketOutStartProxy;
 import systems.reformcloud.network.out.PacketOutStopProcess;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.query.in.PacketInQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.in.PacketInQueryGetPlayer;
 import systems.reformcloud.network.sync.in.*;
 import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
+import systems.reformcloud.player.implementations.OfflinePlayer;
+import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.startup.CloudProcessOfferService;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -78,6 +82,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private final StatisticsProvider statisticsProvider = new StatisticsProvider();
+    private final PlayerDatabase playerDatabase = new PlayerDatabase();
     private final ChannelHandler channelHandler = new ChannelHandler();
     private final Scheduler scheduler = new Scheduler(40);
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
@@ -207,34 +212,52 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
      */
     private void preparePacketHandlers() {
         this.getNettyHandler()
-                .registerHandler("AuthSuccess", new PacketInAuthSuccess())
+                //Internal
+                .registerHandler("UpdateInternalCloudNetwork", new PacketInUpdateInternalCloudNetwork())
                 .registerHandler("SendControllerConsoleMessage", new PacketInSendControllerConsoleMessage())
+                .registerHandler("ProcessLog", new PacketInGetLog())
+                .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate())
+
+                //Authentication
+                .registerHandler("AuthSuccess", new PacketInAuthSuccess())
+
+                //Process management
                 .registerHandler("ProcessAdd", new PacketInAddProcess())
                 .registerHandler("ProcessRemove", new PacketInRemoveProcess())
-                .registerHandler("UpdateInternalCloudNetwork", new PacketInUpdateInternalCloudNetwork())
                 .registerHandler("InternalProcessRemove", new PacketInRemoveInternalProcess())
-                .registerHandler("CommandExecute", new PacketInCommandExecute())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
+                .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
+                .registerHandler("StartGameProcess", new PacketInStartGameProcess())
+                .registerHandler("StartProxyProcess", new PacketInStartProxyProcess())
+
+                //Client communication
+                .registerHandler("UpdateClientInfo", new PacketInSyncUpdateClientInfo())
+                .registerHandler("ClientDisconnects", new PacketInSyncClientDisconnects())
+                .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess())
+                .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue())
+
+                //Statistics
+                .registerHandler("UpdateTempServerStats", new PacketInUpdateServerTempStats())
+
+                //Helpful
+                .registerHandler("ExceptionThrown", new PacketInSyncExceptionThrown())
+
+                //Extras
+                .registerHandler("CommandExecute", new PacketInCommandExecute())
+                .registerHandler("DispatchCommandLine", new PacketInDispatchConsoleCommand())
+                .registerHandler("IconSizeIncorrect", new PacketInIconSizeIncorrect())
+                .registerHandler("NameToUUID", new PacketInSyncNameToUUID())
+
+                //Player Handlers
+                .registerHandler("UpdateOnlinePlayer", new PacketInUpdateOnlinePlayer())
+                .registerHandler("UpdateOfflinePlayer", new PacketInUpdateOfflinePlayer())
                 .registerHandler("LoginPlayer", new PacketInLoginPlayer())
                 .registerHandler("LogoutPlayer", new PacketInLogoutPlayer())
                 .registerHandler("PlayerAccepted", new PacketInPlayerAccepted())
-                .registerHandler("DispatchCommandLine", new PacketInDispatchConsoleCommand())
-                .registerHandler("StartGameProcess", new PacketInStartGameProcess())
-                .registerHandler("ServerDisable", new PacketInServerDisable())
-                .registerHandler("StartProxyProcess", new PacketInStartProxyProcess())
-                .registerHandler("ProcessLog", new PacketInGetLog())
-                .registerHandler("UpdateClientInfo", new PacketInSyncUpdateClientInfo())
-                .registerHandler("ClientDisconnects", new PacketInSyncClientDisconnects())
-                .registerHandler("ScreenUpdate", new PacketInSyncScreenUpdate())
-                .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess())
-                .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue())
-                .registerHandler("ExceptionThrown", new PacketInSyncExceptionThrown())
-                .registerHandler("IconSizeIncorrect", new PacketInIconSizeIncorrect())
-                .registerHandler("UpdateTempServerStats", new PacketInUpdateServerTempStats())
-                .registerHandler("NameToUUID", new PacketInSyncNameToUUID())
-                .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
 
-                .registerQueryHandler("QueryGetPlayer", new PacketInQueryGetPlayer());
+                //Player Query Handlers
+                .registerQueryHandler("QueryGetPlayer", new PacketInQueryGetPlayer())
+                .registerQueryHandler("QueryGetOnlinePlayer", new PacketInQueryGetOnlinePlayer());
 
         if (this.reformWebServer != null) {
             this.reformWebServer.getWebHandlerAdapter()
@@ -569,6 +592,58 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), preConfig, id, template)
             );
         }
+    }
+
+    //TODO
+
+    @Override
+    public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
+        return null;
+    }
+
+    @Override
+    public OnlinePlayer getOnlinePlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
+        return null;
+    }
+
+    @Override
+    public OfflinePlayer getOfflinePlayer(String name) {
+        return null;
+    }
+
+    @Override
+    public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
+
+    }
+
+    @Override
+    public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
+
+    }
+
+    @Override
+    public boolean isOnline(UUID uniqueId) {
+        return false;
+    }
+
+    @Override
+    public boolean isOnline(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isRegistered(UUID uniqueId) {
+        return false;
+    }
+
+    @Override
+    public boolean isRegistered(String name) {
+        return false;
     }
 
     @Override

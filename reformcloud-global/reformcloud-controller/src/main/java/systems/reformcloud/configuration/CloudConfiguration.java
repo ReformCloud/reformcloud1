@@ -61,6 +61,8 @@ public class CloudConfiguration {
                 new File("reformcloud/groups/proxies"),
                 new File("reformcloud/groups/servers"),
                 new File("reformcloud/database/stats"),
+                new File("reformcloud/database/players"),
+                new File("reformcloud/database/players/nametouuid"),
                 new File("reformcloud/files"),
                 new File("reformcloud/addons")
         })

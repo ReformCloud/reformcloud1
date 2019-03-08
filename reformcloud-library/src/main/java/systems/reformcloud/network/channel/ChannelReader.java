@@ -85,10 +85,12 @@ public class ChannelReader extends SimpleChannelInboundHandler {
     public void channelInactive(final ChannelHandlerContext ctx) {
         final InetSocketAddress inetSocketAddress = ((InetSocketAddress) ctx.channel().remoteAddress());
         if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable() && inetSocketAddress != null) {
+            final String serviceName = channelHandler.getChannelNameByValue(ctx);
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getChannel_global_disconnected()
                     .replace("%ip%", inetSocketAddress.getAddress().getHostAddress())
+                    .replace("%name%", serviceName)
                     .replace("%port%", Integer.toString(inetSocketAddress.getPort())));
-            channelHandler.unregisterChannel(channelHandler.getChannelNameByValue(ctx));
+            channelHandler.unregisterChannel(serviceName);
         }
     }
 

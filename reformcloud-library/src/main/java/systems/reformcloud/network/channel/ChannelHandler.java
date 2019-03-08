@@ -227,6 +227,36 @@ public class ChannelHandler {
         return true;
     }
 
+    public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
+                                       final NetworkQueryInboundHandler handler) {
+        if (!this.channelHandlerContextMap.containsKey(channel))
+            return false;
+
+        UUID result = UUID.randomUUID();
+        this.toQueryPacket(packet, result, from);
+
+        PacketFuture packetFuture = new PacketFuture(this, packet, this.executorService);
+        packetFuture.onSuccessfullyCompleted(handler);
+
+        this.results.put(result, packetFuture);
+        packetFuture.send(channel);
+
+        return true;
+    }
+
+    public PacketFuture sendPacketQuerySync(final String channel, final String from, final Packet packet) {
+        if (!this.channelHandlerContextMap.containsKey(channel))
+            return null;
+
+        UUID result = UUID.randomUUID();
+        this.toQueryPacket(packet, result, from);
+
+        PacketFuture packetFuture = new PacketFuture(this, packet, this.executorService);
+        this.results.put(result, packetFuture);
+
+        return packetFuture;
+    }
+
     /**
      * Sends synchronised a {@link Packet} to all registered Handlers
      *

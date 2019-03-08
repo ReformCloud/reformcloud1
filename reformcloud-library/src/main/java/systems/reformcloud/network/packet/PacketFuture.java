@@ -54,12 +54,10 @@ public final class PacketFuture implements Serializable {
             this.channelHandler.sendPacketSynchronized(to, sentPacket);
 
             Packet packet = this.syncUninterruptedly();
-            if (this.onSuccess != null && this.onFailure != null) {
-                if (packet.getResult() == null)
-                    this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-                else
-                    this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
-            }
+            if (packet.getResult() == null && this.onFailure != null)
+                this.onFailure.handle(packet.getConfiguration(), packet.getResult());
+            else if (this.onSuccess != null)
+                this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
         });
     }
 
@@ -68,16 +66,14 @@ public final class PacketFuture implements Serializable {
             this.channelHandler.sendPacketSynchronized(to, sentPacket);
 
             Packet packet = this.syncUninterruptedly(timeout, timeUnit);
-            if (this.onSuccess != null && this.onFailure != null) {
-                if (packet.getResult() == null)
-                    this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-                else
-                    this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
-            }
+            if (packet.getResult() == null && this.onFailure != null)
+                this.onFailure.handle(packet.getConfiguration(), packet.getResult());
+            else if (this.onSuccess != null)
+                this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
         });
     }
 
-    private Packet syncUninterruptedly() {
+    public Packet syncUninterruptedly() {
         try {
             return this.completableFuture.get(10, TimeUnit.SECONDS);
         } catch (final InterruptedException | ExecutionException | TimeoutException ex) {
@@ -85,7 +81,7 @@ public final class PacketFuture implements Serializable {
         }
     }
 
-    private Packet syncUninterruptedly(long timeout, TimeUnit timeUnit) {
+    public Packet syncUninterruptedly(long timeout, TimeUnit timeUnit) {
         try {
             return this.completableFuture.get(timeout, timeUnit);
         } catch (final InterruptedException | ExecutionException | TimeoutException ex) {
