@@ -43,7 +43,12 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
                     try {
                         Configuration configuration = Configuration.parse(file);
                         OfflinePlayer offlinePlayer = configuration.getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
-                        this.cachedOfflinePlayers.put(offlinePlayer.getUniqueID(), offlinePlayer);
+
+                        offlinePlayer.setLastLogin(defaultPlayer.getLastLogin());
+                        offlinePlayer.setSpigotVersion(defaultPlayer.getSpigotVersion());
+                        offlinePlayer.setName(defaultPlayer.getName());
+
+                        this.updateOfflinePlayer(offlinePlayer);
                         return offlinePlayer;
                     } catch (final Throwable throwable) {
                         StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load OfflinePlayer", throwable);

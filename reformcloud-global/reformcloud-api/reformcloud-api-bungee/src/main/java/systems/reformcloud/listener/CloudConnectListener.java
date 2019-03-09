@@ -48,7 +48,7 @@ public final class CloudConnectListener implements Listener {
                         OfflinePlayer offlinePlayer = configuration.getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
                         OnlinePlayer onlinePlayer = new OnlinePlayer(
                                 event.getPlayer().getName(),
-                                offlinePlayer.getUniqueID(),
+                                event.getPlayer().getUniqueId(),
                                 offlinePlayer.getSpigotVersion(),
                                 serverInfo.getCloudProcess().getName(),
                                 proxyInfo.getCloudProcess().getName()

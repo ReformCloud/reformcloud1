@@ -27,6 +27,8 @@ public class DefaultPlayer implements Serializable {
 
     private UUID uniqueID;
     private Map<String, Object> playerMeta;
+
+    @Setter
     private long lastLogin;
 
     @Setter
