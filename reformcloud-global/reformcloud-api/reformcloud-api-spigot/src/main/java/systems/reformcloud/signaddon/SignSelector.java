@@ -153,7 +153,7 @@ public final class SignSelector {
             Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
             if (material != null) {
                 block.setType(material, true);
-                block.setData((byte) layout.getMaterialData());
+
             }
         }
 
@@ -346,7 +346,7 @@ public final class SignSelector {
         @EventHandler(priority = EventPriority.LOW)
         public void handle(final PlayerInteractEvent event) {
             if ((event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-                    && (event.getClickedBlock().getType().equals(Material.SIGN_POST)
+                    && (event.getClickedBlock().getType().equals(Material.SIGN)
                     || event.getClickedBlock().getType().equals(Material.WALL_SIGN))) {
                 final Sign sign = getSign(event.getClickedBlock().getLocation());
                 if (sign != null && sign.getServerInfo() != null && ! sign.getServerInfo().getServerGroup().isMaintenance()) {
