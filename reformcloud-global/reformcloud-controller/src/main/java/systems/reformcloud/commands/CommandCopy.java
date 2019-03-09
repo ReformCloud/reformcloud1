@@ -36,7 +36,8 @@ public final class CommandCopy extends Command implements Serializable {
                             new PacketOutExecuteCommand("save-all", "server", serverInfo.getCloudProcess().getName())
                     );
                     ReformCloudLibraryService.sleep(100);
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(), "server", serverInfo.getServerGroup().getName()));
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(),
+                            serverInfo.getCloudProcess().getName(), "server", serverInfo.getServerGroup().getName()));
                     commandSender.sendMessage("The Client tries to copy the template.");
                 } else {
                     commandSender.sendMessage("You can't copy a server if the template backend is not the client.");
@@ -44,7 +45,8 @@ public final class CommandCopy extends Command implements Serializable {
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]) != null) {
                 final ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]);
                 if (proxyInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(proxyInfo.getCloudProcess().getName() + "-" + proxyInfo.getCloudProcess().getProcessUID(), "proxy", proxyInfo.getProxyGroup().getName()));
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(proxyInfo.getCloudProcess().getName() + "-" + proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(),
+                            "proxy", proxyInfo.getProxyGroup().getName()));
                     commandSender.sendMessage("The Client tries to copy the template.");
                 } else {
                     commandSender.sendMessage("You can't copy a server if the template backend is not the client.");

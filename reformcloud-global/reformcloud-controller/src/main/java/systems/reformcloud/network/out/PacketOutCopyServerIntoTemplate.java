@@ -12,7 +12,11 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutCopyServerIntoTemplate extends Packet {
-    public PacketOutCopyServerIntoTemplate(final String name, final String type, final String group) {
-        super("CopyServerIntoTemplate", new Configuration().addStringProperty("name", name).addStringProperty("type", type).addStringProperty("group", group));
+    public PacketOutCopyServerIntoTemplate(final String name, final String serverName, final String type, final String group) {
+        super("CopyServerIntoTemplate", new Configuration()
+                .addStringProperty("name", name)
+                .addStringProperty("type", type)
+                .addStringProperty("serverName", serverName)
+                .addStringProperty("group", group));
     }
 }

@@ -28,7 +28,7 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
                 ServerInfo serverInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
                         .getServerProcessManager().getRegisteredServerByName(configuration.getStringValue("name"));
                 CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient.getInstance()
-                        .getCloudProcessScreenService().getRegisteredServerHandler(configuration.getStringValue("name"));
+                        .getCloudProcessScreenService().getRegisteredServerHandler(configuration.getStringValue("serverName"));
                 if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)
                         || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
                     cloudServerStartupHandler.executeCommand("save-all");
@@ -56,7 +56,7 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
             }
             case "proxy": {
                 ProxyStartupHandler proxyStartupHandler = ReformCloudClient.getInstance()
-                        .getCloudProcessScreenService().getRegisteredProxyHandler(configuration.getStringValue("name"));
+                        .getCloudProcessScreenService().getRegisteredProxyHandler(configuration.getStringValue("serverName"));
                 FileUtils.copyAllFiles(Paths.get("reformcloud/temp/proxies/" + configuration.getStringValue("name")),
                         "reformcloud/templates/" + configuration.getStringValue("group") + "/" +
                                 proxyStartupHandler.getTemplate().getName(), "BungeeCord.jar");
