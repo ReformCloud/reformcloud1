@@ -101,7 +101,6 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
                 .registerHandler("ProcessAdd", new PacketInProcessAdd())
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
-                .registerHandler("Signs", new PacketInRequestSigns())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())

@@ -7,6 +7,7 @@ package systems.reformcloud.signaddon;
 import com.google.common.base.Enums;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -30,12 +31,13 @@ import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.packets.PacketOutRequestSignUpdate;
-import systems.reformcloud.network.packets.PacketOutRequestsSigns;
+import systems.reformcloud.network.query.out.PacketOutQueryGetSigns;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.signs.SignLayout;
 import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.signs.SignPosition;
 import systems.reformcloud.signs.map.TemplateMap;
+import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.util.Map;
 import java.util.UUID;
@@ -65,33 +67,33 @@ public final class SignSelector {
         else
             throw new InstanceAlreadyExistsException();
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutRequestsSigns());
+        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync("ReformCloudController",
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
+                new PacketOutQueryGetSigns(),
+                (configuration, resultID) -> {
+                    this.signLayoutConfiguration = configuration.getValue("signConfig", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
+                    this.signMap = configuration.getValue("signMap", new TypeToken<Map<UUID, Sign>>() {
+                    }.getType());
 
-        SpigotBootstrap.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(SpigotBootstrap.getInstance(), () -> {
-            if (this.signLayoutConfiguration == null || this.signMap == null) {
-                instance = null;
-                return;
-            }
+                    SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
+                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
 
-            SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
-            SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
+                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new CommandSelectors(), SpigotBootstrap.getInstance());
+                    SpigotBootstrap.getInstance().getCommand("selectors").setExecutor(new CommandSelectors());
+                    SpigotBootstrap.getInstance().getCommand("selectors").setPermission("reformcloud.command.selectors");
 
-            SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new CommandSelectors(), SpigotBootstrap.getInstance());
-            SpigotBootstrap.getInstance().getCommand("selectors").setExecutor(new CommandSelectors());
-            SpigotBootstrap.getInstance().getCommand("selectors").setPermission("reformcloud.command.selectors");
+                    this.worker = new Worker(this.signLayoutConfiguration.getLoadingLayout().getPerSecondAnimation());
+                    this.worker.setDaemon(true);
+                    this.worker.start();
 
-            this.worker = new Worker(this.signLayoutConfiguration.getLoadingLayout().getPerSecondAnimation());
-            this.worker.setDaemon(true);
-            this.worker.start();
-
-            for (ServerInfo serverInfo : ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses()) {
-                if (! serverInfo.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())) {
-                    final Sign sign = findFreeSign(serverInfo.getServerGroup().getName());
-                    if (sign != null)
-                        updateSign(sign, serverInfo);
-                }
-            }
-        }, 120L);
+                    for (ServerInfo serverInfo : ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses()) {
+                        if (!serverInfo.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())) {
+                            final Sign sign = findFreeSign(serverInfo.getServerGroup().getName());
+                            if (sign != null)
+                                updateSign(sign, serverInfo);
+                        }
+                    }
+                }, (configuration, resultID) -> instance = null);
     }
 
     public void updateAll() {

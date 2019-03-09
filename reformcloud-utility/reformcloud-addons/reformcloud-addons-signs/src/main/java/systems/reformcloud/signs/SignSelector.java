@@ -42,7 +42,9 @@ public final class SignSelector implements Shutdown {
         ReformCloudController.getInstance().getNettyHandler()
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
-                .registerHandler("RequestSigns", new PacketInRequestSigns())
+
+                .registerQueryHandler("QueryGetSigns", new PacketInRequestSigns())
+
                 .registerHandler("RequestSignUpdate", new PacketInRequestSignUpdate());
     }
 
@@ -55,7 +57,6 @@ public final class SignSelector implements Shutdown {
 
         ReformCloudController.getInstance().getNettyHandler().unregisterHandler("CreateSign");
         ReformCloudController.getInstance().getNettyHandler().unregisterHandler("RemoveSign");
-        ReformCloudController.getInstance().getNettyHandler().unregisterHandler("RequestSigns");
         ReformCloudController.getInstance().getNettyHandler().unregisterHandler("RequestSignUpdate");
     }
 }

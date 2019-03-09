@@ -17,7 +17,8 @@ import java.util.UUID;
  */
 
 public final class PacketOutSendSigns extends Packet {
-    public PacketOutSendSigns(final SignLayoutConfiguration signLayoutConfiguration, final Map<UUID, Sign> signs) {
-        super("Signs", new Configuration().addProperty("configuration", signLayoutConfiguration).addProperty("signs", signs));
+    public PacketOutSendSigns(final SignLayoutConfiguration signLayoutConfiguration, final Map<UUID, Sign> signs, UUID result) {
+        super("undefined", new Configuration().addProperty("signConfig", signLayoutConfiguration).addProperty("signMap", signs));
+        super.setResult(result);
     }
 }
