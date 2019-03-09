@@ -35,6 +35,8 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
 
     private TextChannel textChannel;
 
+    private ConsoleWriter consoleWriter;
+
     @Override
     public void onAddonClazzPrepare() {
         instance = this;
@@ -43,7 +45,7 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
 
     @Override
     public void onAddonLoading() {
-        new ConsoleWriter();
+        consoleWriter = new ConsoleWriter();
         this.discordConfig = new DiscordConfig();
 
         final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT)
@@ -66,6 +68,9 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
         if (jda != null) {
             this.jda.shutdownNow();
             this.jda = null;
+
+            if (!consoleWriter.getThread().isInterrupted())
+                this.consoleWriter.getThread().interrupt();
         }
     }
 }

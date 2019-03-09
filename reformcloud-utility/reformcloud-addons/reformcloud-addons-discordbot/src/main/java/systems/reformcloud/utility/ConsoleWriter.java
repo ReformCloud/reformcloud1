@@ -4,6 +4,7 @@
 
 package systems.reformcloud.utility;
 
+import lombok.Getter;
 import systems.reformcloud.DiscordAddon;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
@@ -12,7 +13,6 @@ import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 import java.io.Serializable;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
@@ -21,9 +21,12 @@ import java.util.Queue;
 public final class ConsoleWriter implements Serializable, Runnable, IConsoleInputHandler {
     private Deque<String> consoleMessages = new LinkedList<>();
 
+    @Getter
+    private Thread thread;
+
     public ConsoleWriter() {
         ReformCloudController.getInstance().getLoggerProvider().registerLoggerHandler(this);
-        Thread thread = new Thread(this);
+        thread = new Thread(this);
         thread.setDaemon(true);
         thread.start();
     }
