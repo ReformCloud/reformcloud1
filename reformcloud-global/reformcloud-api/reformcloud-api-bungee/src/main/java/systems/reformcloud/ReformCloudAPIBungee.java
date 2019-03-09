@@ -43,6 +43,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -162,7 +163,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 this.proxyInfo.getCloudProcess().getName(),
                 new PacketOutQueryGetOnlinePlayer(uniqueId)
         );
-        Packet result = packetFuture.syncUninterruptedly();
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
             return null;
 
@@ -176,7 +177,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 this.proxyInfo.getCloudProcess().getName(),
                 new PacketOutQueryGetOnlinePlayer(name)
         );
-        Packet result = packetFuture.syncUninterruptedly();
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
             return null;
 
@@ -190,7 +191,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 this.proxyInfo.getCloudProcess().getName(),
                 new PacketOutQueryGetPlayer(uniqueId)
         );
-        Packet result = packetFuture.syncUninterruptedly();
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
             return null;
 
@@ -204,7 +205,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 this.proxyInfo.getCloudProcess().getName(),
                 new PacketOutQueryGetPlayer(name)
         );
-        Packet result = packetFuture.syncUninterruptedly();
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
             return null;
 
