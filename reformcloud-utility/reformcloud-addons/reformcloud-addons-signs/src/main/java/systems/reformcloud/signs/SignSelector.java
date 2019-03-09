@@ -10,7 +10,6 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.signs.configuration.SignConfiguration;
 import systems.reformcloud.signs.netty.in.PacketInCreateSign;
 import systems.reformcloud.signs.netty.in.PacketInRemoveSign;
-import systems.reformcloud.signs.netty.in.PacketInRequestSignUpdate;
 import systems.reformcloud.signs.netty.in.PacketInRequestSigns;
 import systems.reformcloud.utility.runtime.Shutdown;
 
@@ -43,9 +42,7 @@ public final class SignSelector implements Shutdown {
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
 
-                .registerQueryHandler("QueryGetSigns", new PacketInRequestSigns())
-
-                .registerHandler("RequestSignUpdate", new PacketInRequestSignUpdate());
+                .registerQueryHandler("QueryGetSigns", new PacketInRequestSigns());
     }
 
     /**

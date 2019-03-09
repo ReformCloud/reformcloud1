@@ -241,13 +241,13 @@ public class ReformCloudClient implements Shutdown, Reload {
             proxyProcess.shutdown(null, false);
             this.getLoggerProvider().info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
                     .replace("%name%", proxyProcess.getProxyStartupInfo().getName()));
-            ReformCloudLibraryService.sleep(200);
+            ReformCloudLibraryService.sleep(1000);
         });
         this.cloudProcessScreenService.getRegisteredServerProcesses().forEach(serverProcess -> {
             serverProcess.shutdown(false);
             this.getLoggerProvider().info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
                     .replace("%name%", serverProcess.getServerStartupInfo().getName()));
-            ReformCloudLibraryService.sleep(200);
+            ReformCloudLibraryService.sleep(1000);
         });
 
         this.addonParallelLoader.disableAddons();

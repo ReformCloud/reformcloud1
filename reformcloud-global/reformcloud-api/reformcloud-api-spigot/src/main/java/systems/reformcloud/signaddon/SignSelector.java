@@ -30,7 +30,6 @@ import systems.reformcloud.internal.events.CloudServerRemoveEvent;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.network.packets.PacketOutRequestSignUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetSigns;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.signs.SignLayout;
@@ -97,7 +96,14 @@ public final class SignSelector {
     }
 
     public void updateAll() {
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutRequestSignUpdate());
+        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync("ReformCloudController",
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
+                new PacketOutQueryGetSigns(),
+                (configuration, resultID) -> {
+                    this.signLayoutConfiguration = configuration.getValue("signConfig", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
+                    this.signMap = configuration.getValue("signMap", new TypeToken<Map<UUID, Sign>>() {
+                    }.getType());
+                });
     }
 
     private void setMaintenance(final Sign sign) {
