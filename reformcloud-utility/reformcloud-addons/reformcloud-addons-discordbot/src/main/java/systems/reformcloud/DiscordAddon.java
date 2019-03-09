@@ -63,7 +63,9 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
 
     @Override
     public void onAddonReadyToClose() {
-        if (jda != null)
+        if (jda != null) {
             this.jda.shutdownNow();
+            this.jda = null;
+        }
     }
 }
