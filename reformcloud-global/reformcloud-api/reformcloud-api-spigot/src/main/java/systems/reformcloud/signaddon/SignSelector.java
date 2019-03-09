@@ -15,11 +15,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.material.MaterialData;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.CommandSelectors;
@@ -160,8 +162,9 @@ public final class SignSelector {
             Block block = sign.getLocation().getBlock().getRelative(signData.getAttachedFace());
             Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
             if (material != null) {
-                block.setType(material, true);
-
+                BlockState blockState = block.getState();
+                blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
+                blockState.update();
             }
         }
 
