@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -305,19 +306,21 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     }
 
     public String uploadLog(String input) {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost("https://paste.reformcloud.systems");
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpPost httpPost = new HttpPost("https://paste.reformcloud.systems/documents");
 
         try {
-            post.setEntity(new StringEntity(input.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")));
+            httpPost.setEntity(new StringEntity("{ \"text\": \"" + input + "\" }", ContentType.APPLICATION_JSON));
 
-            HttpResponse response = client.execute(post);
-            final String result = EntityUtils.toString(response.getEntity());
-            return "https://paste.reformcloud.systems/" + ReformCloudLibraryService.PARSER.parse(result).getAsJsonObject().get("key").getAsString();
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            final String result = EntityUtils.toString(httpResponse.getEntity());
+
+            return "https://paste.reformcloud.systems/" + ReformCloudLibraryService.PARSER
+                    .parse(result).getAsJsonObject().get("key").getAsString();
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while uploading log", ex);
         }
 
-        return "Could not post log on haste.reformcloud.de!";
+        return "Could not post log on \"paste.reformcloud.de\"!";
     }
 }
