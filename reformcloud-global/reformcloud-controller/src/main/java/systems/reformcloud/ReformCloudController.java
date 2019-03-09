@@ -594,56 +594,70 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         }
     }
 
-    //TODO
-
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
-        return null;
+        return this.playerDatabase.getOnlinePlayer(uniqueId);
     }
 
     @Override
     public OnlinePlayer getOnlinePlayer(String name) {
-        return null;
+        UUID uuid = this.playerDatabase.getFromName(name);
+        if (uuid == null)
+            return null;
+
+        return this.playerDatabase.getOnlinePlayer(uuid);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
-        return null;
+        return this.playerDatabase.getOfflinePlayer(uniqueId);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(String name) {
-        return null;
+        UUID uuid = this.playerDatabase.getFromName(name);
+        if (uuid == null)
+            return null;
+
+        return this.playerDatabase.getOfflinePlayer(uuid);
     }
 
     @Override
     public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
-
+        this.playerDatabase.updateOnlinePlayer(onlinePlayer);
     }
 
     @Override
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
-
+        this.playerDatabase.updateOfflinePlayer(offlinePlayer);
     }
 
     @Override
     public boolean isOnline(UUID uniqueId) {
-        return false;
+        return this.playerDatabase.getOnlinePlayer(uniqueId) != null;
     }
 
     @Override
     public boolean isOnline(String name) {
-        return false;
+        UUID uuid = this.playerDatabase.getFromName(name);
+        if (uuid == null)
+            return false;
+
+        return this.playerDatabase.getOnlinePlayer(uuid) != null;
     }
 
     @Override
     public boolean isRegistered(UUID uniqueId) {
-        return false;
+        return this.playerDatabase.getOfflinePlayer(uniqueId) != null;
     }
 
     @Override
     public boolean isRegistered(String name) {
-        return false;
+        UUID uuid = this.playerDatabase.getFromName(name);
+        if (uuid == null)
+            return false;
+
+        return this.playerDatabase.getOfflinePlayer(uuid) != null;
     }
 
     @Override

@@ -32,10 +32,10 @@ import systems.reformcloud.network.api.event.NetworkEventHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.packet.Packet;
-import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
-import systems.reformcloud.network.packets.PacketOutStartGameServer;
-import systems.reformcloud.network.packets.PacketOutStartProxy;
-import systems.reformcloud.network.packets.PacketOutUpdateServerTempStats;
+import systems.reformcloud.network.packet.PacketFuture;
+import systems.reformcloud.network.packets.*;
+import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
+import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.utility.TypeTokenAdaptor;
@@ -46,6 +46,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -181,52 +182,88 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
 
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
-        return null;
+        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
+                "ReformCloudController",
+                this.serverInfo.getCloudProcess().getName(),
+                new PacketOutQueryGetOnlinePlayer(uniqueId)
+        );
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        if (result.getResult() == null)
+            return null;
+
+        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
     }
 
     @Override
     public OnlinePlayer getOnlinePlayer(String name) {
-        return null;
+        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
+                "ReformCloudController",
+                this.serverInfo.getCloudProcess().getName(),
+                new PacketOutQueryGetOnlinePlayer(name)
+        );
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        if (result.getResult() == null)
+            return null;
+
+        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
-        return null;
+        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
+                "ReformCloudController",
+                this.serverInfo.getCloudProcess().getName(),
+                new PacketOutQueryGetPlayer(uniqueId)
+        );
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        if (result.getResult() == null)
+            return null;
+
+        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(String name) {
-        return null;
+        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
+                "ReformCloudController",
+                this.serverInfo.getCloudProcess().getName(),
+                new PacketOutQueryGetPlayer(name)
+        );
+        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        if (result.getResult() == null)
+            return null;
+
+        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
     }
 
     @Override
     public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
-
+        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateOnlinePlayer(onlinePlayer));
     }
 
     @Override
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
-
+        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateOfflinePlayer(offlinePlayer));
     }
 
     @Override
     public boolean isOnline(UUID uniqueId) {
-        return false;
+        return this.getOnlinePlayer(uniqueId) != null;
     }
 
     @Override
     public boolean isOnline(String name) {
-        return false;
+        return this.getOnlinePlayer(name) != null;
     }
 
     @Override
     public boolean isRegistered(UUID uniqueId) {
-        return false;
+        return this.getOfflinePlayer(uniqueId) != null;
     }
 
     @Override
     public boolean isRegistered(String name) {
-        return false;
+        return this.getOfflinePlayer(name) != null;
     }
 
     @Override
