@@ -51,8 +51,11 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
                     }
                 }
 
-                if (stringBuilder.length() != -1 && stringBuilder.length() != 0)
-                    DiscordAddon.getInstance().getTextChannel().sendMessage(stringBuilder.substring(0)).queue();
+                try {
+                    if (stringBuilder.length() != -1 && stringBuilder.length() != 0)
+                        DiscordAddon.getInstance().getTextChannel().sendMessage(stringBuilder.substring(0)).queue();
+                } catch (final Throwable ignored) {
+                }
             }
 
             try {
