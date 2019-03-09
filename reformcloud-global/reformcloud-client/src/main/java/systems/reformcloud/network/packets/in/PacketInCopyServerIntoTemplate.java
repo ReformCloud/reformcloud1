@@ -31,20 +31,20 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
                 if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)
                         || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
                     cloudServerStartupHandler.executeCommand("save-all");
-                    ReformCloudLibraryService.sleep(1000);
+                    ReformCloudLibraryService.sleep(2000);
                     FileUtils.copyAllFiles(Paths.get("reformcloud/temp/servers/" + configuration.getStringValue("name")),
-                            "reformcloud/templates/" + configuration.getStringValue("group"), "spigot.jar");
+                            "reformcloud/templates/" + configuration.getStringValue("group") + "/default", "spigot.jar");
                 } else {
                     cloudServerStartupHandler.executeCommand("save-all");
-                    ReformCloudLibraryService.sleep(1000);
+                    ReformCloudLibraryService.sleep(2000);
                     FileUtils.copyAllFiles(Paths.get("reformcloud/static/servers/" + configuration.getStringValue("name")),
-                            "reformcloud/templates/" + configuration.getStringValue("group"), "spigot.jar");
+                            "reformcloud/templates/" + configuration.getStringValue("group") + "/default", "spigot.jar");
                 }
 
                 break;
             }
             case "proxy": {
-                FileUtils.copyAllFiles(Paths.get("reformcloud/temp/proxies/" + configuration.getStringValue("name")), "reformcloud/templates/" + configuration.getStringValue("group"), "BungeeCord.jar");
+                FileUtils.copyAllFiles(Paths.get("reformcloud/temp/proxies/" + configuration.getStringValue("name")), "reformcloud/templates/" + configuration.getStringValue("group") + "/default", "BungeeCord.jar");
                 break;
             }
             default:

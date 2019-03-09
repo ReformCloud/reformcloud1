@@ -94,7 +94,7 @@ public class ProxyStartupHandler {
                 return false;
             }
         } else if (template.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-            FileUtils.copyAllFiles(Paths.get("reformcloud/templates/" + proxyStartupInfo.getProxyGroup().getName()), path + StringUtil.EMPTY);
+            FileUtils.copyAllFiles(Paths.get("reformcloud/templates/" + proxyStartupInfo.getProxyGroup().getName() + "/" + template.getName()), path + StringUtil.EMPTY);
         } else {
             return false;
         }
