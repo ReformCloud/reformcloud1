@@ -114,8 +114,10 @@ public class CloudServerStartupHandler {
         if (!Files.exists(Paths.get(path + "/plugins")))
             FileUtils.createDirectory(Paths.get(path + "/plugins"));
 
-        if (!Files.exists(Paths.get(path + "/configs")))
+        if (!Files.exists(Paths.get(path + "/configs")) && this.serverStartupInfo
+                .getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
             FileUtils.createDirectory(Paths.get(path + "/configs"));
+        }
 
         FileUtils.createDirectory(Paths.get(path + "/reformcloud"));
 
