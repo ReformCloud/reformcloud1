@@ -307,7 +307,8 @@ public final class SignSelector {
                     if (!e.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
                             && !SignSelector.this.isOnSign(e)) {
                         final Sign sign = findFreeSign(e.getServerGroup().getName());
-                        if (sign != null && !sign.getSignPosition().getTargetGroup().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getName()))
+                        if (sign != null && !sign.getSignPosition().getTargetGroup()
+                                .equals(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getName()))
                             SignSelector.this.updateSign(sign, e);
                     }
                 });
@@ -349,7 +350,7 @@ public final class SignSelector {
                     && (event.getClickedBlock().getType().equals(Material.SIGN)
                     || event.getClickedBlock().getType().equals(Material.WALL_SIGN))) {
                 final Sign sign = getSign(event.getClickedBlock().getLocation());
-                if (sign != null && sign.getServerInfo() != null && ! sign.getServerInfo().getServerGroup().isMaintenance()) {
+                if (sign != null && sign.getServerInfo() != null && !sign.getServerInfo().getServerGroup().isMaintenance()) {
                     ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
                     byteArrayDataOutput.writeUTF("Connect");
                     byteArrayDataOutput.writeUTF(sign.getServerInfo().getCloudProcess().getName());
