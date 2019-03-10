@@ -47,15 +47,15 @@ public class SignConfiguration {
         if (!Files.exists(Paths.get("reformcloud/signs/" + path))) {
             new Configuration().addProperty("config", new SignLayoutConfiguration(
                     new SignLayout.GroupLayout(
-                            new SignLayout(new String[]{"§8§m---------§r", "&c§lmaintenance", " ", "§8§m---------"}, "STAINED_CLAY", 4),
-                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
-                            new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
-                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4)
+                            new SignLayout(new String[]{"§8§m---------§r", "&c§lmaintenance", " ", "§8§m---------"}, "SAND", 0),
+                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
+                            new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
+                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0)
 
                     ), ReformCloudLibraryService.concurrentHashMap(), Collections.singletonList(new TemplateMap<>("Lobby", "default", new SignLayout.TemplateLayout(
-                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
-                    new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4),
-                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "STAINED_CLAY", 4)
+                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
+                    new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
+                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0)
             ))), new SignLayout.LoadingLayout(
                     4, 0,
                     new SignLayout[]{
