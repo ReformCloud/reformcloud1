@@ -6,6 +6,7 @@ package systems.reformcloud.player.permissions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
@@ -19,6 +20,8 @@ import java.util.List;
 @Getter
 public final class PermissionCache implements Serializable {
     private List<PermissionGroup> allRegisteredGroups;
+
+    @Setter
     private PermissionGroup defaultGroup;
 
     public PermissionGroup getPermissionGroup(String name) {

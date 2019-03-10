@@ -9,6 +9,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.in.PacketInUpdatePermissionHolder;
+import systems.reformcloud.network.out.PacketOutUpdatePermissionCache;
 import systems.reformcloud.network.query.in.PacketInQueryGetPermissionCache;
 import systems.reformcloud.network.query.in.PacketInQueryGetPermissionHolder;
 import systems.reformcloud.player.permissions.PermissionCache;
@@ -20,10 +21,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
@@ -66,6 +64,10 @@ public final class PermissionDatabase implements Serializable {
             return;
 
         this.permissionCache.getAllRegisteredGroups().add(permissionGroup);
+    }
+
+    public void deletePermissionGroup(PermissionGroup permissionGroup) {
+        this.permissionCache.getAllRegisteredGroups().remove(permissionGroup);
     }
 
     public PermissionHolder getPermissionHolder(final PermissionHolder permissionHolder) {
@@ -138,6 +140,20 @@ public final class PermissionDatabase implements Serializable {
                 .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));
     }
 
+    public void updatePermissionGroup(PermissionGroup permissionGroup) {
+        if (permissionGroup.getName().equalsIgnoreCase(this.permissionCache.getDefaultGroup().getName())) {
+            this.permissionCache.setDefaultGroup(permissionGroup);
+            return;
+        }
+
+        List<PermissionGroup> copyOf = new ArrayList<>(this.permissionCache.getAllRegisteredGroups());
+        copyOf.forEach(permissionGroup1 -> {
+            if (permissionGroup1.getName().equals(permissionGroup.getName()))
+                this.permissionCache.getAllRegisteredGroups().remove(permissionGroup1);
+        });
+        this.permissionCache.getAllRegisteredGroups().add(permissionGroup);
+    }
+
     public void addPermission(UUID holderUniqueID, String permission, boolean set) {
         if (this.getPermissionHolder(holderUniqueID) == null)
             return;
@@ -146,5 +162,12 @@ public final class PermissionDatabase implements Serializable {
         permissionHolder.addPermission(permission, set);
 
         this.updatePermissionHolder(permissionHolder);
+    }
+
+    public void update() {
+        new Configuration().addProperty("permissionConfig", this.permissionCache).write(Paths.get("reformcloud/permissions/config.json"));
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
+                new PacketOutUpdatePermissionCache()
+        );
     }
 }
