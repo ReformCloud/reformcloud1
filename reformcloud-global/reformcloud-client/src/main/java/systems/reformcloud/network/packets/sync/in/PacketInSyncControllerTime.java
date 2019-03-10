@@ -17,7 +17,6 @@ import java.io.Serializable;
 public final class PacketInSyncControllerTime implements Serializable, NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudClient.getInstance().setInternalTime(configuration.getLongValue("time"));
-        ReformCloudClient.getInstance().getLoggerProvider().setControllerTime(configuration.getLongValue("time"));
+        ReformCloudClient.getInstance().updateInternalTime(configuration.getLongValue("time"));
     }
 }

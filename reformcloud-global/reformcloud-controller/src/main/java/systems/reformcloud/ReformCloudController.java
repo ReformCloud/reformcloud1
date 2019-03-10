@@ -36,11 +36,13 @@ import systems.reformcloud.network.NettySocketServer;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.out.PacketOutStartGameServer;
 import systems.reformcloud.network.out.PacketOutStartProxy;
 import systems.reformcloud.network.out.PacketOutStopProcess;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.query.in.PacketInQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.in.PacketInQueryGetPlayer;
 import systems.reformcloud.network.sync.in.*;
@@ -748,6 +750,27 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     @Override
     public void sendPacketToAllSync(Packet packet) {
         this.channelHandler.sendToAllSynchronized(packet);
+    }
+
+    @Override
+    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess) {
+        this.channelHandler.sendPacketQuerySync(
+                channel, "ReformCloudController", packet, onSuccess
+        );
+    }
+
+    @Override
+    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess, NetworkQueryInboundHandler onFailure) {
+        this.channelHandler.sendPacketQuerySync(
+                channel, "ReformCloudController", packet, onSuccess, onFailure
+        );
+    }
+
+    @Override
+    public PacketFuture sendPacketQuery(String channel, Packet packet) {
+        return this.channelHandler.sendPacketQuerySync(
+                channel, "ReformCloudController", packet
+        );
     }
 
     @Override

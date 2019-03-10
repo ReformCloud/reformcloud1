@@ -12,7 +12,9 @@ import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.NettyHandler;
+import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 
@@ -94,6 +96,12 @@ public interface IAPIService {
     void sendPacketToAll(Packet packet);
 
     void sendPacketToAllSync(Packet packet);
+
+    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess);
+
+    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess, NetworkQueryInboundHandler onFailure);
+
+    PacketFuture sendPacketQuery(String channel, Packet packet);
 
     Client getClient(String name);
 

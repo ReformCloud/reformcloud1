@@ -31,6 +31,7 @@ import systems.reformcloud.network.NettySocketClient;
 import systems.reformcloud.network.api.event.NetworkEventHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
+import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.packets.*;
@@ -82,7 +83,10 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
             instance = this;
         else
             throw new InstanceAlreadyExistsException();
+
         ReformCloudLibraryService.sendHeader();
+
+        IAPIService.instance.set(this);
 
         SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(this, SpigotBootstrap.getInstance());
 
@@ -111,8 +115,6 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
                 ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.serverStartupInfo.getName()
         );
-
-        IAPIService.instance.set(this);
     }
 
     public void updateTempStats() {
@@ -343,6 +345,27 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
     @Override
     public void sendPacketToAllSync(Packet packet) {
         this.channelHandler.sendToAllSynchronized(packet);
+    }
+
+    @Override
+    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess) {
+        this.channelHandler.sendPacketQuerySync(
+                channel, this.serverInfo.getCloudProcess().getName(), packet, onSuccess
+        );
+    }
+
+    @Override
+    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess, NetworkQueryInboundHandler onFailure) {
+        this.channelHandler.sendPacketQuerySync(
+                channel, this.serverInfo.getCloudProcess().getName(), packet, onSuccess, onFailure
+        );
+    }
+
+    @Override
+    public PacketFuture sendPacketQuery(String channel, Packet packet) {
+        return this.channelHandler.sendPacketQuerySync(
+                channel, this.serverInfo.getCloudProcess().getName(), packet
+        );
     }
 
     @Override
