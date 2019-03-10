@@ -47,7 +47,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     private ConsoleReader consoleReader;
     private final DateFormat dateFormat = DateProvider.getDateFormat("MM/dd/yyyy HH:mm:ss");
 
-    protected final File debugLogFile = new File("klarcloud/logs/debug-" + System.currentTimeMillis() + ".log");
+    protected final File debugLogFile = new File("reformcloud/logs/debug-" + System.currentTimeMillis() + ".log");
 
     @Setter
     private long controllerTime = System.currentTimeMillis();
