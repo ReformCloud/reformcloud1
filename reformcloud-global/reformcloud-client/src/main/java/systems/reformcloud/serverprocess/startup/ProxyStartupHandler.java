@@ -185,7 +185,7 @@ public class ProxyStartupHandler {
                 .addProperty("info", proxyInfo)
                 .addProperty("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
                 .addStringProperty("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
-                .addBooleanProperty("ssl", ReformCloudClient.getInstance().getNettySocketClient().getSslContext() != null)
+                .addBooleanProperty("ssl", ReformCloudClient.getInstance().isSsl())
                 .addProperty("startupInfo", proxyStartupInfo)
 
                 .write(Paths.get(path + "/reformcloud/config.json"));

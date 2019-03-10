@@ -222,6 +222,7 @@ public class CloudServerStartupHandler {
                 .addProperty("info", serverInfo)
                 .addProperty("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
                 .addStringProperty("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
+                .addBooleanProperty("ssl", ReformCloudClient.getInstance().isSsl())
                 .addProperty("startupInfo", serverStartupInfo)
 
                 .write(Paths.get(path + "/reformcloud/config.json"));

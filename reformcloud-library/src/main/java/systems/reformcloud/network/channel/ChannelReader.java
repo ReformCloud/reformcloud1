@@ -88,7 +88,7 @@ public class ChannelReader extends SimpleChannelInboundHandler {
             final String serviceName = channelHandler.getChannelNameByValue(ctx);
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getChannel_global_disconnected()
                     .replace("%ip%", inetSocketAddress.getAddress().getHostAddress())
-                    .replace("%name%", serviceName)
+                    .replace("%name%", serviceName != null ? serviceName : "Not found")
                     .replace("%port%", Integer.toString(inetSocketAddress.getPort())));
             channelHandler.unregisterChannel(serviceName);
         }
