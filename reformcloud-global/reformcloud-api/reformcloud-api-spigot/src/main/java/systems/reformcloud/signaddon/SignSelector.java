@@ -162,6 +162,7 @@ public final class SignSelector {
             Block block = sign.getLocation().getBlock().getRelative(signData.getAttachedFace());
             Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
             if (material != null) {
+                block.setType(material);
                 BlockState blockState = block.getState();
                 blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
                 blockState.update();
