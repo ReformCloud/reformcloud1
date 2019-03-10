@@ -223,13 +223,12 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("Set " + args[0] + "'s group to " + permissionGroup.getName());
-            //perms GROUPNAME setdefault
         } else if (args.length == 2 && args[1].equalsIgnoreCase("setdefault")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
                     .findFirst().orElse(null);
             if (permissionGroup == null) {
-                commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
                 return;
             }
 
@@ -247,7 +246,7 @@ public final class CommandPermissions extends Command implements Serializable {
         } else {
             commandSender.sendMessage("perms list");
             commandSender.sendMessage("perms <USERNAME> list");
-            commandSender.sendMessage("perms <GROUPNAME> SETDEFAULT");
+            commandSender.sendMessage("perms <GROUPNAME> setdefault");
             commandSender.sendMessage("perms <CREATE/DELETE> <GROUPNAME>");
             commandSender.sendMessage("perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>");
             commandSender.sendMessage("perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>");
