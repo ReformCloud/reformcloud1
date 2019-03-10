@@ -14,6 +14,7 @@
     <modules>
         <module>reformcloud-addons-signs</module>
         <module>reformcloud-addons-discordbot</module>
+        <module>reformcloud-addons-permissions</module>
     </modules>
 
     <dependencies>

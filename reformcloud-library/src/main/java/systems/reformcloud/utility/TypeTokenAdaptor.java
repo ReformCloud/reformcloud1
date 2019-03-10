@@ -18,6 +18,8 @@ import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.player.DefaultPlayer;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
+import systems.reformcloud.player.permissions.PermissionCache;
+import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -58,6 +60,10 @@ public final class TypeTokenAdaptor {
             ONLINE_PLAYER_TYPE = new TypeToken<OnlinePlayer>() {
             }.getType(),
             DEFAULT_PLAYER_TYPE = new TypeToken<DefaultPlayer>() {
+            }.getType(),
+            PERMISSION_CACHE_TYPE = new TypeToken<PermissionCache>() {
+            }.getType(),
+            PERMISSION_HOLDER_TYPE = new TypeToken<PermissionHolder>() {
             }.getType(),
             CLIENT_INFO_TYPE = new TypeToken<ClientInfo>() {
             }.getType();

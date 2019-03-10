@@ -36,14 +36,14 @@ import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
+import systems.reformcloud.player.permissions.PermissionCache;
+import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -63,6 +63,10 @@ public class ReformCloudAPIBungee implements IAPIService {
     private final ProxyStartupInfo proxyStartupInfo;
     private ProxyInfo proxyInfo;
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
+
+    private PermissionCache permissionCache;
+
+    private Map<UUID, PermissionHolder> cachedPermissionHolders = new HashMap<>();
 
     private long internalTime = System.currentTimeMillis();
 
