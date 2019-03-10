@@ -65,11 +65,11 @@ public final class CloudConnectListener implements Listener {
                         if (ReformCloudAPIBungee.getInstance().getPermissionCache() != null) {
                             ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
                                     new PacketOutQueryGetPermissionHolder(
-                                            new PermissionHolder(offlinePlayer, Collections.singletonList(ReformCloudAPIBungee
-                                                    .getInstance().getPermissionCache().getDefaultGroup()), new HashMap<>())
+                                            new PermissionHolder(offlinePlayer.getUniqueID(), Collections.singletonList(ReformCloudAPIBungee
+                                                    .getInstance().getPermissionCache().getDefaultGroup().getName()), new HashMap<>())
                                     ), (configuration1, resultID1) -> {
                                         PermissionHolder permissionHolder = configuration1.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-                                        ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getOfflinePlayer().getUniqueID(), permissionHolder);
+                                        ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
                                     });
                         }
 

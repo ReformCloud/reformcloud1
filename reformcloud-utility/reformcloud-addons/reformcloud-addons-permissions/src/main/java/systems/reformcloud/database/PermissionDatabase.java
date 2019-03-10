@@ -69,20 +69,20 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public PermissionHolder getPermissionHolder(final PermissionHolder permissionHolder) {
-        if (ReformCloudController.getInstance().getPlayerDatabase().getOfflinePlayer(permissionHolder.getOfflinePlayer().getUniqueID()) == null)
+        if (ReformCloudController.getInstance().getPlayerDatabase().getOfflinePlayer(permissionHolder.getUniqueID()) == null)
             return null;
 
-        if (this.cachedPermissionHolders.containsKey(permissionHolder.getOfflinePlayer().getUniqueID()))
-            return this.cachedPermissionHolders.get(permissionHolder.getOfflinePlayer().getUniqueID());
+        if (this.cachedPermissionHolders.containsKey(permissionHolder.getUniqueID()))
+            return this.cachedPermissionHolders.get(permissionHolder.getUniqueID());
 
         if (playerDir.isDirectory()) {
             for (File file : playerDir.listFiles()) {
                 if (file.getName().endsWith(".json") && file.getName().replace(".json", "")
-                        .equals(String.valueOf(permissionHolder.getOfflinePlayer().getUniqueID()))) {
+                        .equals(String.valueOf(permissionHolder.getUniqueID()))) {
                     try {
                         Configuration configuration = Configuration.parse(file);
                         PermissionHolder permissionHolder1 = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-                        this.cachedPermissionHolders.put(permissionHolder.getOfflinePlayer().getUniqueID(), permissionHolder1);
+                        this.cachedPermissionHolders.put(permissionHolder.getUniqueID(), permissionHolder1);
                         return permissionHolder1;
                     } catch (final Throwable throwable) {
                         StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
@@ -126,16 +126,16 @@ public final class PermissionDatabase implements Serializable {
 
     public PermissionHolder createPermissionHolder(PermissionHolder permissionHolder) {
         new Configuration().addProperty("holder", permissionHolder)
-                .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getOfflinePlayer().getUniqueID() + ".json"));
-        this.cachedPermissionHolders.put(permissionHolder.getOfflinePlayer().getUniqueID(), permissionHolder);
+                .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));
+        this.cachedPermissionHolders.put(permissionHolder.getUniqueID(), permissionHolder);
 
         return permissionHolder;
     }
 
     public void updatePermissionHolder(PermissionHolder permissionHolder) {
-        this.cachedPermissionHolders.replace(permissionHolder.getOfflinePlayer().getUniqueID(), permissionHolder);
+        this.cachedPermissionHolders.replace(permissionHolder.getUniqueID(), permissionHolder);
         new Configuration().addProperty("holder", permissionHolder)
-                .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getOfflinePlayer().getUniqueID() + ".json"));
+                .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));
     }
 
     public void addPermission(UUID holderUniqueID, String permission, boolean set) {

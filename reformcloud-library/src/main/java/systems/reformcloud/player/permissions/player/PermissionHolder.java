@@ -6,12 +6,12 @@ package systems.reformcloud.player.permissions.player;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
@@ -20,13 +20,13 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 public final class PermissionHolder implements Serializable {
-    private OfflinePlayer offlinePlayer;
+    private UUID uniqueID;
 
-    private List<PermissionGroup> permissionGroups;
+    private List<String> permissionGroups;
 
     private Map<String, Boolean> playerPermissions;
 
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(String permission, List<PermissionGroup> playerGroups) {
         permission = permission.toLowerCase();
         if (checkPermission(this.playerPermissions, permission))
             return true;
@@ -41,7 +41,7 @@ public final class PermissionHolder implements Serializable {
         }
 
         {
-            for (PermissionGroup permissionGroup : this.permissionGroups) {
+            for (PermissionGroup permissionGroup : playerGroups) {
                 if (checkPermission(permissionGroup.getPermissions(), permission))
                     return true;
 
