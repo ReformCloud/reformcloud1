@@ -34,4 +34,10 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdatePermissionCache());
         this.registerCommand(new CommandPermissions());
     }
+
+    @Override
+    public void onAddonReadyToClose() {
+        instance = null;
+        permissionDatabase = null;
+    }
 }

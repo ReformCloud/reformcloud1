@@ -170,4 +170,15 @@ public final class PermissionDatabase implements Serializable {
                 new PacketOutUpdatePermissionCache()
         );
     }
+
+    public PermissionGroup getPermissionGroup(String name) {
+        return this.getAllGroups().stream().filter(e -> e.getName().startsWith(name)).findFirst().orElse(null);
+    }
+
+    public List<PermissionGroup> getAllGroups() {
+        List<PermissionGroup> permissionGroups = new ArrayList<>(this.permissionCache.getAllRegisteredGroups());
+        permissionGroups.add(this.permissionCache.getDefaultGroup());
+
+        return permissionGroups;
+    }
 }

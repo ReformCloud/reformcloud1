@@ -11,6 +11,7 @@ import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -20,6 +21,8 @@ public final class CommandInfo extends Command implements Serializable {
     public CommandInfo() {
         super("info", "Prints the Cloud info", null, new String[0]);
     }
+
+    private final SimpleDateFormat dataFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
@@ -35,7 +38,7 @@ public final class CommandInfo extends Command implements Serializable {
         commandSender.sendMessage("Player login: " + stats.getLogin());
         commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
         commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
-        commandSender.sendMessage("GameServer online time: " + stats.getServerOnlineTime());
+        commandSender.sendMessage("GameServer online time: " + this.dataFormat.format(stats.getServerOnlineTime()));
         commandSender.sendMessage("GameServer walked distance: " + stats.getWalkedDistance());
         commandSender.sendMessage("GameServer placed blocks: " + stats.getBlocksPlaced());
         commandSender.sendMessage("For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
