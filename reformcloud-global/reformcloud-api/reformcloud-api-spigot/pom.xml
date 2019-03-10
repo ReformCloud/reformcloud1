@@ -20,18 +20,10 @@
     </repositories>
 
     <dependencies>
-        <!--
-                <dependency>
-                    <groupId>org.spigotmc</groupId>
-                    <artifactId>spigot</artifactId>
-                    <version>${dependency.spigot.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13</version>
+            <version>${dependency.spigot.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
