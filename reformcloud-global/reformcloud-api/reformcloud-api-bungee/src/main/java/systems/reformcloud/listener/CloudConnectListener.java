@@ -113,6 +113,7 @@ public final class CloudConnectListener implements Listener {
 
     @EventHandler(priority = - 128)
     public void handle(final PlayerDisconnectEvent event) {
+        ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
         ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
 
         proxyInfo.getOnlinePlayers().remove(event.getPlayer().getUniqueId());

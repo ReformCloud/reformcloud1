@@ -101,6 +101,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("UpdateAll", new PacketInUpdateAll())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
+                .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();

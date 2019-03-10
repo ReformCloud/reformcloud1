@@ -6,6 +6,7 @@ package systems.reformcloud;
 
 import lombok.Getter;
 import systems.reformcloud.database.PermissionDatabase;
+import systems.reformcloud.network.out.PacketOutUpdatePermissionCache;
 import systems.reformcloud.utility.ControllerAddonImpl;
 
 import java.io.Serializable;
@@ -29,5 +30,6 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
     @Override
     public void onAddonLoading() {
         permissionDatabase = new PermissionDatabase();
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdatePermissionCache());
     }
 }
