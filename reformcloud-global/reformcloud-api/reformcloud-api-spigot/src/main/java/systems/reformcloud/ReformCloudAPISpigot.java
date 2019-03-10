@@ -39,14 +39,14 @@ import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
+import systems.reformcloud.player.permissions.PermissionCache;
+import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -58,7 +58,6 @@ import java.util.stream.Collectors;
 public class ReformCloudAPISpigot implements Listener, IAPIService {
     @Getter
     @Setter
-    @Deprecated
     public static ReformCloudAPISpigot instance;
 
     private final NettySocketClient nettySocketClient;
@@ -69,6 +68,10 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private final TempServerStats tempServerStats = new TempServerStats();
+
+    private PermissionCache permissionCache;
+
+    private Map<UUID, PermissionHolder> cachedPermissionHolders = new HashMap<>();
 
     @Setter
     private long internalTime = System.currentTimeMillis();

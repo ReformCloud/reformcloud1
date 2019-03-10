@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
@@ -16,6 +17,15 @@ import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.packets.PacketOutCheckPlayer;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
+import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
+import systems.reformcloud.permissions.ReflectionUtil;
+import systems.reformcloud.permissions.permissible.Permissible;
+import systems.reformcloud.player.permissions.player.PermissionHolder;
+import systems.reformcloud.utility.TypeTokenAdaptor;
+
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -41,6 +51,34 @@ public class PlayerConnectListener implements Listener {
         event.allow();
     }
 
+    @EventHandler
+    public void handle(final PlayerLoginEvent event) {
+        if (ReformCloudAPISpigot.getInstance().getPermissionCache() != null) {
+            ReformCloudAPISpigot.getInstance().sendPacketQuery(
+                    "ReformCloudController",
+                    new PacketOutQueryGetPermissionHolder(
+                            new PermissionHolder(event.getPlayer().getUniqueId(), Collections.singletonList(
+                                    ReformCloudAPISpigot.getInstance().getPermissionCache().getDefaultGroup().getName()
+                            ), new HashMap<>())
+                    ), (configuration, resultID) -> {
+                        PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+                        if (permissionHolder == null)
+                            return;
+
+                        ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().put(event.getPlayer().getUniqueId(), permissionHolder);
+
+                        try {
+                            Field field = ReflectionUtil.reflectClazz(".entity.CraftHumanEntity").getDeclaredField("perm");
+                            field.setAccessible(true);
+                            field.set(event.getPlayer(), new Permissible(event.getPlayer(), permissionHolder));
+                        } catch (final NoSuchFieldException | IllegalAccessException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+            );
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void handle(final PlayerJoinEvent event) {
         final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
@@ -63,6 +101,8 @@ public class PlayerConnectListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void handle(final PlayerQuitEvent event) {
+        ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
+
         final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
         serverInfo.getOnlinePlayers().remove(event.getPlayer().getUniqueId());
 

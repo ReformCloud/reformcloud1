@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
@@ -28,5 +29,12 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+
+        ReformCloudAPISpigot.getInstance().sendPacketQuery("ReformCloudController",
+                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) ->
+                        ReformCloudAPISpigot.getInstance().setPermissionCache(configuration1.getValue("cache",
+                                TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                        )
+        );
     }
 }
