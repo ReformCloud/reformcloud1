@@ -30,6 +30,7 @@ public final class CommandPermissions extends Command implements Serializable {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             List<PermissionGroup> registered = PermissionsAddon.getInstance().getPermissionDatabase()
                     .getPermissionCache().getAllRegisteredGroups();
+            registered.add(PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().getDefaultGroup());
             registered.sort((os, as) -> {
                 int id1 = os.getGroupID();
                 int id2 = as.getGroupID();
@@ -137,12 +138,94 @@ public final class CommandPermissions extends Command implements Serializable {
             permissionGroup.getPermissions().remove(args[2]);
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
-        }
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("addgroup")) {
+            UUID uuid = ReformCloudController.getInstance().getPlayerDatabase().getFromName(args[0]);
+            if (uuid == null) {
+                commandSender.sendMessage("Could not found uuid of player in database");
+                return;
+            }
 
-        commandSender.sendMessage("perms list");
-        commandSender.sendMessage("perms <USERNAME> list");
-        commandSender.sendMessage("perms <CREATE/DELETE> <GROUPNAME>");
-        commandSender.sendMessage("perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>");
-        commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>");
+            PermissionHolder permissionHolder = PermissionsAddon.getInstance().getPermissionDatabase().getPermissionHolder(uuid);
+            if (permissionHolder == null) {
+                commandSender.sendMessage("Could not find PermissionHolder");
+                return;
+            }
+
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
+                return;
+            }
+
+            if (permissionHolder.getPermissionGroups().contains(permissionGroup.getName())) {
+                commandSender.sendMessage("The Player is already in this group");
+                return;
+            }
+
+            permissionHolder.getPermissionGroups().add(permissionGroup.getName());
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
+
+            commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("removegroup")) {
+            UUID uuid = ReformCloudController.getInstance().getPlayerDatabase().getFromName(args[0]);
+            if (uuid == null) {
+                commandSender.sendMessage("Could not found uuid of player in database");
+                return;
+            }
+
+            PermissionHolder permissionHolder = PermissionsAddon.getInstance().getPermissionDatabase().getPermissionHolder(uuid);
+            if (permissionHolder == null) {
+                commandSender.sendMessage("Could not find PermissionHolder");
+                return;
+            }
+
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
+                return;
+            }
+
+            permissionHolder.getPermissionGroups().remove(permissionGroup.getName());
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
+
+            commandSender.sendMessage("The User " + args[0] + " is not longer in group " + permissionGroup.getName());
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("setgroup")) {
+            UUID uuid = ReformCloudController.getInstance().getPlayerDatabase().getFromName(args[0]);
+            if (uuid == null) {
+                commandSender.sendMessage("Could not found uuid of player in database");
+                return;
+            }
+
+            PermissionHolder permissionHolder = PermissionsAddon.getInstance().getPermissionDatabase().getPermissionHolder(uuid);
+            if (permissionHolder == null) {
+                commandSender.sendMessage("Could not find PermissionHolder");
+                return;
+            }
+
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
+                return;
+            }
+
+            permissionHolder.getPermissionGroups().clear();
+            permissionHolder.getPermissionGroups().add(permissionGroup.getName());
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
+
+            commandSender.sendMessage("Set " + args[0] + "'s group to " + permissionGroup.getName());
+        } else {
+            commandSender.sendMessage("perms list");
+            commandSender.sendMessage("perms <USERNAME> list");
+            commandSender.sendMessage("perms <CREATE/DELETE> <GROUPNAME>");
+            commandSender.sendMessage("perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>");
+            commandSender.sendMessage("perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>");
+            commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>");
+        }
     }
 }
