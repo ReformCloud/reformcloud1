@@ -35,6 +35,9 @@ public class ChannelReader extends SimpleChannelInboundHandler {
 
         Packet packet = (Packet) object;
 
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Handling incoming packet " +
+                "[Type=" + packet.getType() + "/Query=" + (packet.getResult() != null) + "/Message=" + packet.getConfiguration());
+
         IncomingPacketEvent incomingPacketEvent = new IncomingPacketEvent(packet, false);
         ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.INCOMING_PACKET, incomingPacketEvent);
 
@@ -45,6 +48,8 @@ public class ChannelReader extends SimpleChannelInboundHandler {
 
         if (packet.getType().equalsIgnoreCase("InitializeCloudNetwork") && ReformCloudLibraryServiceProvider.getInstance().getControllerIP() != null
                 && ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getControllerIP()), address)) {
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Incoming packet sender is controller, " +
+                    "channel was registered");
             channelHandler.registerChannel("ReformCloudController", channelHandlerContext);
         }
 
@@ -54,6 +59,8 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                 return;
             }
 
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Trying to handle authentication of " +
+                    "channel [IP=" + address + "]");
             new AuthenticationHandler().handleAuth(packet.getConfiguration().getValue("AuthenticationType", TypeTokenAdaptor.getAUTHENTICATION_TYPE()),
                     packet, channelHandlerContext, channelHandler);
         }
@@ -62,23 +69,33 @@ public class ChannelReader extends SimpleChannelInboundHandler {
             if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().isQueryHandlerRegistered(packet.getType())) {
                 ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
                         .getQueryHandler(packet.getType()).handle(packet.getConfiguration(), packet.getResult());
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Query packet handler " +
+                        "found, trying to handle packet");
             } else if (channelHandler.getResults().containsKey(packet.getResult())) {
                 channelHandler.getResults().get(packet.getResult()).handleIncoming(packet);
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("QueryPacket was send by " +
+                        "this instance, handling");
             }
 
             return;
         }
 
-        if (packet.getConfiguration().contains("from"))
+        if (packet.getConfiguration().contains("from")) {
             IEventHandler.instance.get().handleCustomPacket(packet.getConfiguration().getStringValue("from"),
                     packet.getType(), packet.getConfiguration());
-        else
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Handling custom packet from " +
+                    "[ServiceName=" + packet.getConfiguration().getStringValue("from") + "/Channel=" + address + "]");
+        } else
             IEventHandler.instance.get().handleCustomPacket("unknown", packet.getType(), packet.getConfiguration());
 
-        if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration()))
+        if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration())) {
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(true, packet));
-        else
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Successfully handled incoming packet " +
+                    "with packet handler");
+        } else {
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Cannot handle incoming packet, no handler found");
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(false, packet));
+        }
     }
 
     @Override

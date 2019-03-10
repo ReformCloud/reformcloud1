@@ -52,6 +52,9 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     @Setter
     private long controllerTime = System.currentTimeMillis();
 
+    @Setter
+    private boolean debug = false;
+
     private List<IConsoleInputHandler> iConsoleInputHandlers = new ArrayList<>();
 
     /**
@@ -229,6 +232,16 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
 
     public void debug(String msg) {
         try {
+            if (this.debug) {
+                this.consoleReader.println(Ansi.ansi().eraseLine(
+                        Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler
+                        .toColouredString("[§6" + this.dateFormat.format(this.controllerTime) + "§r] " + msg)
+                        + Ansi.ansi().reset().toString());
+                this.complete();
+
+                this.handleAll(AnsiColourHandler.stripColor(msg));
+            }
+
             if (!debugLogFile.exists())
                 debugLogFile.createNewFile();
 
