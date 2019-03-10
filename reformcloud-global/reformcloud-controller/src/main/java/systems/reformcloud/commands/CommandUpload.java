@@ -32,8 +32,8 @@ public final class CommandUpload extends Command implements Serializable {
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length <= 1) {
             commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
-            commandSender.sendMessage("upload PLUGIN GROUPNAME NAME URL");
-            commandSender.sendMessage("upload PLUGIN GROUPNAME TEMPLATE NAME URL");
+            commandSender.sendMessage("upload PLUGIN <GROUPNAME> <NAME> <URL>");
+            commandSender.sendMessage("upload PLUGIN <GROUPNAME> <TEMPLATE> <NAME> <URL>");
             commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
             return;
         }
@@ -66,8 +66,8 @@ public final class CommandUpload extends Command implements Serializable {
                 });
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME NAME URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME TEMPLATE NAME URL");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <NAME> <URL>");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <TEMPLATE> <NAME> <URL>");
                 commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
             }
 
@@ -105,8 +105,8 @@ public final class CommandUpload extends Command implements Serializable {
                 return;
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME NAME URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME TEMPLATE NAME URL");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <NAME> <URL>");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <TEMPLATE> <NAME> <URL>");
                 commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
             }
 
@@ -156,8 +156,8 @@ public final class CommandUpload extends Command implements Serializable {
                 });
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME NAME URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME TEMPLATE NAME URL");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <NAME> <URL>");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <TEMPLATE> <NAME> <URL>");
                 commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
             }
 
@@ -218,17 +218,14 @@ public final class CommandUpload extends Command implements Serializable {
                 });
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME NAME URL");
-                commandSender.sendMessage("upload PLUGIN GROUPNAME TEMPLATE NAME URL");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <NAME> <URL>");
+                commandSender.sendMessage("upload PLUGIN <GROUPNAME> <TEMPLATE> <NAME> <URL>");
                 commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
             }
         }
     }
 
     private boolean isURLValid(String url) {
-        if (!url.endsWith(".jar"))
-            return false;
-
         try {
             URLConnection urlConnection = new URL(url).openConnection();
             urlConnection.setRequestProperty("User-Agent",
