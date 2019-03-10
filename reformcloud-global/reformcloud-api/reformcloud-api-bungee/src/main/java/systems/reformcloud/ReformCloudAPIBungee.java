@@ -33,6 +33,7 @@ import systems.reformcloud.network.packets.PacketOutStartProxy;
 import systems.reformcloud.network.packets.PacketOutUpdateOfflinePlayer;
 import systems.reformcloud.network.packets.PacketOutUpdateOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
+import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -108,6 +109,10 @@ public class ReformCloudAPIBungee implements IAPIService {
                 ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.proxyStartupInfo.getName()
         );
+
+        this.permissionCache = this.sendPacketQuery("ReformCloudController",
+                new PacketOutQueryGetPermissionCache()).syncUninterruptedly(3, TimeUnit.SECONDS)
+                .getConfiguration().getValue("cache", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE());
     }
 
     @Override

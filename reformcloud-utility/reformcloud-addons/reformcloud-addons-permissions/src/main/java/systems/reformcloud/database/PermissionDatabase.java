@@ -4,9 +4,13 @@
 
 package systems.reformcloud.database;
 
+import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.in.PacketInUpdatePermissionHolder;
+import systems.reformcloud.network.query.in.PacketInQueryGetPermissionCache;
+import systems.reformcloud.network.query.in.PacketInQueryGetPermissionHolder;
 import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
@@ -25,6 +29,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
+@Getter
 public final class PermissionDatabase implements Serializable {
     private File playerDir = new File("reformcloud/database/permissions/players/");
 
@@ -47,6 +52,13 @@ public final class PermissionDatabase implements Serializable {
 
         this.permissionCache = Configuration.parse(Paths.get("reformcloud/permissions/config.json"))
                 .getValue("permissionConfig", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE());
+
+        ReformCloudController.getInstance().getNettyHandler()
+                //Query Handlers
+                .registerQueryHandler("QueryGetPermissionCache", new PacketInQueryGetPermissionCache())
+                .registerQueryHandler("QueryGetPermissionHolder", new PacketInQueryGetPermissionHolder())
+
+                .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder());
     }
 
     public void createPermissionGroup(PermissionGroup permissionGroup) {

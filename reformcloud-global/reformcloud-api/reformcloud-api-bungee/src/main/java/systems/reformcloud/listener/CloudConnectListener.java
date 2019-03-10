@@ -25,7 +25,7 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.player.version.SpigotVersion;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -62,13 +62,16 @@ public final class CloudConnectListener implements Listener {
                         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
                                 new PacketOutUpdateOnlinePlayer(onlinePlayer));
 
-                        ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
-                                new PacketOutQueryGetPermissionHolder(
-                                        new PermissionHolder(offlinePlayer, new ArrayList<>(), new HashMap<>())
-                                ), (configuration1, resultID1) -> {
-                                    PermissionHolder permissionHolder = configuration1.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-                                    ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getOfflinePlayer().getUniqueID(), permissionHolder);
-                                });
+                        if (ReformCloudAPIBungee.getInstance().getPermissionCache() != null) {
+                            ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
+                                    new PacketOutQueryGetPermissionHolder(
+                                            new PermissionHolder(offlinePlayer, Collections.singletonList(ReformCloudAPIBungee
+                                                    .getInstance().getPermissionCache().getDefaultGroup()), new HashMap<>())
+                                    ), (configuration1, resultID1) -> {
+                                        PermissionHolder permissionHolder = configuration1.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+                                        ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getOfflinePlayer().getUniqueID(), permissionHolder);
+                                    });
+                        }
 
                         event.setCancelled(false);
                         event.setTarget(BungeecordBootstrap.getInstance().getProxy().getServerInfo(serverInfo.getCloudProcess().getName()));
