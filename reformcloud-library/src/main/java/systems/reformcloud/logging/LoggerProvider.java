@@ -18,6 +18,7 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 import systems.reformcloud.utility.StringUtil;
@@ -310,7 +311,8 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         HttpPost httpPost = new HttpPost("https://paste.reformcloud.systems/documents");
 
         try {
-            httpPost.setEntity(new StringEntity("{ \"text\": \"" + input + "\" }", ContentType.APPLICATION_JSON));
+            httpPost.setEntity(new StringEntity(new Configuration()
+                    .addStringProperty("text", input).getJsonString(), ContentType.APPLICATION_JSON));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
             final String result = EntityUtils.toString(httpResponse.getEntity());
