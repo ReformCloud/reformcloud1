@@ -144,6 +144,20 @@ public class CloudConfiguration {
             //TODO
             DownloadManager.downloadAndDisconnect("SignAddon", "", "addons/SignAddon.jar");
         }
+
+        loggerProvider.info("Do you want to load the discord addon [\"yes\", \"no\"]");
+        String discordbot = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
+        if (Boolean.parseBoolean(discordbot)) {
+            //TODO
+            DownloadManager.downloadAndDisconnect("DiscordBot", "", "addons/DiscordBot.jar");
+        }
+
+        loggerProvider.info("Do you want to load the permission addon [\"yes\", \"no\"]");
+        String permissions = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
+        if (Boolean.parseBoolean(permissions)) {
+            //TODO
+            DownloadManager.downloadAndDisconnect("PermissionsAddon", "", "addons/PermissionsAddon.jar");
+        }
         
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
         String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
