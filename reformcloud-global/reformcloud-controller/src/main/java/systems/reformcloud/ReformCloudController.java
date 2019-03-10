@@ -278,6 +278,8 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                     .registerHandler("/api/start/server", new RestAPIStartGameserver())
                     .registerHandler("/api/start/proxy", new RestAPIStartProxy())
 
+                    .registerHandler("/api/player/get", new RestAPIGetOfflinePlayer())
+
                     .registerHandler("/api/stop/server", new RestAPIStopServer())
                     .registerHandler("/api/stop/proxy", new RestAPIStartProxy());
         }
