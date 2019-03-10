@@ -14,7 +14,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -34,10 +34,15 @@ public final class RestAPIDocumentation implements Serializable, WebHandler {
                 .getWebHandlerMap()
                 .keySet();
         StringBuilder stringBuilder = new StringBuilder();
-        webHandlers.forEach(e -> stringBuilder.append("   -> Handler: " + e).append("\n"));
+        webHandlers.forEach(e -> stringBuilder.append("- Handler: " + e));
         fullHttpResponse.content().writeBytes(answer
                 .addBooleanProperty("success", true)
-                .addProperty("answer", Arrays.asList(stringBuilder.substring(0)))
+                .addProperty("answer", Collections.singletonList(stringBuilder.substring(0)))
+                .addStringProperty("description: ", "To send an api request to the cloud system, you need the correct " +
+                        "WebHandler path given below. Then you send an request to the api, for example with the postman " +
+                        "application. If there are more arguments needed, or you have to authorize yourself, please " +
+                        "check the result. The header will contain an error (then \"success\" is false) or a success " +
+                        "message (then \"success\" is true)")
                 .getJsonString().getBytes());
         fullHttpResponse.setStatus(HttpResponseStatus.OK);
         return fullHttpResponse;
