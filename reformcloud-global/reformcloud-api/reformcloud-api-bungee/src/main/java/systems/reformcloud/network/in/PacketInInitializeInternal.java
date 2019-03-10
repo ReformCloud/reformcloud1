@@ -17,7 +17,6 @@ import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 02.11.2018
@@ -61,8 +60,11 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
                 }
         );
 
-        ReformCloudAPIBungee.getInstance().setPermissionCache(ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutQueryGetPermissionCache()).sendOnCurrentThread().syncUninterruptedly(3, TimeUnit.SECONDS)
-                .getConfiguration().getValue("cache", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE()));
+        ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
+                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) ->
+                        ReformCloudAPIBungee.getInstance().setPermissionCache(configuration1.getValue("cache",
+                                TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                        )
+        );
     }
 }
