@@ -11,5 +11,8 @@
 
     <artifactId>reformcloud-permissions</artifactId>
 
+    <build>
+        <finalName>ReformCloudPermissions</finalName>
+    </build>
 
 </project>

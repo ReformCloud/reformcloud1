@@ -13,9 +13,11 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 02.11.2018
@@ -58,5 +60,9 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
                     }
                 }
         );
+
+        ReformCloudAPIBungee.getInstance().setPermissionCache(ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
+                new PacketOutQueryGetPermissionCache()).syncUninterruptedly(3, TimeUnit.SECONDS)
+                .getConfiguration().getValue("cache", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE()));
     }
 }
