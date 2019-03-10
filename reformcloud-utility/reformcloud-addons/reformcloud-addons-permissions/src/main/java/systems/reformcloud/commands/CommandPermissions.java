@@ -29,7 +29,7 @@ public final class CommandPermissions extends Command implements Serializable {
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             List<PermissionGroup> registered = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups();
+                    .getPermissionCache().getAllGroups();
             registered.add(PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().getDefaultGroup());
             registered.sort((os, as) -> {
                 int id1 = os.getGroupID();
@@ -41,7 +41,7 @@ public final class CommandPermissions extends Command implements Serializable {
                     "/ID=" + permissionGroup.getGroupID()));
         } else if (args.length == 2 && args[0].equalsIgnoreCase("create")) {
             if (PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[1]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[1]))
                     .findFirst().orElse(null) != null) {
                 commandSender.sendMessage("PermissionGroup already exists");
                 return;
@@ -54,7 +54,7 @@ public final class CommandPermissions extends Command implements Serializable {
             commandSender.sendMessage("PermissionGroup " + args[1] + " was created successfully");
         } else if (args.length == 2 && args[0].equalsIgnoreCase("delete")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[1]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[1]))
                     .findFirst().orElse(null);
             if (permissionGroup == null) {
                 commandSender.sendMessage("The PermissionGroup doesn't exists");
@@ -93,7 +93,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            permissionHolder.getPlayerPermissions().replace(args[2], !args[2].startsWith("-"));
+            permissionHolder.getPlayerPermissions().replace(args[2].replace("-", ""), !args[2].startsWith("-"));
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("The permission " + args[2] + " was added to the user " + args[0]);
@@ -116,19 +116,21 @@ public final class CommandPermissions extends Command implements Serializable {
             commandSender.sendMessage("The permission " + args[2] + " was removed from the user " + args[0]);
         } else if (args.length == 3 && args[1].equalsIgnoreCase("add")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[0]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
                     .findFirst().orElse(null);
             if (permissionGroup == null) {
                 commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
                 return;
             }
 
-            permissionGroup.getPermissions().put(args[2], !args[2].startsWith("-"));
+            permissionGroup.getPermissions().put(args[2].replace("-", ""), !args[2].startsWith("-"));
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
+
+            commandSender.sendMessage("You added the permission " + args[2] + " to the group " + permissionGroup.getName());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("remove")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[0]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
                     .findFirst().orElse(null);
             if (permissionGroup == null) {
                 commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
@@ -138,6 +140,8 @@ public final class CommandPermissions extends Command implements Serializable {
             permissionGroup.getPermissions().remove(args[2]);
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
+
+            commandSender.sendMessage("You removed the permission " + args[2] + " from the group " + permissionGroup.getName());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("addgroup")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase().getFromName(args[0]);
             if (uuid == null) {
@@ -152,7 +156,7 @@ public final class CommandPermissions extends Command implements Serializable {
             }
 
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[2]))
                     .findFirst().orElse(null);
             if (permissionGroup == null) {
                 commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
@@ -182,7 +186,7 @@ public final class CommandPermissions extends Command implements Serializable {
             }
 
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[2]))
                     .findFirst().orElse(null);
             if (permissionGroup == null) {
                 commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
@@ -207,7 +211,7 @@ public final class CommandPermissions extends Command implements Serializable {
             }
 
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[2]))
                     .findFirst().orElse(null);
             if (permissionGroup == null) {
                 commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
@@ -219,9 +223,31 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("Set " + args[0] + "'s group to " + permissionGroup.getName());
+            //perms GROUPNAME setdefault
+        } else if (args.length == 2 && args[1].equalsIgnoreCase("setdefault")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getPermissionCache().getAllGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
+                return;
+            }
+
+            if (PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().getDefaultGroup()
+                    .getName().equals(args[0])) {
+                commandSender.sendMessage("The Group is already the default group");
+                return;
+            }
+
+            PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().getAllRegisteredGroups().remove(permissionGroup);
+            PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().setDefaultGroup(permissionGroup);
+            PermissionsAddon.getInstance().getPermissionDatabase().update();
+
+            commandSender.sendMessage("Successfully set the default group to " + permissionGroup.getName());
         } else {
             commandSender.sendMessage("perms list");
             commandSender.sendMessage("perms <USERNAME> list");
+            commandSender.sendMessage("perms <GROUPNAME> SETDEFAULT");
             commandSender.sendMessage("perms <CREATE/DELETE> <GROUPNAME>");
             commandSender.sendMessage("perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>");
             commandSender.sendMessage("perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>");

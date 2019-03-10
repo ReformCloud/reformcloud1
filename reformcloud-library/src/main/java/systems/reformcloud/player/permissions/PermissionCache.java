@@ -10,6 +10,7 @@ import lombok.Setter;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,5 +27,12 @@ public final class PermissionCache implements Serializable {
 
     public PermissionGroup getPermissionGroup(String name) {
         return this.allRegisteredGroups.stream().filter(e -> e.getName().startsWith(name)).findFirst().orElse(null);
+    }
+
+    public List<PermissionGroup> getAllGroups() {
+        List<PermissionGroup> permissionGroups = new ArrayList<>(this.allRegisteredGroups);
+        allRegisteredGroups.add(defaultGroup);
+
+        return permissionGroups;
     }
 }
