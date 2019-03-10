@@ -26,11 +26,21 @@ public final class PacketFuture implements Serializable {
     private ChannelHandler channelHandler;
     private Packet sentPacket;
 
+    private String to;
+
     public PacketFuture(ChannelHandler channelHandler, Packet packet, ExecutorService executorService) {
         this.completableFuture = new CompletableFuture<>();
         this.executorService = executorService;
         this.channelHandler = channelHandler;
         this.sentPacket = packet;
+    }
+
+    public PacketFuture(ChannelHandler channelHandler, Packet packet, ExecutorService executorService, String to) {
+        this.completableFuture = new CompletableFuture<>();
+        this.executorService = executorService;
+        this.channelHandler = channelHandler;
+        this.sentPacket = packet;
+        this.to = to;
     }
 
     public PacketFuture onSuccessfullyCompleted(final NetworkQueryInboundHandler inboundHandler) {
@@ -59,6 +69,14 @@ public final class PacketFuture implements Serializable {
             else if (this.onSuccess != null)
                 this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
         });
+    }
+
+    public PacketFuture sendOnCurrentThread() {
+        if (this.to == null)
+            return null;
+
+        this.channelHandler.sendPacketSynchronized(this.to, sentPacket);
+        return this;
     }
 
     public void send(String to, long timeout, TimeUnit timeUnit) {

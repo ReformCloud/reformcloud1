@@ -62,7 +62,7 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
         );
 
         ReformCloudAPIBungee.getInstance().setPermissionCache(ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutQueryGetPermissionCache()).syncUninterruptedly(3, TimeUnit.SECONDS)
+                new PacketOutQueryGetPermissionCache()).sendOnCurrentThread().syncUninterruptedly(3, TimeUnit.SECONDS)
                 .getConfiguration().getValue("cache", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE()));
     }
 }

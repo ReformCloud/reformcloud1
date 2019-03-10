@@ -251,7 +251,7 @@ public class ChannelHandler {
         UUID result = UUID.randomUUID();
         this.toQueryPacket(packet, result, from);
 
-        PacketFuture packetFuture = new PacketFuture(this, packet, this.executorService);
+        PacketFuture packetFuture = new PacketFuture(this, packet, this.executorService, channel);
         this.results.put(result, packetFuture);
 
         return packetFuture;
