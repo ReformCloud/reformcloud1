@@ -33,22 +33,22 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
                         || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
                     cloudServerStartupHandler.executeCommand("save-all");
                     ReformCloudLibraryService.sleep(2000);
-                    FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/" + configuration.getStringValue("group") + "/" +
+                    FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
                             cloudServerStartupHandler.getLoaded().getName()));
-                    FileUtils.createDirectory(Paths.get("reformcloud/templates/" + configuration.getStringValue("group") + "/" +
+                    FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
                             cloudServerStartupHandler.getLoaded().getName()));
                     FileUtils.copyAllFiles(Paths.get("reformcloud/temp/servers/" + configuration.getStringValue("name")),
-                            "reformcloud/templates/" + configuration.getStringValue("group") + "/" +
+                            "reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
                                     cloudServerStartupHandler.getLoaded().getName(), "spigot.jar");
                 } else {
                     cloudServerStartupHandler.executeCommand("save-all");
                     ReformCloudLibraryService.sleep(2000);
-                    FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/" + configuration.getStringValue("group") + "/" +
+                    FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
                             cloudServerStartupHandler.getLoaded().getName()));
-                    FileUtils.createDirectory(Paths.get("reformcloud/templates/" + configuration.getStringValue("group") + "/" +
+                    FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
                             cloudServerStartupHandler.getLoaded().getName()));
                     FileUtils.copyAllFiles(Paths.get("reformcloud/static/servers/" + configuration.getStringValue("name")),
-                            "reformcloud/templates/" + configuration.getStringValue("group") + "/" +
+                            "reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
                                     cloudServerStartupHandler.getLoaded().getName(), "spigot.jar");
                 }
 
@@ -58,7 +58,7 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
                 ProxyStartupHandler proxyStartupHandler = ReformCloudClient.getInstance()
                         .getCloudProcessScreenService().getRegisteredProxyHandler(configuration.getStringValue("serverName"));
                 FileUtils.copyAllFiles(Paths.get("reformcloud/temp/proxies/" + configuration.getStringValue("name")),
-                        "reformcloud/templates/" + configuration.getStringValue("group") + "/" +
+                        "reformcloud/templates/proxies/" + configuration.getStringValue("group") + "/" +
                                 proxyStartupHandler.getTemplate().getName(), "BungeeCord.jar");
                 break;
             }

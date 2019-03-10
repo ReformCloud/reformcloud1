@@ -107,7 +107,7 @@ public class CloudServerStartupHandler {
                 return false;
             }
         } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-            FileUtils.copyAllFiles(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName()), path + StringUtil.EMPTY);
+            FileUtils.copyAllFiles(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName()), path + StringUtil.EMPTY);
         } else
             return false;
 
@@ -254,7 +254,7 @@ public class CloudServerStartupHandler {
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
                 && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)
                 && firstGroupStart) {
-            FileUtils.copyAllFiles(path, "reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName(), "spigot.jar");
+            FileUtils.copyAllFiles(path, "reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName(), "spigot.jar");
         }
 
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().registerServerProcess(
@@ -324,9 +324,9 @@ public class CloudServerStartupHandler {
 
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
                 && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-            FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
-            FileUtils.createDirectory(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
-            FileUtils.copyAllFiles(path, "reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName(), "spigot.jar");
+            FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
+            FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
+            FileUtils.copyAllFiles(path, "reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName(), "spigot.jar");
         }
 
         FileUtils.deleteFullDirectory(path);

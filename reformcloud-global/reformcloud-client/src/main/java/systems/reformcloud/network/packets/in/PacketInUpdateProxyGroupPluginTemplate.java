@@ -20,14 +20,14 @@ public final class PacketInUpdateProxyGroupPluginTemplate implements Serializabl
     @Override
     public void handle(Configuration configuration) {
         FileUtils.deleteFileIfExists(
-                Paths.get("reformcloud/templates/" + configuration.getStringValue("groupName") +
+                Paths.get("reformcloud/templates/proxies/" + configuration.getStringValue("groupName") +
                         "/" + configuration.getStringValue("templateName") + "/plugins/" +
                         configuration.getStringValue("pluginName") + ".jar")
         );
-        FileUtils.createDirectory(Paths.get("reformcloud/templates/" + configuration.getStringValue("groupName") +
+        FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + configuration.getStringValue("groupName") +
                 "/" + configuration.getStringValue("templateName") + "/plugins"));
         DownloadManager.downloadSilentAndDisconnect(configuration.getStringValue("url"),
-                "reformcloud/templates/" + configuration.getStringValue("groupName") +
+                "reformcloud/templates/proxies/" + configuration.getStringValue("groupName") +
                         "/" + configuration.getStringValue("templateName") + "/plugins/" +
                         configuration.getStringValue("pluginName") + ".jar");
     }

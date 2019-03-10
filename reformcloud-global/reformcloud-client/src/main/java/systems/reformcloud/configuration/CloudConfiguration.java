@@ -62,7 +62,8 @@ public class CloudConfiguration {
 
     private void createDirectories() {
         for (File dir : new File[]{
-                new File("reformcloud/templates"),
+                new File("reformcloud/templates/proxies"),
+                new File("reformcloud/templates/servers"),
                 new File("reformcloud/default/proxies/plugins"),
                 new File("reformcloud/default/servers/plugins"),
                 new File("reformcloud/temp/servers"),

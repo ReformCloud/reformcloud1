@@ -222,7 +222,14 @@ public final class CommandUpload extends Command implements Serializable {
                 commandSender.sendMessage("upload PLUGIN <GROUPNAME> <TEMPLATE> <NAME> <URL>");
                 commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
             }
+
+            return;
         }
+
+        commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
+        commandSender.sendMessage("upload PLUGIN <GROUPNAME> <NAME> <URL>");
+        commandSender.sendMessage("upload PLUGIN <GROUPNAME> <TEMPLATE> <NAME> <URL>");
+        commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
     }
 
     private boolean isURLValid(String url) {

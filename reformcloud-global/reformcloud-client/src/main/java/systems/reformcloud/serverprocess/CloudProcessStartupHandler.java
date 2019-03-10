@@ -55,8 +55,8 @@ public class CloudProcessStartupHandler implements Runnable {
                     final ServerStartupInfo serverStartupInfo = this.serverStartupInfo.poll();
 
                     boolean firstStart = false;
-                    if (!Files.exists(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/default"))) {
-                        FileUtils.createDirectory(Paths.get("reformcloud/templates/" + serverStartupInfo.getServerGroup().getName() + "/default/plugins"));
+                    if (!Files.exists(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/default"))) {
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/default/plugins"));
                         firstStart = true;
                     }
 
@@ -80,8 +80,8 @@ public class CloudProcessStartupHandler implements Runnable {
                 while (!this.proxyStartupInfo.isEmpty()) {
                     final ProxyStartupInfo proxyStartupInfo = this.proxyStartupInfo.poll();
 
-                    if (!Files.exists(Paths.get("reformcloud/templates/" + proxyStartupInfo.getProxyGroup().getName() + "/default")))
-                        FileUtils.createDirectory(Paths.get("reformcloud/templates/" + proxyStartupInfo.getProxyGroup().getName() + "/default/plugins"));
+                    if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/default")))
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/default/plugins"));
 
                     if (!ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().isNameProxyProcessRegistered(proxyStartupInfo.getName())
                             && (ReformCloudClient.getInstance().getMemory() + proxyStartupInfo.getProxyGroup().getMemory()) <

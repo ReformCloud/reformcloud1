@@ -20,12 +20,12 @@ public final class PacketInUpdateSeverGroupPlugin implements Serializable, Netwo
     @Override
     public void handle(Configuration configuration) {
         FileUtils.deleteFileIfExists(
-                Paths.get("reformcloud/templates/" + configuration.getStringValue("groupName") + "/default/plugins/" +
+                Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("groupName") + "/default/plugins/" +
                         configuration.getStringValue("pluginName") + ".jar")
         );
-        FileUtils.createDirectory(Paths.get("reformcloud/templates/" + configuration.getStringValue("groupName") + "/default/plugins"));
+        FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("groupName") + "/default/plugins"));
         DownloadManager.downloadSilentAndDisconnect(configuration.getStringValue("url"),
-                "reformcloud/templates/" + configuration.getStringValue("groupName") + "/default/plugins/" +
+                "reformcloud/templates/servers/" + configuration.getStringValue("groupName") + "/default/plugins/" +
                         configuration.getStringValue("pluginName") + ".jar");
     }
 }
