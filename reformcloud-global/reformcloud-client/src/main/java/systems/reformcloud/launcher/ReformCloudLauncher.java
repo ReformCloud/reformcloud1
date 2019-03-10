@@ -77,6 +77,7 @@ final class ReformCloudLauncher {
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
+        loggerProvider.setDebug(options.contains("--debug"));
         new ReformCloudClient(loggerProvider, commandManager, options.contains("--ssl"), current);
 
         loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getHelp_default());
