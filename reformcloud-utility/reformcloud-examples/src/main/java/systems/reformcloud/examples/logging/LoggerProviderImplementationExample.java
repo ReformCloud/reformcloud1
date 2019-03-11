@@ -26,7 +26,7 @@ public class LoggerProviderImplementationExample extends LoggerProvider {
     /**
      * Creates a new ReformCloud Logger instance
      */
-    public LoggerProviderImplementationExample(boolean colour) throws IOException {
+    public LoggerProviderImplementationExample() throws IOException {
         super();
     }
 

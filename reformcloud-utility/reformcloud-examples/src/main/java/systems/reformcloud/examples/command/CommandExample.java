@@ -11,7 +11,23 @@ import systems.reformcloud.commands.interfaces.CommandSender;
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class CommandExample implements Command {
+public class CommandExample extends Command {
+    /**
+     * The main constructor, must be in every command you create
+     *
+     * @param name        The main command name (for ex. "process")
+     * @param description The description for the command, will be shown in
+     *                    the help command
+     * @param permission  The permission for the command. If the permission
+     *                    is {@code null}, no permission is required to execute
+     *                    the command
+     * @param aliases     The aliases of the command (for ex. "pro") or just use
+     *                    {@code new String[0]} here
+     */
+    public CommandExample(String name, String description, String permission, String[] aliases) {
+        super(name, description, permission, aliases);
+    }
+
     /**
      * This method get called when a the specific command get executed
      *
@@ -20,14 +36,5 @@ public class CommandExample implements Command {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         commandSender.sendMessage("Nope");
-    }
-
-    /**
-     * Sets the command permission for your own {@link CommandSender}
-     * If the permission is null no permission is needed
-     */
-    @Override
-    public String getPermission() {
-        return null;
     }
 }
