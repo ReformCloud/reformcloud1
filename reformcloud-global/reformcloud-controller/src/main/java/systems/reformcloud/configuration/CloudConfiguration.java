@@ -147,13 +147,13 @@ public class CloudConfiguration {
         loggerProvider.info("Do you want to load the discord addon [\"yes\", \"no\"]");
         String discordbot = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (Boolean.parseBoolean(discordbot)) {
-            DownloadManager.downloadAndDisconnect("DiscordBot", "https://dl.reformcloud.systems/addons/ReformDiscordBot.jar", "addons/DiscordBot.jar");
+            DownloadManager.downloadAndDisconnect("DiscordBot", "https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "addons/DiscordBot.jar");
         }
 
         loggerProvider.info("Do you want to load the permission addon [\"yes\", \"no\"]");
         String permissions = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (Boolean.parseBoolean(permissions)) {
-            DownloadManager.downloadAndDisconnect("PermissionsAddon", "https://dl.reformcloud.systems/addons/ReformPermissions.jar", "addons/PermissionsAddon.jar");
+            DownloadManager.downloadAndDisconnect("PermissionsAddon", "https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "addons/PermissionsAddon.jar");
         }
         
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
