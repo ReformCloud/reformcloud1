@@ -7,7 +7,6 @@ package systems.reformcloud.addons;
 import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
-import systems.reformcloud.addons.exceptions.AddonLoadException;
 import systems.reformcloud.addons.extendable.AddonExtendable;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
 import systems.reformcloud.utility.StringUtil;
@@ -119,7 +118,7 @@ public class AddonParallelLoader extends AddonExtendable {
             try (JarFile jarFile = new JarFile(file)) {
                 JarEntry jarEntry = jarFile.getJarEntry("addon.properties");
                 if (jarEntry == null)
-                    throw new AddonLoadException(new FileNotFoundException("Could't find properties file"));
+                    throw new IllegalStateException(new FileNotFoundException("Could't find properties file"));
 
                 try (InputStreamReader reader = new InputStreamReader(jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8)) {
                     Properties properties = new Properties();
@@ -187,7 +186,7 @@ public class AddonParallelLoader extends AddonExtendable {
             try (JarFile jarFile = new JarFile(file)) {
                 JarEntry jarEntry = jarFile.getJarEntry("addon.properties");
                 if (jarEntry == null)
-                    throw new AddonLoadException(new FileNotFoundException("Could't find properties file"));
+                    throw new IllegalStateException(new FileNotFoundException("Could't find properties file"));
 
                 try (InputStreamReader reader = new InputStreamReader(jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8)) {
                     Properties properties = new Properties();
