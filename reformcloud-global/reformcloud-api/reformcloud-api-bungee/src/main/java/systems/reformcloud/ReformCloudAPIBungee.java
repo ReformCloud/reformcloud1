@@ -101,6 +101,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("UpdateAll", new PacketInUpdateAll())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
+                .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
                 .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
@@ -369,6 +370,50 @@ public class ReformCloudAPIBungee implements IAPIService {
             return null;
 
         return client.getClientInfo();
+    }
+
+    @Override
+    public ServerInfo getServerInfo(UUID uniqueID) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredServerProcesses()
+                .stream()
+                .filter(serverInfo1 -> serverInfo1.getCloudProcess().getProcessUID().equals(uniqueID))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public ServerInfo getServerInfo(String name) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredServerProcesses()
+                .stream()
+                .filter(serverInfo1 -> serverInfo1.getCloudProcess().getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public ProxyInfo getProxyInfo(UUID uniqueID) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(proxyInfo -> proxyInfo.getCloudProcess().getProcessUID().equals(uniqueID))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public ProxyInfo getProxyInfo(String name) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(proxyInfo -> proxyInfo.getCloudProcess().getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

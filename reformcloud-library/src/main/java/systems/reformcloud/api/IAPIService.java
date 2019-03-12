@@ -107,6 +107,14 @@ public interface IAPIService {
 
     ClientInfo getConnectedClient(String name);
 
+    ServerInfo getServerInfo(UUID uniqueID);
+
+    ServerInfo getServerInfo(String name);
+
+    ProxyInfo getProxyInfo(UUID uniqueID);
+
+    ProxyInfo getProxyInfo(String name);
+
     ServerGroup getServerGroup(String name);
 
     ProxyGroup getProxyGroup(String name);

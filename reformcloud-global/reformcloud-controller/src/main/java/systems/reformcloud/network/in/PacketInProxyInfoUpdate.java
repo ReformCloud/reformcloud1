@@ -9,6 +9,7 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.out.PacketOutProxyInfoUpdate;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
@@ -26,6 +27,9 @@ public final class PacketInProxyInfoUpdate implements Serializable, NetworkInbou
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().updateProxyInfo(proxyInfo);
 
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
-        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
+                new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()),
+                new PacketOutProxyInfoUpdate(proxyInfo)
+        );
     }
 }

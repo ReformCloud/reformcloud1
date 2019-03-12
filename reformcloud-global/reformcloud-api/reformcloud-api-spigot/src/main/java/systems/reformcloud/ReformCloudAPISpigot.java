@@ -109,6 +109,7 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
                 .registerHandler("ProcessAdd", new PacketInProcessAdd())
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
+                .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
@@ -392,6 +393,50 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
             return null;
 
         return client.getClientInfo();
+    }
+
+    @Override
+    public ServerInfo getServerInfo(UUID uniqueID) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredServerProcesses()
+                .stream()
+                .filter(serverInfo1 -> serverInfo1.getCloudProcess().getProcessUID().equals(uniqueID))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public ServerInfo getServerInfo(String name) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredServerProcesses()
+                .stream()
+                .filter(serverInfo1 -> serverInfo1.getCloudProcess().getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public ProxyInfo getProxyInfo(UUID uniqueID) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(proxyInfo -> proxyInfo.getCloudProcess().getProcessUID().equals(uniqueID))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public ProxyInfo getProxyInfo(String name) {
+        return this.internalCloudNetwork
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(proxyInfo -> proxyInfo.getCloudProcess().getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
