@@ -30,6 +30,7 @@ public class ChannelHandler {
     @Getter
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
 
+    @Getter
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     /**
@@ -51,6 +52,15 @@ public class ChannelHandler {
      */
     public boolean isChannelRegistered(final String name) {
         return this.channelHandlerContextMap.containsKey(name);
+    }
+
+    public boolean isChannelRegistered(final ChannelHandlerContext channelHandlerContext) {
+        for (Map.Entry<String, ChannelHandlerContext> map : this.channelHandlerContextMap.entrySet()) {
+            if (map.getValue().equals(channelHandlerContext))
+                return true;
+        }
+
+        return false;
     }
 
     /**

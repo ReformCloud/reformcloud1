@@ -101,6 +101,8 @@ public interface IAPIService {
 
     void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess, NetworkQueryInboundHandler onFailure);
 
+    PacketFuture createPacketFuture(Packet packet, String networkComponent);
+
     PacketFuture sendPacketQuery(String channel, Packet packet);
 
     Client getClient(String name);

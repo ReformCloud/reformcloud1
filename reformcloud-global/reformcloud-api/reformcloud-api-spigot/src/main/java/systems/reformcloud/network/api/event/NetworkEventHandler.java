@@ -4,8 +4,10 @@
 
 package systems.reformcloud.network.api.event;
 
+import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.api.IEventHandler;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.launcher.SpigotBootstrap;
 
 import java.io.Serializable;
 
@@ -20,5 +22,22 @@ public final class NetworkEventHandler implements Serializable, IEventHandler {
 
     @Override
     public void handleReload() {
+    }
+
+    @Override
+    public void channelConnected(ChannelHandlerContext channelHandlerContext) {
+
+    }
+
+    @Override
+    public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
+        SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(player ->
+                player.sendMessage("Your current server lost the connection to the cloud")
+        );
+    }
+
+    @Override
+    public void channelExceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
+
     }
 }

@@ -166,10 +166,9 @@ public class ReformCloudAPIBungee implements IAPIService {
 
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
-        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
-                "ReformCloudController",
-                this.proxyInfo.getCloudProcess().getName(),
-                new PacketOutQueryGetOnlinePlayer(uniqueId)
+        PacketFuture packetFuture = this.createPacketFuture(
+                new PacketOutQueryGetOnlinePlayer(uniqueId),
+                "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
@@ -180,10 +179,9 @@ public class ReformCloudAPIBungee implements IAPIService {
 
     @Override
     public OnlinePlayer getOnlinePlayer(String name) {
-        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
-                "ReformCloudController",
-                this.proxyInfo.getCloudProcess().getName(),
-                new PacketOutQueryGetOnlinePlayer(name)
+        PacketFuture packetFuture = this.createPacketFuture(
+                new PacketOutQueryGetOnlinePlayer(name),
+                "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
@@ -194,10 +192,9 @@ public class ReformCloudAPIBungee implements IAPIService {
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
-        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
-                "ReformCloudController",
-                this.proxyInfo.getCloudProcess().getName(),
-                new PacketOutQueryGetPlayer(uniqueId)
+        PacketFuture packetFuture = this.createPacketFuture(
+                new PacketOutQueryGetPlayer(uniqueId),
+                "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
@@ -208,10 +205,9 @@ public class ReformCloudAPIBungee implements IAPIService {
 
     @Override
     public OfflinePlayer getOfflinePlayer(String name) {
-        PacketFuture packetFuture = this.channelHandler.sendPacketQuerySync(
-                "ReformCloudController",
-                this.proxyInfo.getCloudProcess().getName(),
-                new PacketOutQueryGetPlayer(name)
+        PacketFuture packetFuture = this.createPacketFuture(
+                new PacketOutQueryGetPlayer(name),
+                "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
@@ -342,6 +338,20 @@ public class ReformCloudAPIBungee implements IAPIService {
         this.channelHandler.sendPacketQuerySync(
                 channel, this.proxyInfo.getCloudProcess().getName(), packet, onSuccess, onFailure
         );
+    }
+
+    @Override
+    public PacketFuture createPacketFuture(Packet packet, String networkComponent) {
+        this.channelHandler.toQueryPacket(packet, UUID.randomUUID(), this.proxyInfo.getCloudProcess().getName());
+        PacketFuture packetFuture = new PacketFuture(
+                this.channelHandler,
+                packet,
+                this.channelHandler.getExecutorService(),
+                networkComponent
+        );
+        this.channelHandler.getResults().put(packet.getResult(), packetFuture);
+
+        return packetFuture;
     }
 
     @Override

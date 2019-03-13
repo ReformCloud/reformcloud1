@@ -99,6 +99,16 @@ public class ChannelReader extends SimpleChannelInboundHandler {
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        if (!this.channelHandler.isChannelRegistered(ctx)
+                && ctx.channel().isActive()
+                && ctx.channel().isOpen()
+                && ctx.channel().isWritable()) {
+            IEventHandler.instance.get().channelConnected(ctx);
+        }
+    }
+
+    @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
         final InetSocketAddress inetSocketAddress = ((InetSocketAddress) ctx.channel().remoteAddress());
         if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable() && inetSocketAddress != null) {
@@ -107,12 +117,14 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                     .replace("%ip%", inetSocketAddress.getAddress().getHostAddress())
                     .replace("%name%", serviceName != null ? serviceName : "Not found")
                     .replace("%port%", Integer.toString(inetSocketAddress.getPort())));
+            IEventHandler.instance.get().channelDisconnected(ctx);
             channelHandler.unregisterChannel(serviceName);
         }
     }
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        IEventHandler.instance.get().channelExceptionCaught(ctx, cause);
         if (!(cause instanceof IOException)) {
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.");
             cause.printStackTrace();

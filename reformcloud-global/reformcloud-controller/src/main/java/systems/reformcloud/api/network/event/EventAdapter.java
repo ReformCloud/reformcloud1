@@ -4,6 +4,7 @@
 
 package systems.reformcloud.api.network.event;
 
+import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.IEventHandler;
 import systems.reformcloud.configurations.Configuration;
@@ -37,5 +38,17 @@ public final class EventAdapter implements Serializable, IEventHandler {
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(), "Error while handling network reload", throwable);
         }
+    }
+
+    @Override
+    public void channelConnected(ChannelHandlerContext channelHandlerContext) {
+    }
+
+    @Override
+    public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
+    }
+
+    @Override
+    public void channelExceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
     }
 }

@@ -4,6 +4,7 @@
 
 package systems.reformcloud.api;
 
+import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.configurations.Configuration;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,4 +19,10 @@ public interface IEventHandler {
     void handleCustomPacket(String channel, String targetType, Configuration configuration);
 
     void handleReload();
+
+    void channelConnected(ChannelHandlerContext channelHandlerContext);
+
+    void channelDisconnected(ChannelHandlerContext channelHandlerContext);
+
+    void channelExceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause);
 }

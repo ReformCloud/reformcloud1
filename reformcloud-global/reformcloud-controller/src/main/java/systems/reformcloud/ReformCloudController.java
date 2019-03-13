@@ -39,7 +39,6 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.out.PacketOutStartGameServer;
 import systems.reformcloud.network.out.PacketOutStartProxy;
-import systems.reformcloud.network.out.PacketOutStopProcess;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
@@ -398,19 +397,13 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         RUNNING = false;
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
-            this.channelHandler.sendPacketSynchronized(e.getCloudProcess().getClient(),
-                    new PacketOutStopProcess(e.getCloudProcess().getName()));
             this.loggerProvider.info(this.getLoadedLanguage().getController_servprocess_stopped()
                         .replace("%name%", e.getCloudProcess().getName()));
-            ReformCloudLibraryService.sleep(100);
         });
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> {
-            this.channelHandler.sendPacketSynchronized(e.getCloudProcess().getClient(),
-                    new PacketOutStopProcess(e.getCloudProcess().getName()));
             this.loggerProvider.info(this.getLoadedLanguage().getController_proxyprocess_stopped()
                     .replace("%name%", e.getCloudProcess().getName()));
-            ReformCloudLibraryService.sleep(100);
         });
 
         this.loggerProvider.info(this.getLoadedLanguage().getWaiting_for_tasks());
@@ -764,6 +757,20 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         this.channelHandler.sendPacketQuerySync(
                 channel, "ReformCloudController", packet, onSuccess, onFailure
         );
+    }
+
+    @Override
+    public PacketFuture createPacketFuture(Packet packet, String networkComponent) {
+        this.channelHandler.toQueryPacket(packet, UUID.randomUUID(), "ReformCloudController");
+        PacketFuture packetFuture = new PacketFuture(
+                this.channelHandler,
+                packet,
+                this.channelHandler.getExecutorService(),
+                networkComponent
+        );
+        this.channelHandler.getResults().put(packet.getResult(), packetFuture);
+
+        return packetFuture;
     }
 
     @Override
