@@ -12,7 +12,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import systems.reformcloud.api.IAPIService;
+import systems.reformcloud.api.IDefaultPlayerProvider;
 import systems.reformcloud.api.IEventHandler;
+import systems.reformcloud.api.PlayerProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -90,6 +92,7 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
         ReformCloudLibraryService.sendHeader();
 
         IAPIService.instance.set(this);
+        IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(this, SpigotBootstrap.getInstance());
 

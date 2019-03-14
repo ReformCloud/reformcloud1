@@ -4,12 +4,12 @@
 
 package systems.reformcloud.api;
 
-import systems.reformcloud.ReformCloudAPISpigot;
+import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.network.packets.PacketOutConnectPlayer;
-import systems.reformcloud.network.packets.PacketOutKickPlayer;
-import systems.reformcloud.network.packets.PacketOutSendMessage;
+import systems.reformcloud.network.packets.out.PacketOutConnectPlayer;
+import systems.reformcloud.network.packets.out.PacketOutKickPlayer;
+import systems.reformcloud.network.packets.out.PacketOutSendMessage;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -25,7 +25,7 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
         if (proxyInfo == null)
             return;
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized(
+        ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized(
                 "ReformCloudController", new PacketOutConnectPlayer(
                         uniqueID, name, proxyInfo.getCloudProcess().getName()
                 )
@@ -43,7 +43,7 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
         if (proxyInfo == null)
             return;
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized(
+        ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized(
                 "ReformCloudController", new PacketOutSendMessage(
                         uniqueID, message, proxyInfo.getCloudProcess().getName()
                 )
@@ -56,7 +56,7 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
         if (proxyInfo == null)
             return;
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized(
+        ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized(
                 "ReformCloudController", new PacketOutKickPlayer(
                         uniqueID, reason, proxyInfo.getCloudProcess().getName()
                 )
@@ -64,7 +64,7 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
     }
 
     public ProxyInfo findPlayer(UUID toFind) {
-        return ReformCloudAPISpigot.getInstance()
+        return ReformCloudClient.getInstance()
                 .getInternalCloudNetwork()
                 .getServerProcessManager()
                 .getAllRegisteredProxyProcesses()

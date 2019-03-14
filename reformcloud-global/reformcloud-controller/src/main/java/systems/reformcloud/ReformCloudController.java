@@ -10,6 +10,7 @@ import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
 import systems.reformcloud.api.network.event.EventAdapter;
+import systems.reformcloud.api.player.PlayerProvider;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
@@ -200,6 +201,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         RUNNING = true;
 
         IAPIService.instance.set(this);
+        IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         loggerProvider.info(this.getLoadedLanguage().getLoading_done()
                     .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));

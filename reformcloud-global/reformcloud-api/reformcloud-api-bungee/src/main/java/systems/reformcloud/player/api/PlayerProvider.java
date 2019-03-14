@@ -87,7 +87,7 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
         );
     }
 
-    private ProxyInfo findPlayer(UUID toFind) {
+    public ProxyInfo findPlayer(UUID toFind) {
         return ReformCloudAPIBungee.getInstance()
                 .getInternalCloudNetwork()
                 .getServerProcessManager()

@@ -9,6 +9,8 @@ import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.EventAdapter;
 import systems.reformcloud.api.IAPIService;
+import systems.reformcloud.api.IDefaultPlayerProvider;
+import systems.reformcloud.api.PlayerProvider;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
@@ -124,6 +126,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         this.loggerProvider = loggerProvider;
 
         IAPIService.instance.set(this);
+        IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         this.cloudConfiguration = new CloudConfiguration(false);
         new ReformCloudLibraryServiceProvider(loggerProvider, this.cloudConfiguration.getControllerKey(), cloudConfiguration.getEthernetAddress().getHost(), eventManager, null);

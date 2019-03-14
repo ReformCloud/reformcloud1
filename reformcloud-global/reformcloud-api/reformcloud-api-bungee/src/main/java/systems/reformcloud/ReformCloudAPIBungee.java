@@ -7,6 +7,7 @@ package systems.reformcloud;
 import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.api.IAPIService;
+import systems.reformcloud.api.IDefaultPlayerProvider;
 import systems.reformcloud.api.IEventHandler;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
@@ -34,6 +35,7 @@ import systems.reformcloud.network.packets.PacketOutUpdateOfflinePlayer;
 import systems.reformcloud.network.packets.PacketOutUpdateOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
+import systems.reformcloud.player.api.PlayerProvider;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.PermissionCache;
@@ -84,6 +86,7 @@ public class ReformCloudAPIBungee implements IAPIService {
         ReformCloudLibraryService.sendHeader();
 
         IAPIService.instance.set(this);
+        IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
 
