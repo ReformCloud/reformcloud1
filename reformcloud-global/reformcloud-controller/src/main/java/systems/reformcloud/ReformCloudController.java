@@ -256,6 +256,11 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerHandler("LogoutPlayer", new PacketInLogoutPlayer())
                 .registerHandler("PlayerAccepted", new PacketInPlayerAccepted())
 
+                //PlayerProvider Handlers
+                .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
+                .registerHandler("SendPlayerMessage", new PacketInSendPlayerMessage())
+                .registerHandler("KickPlayer", new PacketInKickPlayer())
+
                 //Player Query Handlers
                 .registerQueryHandler("QueryGetPlayer", new PacketInQueryGetPlayer())
                 .registerQueryHandler("QueryGetOnlinePlayer", new PacketInQueryGetOnlinePlayer());
