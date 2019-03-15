@@ -27,6 +27,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
@@ -65,10 +66,32 @@ public final class CloudConnectListener implements Listener {
                         if (ReformCloudAPIBungee.getInstance().getPermissionCache() != null) {
                             ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
                                     new PacketOutQueryGetPermissionHolder(
-                                            new PermissionHolder(offlinePlayer.getUniqueID(), Collections.singletonList(ReformCloudAPIBungee
-                                                    .getInstance().getPermissionCache().getDefaultGroup().getName()), new HashMap<>())
+                                            new PermissionHolder(offlinePlayer.getUniqueID(), Collections.singletonMap(ReformCloudAPIBungee
+                                                    .getInstance().getPermissionCache().getDefaultGroup().getName(), -1L), new HashMap<>())
                                     ), (configuration1, resultID1) -> {
                                         PermissionHolder permissionHolder = configuration1.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+                                        if (permissionHolder == null)
+                                            return;
+
+                                        Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
+
+                                        copyOf.forEach((groupName, timeout) -> {
+                                            if (timeout <= System.currentTimeMillis())
+                                                permissionHolder.getPermissionGroups().remove(groupName);
+                                        });
+
+                                        if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
+                                            if (permissionHolder.getPermissionGroups().size() == 0) {
+                                                permissionHolder.getPermissionGroups().put(
+                                                        ReformCloudAPIBungee.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
+                                                );
+                                            }
+
+                                            ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized(
+                                                    "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
+                                            );
+                                        }
+
                                         ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
                                     });
                         }

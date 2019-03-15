@@ -57,8 +57,8 @@ public class PlayerConnectListener implements Listener {
             ReformCloudAPISpigot.getInstance().sendPacketQuery(
                     "ReformCloudController",
                     new PacketOutQueryGetPermissionHolder(
-                            new PermissionHolder(event.getPlayer().getUniqueId(), Collections.singletonList(
-                                    ReformCloudAPISpigot.getInstance().getPermissionCache().getDefaultGroup().getName()
+                            new PermissionHolder(event.getPlayer().getUniqueId(), Collections.singletonMap(
+                                    ReformCloudAPISpigot.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
                             ), new HashMap<>())
                     ), (configuration, resultID) -> {
                         PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());

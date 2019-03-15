@@ -204,6 +204,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
+                .registerHandler("GetControllerTemplateResult", new PacketInGetControllerTemplateResult())
                 .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess());
     }
 

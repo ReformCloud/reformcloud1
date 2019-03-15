@@ -239,6 +239,10 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerHandler("ClientReloadSuccess", new PacketInSyncClientReloadSuccess())
                 .registerHandler("ClientProcessQueue", new PacketInClientProcessQueue())
 
+                //Client template management
+                .registerHandler("GetControllerTemplate", new PacketInGetControllerTemplate())
+                .registerHandler("UpdateControllerTemplate", new PacketInUpdateControllerTemplate())
+
                 //Statistics
                 .registerHandler("UpdateTempServerStats", new PacketInUpdateServerTempStats())
 

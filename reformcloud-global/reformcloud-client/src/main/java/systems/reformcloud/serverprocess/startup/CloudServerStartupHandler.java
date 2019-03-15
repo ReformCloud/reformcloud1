@@ -17,10 +17,7 @@ import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.network.packets.out.PacketOutAddProcess;
-import systems.reformcloud.network.packets.out.PacketOutRemoveProcess;
-import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
-import systems.reformcloud.network.packets.out.PacketOutUpdateInternalCloudNetwork;
+import systems.reformcloud.network.packets.out.*;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
@@ -108,6 +105,15 @@ public class CloudServerStartupHandler {
             }
         } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
             FileUtils.copyAllFiles(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName()), path + StringUtil.EMPTY);
+        } else if (loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                    new PacketOutGetControllerTemplate("server",
+                            this.serverStartupInfo.getServerGroup().getName(),
+                            this.loaded.getName(),
+                            this.serverStartupInfo.getUid(),
+                            this.serverStartupInfo.getName())
+            );
+            ReformCloudLibraryService.sleep(50);
         } else
             return false;
 
@@ -329,6 +335,14 @@ public class CloudServerStartupHandler {
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
             FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
             FileUtils.copyAllFiles(path, "reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName(), "spigot.jar");
+        } else if (this.loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+            byte[] template = ZoneInformationProtocolUtility.zipDirectoryToBytes(this.path);
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized(
+                    "ReformCloudController", new PacketOutUpdateControllerTemplate(
+                            "server", this.serverStartupInfo.getServerGroup().getName(),
+                            this.loaded.getName(), template
+                    )
+            );
         }
 
         FileUtils.deleteFullDirectory(path);

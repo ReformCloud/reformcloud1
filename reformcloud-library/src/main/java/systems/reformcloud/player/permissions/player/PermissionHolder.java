@@ -22,7 +22,7 @@ import java.util.UUID;
 public final class PermissionHolder implements Serializable {
     private UUID uniqueID;
 
-    private List<String> permissionGroups;
+    private Map<String, Long> permissionGroups;
 
     private Map<String, Boolean> playerPermissions;
 

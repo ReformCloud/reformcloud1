@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
@@ -172,12 +173,12 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            if (permissionHolder.getPermissionGroups().contains(permissionGroup.getName())) {
+            if (permissionHolder.getPermissionGroups().containsKey(permissionGroup.getName())) {
                 commandSender.sendMessage("The Player is already in this group");
                 return;
             }
 
-            permissionHolder.getPermissionGroups().add(permissionGroup.getName());
+            permissionHolder.getPermissionGroups().put(permissionGroup.getName(), -1L);
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
@@ -228,7 +229,7 @@ public final class CommandPermissions extends Command implements Serializable {
             }
 
             permissionHolder.getPermissionGroups().clear();
-            permissionHolder.getPermissionGroups().add(permissionGroup.getName());
+            permissionHolder.getPermissionGroups().put(permissionGroup.getName(), -1L);
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("Set " + args[0] + "'s group to " + permissionGroup.getName());
@@ -252,6 +253,72 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().update();
 
             commandSender.sendMessage("Successfully set the default group to " + permissionGroup.getName());
+        } else if (args.length == 4 && args[1].equalsIgnoreCase("addgroup")) {
+            if (!this.isLong(args[3])) {
+                commandSender.sendMessage("The given time is not valid");
+                return;
+            }
+
+            UUID uuid = ReformCloudController.getInstance().getPlayerDatabase().getFromName(args[0]);
+            if (uuid == null) {
+                commandSender.sendMessage("Could not found uuid of player in database");
+                return;
+            }
+
+            PermissionHolder permissionHolder = PermissionsAddon.getInstance().getPermissionDatabase().getPermissionHolder(uuid);
+            if (permissionHolder == null) {
+                commandSender.sendMessage("Could not find PermissionHolder");
+                return;
+            }
+
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getAllGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
+                return;
+            }
+
+            long timeout = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(Long.parseLong(args[3]));
+
+            permissionHolder.getPermissionGroups().put(permissionGroup.getName(), timeout);
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
+
+            commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
+            //perms <USERNAME> <SETGROUP> <GROUPNAME> <TIMEOUT>
+        } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
+            if (!this.isLong(args[3])) {
+                commandSender.sendMessage("The given time is not valid");
+                return;
+            }
+
+            UUID uuid = ReformCloudController.getInstance().getPlayerDatabase().getFromName(args[0]);
+            if (uuid == null) {
+                commandSender.sendMessage("Could not found uuid of player in database");
+                return;
+            }
+
+            PermissionHolder permissionHolder = PermissionsAddon.getInstance().getPermissionDatabase().getPermissionHolder(uuid);
+            if (permissionHolder == null) {
+                commandSender.sendMessage("Could not find PermissionHolder");
+                return;
+            }
+
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getAllGroups().stream().filter(e -> e.getName().equals(args[2]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[2]);
+                return;
+            }
+
+            long timeout = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(Long.parseLong(args[3]));
+
+            permissionHolder.getPermissionGroups().clear();
+            permissionHolder.getPermissionGroups().put(permissionGroup.getName(), timeout);
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
+
+            commandSender.sendMessage("Set " + args[0] + "'s group to " + permissionGroup.getName());
         } else {
             commandSender.sendMessage("perms list");
             commandSender.sendMessage("perms <USERNAME> list");
@@ -259,7 +326,17 @@ public final class CommandPermissions extends Command implements Serializable {
             commandSender.sendMessage("perms <GROUPNAME> <CREATE/DELETE>");
             commandSender.sendMessage("perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>");
             commandSender.sendMessage("perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>");
+            commandSender.sendMessage("perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>");
             commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>");
+        }
+    }
+
+    private boolean isLong(String in) {
+        try {
+            Long.parseLong(in);
+            return true;
+        } catch (final Throwable throwable) {
+            return false;
         }
     }
 }

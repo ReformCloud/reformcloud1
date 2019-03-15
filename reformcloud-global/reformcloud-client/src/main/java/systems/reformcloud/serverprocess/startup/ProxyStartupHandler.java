@@ -95,6 +95,15 @@ public class ProxyStartupHandler {
             }
         } else if (template.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
             FileUtils.copyAllFiles(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/" + template.getName()), path + StringUtil.EMPTY);
+        } else if (template.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                    new PacketOutGetControllerTemplate("proxy",
+                            this.proxyStartupInfo.getProxyGroup().getName(),
+                            this.template.getName(),
+                            this.proxyStartupInfo.getUid(),
+                            this.proxyStartupInfo.getName())
+            );
+            ReformCloudLibraryService.sleep(50);
         } else {
             return false;
         }
@@ -280,6 +289,16 @@ public class ProxyStartupHandler {
                     || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.WATERFALL)) {
                 FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/proxies/logs/server_log_" + this.proxyStartupInfo.getUid() + "-" + this.proxyStartupInfo.getName() + ".log");
             }
+        }
+
+        if (this.template.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+            byte[] template = ZoneInformationProtocolUtility.zipDirectoryToBytes(this.path);
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized(
+                    "ReformCloudController", new PacketOutUpdateControllerTemplate(
+                            "proxy", this.proxyStartupInfo.getProxyGroup().getName(),
+                            this.template.getName(), template
+                    )
+            );
         }
 
         FileUtils.deleteFullDirectory(path);

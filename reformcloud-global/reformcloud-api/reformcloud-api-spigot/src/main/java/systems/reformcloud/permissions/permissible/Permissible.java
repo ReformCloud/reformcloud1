@@ -33,9 +33,10 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
         this.permissionHolder = permissionHolder;
         inGroups = ReformCloudAPISpigot.getInstance()
-                .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> permissionHolder.getPermissionGroups().contains(e.getName()))
+                .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> permissionHolder
+                        .getPermissionGroups().containsKey(e.getName()))
                 .collect(Collectors.toList());
-        if (permissionHolder.getPermissionGroups().contains(ReformCloudAPISpigot.getInstance()
+        if (permissionHolder.getPermissionGroups().containsKey(ReformCloudAPISpigot.getInstance()
                 .getPermissionCache().getDefaultGroup().getName())) {
             inGroups.add(ReformCloudAPISpigot.getInstance().getPermissionCache().getDefaultGroup());
         }

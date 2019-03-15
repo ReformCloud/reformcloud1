@@ -58,6 +58,8 @@ public class CloudConfiguration {
      */
     public CloudConfiguration() {
         for (File directory : new File[]{
+                new File("reformcloud/templates/servers"),
+                new File("reformcloud/templates/proxies"),
                 new File("reformcloud/groups/proxies"),
                 new File("reformcloud/groups/servers"),
                 new File("reformcloud/database/stats"),
@@ -73,6 +75,7 @@ public class CloudConfiguration {
         this.loadMessages();
         this.loadProxyGroups();
         this.loadServerGroups();
+        this.createTemplatesIfNotExists();
     }
 
     private void init(final String ip, final String lang) {
@@ -289,6 +292,22 @@ public class CloudConfiguration {
 
         ReformCloudController.getInstance().getInternalCloudNetwork().setMessages(Configuration.parse(Paths.get(messagePath)));
         ReformCloudController.getInstance().getInternalCloudNetwork().setPrefix(ReformCloudController.getInstance().getInternalCloudNetwork().getMessages().getStringValue("internal-global-prefix"));
+    }
+
+    private void createTemplatesIfNotExists() {
+        this.serverGroups.forEach(serverGroup ->
+                serverGroup.getTemplates().forEach(template -> {
+                    if (!Files.exists(Paths.get("reformcloud/templates/servers/" + serverGroup.getName() + "/" + template.getName())))
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + serverGroup.getName() + "/" + template.getName()));
+                })
+        );
+
+        this.proxyGroups.forEach(proxyGroup ->
+                proxyGroup.getTemplates().forEach(template -> {
+                    if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + proxyGroup.getName() + "/" + template.getName())))
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + proxyGroup.getName() + "/" + template.getName()));
+                })
+        );
     }
 
     public void createServerGroup(final ServerGroup serverGroup) {
