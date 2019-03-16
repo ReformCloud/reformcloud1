@@ -156,7 +156,7 @@ public class ProxyStartupHandler {
 
         if (!Files.exists(Paths.get("reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"))) {
             DownloadManager.downloadSilentAndDisconnect(
-                    "https://reformcloud.systems/download/latest/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar",
+                    "https://reformcloud.systems/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar",
                     "reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"
             );
 

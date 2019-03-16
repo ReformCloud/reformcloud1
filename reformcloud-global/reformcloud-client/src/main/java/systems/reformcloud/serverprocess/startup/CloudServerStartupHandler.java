@@ -200,7 +200,7 @@ public class CloudServerStartupHandler {
 
         if (!Files.exists(Paths.get("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"))) {
             DownloadManager.downloadSilentAndDisconnect(
-                    "https://dl.reformcloud.systems/download/latest/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar",
+                    "https://dl.reformcloud.systems/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar",
                     "reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"
             );
 
