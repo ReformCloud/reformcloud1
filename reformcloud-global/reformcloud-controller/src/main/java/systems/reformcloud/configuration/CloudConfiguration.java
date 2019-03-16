@@ -316,6 +316,9 @@ public class CloudConfiguration {
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().put(serverGroup.getName(), serverGroup);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
+        FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + serverGroup.getName() + "/" +
+                serverGroup.getTemplate("default").getName()));
+
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
     }
 
@@ -324,6 +327,9 @@ public class CloudConfiguration {
         ReformCloudController.getInstance().getLoggerProvider().info("Loading ProxyGroup [Name=" + proxyGroup.getName() + "/Clients=" + proxyGroup.getClients() + "]...");
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().put(proxyGroup.getName(), proxyGroup);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
+
+        FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + proxyGroup.getName() + "/" +
+                proxyGroup.getTemplate("default").getName()));
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
     }
@@ -365,6 +371,14 @@ public class CloudConfiguration {
             e.printStackTrace();
         }
 
+        serverGroup.getTemplates().forEach(template -> {
+            if (!Files.exists(Paths.get("reformcloud/templates/servers/" + serverGroup.getName() + "/" + template.getName()))) {
+                FileUtils.createDirectory(
+                        Paths.get("reformcloud/templates/servers/" + serverGroup.getName() + "/" + template.getName())
+                );
+            }
+        });
+
         new Configuration().addProperty("group", serverGroup).write(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().remove(serverGroup.getName());
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().put(serverGroup.getName(), serverGroup);
@@ -379,6 +393,14 @@ public class CloudConfiguration {
             e.printStackTrace();
         }
 
+        proxyGroup.getTemplates().forEach(template -> {
+            if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + proxyGroup.getName() + "/" + template.getName()))) {
+                FileUtils.createDirectory(
+                        Paths.get("reformcloud/templates/proxies/" + proxyGroup.getName() + "/" + template.getName())
+                );
+            }
+        });
+
         new Configuration().addProperty("group", proxyGroup).write(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().remove(proxyGroup.getName());
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().put(proxyGroup.getName(), proxyGroup);
@@ -392,6 +414,12 @@ public class CloudConfiguration {
         ReformCloudController.getInstance().getLoggerProvider().info("Deleting ServerGroup [Name=" + serverGroup.getName() + "/Clients=" + serverGroup.getClients() + "]...");
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().remove(serverGroup.getName());
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
+
+        serverGroup.getTemplates().forEach(template ->
+                FileUtils.deleteFullDirectory(
+                        Paths.get("reformcloud/templates/servers/" + serverGroup.getName() + "/" + template.getName())
+                )
+        );
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().stream()
@@ -408,6 +436,12 @@ public class CloudConfiguration {
         ReformCloudController.getInstance().getLoggerProvider().info("Deleting ProxyGroup [Name=" + proxyGroup.getName() + "/Clients=" + proxyGroup.getClients() + "]...");
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().remove(proxyGroup.getName());
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
+
+        proxyGroup.getTemplates().forEach(template ->
+                FileUtils.deleteFullDirectory(
+                        Paths.get("reformcloud/templates/proxies/" + proxyGroup.getName() + "/" + template.getName())
+                )
+        );
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredProxyProcesses().stream()

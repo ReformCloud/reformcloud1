@@ -116,7 +116,7 @@ public class ZoneInformationProtocolUtility {
     }
 
     public static byte[] zipDirectoryToBytes(Path path) {
-        return zipDirectoryToBytes(path);
+        return zipDirectoryToBytes(path.toFile());
     }
 
     public static void zipDirectoryToFile(File path, String destinationPath) {
