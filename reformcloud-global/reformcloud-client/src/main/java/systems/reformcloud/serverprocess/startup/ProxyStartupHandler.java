@@ -74,8 +74,6 @@ public class ProxyStartupHandler {
     public boolean bootstrap() {
         FileUtils.deleteFullDirectory(path);
 
-        FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
-
         if (this.proxyStartupInfo.getTemplate() != null)
             template = this.proxyStartupInfo.getProxyGroup().getTemplate(this.proxyStartupInfo.getTemplate());
         else
@@ -107,6 +105,8 @@ public class ProxyStartupHandler {
         } else {
             return false;
         }
+
+        FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
 
         if (!Files.exists(Paths.get(path + "/plugins")))
             FileUtils.createDirectory(Paths.get(path + "/plugins"));

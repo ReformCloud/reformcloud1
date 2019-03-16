@@ -84,8 +84,6 @@ public class CloudServerStartupHandler {
         FileUtils.deleteFullDirectory(path);
         FileUtils.createDirectory(path);
 
-        FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
-
         if (this.serverStartupInfo.getTemplate() != null)
             loaded = this.serverStartupInfo.getServerGroup().getTemplate(this.serverStartupInfo.getTemplate());
         else
@@ -116,6 +114,8 @@ public class CloudServerStartupHandler {
             ReformCloudLibraryService.sleep(50);
         } else
             return false;
+
+        FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
 
         if (!Files.exists(Paths.get(path + "/plugins")))
             FileUtils.createDirectory(Paths.get(path + "/plugins"));
