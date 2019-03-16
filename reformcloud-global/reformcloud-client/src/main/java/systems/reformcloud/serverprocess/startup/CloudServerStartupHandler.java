@@ -69,8 +69,11 @@ public class CloudServerStartupHandler {
 
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
             this.path = Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName());
+            FileUtils.createDirectory(path);
         } else {
             this.path = Paths.get("reformcloud/temp/servers/" + serverStartupInfo.getName() + "-" + serverStartupInfo.getUid());
+            FileUtils.deleteFullDirectory(path);
+            FileUtils.createDirectory(path);
         }
     }
 
@@ -81,9 +84,6 @@ public class CloudServerStartupHandler {
      * or {@code false} if the Client couldn't start the SpigotServer
      */
     public boolean bootstrap() {
-        FileUtils.deleteFullDirectory(path);
-        FileUtils.createDirectory(path);
-
         if (this.serverStartupInfo.getTemplate() != null)
             loaded = this.serverStartupInfo.getServerGroup().getTemplate(this.serverStartupInfo.getTemplate());
         else
@@ -92,28 +92,31 @@ public class CloudServerStartupHandler {
         this.processStartupStage = ProcessStartupStage.COPY;
         this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
                 .replace("%path%", this.path + ""));
-        if (loaded.getTemplateBackend().equals(TemplateBackend.URL)
-                && loaded.getTemplate_url() != null) {
-            new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplate_url());
-            try {
-                ZoneInformationProtocolUtility.unZip(new File(path + "/loaded.zip"), path + "");
-            } catch (final Exception ex) {
-                ex.printStackTrace();
+
+        if (!this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
+            if (loaded.getTemplateBackend().equals(TemplateBackend.URL)
+                    && loaded.getTemplate_url() != null) {
+                new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplate_url());
+                try {
+                    ZoneInformationProtocolUtility.unZip(new File(path + "/loaded.zip"), path + "");
+                } catch (final Exception ex) {
+                    ex.printStackTrace();
+                    return false;
+                }
+            } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                FileUtils.copyAllFiles(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName()), path + StringUtil.EMPTY);
+            } else if (loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+                ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                        new PacketOutGetControllerTemplate("server",
+                                this.serverStartupInfo.getServerGroup().getName(),
+                                this.loaded.getName(),
+                                this.serverStartupInfo.getUid(),
+                                this.serverStartupInfo.getName())
+                );
+                ReformCloudLibraryService.sleep(50);
+            } else
                 return false;
-            }
-        } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-            FileUtils.copyAllFiles(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName()), path + StringUtil.EMPTY);
-        } else if (loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
-                    new PacketOutGetControllerTemplate("server",
-                            this.serverStartupInfo.getServerGroup().getName(),
-                            this.loaded.getName(),
-                            this.serverStartupInfo.getUid(),
-                            this.serverStartupInfo.getName())
-            );
-            ReformCloudLibraryService.sleep(50);
-        } else
-            return false;
+        }
 
         FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
 
@@ -330,12 +333,8 @@ public class CloudServerStartupHandler {
             FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/servers/logs/server_log_" + this.serverStartupInfo.getUid() + "-" + this.serverStartupInfo.getName() + ".log");
         }
 
-        if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
-                && loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-            FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
-            FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName()));
-            FileUtils.copyAllFiles(path, "reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + loaded.getName(), "spigot.jar");
-        } else if (this.loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+        if (this.loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)
+                && !this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
             byte[] template = ZoneInformationProtocolUtility.zipDirectoryToBytes(this.path);
             ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized(
                     "ReformCloudController", new PacketOutUpdateControllerTemplate(
@@ -345,7 +344,8 @@ public class CloudServerStartupHandler {
             );
         }
 
-        FileUtils.deleteFullDirectory(path);
+        if (!this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC))
+            FileUtils.deleteFullDirectory(path);
 
         ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
                 new PacketOutRemoveProcess(ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(this.serverStartupInfo.getUid()))

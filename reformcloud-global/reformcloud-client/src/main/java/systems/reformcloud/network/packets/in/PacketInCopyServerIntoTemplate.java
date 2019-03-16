@@ -40,17 +40,8 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
                     FileUtils.copyAllFiles(Paths.get("reformcloud/temp/servers/" + configuration.getStringValue("name")),
                             "reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
                                     cloudServerStartupHandler.getLoaded().getName(), "spigot.jar");
-                } else {
+                } else
                     cloudServerStartupHandler.executeCommand("save-all");
-                    ReformCloudLibraryService.sleep(2000);
-                    FileUtils.deleteFullDirectory(Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
-                            cloudServerStartupHandler.getLoaded().getName()));
-                    FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
-                            cloudServerStartupHandler.getLoaded().getName()));
-                    FileUtils.copyAllFiles(Paths.get("reformcloud/static/servers/" + configuration.getStringValue("name")),
-                            "reformcloud/templates/servers/" + configuration.getStringValue("group") + "/" +
-                                    cloudServerStartupHandler.getLoaded().getName(), "spigot.jar");
-                }
 
                 break;
             }
