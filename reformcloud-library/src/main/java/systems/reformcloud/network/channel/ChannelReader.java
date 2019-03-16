@@ -118,7 +118,8 @@ public class ChannelReader extends SimpleChannelInboundHandler {
                     .replace("%name%", serviceName != null ? serviceName : "Not found")
                     .replace("%port%", Integer.toString(inetSocketAddress.getPort())));
             IEventHandler.instance.get().channelDisconnected(ctx);
-            channelHandler.unregisterChannel(serviceName);
+            if (serviceName != null)
+                channelHandler.unregisterChannel(serviceName);
         }
     }
 

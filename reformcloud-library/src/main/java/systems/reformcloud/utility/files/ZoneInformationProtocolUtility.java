@@ -39,12 +39,16 @@ public class ZoneInformationProtocolUtility {
                     newFile.createNewFile();
                 }
             }
-            FileOutputStream fos = new FileOutputStream(newFile);
-            int len;
-            while ((len = zipInputStream.read(buffer)) > 0)
-                fos.write(buffer, 0, len);
 
-            fos.close();
+            if (!newFile.isDirectory()) {
+                FileOutputStream fos = new FileOutputStream(newFile);
+                int len;
+                while ((len = zipInputStream.read(buffer)) > 0)
+                    fos.write(buffer, 0, len);
+
+                fos.close();
+            }
+
             zipEntry = zipInputStream.getNextEntry();
         }
         zipInputStream.closeEntry();
