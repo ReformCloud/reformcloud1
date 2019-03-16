@@ -15,6 +15,7 @@ import systems.reformcloud.utility.StringUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -68,7 +69,8 @@ public final class PacketInUploadLog implements Serializable, NetworkInboundHand
             case "client": {
                 StringBuilder stringBuilder = new StringBuilder();
                 try {
-                    Files.readAllLines(Paths.get("reformcloud/logs/CloudLog.0")).forEach(s -> stringBuilder.append(s).append("\n"));
+                    Files.readAllLines(Paths.get("reformcloud/logs/CloudLog.0"), StandardCharsets.UTF_8)
+                            .forEach(s -> stringBuilder.append(s).append("\n"));
                 } catch (final IOException ex) {
                     StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not read log", ex);
                 }
