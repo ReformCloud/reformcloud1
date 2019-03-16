@@ -144,19 +144,19 @@ public class CloudConfiguration {
         loggerProvider.info("Do you want to load the sign addon [\"yes\", \"no\"]");
         String signs = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (Boolean.parseBoolean(signs)) {
-            DownloadManager.downloadAndDisconnect("SignAddon", "https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
         }
 
         loggerProvider.info("Do you want to load the discord addon [\"yes\", \"no\"]");
         String discordbot = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (Boolean.parseBoolean(discordbot)) {
-            DownloadManager.downloadAndDisconnect("DiscordBot", "https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/DiscordBot.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/DiscordBot.jar");
         }
 
         loggerProvider.info("Do you want to load the permission addon [\"yes\", \"no\"]");
         String permissions = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (Boolean.parseBoolean(permissions)) {
-            DownloadManager.downloadAndDisconnect("PermissionsAddon", "https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
         }
         
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
