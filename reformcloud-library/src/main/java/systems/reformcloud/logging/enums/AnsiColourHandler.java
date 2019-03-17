@@ -41,7 +41,7 @@ public enum AnsiColourHandler {
     }
 
     public static String stripColor(String input) {
-        return input.replaceAll("\u001B\\[[;\\d]*m", "").replace("§", "");
+        return input.replaceAll("\u001B\\[[;\\d]*m", "");
     }
 
     public static String stripColourCodes(String input) {
