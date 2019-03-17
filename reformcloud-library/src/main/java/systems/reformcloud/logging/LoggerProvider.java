@@ -323,7 +323,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         HttpPost httpPost = new HttpPost("https://paste.reformcloud.systems/documents");
 
         try {
-            httpPost.setEntity(new StringEntity(input, ContentType.TEXT_PLAIN));
+            httpPost.setEntity(new StringEntity(AnsiColourHandler.stripColourCodes(input), ContentType.TEXT_PLAIN));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
             final String result = EntityUtils.toString(httpResponse.getEntity());
