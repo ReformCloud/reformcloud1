@@ -9,6 +9,7 @@ import lombok.Getter;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -69,5 +70,18 @@ public final class PermissionHolder implements Serializable {
 
     public void addPermission(String perm, boolean set) {
         this.playerPermissions.put(perm.toLowerCase(), set);
+    }
+
+    public List<String> getAllPermissions(List<PermissionGroup> permissionGroups) {
+        List<String> permissions = new ArrayList<>();
+        for (Map.Entry<String, Boolean> perms : this.playerPermissions.entrySet())
+            permissions.add(perms.getValue() ? "" : "-" + perms.getKey());
+
+        permissionGroups.forEach(permissionGroup -> {
+            for (Map.Entry<String, Boolean> perms : permissionGroup.getPermissions().entrySet())
+                permissions.add(perms.getValue() ? "" : "-" + perms.getKey());
+        });
+
+        return permissions;
     }
 }

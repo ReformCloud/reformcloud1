@@ -6,6 +6,7 @@ package systems.reformcloud;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import systems.reformcloud.api.IAPIService;
 import systems.reformcloud.api.IDefaultPlayerProvider;
 import systems.reformcloud.api.IEventHandler;
@@ -15,6 +16,7 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -440,6 +442,41 @@ public class ReformCloudAPIBungee implements IAPIService {
     @Override
     public ProxyGroup getProxyGroup(String name) {
         return this.internalCloudNetwork.getProxyGroups().getOrDefault(name, null);
+    }
+
+    public ServerInfo nextFreeLobby(final ProxyGroup proxyGroup, ProxiedPlayer proxiedPlayer) {
+        for (ServerInfo serverInfo : this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses()) {
+            if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
+                    || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)
+                    || proxyGroup.getDisabledServerGroups().contains(serverInfo.getServerGroup().getName())) {
+                continue;
+            }
+
+            if (serverInfo.getServerGroup().getJoin_permission() == null && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
+                return serverInfo;
+            else if (proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoin_permission()) && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
+                return serverInfo;
+        }
+
+        return null;
+    }
+
+    public ServerInfo nextFreeLobby(final ProxyGroup proxyGroup, final ProxiedPlayer proxiedPlayer, final String current) {
+        for (ServerInfo serverInfo : this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses()) {
+            if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
+                    || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)
+                    || serverInfo.getCloudProcess().getName().equals(current)
+                    || proxyGroup.getDisabledServerGroups().contains(serverInfo.getServerGroup().getName())) {
+                continue;
+            }
+
+            if (serverInfo.getServerGroup().getJoin_permission() == null && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
+                return serverInfo;
+            else if (proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoin_permission()) && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
+                return serverInfo;
+        }
+
+        return null;
     }
 
     /**

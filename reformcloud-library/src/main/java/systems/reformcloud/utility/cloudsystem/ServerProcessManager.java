@@ -5,7 +5,6 @@
 package systems.reformcloud.utility.cloudsystem;
 
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 
@@ -282,45 +281,6 @@ public class ServerProcessManager {
                 list.add(proxyInfo.getProxyGroup().getName());
 
         return list;
-    }
-
-    /**
-     * Gets the next LobbyServer for the given permissions
-     *
-     * @param permissions
-     * @return
-     */
-    public ServerInfo nextFreeLobby(final Collection<String> permissions) {
-        for (ServerInfo serverInfo : this.serverProcessUIDMap.values()) {
-            if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
-                    || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)) {
-                continue;
-            }
-
-            if (serverInfo.getServerGroup().getJoin_permission() == null && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
-                return serverInfo;
-            else if (permissions.contains(serverInfo.getServerGroup().getJoin_permission()) && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
-                return serverInfo;
-        }
-
-        return null;
-    }
-
-    public ServerInfo nextFreeLobby(final Collection<String> permissions, final String current) {
-        for (ServerInfo serverInfo : this.serverProcessUIDMap.values()) {
-            if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
-                    || serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)
-                    || serverInfo.getCloudProcess().getName().equals(current)) {
-                continue;
-            }
-
-            if (serverInfo.getServerGroup().getJoin_permission() == null && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
-                return serverInfo;
-            else if (permissions.contains(serverInfo.getServerGroup().getJoin_permission()) && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup().getMaxPlayers())
-                return serverInfo;
-        }
-
-        return null;
     }
 
     /**

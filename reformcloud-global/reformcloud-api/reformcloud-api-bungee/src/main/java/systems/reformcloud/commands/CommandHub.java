@@ -42,7 +42,9 @@ public final class CommandHub extends Command {
             return;
         }
 
-        final ServerInfo fallback = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(proxiedPlayer.getPermissions());
+        final ServerInfo fallback = ReformCloudAPIBungee.getInstance().nextFreeLobby(
+                ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup(), proxiedPlayer
+        );
         if (fallback == null)
             proxiedPlayer.sendMessage(ChatMessageType.CHAT,
                     TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance()

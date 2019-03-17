@@ -39,7 +39,10 @@ public final class CloudConnectListener implements Listener {
         if (event.getPlayer().getServer() == null) {
             ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
 
-            final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions());
+            final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().nextFreeLobby(
+                    ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup(),
+                    event.getPlayer()
+            );
             if (serverInfo == null)
                 event.setCancelled(true);
 
@@ -131,7 +134,12 @@ public final class CloudConnectListener implements Listener {
         else
             proxyInfo.setFull(false);
 
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutLoginPlayer(event.getConnection().getUniqueId()), new PacketOutProxyInfoUpdate(proxyInfo), new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getConnection().getName() + "/UUID=" + event.getConnection().getUniqueId() + "/IP=" + event.getConnection().getAddress().getAddress().getHostAddress() + "] is now connected"));
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                new PacketOutLoginPlayer(event.getConnection().getUniqueId()),
+                new PacketOutProxyInfoUpdate(proxyInfo),
+                new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getConnection().getName() + "/UUID="
+                        + event.getConnection().getUniqueId() + "/IP="
+                        + event.getConnection().getAddress().getAddress().getHostAddress() + "] is now connected"));
     }
 
     @EventHandler(priority = - 128)
@@ -147,13 +155,21 @@ public final class CloudConnectListener implements Listener {
             proxyInfo.setFull(false);
 
         proxyInfo.setOnline(proxyInfo.getOnline() - 1);
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()), new PacketOutProxyInfoUpdate(proxyInfo), new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getName() + "/UUID=" + event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() + "] is now disconnected"));
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()), new PacketOutProxyInfoUpdate(proxyInfo),
+                new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getName() + "/UUID=" +
+                        event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() +
+                        "] is now disconnected"));
     }
 
     @EventHandler(priority = - 127)
     public void handle(final ServerKickEvent event) {
         if (event.getCancelServer() != null) {
-            final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().nextFreeLobby(event.getPlayer().getPermissions(), event.getPlayer().getServer().getInfo().getName());
+            final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().nextFreeLobby(
+                    ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup(),
+                    event.getPlayer(),
+                    event.getPlayer().getServer().getInfo().getName()
+            );
             if (serverInfo != null) {
                 event.setCancelled(true);
                 event.setCancelServer(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
