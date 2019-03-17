@@ -168,7 +168,7 @@ public class CloudConfiguration {
 
         new Configuration().addProperty("users",
                 Collections.singletonList(new WebUser("administrator", StringEncrypt.encrypt(web),
-                        ReformCloudLibraryService.concurrentHashMap()))).write(Paths.get("reformcloud/users.json"));
+                        Collections.singletonMap("*", true)))).write(Paths.get("reformcloud/users.json"));
 
         loggerProvider.info("New default WebUser \"administrator\" was created with password \"" + web + "\"");
         this.init(controllerIP, lang);

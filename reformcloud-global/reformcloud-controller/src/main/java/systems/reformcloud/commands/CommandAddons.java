@@ -34,44 +34,8 @@ public final class CommandAddons extends Command implements Serializable {
             }
 
             return;
-        }
-
-        if (args.length != 2) {
+        } else {
             commandSender.sendMessage("addons list");
-            commandSender.sendMessage("addons <enable/disable> <name>");
-            return;
-        }
-
-        switch (args[0]) {
-            case "enable": {
-                if (ReformCloudController.getInstance().getAddonParallelLoader().isAddonEnabled(args[1])) {
-                    commandSender.sendMessage("Addon is already enabled");
-                    return;
-                }
-
-                if (ReformCloudController.getInstance().getAddonParallelLoader().enableAddon(args[1])) {
-                    commandSender.sendMessage("The Addon was loaded successfully");
-                    return;
-                }
-                break;
-            }
-            case "disable": {
-                if (!ReformCloudController.getInstance().getAddonParallelLoader().isAddonEnabled(args[1])) {
-                    commandSender.sendMessage("Addon is not enabled");
-                    return;
-                }
-
-                if (ReformCloudController.getInstance().getAddonParallelLoader().disableAddon(args[1])) {
-                    commandSender.sendMessage("The Addon was disabled successfully");
-                    return;
-                }
-                break;
-            }
-            default: {
-                commandSender.sendMessage("addons list");
-                commandSender.sendMessage("addons <enable/disable> <name>");
-                break;
-            }
         }
     }
 }
