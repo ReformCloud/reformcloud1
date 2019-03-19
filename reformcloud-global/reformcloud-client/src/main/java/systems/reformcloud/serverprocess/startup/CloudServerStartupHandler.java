@@ -5,6 +5,8 @@
 package systems.reformcloud.serverprocess.startup;
 
 import lombok.Getter;
+import net.md_5.config.ConfigurationProvider;
+import net.md_5.config.YamlConfiguration;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -25,10 +27,7 @@ import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -137,6 +136,12 @@ public class CloudServerStartupHandler {
             FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/configs/spigot.yml");
             FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/configs/server.properties");
         } else {
+            if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.GLOWSTONE_1_12_2)) {
+                if (!Files.exists(Paths.get(path + "/config")))
+                    FileUtils.createDirectory(Paths.get(path + "/config"));
+                if (!Files.exists(Paths.get(path + "/config/glowstone.yml")))
+                    FileUtils.copyCompiledFile("", "/config/glowstone.yml");
+            }
             FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
             FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
         }
@@ -156,6 +161,28 @@ public class CloudServerStartupHandler {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
                 return false;
             }
+        } else if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.GLOWSTONE_1_12_2)) {
+            try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/config/glowstone.yml")), StandardCharsets.UTF_8)) {
+                net.md_5.config.Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(inputStreamReader);
+                net.md_5.config.Configuration section = configuration.getSection("server");
+
+                section.set("ip", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
+                section.set("port", port);
+                section.set("name", this.serverStartupInfo.getName());
+                section.set("max-players", this.serverStartupInfo.getServerGroup().getMaxPlayers());
+                section.set("motd", this.serverStartupInfo.getServerGroup().getMotd());
+
+                configuration.set("server", section);
+                configuration.set("console.use-jline", false);
+                try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(Files.newOutputStream(Paths.get(path +
+                        "/config/glowstone.yml")), StandardCharsets.UTF_8)) {
+                    ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, outputStreamWriter);
+                }
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+                        "Error while reading glowstone config", ex);
+                return false;
+            }
         } else {
             try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/server.properties")))) {
                 properties.load(inputStreamReader);
@@ -165,24 +192,26 @@ public class CloudServerStartupHandler {
             }
         }
 
-        properties.setProperty("server-ip", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
-        properties.setProperty("server-port", port + StringUtil.EMPTY);
-        properties.setProperty("server-name", serverStartupInfo.getName());
-        properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
+        if (!this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.GLOWSTONE_1_12_2)) {
+            properties.setProperty("server-ip", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
+            properties.setProperty("server-port", port + StringUtil.EMPTY);
+            properties.setProperty("server-name", serverStartupInfo.getName());
+            properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
-        if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/configs/server.properties"))) {
-                properties.store(outputStream, "");
-            } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
-                return false;
-            }
-        } else {
-            try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/server.properties"))) {
-                properties.store(outputStream, "");
-            } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
-                return false;
+            if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
+                try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/configs/server.properties"))) {
+                    properties.store(outputStream, "");
+                } catch (final IOException ex) {
+                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
+                    return false;
+                }
+            } else {
+                try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/server.properties"))) {
+                    properties.store(outputStream, "");
+                } catch (final IOException ex) {
+                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
+                    return false;
+                }
             }
         }
 

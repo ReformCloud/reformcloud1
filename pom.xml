@@ -12,6 +12,7 @@
         <module>reformcloud-library</module>
         <module>reformcloud-global</module>
         <module>reformcloud-utility</module>
+        <module>reformcloud-common</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -54,6 +55,7 @@
         <dependency.netty.version>4.1.34.Final</dependency.netty.version>
         <dependency.spigot.version>1.13</dependency.spigot.version>
         <dependency.lombok.version>1.18.6</dependency.lombok.version>
+        <dependency.snakeyaml.version>1.23</dependency.snakeyaml.version>
         <dependency.commons-io.version>2.5</dependency.commons-io.version>
         <dependency.jda.version>4.ALPHA.0_35</dependency.jda.version>
     </properties>

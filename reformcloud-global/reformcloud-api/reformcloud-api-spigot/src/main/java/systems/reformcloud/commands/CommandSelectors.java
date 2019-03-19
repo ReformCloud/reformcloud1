@@ -7,7 +7,6 @@ package systems.reformcloud.commands;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,10 +28,17 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 30.12.2018
  */
 
-public final class CommandSelectors implements CommandExecutor, Listener {
+public final class CommandSelectors extends Command implements Listener {
+    public CommandSelectors() {
+        super("selectors");
+    }
+
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+    public boolean execute(CommandSender commandSender, String s, String[] strings) {
         if (!(commandSender instanceof Player))
+            return false;
+
+        if (!commandSender.hasPermission("reformcloud.command.selectors"))
             return false;
 
         if (strings.length == 1 && strings[0].equalsIgnoreCase("help")) {

@@ -9,9 +9,11 @@ import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
+import systems.reformcloud.api.ingame.command.IngameCommandMangerImpl;
 import systems.reformcloud.api.network.event.EventAdapter;
 import systems.reformcloud.api.player.PlayerProvider;
 import systems.reformcloud.commands.*;
+import systems.reformcloud.commands.ingame.IngameCommandManger;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
@@ -91,6 +93,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     private final CloudProcessOfferService cloudProcessOfferService = new CloudProcessOfferService();
     private final EventManager eventManager = new EventManager();
     private final ScreenSessionProvider screenSessionProvider = new ScreenSessionProvider();
+    private final IngameCommandManger ingameCommandManger = new IngameCommandMangerImpl();
 
     private List<UUID> uuid = new ArrayList<>();
     private List<DatabaseProvider> databaseProviders = new ArrayList<>();

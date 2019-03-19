@@ -79,9 +79,9 @@ public final class SignSelector {
                     SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
                     SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
 
-                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new CommandSelectors(), SpigotBootstrap.getInstance());
-                    SpigotBootstrap.getInstance().getCommand("selectors").setExecutor(new CommandSelectors());
-                    SpigotBootstrap.getInstance().getCommand("selectors").setPermission("reformcloud.command.selectors");
+                    CommandSelectors commandSelectors = new CommandSelectors();
+                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(commandSelectors, SpigotBootstrap.getInstance());
+                    SpigotBootstrap.getInstance().registerCommand(commandSelectors);
 
                     this.worker = new Worker(this.signLayoutConfiguration.getLoadingLayout().getPerSecondAnimation());
                     this.worker.setDaemon(true);

@@ -41,6 +41,13 @@
         </dependency>
 
         <dependency>
+            <groupId>systems.reformcloud</groupId>
+            <artifactId>reformcloud-yaml</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>${dependency.jline.version}</version>

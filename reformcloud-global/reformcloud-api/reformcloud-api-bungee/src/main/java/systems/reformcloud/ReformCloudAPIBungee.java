@@ -4,12 +4,17 @@
 
 package systems.reformcloud;
 
+import com.google.common.base.Enums;
 import lombok.Getter;
 import lombok.Setter;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import systems.reformcloud.api.IAPIService;
 import systems.reformcloud.api.IDefaultPlayerProvider;
 import systems.reformcloud.api.IEventHandler;
+import systems.reformcloud.commands.ingame.command.IngameCommand;
+import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -71,6 +76,7 @@ public class ReformCloudAPIBungee implements IAPIService {
     private PermissionCache permissionCache;
 
     private Map<UUID, PermissionHolder> cachedPermissionHolders = new HashMap<>();
+    private List<IngameCommand> registeredIngameCommands = new ArrayList<>();
 
     private long internalTime = System.currentTimeMillis();
 
@@ -111,6 +117,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
                 .registerHandler("KickPlayer", new PacketInKickPlayer())
                 .registerHandler("SendPlayerMessage", new PacketInSendPlayerMessage())
+                .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
@@ -491,5 +498,240 @@ public class ReformCloudAPIBungee implements IAPIService {
     @Override
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    public void updateIngameCommands(List<IngameCommand> newIngameCommands) {
+        this.registeredIngameCommands.clear();
+        this.setRegisteredIngameCommands(newIngameCommands);
+    }
+
+    public void executeIngameCommand(IngameCommand ingameCommand, UUID sender, String msg) {
+        if (ingameCommand == null)
+            return;
+
+        ProxiedPlayer proxiedPlayer = BungeecordBootstrap.getInstance().getProxy().getPlayer(sender);
+        if (proxiedPlayer == null)
+            return;
+
+        if (ingameCommand.getPermission() != null && !proxiedPlayer.hasPermission(ingameCommand.getPermission()))
+            return;
+
+        String string = msg.replace((msg.contains(" ") ? msg.split(" ")[0] + " " : msg), "");
+        if (string.equalsIgnoreCase("")) {
+            ingameCommand.handle(new IngameCommandSender() {
+                @Override
+                public String getDisplayName() {
+                    return proxiedPlayer.getDisplayName();
+                }
+
+                @Override
+                public void setDisplayName(String var1) {
+                    proxiedPlayer.setDisplayName(var1);
+                }
+
+                @Override
+                public void sendMessage(String message) {
+                    proxiedPlayer.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(message));
+                }
+
+                @Override
+                public void connect(ServerInfo serverInfo) {
+                    net.md_5.bungee.api.config.ServerInfo serverInfo1 =
+                            BungeecordBootstrap.getInstance().getProxy().getServerInfo(serverInfo.getCloudProcess().getName());
+                    if (serverInfo1 == null)
+                        return;
+
+                    proxiedPlayer.connect(serverInfo1);
+                }
+
+                @Override
+                public ServerInfo getServer() {
+                    return ReformCloudAPIBungee.this.getServerInfo(proxiedPlayer.getServer().getInfo().getName());
+                }
+
+                @Override
+                public int getPing() {
+                    return proxiedPlayer.getPing();
+                }
+
+                @Override
+                public void sendData(String s, byte[] bytes) {
+                    proxiedPlayer.sendData(s, bytes);
+                }
+
+                @Override
+                public UUID getUniqueId() {
+                    return proxiedPlayer.getUniqueId();
+                }
+
+                @Override
+                public Locale getLocale() {
+                    return proxiedPlayer.getLocale();
+                }
+
+                @Override
+                public byte getViewDistance() {
+                    return proxiedPlayer.getViewDistance();
+                }
+
+                @Override
+                public ChatMode getChatMode() {
+                    return Enums.getIfPresent(IngameCommandSender.ChatMode.class, proxiedPlayer.getChatMode().name()).or(ChatMode.SHOWN);
+                }
+
+                @Override
+                public boolean hasChatColors() {
+                    return proxiedPlayer.hasChatColors();
+                }
+
+                @Override
+                public MainHand getMainHand() {
+                    return Enums.getIfPresent(IngameCommandSender.MainHand.class, proxiedPlayer.getMainHand().name()).or(MainHand.RIGHT);
+                }
+
+                @Override
+                public void resetTabHeader() {
+                    proxiedPlayer.resetTabHeader();
+                }
+
+                @Override
+                public void sendTitle(String title, String subTitle, int fadeIn, int fadeOut, int stay) {
+                    BungeecordBootstrap.getInstance().getProxy().createTitle()
+                            .title(TextComponent.fromLegacyText(title))
+                            .subTitle(TextComponent.fromLegacyText(subTitle))
+                            .fadeIn(fadeIn)
+                            .fadeOut(fadeOut)
+                            .stay(stay)
+                            .send(proxiedPlayer);
+                }
+
+                @Override
+                public void clearTitle() {
+                    BungeecordBootstrap.getInstance().getProxy().createTitle().clear().send(proxiedPlayer);
+                }
+
+                @Override
+                public boolean isForgeUser() {
+                    return proxiedPlayer.isForgeUser();
+                }
+
+                @Override
+                public Map<String, String> getModList() {
+                    return proxiedPlayer.getModList();
+                }
+            }, new String[0]);
+        } else {
+            final String[] arguments = string.split(" ");
+            ingameCommand.handle(new IngameCommandSender() {
+                @Override
+                public String getDisplayName() {
+                    return proxiedPlayer.getDisplayName();
+                }
+
+                @Override
+                public void setDisplayName(String var1) {
+                    proxiedPlayer.setDisplayName(var1);
+                }
+
+                @Override
+                public void sendMessage(String message) {
+                    proxiedPlayer.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(message));
+                }
+
+                @Override
+                public void connect(ServerInfo serverInfo) {
+                    net.md_5.bungee.api.config.ServerInfo serverInfo1 =
+                            BungeecordBootstrap.getInstance().getProxy().getServerInfo(serverInfo.getCloudProcess().getName());
+                    if (serverInfo1 == null)
+                        return;
+
+                    proxiedPlayer.connect(serverInfo1);
+                }
+
+                @Override
+                public ServerInfo getServer() {
+                    return ReformCloudAPIBungee.this.getServerInfo(proxiedPlayer.getServer().getInfo().getName());
+                }
+
+                @Override
+                public int getPing() {
+                    return proxiedPlayer.getPing();
+                }
+
+                @Override
+                public void sendData(String s, byte[] bytes) {
+                    proxiedPlayer.sendData(s, bytes);
+                }
+
+                @Override
+                public UUID getUniqueId() {
+                    return proxiedPlayer.getUniqueId();
+                }
+
+                @Override
+                public Locale getLocale() {
+                    return proxiedPlayer.getLocale();
+                }
+
+                @Override
+                public byte getViewDistance() {
+                    return proxiedPlayer.getViewDistance();
+                }
+
+                @Override
+                public ChatMode getChatMode() {
+                    return Enums.getIfPresent(IngameCommandSender.ChatMode.class, proxiedPlayer.getChatMode().name()).or(ChatMode.SHOWN);
+                }
+
+                @Override
+                public boolean hasChatColors() {
+                    return proxiedPlayer.hasChatColors();
+                }
+
+                @Override
+                public MainHand getMainHand() {
+                    return Enums.getIfPresent(IngameCommandSender.MainHand.class, proxiedPlayer.getMainHand().name()).or(MainHand.RIGHT);
+                }
+
+                @Override
+                public void resetTabHeader() {
+                    proxiedPlayer.resetTabHeader();
+                }
+
+                @Override
+                public void sendTitle(String title, String subTitle, int fadeIn, int fadeOut, int stay) {
+                    BungeecordBootstrap.getInstance().getProxy().createTitle()
+                            .title(TextComponent.fromLegacyText(title))
+                            .subTitle(TextComponent.fromLegacyText(subTitle))
+                            .fadeIn(fadeIn)
+                            .fadeOut(fadeOut)
+                            .stay(stay)
+                            .send(proxiedPlayer);
+                }
+
+                @Override
+                public void clearTitle() {
+                    BungeecordBootstrap.getInstance().getProxy().createTitle().clear().send(proxiedPlayer);
+                }
+
+                @Override
+                public boolean isForgeUser() {
+                    return proxiedPlayer.isForgeUser();
+                }
+
+                @Override
+                public Map<String, String> getModList() {
+                    return proxiedPlayer.getModList();
+                }
+            }, arguments);
+        }
+    }
+
+    public IngameCommand getIngameCommand(String msg) {
+        String[] strings = msg.split(" ");
+        if (strings.length <= 0)
+            return null;
+
+        return this.registeredIngameCommands.stream().filter(e -> e.getName().equalsIgnoreCase(strings[0])).findFirst().orElse(null);
     }
 }

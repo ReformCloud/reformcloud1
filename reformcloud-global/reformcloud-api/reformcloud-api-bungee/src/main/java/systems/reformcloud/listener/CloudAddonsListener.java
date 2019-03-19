@@ -10,6 +10,7 @@ import net.md_5.bungee.api.event.PermissionCheckEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
+import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.network.packets.PacketOutCommandExecute;
 import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
@@ -32,6 +33,15 @@ public final class CloudAddonsListener implements Listener {
 
         if (event.isCommand() && !event.isCancelled() && ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().isControllerCommandLogging())
             ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutCommandExecute(proxiedPlayer.getName(), proxiedPlayer.getUniqueId(), event.getMessage(), proxiedPlayer.getServer().getInfo().getName()));
+
+        IngameCommand ingameCommand = ReformCloudAPIBungee.getInstance().getIngameCommand(event.getMessage());
+        if (ingameCommand != null) {
+            ReformCloudAPIBungee.getInstance().executeIngameCommand(
+                    ingameCommand,
+                    ((ProxiedPlayer) event.getSender()).getUniqueId(),
+                    event.getMessage()
+            );
+        }
     }
 
     @EventHandler

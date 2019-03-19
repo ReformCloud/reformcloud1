@@ -67,11 +67,19 @@ public class PlayerConnectListener implements Listener {
 
                         ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().put(event.getPlayer().getUniqueId(), permissionHolder);
 
+                        Field field;
+
                         try {
-                            Field field = ReflectionUtil.reflectClazz(".entity.CraftHumanEntity").getDeclaredField("perm");
+                            Class<?> clazz = ReflectionUtil.reflectClazz(".entity.CraftHumanEntity");
+
+                            if (clazz != null)
+                                field = clazz.getDeclaredField("perm");
+                            else
+                                field = Class.forName("net.glowstone.entity.GlowHumanEntity").getDeclaredField("permissions");
+
                             field.setAccessible(true);
                             field.set(event.getPlayer(), new Permissible(event.getPlayer(), permissionHolder));
-                        } catch (final NoSuchFieldException | IllegalAccessException ex) {
+                        } catch (final NoSuchFieldException | IllegalAccessException | ClassNotFoundException ex) {
                             ex.printStackTrace();
                         }
                     }
