@@ -118,8 +118,8 @@ public final class CloudConnectListener {
                 event.setResult(ResultedEvent.ComponentResult.denied(TextComponent.of(
                         ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-maintenance-join-no-permission")
                 )));
+                return;
             }
-            return;
         }
 
         event.setResult(ResultedEvent.ComponentResult.allowed());
