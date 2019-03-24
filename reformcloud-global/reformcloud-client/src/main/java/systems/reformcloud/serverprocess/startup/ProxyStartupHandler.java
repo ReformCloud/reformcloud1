@@ -199,6 +199,12 @@ public class ProxyStartupHandler {
                 FileUtils.copyFile("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions()), path + "/BungeeCord.jar");
             }
 
+            try {
+                this.prepareConfiguration(new File("velocity.toml"), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP() + ":" + port);
+            } catch (Throwable throwable) {
+                return false;
+            }
+
             if (!Files.exists(Paths.get("reformcloud/apis/ReformAPIVelocity-" + StringUtil.VELOCITY_API_DOWNLOAD + ".jar"))) {
                 DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/apis/ReformAPIVelocity-" + StringUtil.VELOCITY_API_DOWNLOAD + ".jar",
