@@ -59,26 +59,6 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_12_2("Paper 1.12.2", "1.12.2", "https://mcmirror.io/files/Paper/Paper-1.12.2-ac69748-20181207-0309.jar"),
     PAPER_1_13_2("Paper 1.13.2", "1.13.2", "https://mcmirror.io/files/Paper/Paper-1.13.2-44e66f7-20190121-0708.jar"),
     /**
-     * CraftBukkit Versions
-     */
-    CRAFTBUKKIT_1_7_10("CraftBukkit 1.7.10-R0-1-SNAPSHOT", "1.7.10", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.7.10-R0.1-20140808.005431-8.jar"),
-    CRAFTBUKKIT_1_8("CraftBukkit 1.8", "1.8", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.8-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_8_3("CraftBukkit 1.8.3", "1.8.3", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.8.3-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_8_4("CraftBukkit 1.8.4", "1.8.4", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.8.4-R0.1-SNAPSHOT-latest.jar"),
-    CRAFTBUKKIT_1_8_5("CraftBukkit 1.8.5", "1.8.5", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.8.5-R0.1-SNAPSHOT-latest.jar"),
-    CRAFTBUKKIT_1_8_6("CraftBukkit 1.8.6", "1.8.6", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.8.6-R0.1-SNAPSHOT-latest.jar"),
-    CRAFTBUKKIT_1_8_7("CraftBukkit 1.8.7", "1.8.7", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.8.7-R0.1-SNAPSHOT-latest.jar"),
-    CRAFTBUKKIT_1_8_8("CraftBukkit 1.8.8", "1.8.8", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.8.8-R0.1-SNAPSHOT-latest.jar"),
-    CRAFTBUKKIT_1_9("CraftBukkit 1.9", "1.9", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.9-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_9_2("CraftBukkit 1.9.2", "1.9.2", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.9.2-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_9_4("CraftBukkit 1.9.4", "1.9.4", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.9.4-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_10("CraftBukkit 1.10", "1.10", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.10-R0.1-SNAPSHOT-latest.jar"),
-    CRAFTBUKKIT_1_10_2("CraftBukkit 1.10.2", "1.10.2", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.10.2-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_11("CraftBukkit 1.11", "1.11", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.11-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_11_2("CraftBukkit 1.11.2", "1.11.2", "https://archive.mcmirror.io/CraftBukkit/craftbukkit-1.11.2-R0.1-SNAPSHOT.jar"),
-    CRAFTBUKKIT_1_12_2("CraftBukkit 1.12.2", "1.12.2", "https://mcmirror.io/files/CraftBukkit/CraftBukkit-1.12.2-acbc348-20181110-0937.jar"),
-    CRAFTBUKKIT_1_13_2("CraftBukkit 1.13.2", "1.13.2", "https://mcmirror.io/files/CraftBukkit/CraftBukkit-1.13.2-1a64d4a-20190120-2339.jar"),
-    /**
      * ShortSpigot Versions
      */
     SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", "https://dl.shortspigot.sh/file/latest"),
