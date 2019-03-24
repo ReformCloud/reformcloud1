@@ -112,15 +112,9 @@ public final class CloudConnectListener {
         ProxyInfo proxyInfo = ReformCloudAPIVelocity.getInstance().getProxyInfo();
 
         if (proxyInfo.getProxyGroup().isMaintenance()
-                && !event.getPlayer().hasPermission("reformcloud.join.maintenance")) {
-            event.setResult(ResultedEvent.ComponentResult.denied(TextComponent.of(
-                    ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-maintenance-join-no-permission")
-            )));
-            return;
-        } else if (proxyInfo.getProxyGroup().isMaintenance()
-                && !ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                && (!ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
                 .getProxyGroups().get(proxyInfo.getProxyGroup().getName()).getWhitelist()
-                .contains(event.getPlayer().getUniqueId())) {
+                .contains(event.getPlayer().getUniqueId()) || !event.getPlayer().hasPermission("reformcloud.join.maintenance"))) {
             event.setResult(ResultedEvent.ComponentResult.denied(TextComponent.of(
                     ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-maintenance-join-no-permission")
             )));
