@@ -141,6 +141,9 @@ public class CloudServerStartupHandler {
                     FileUtils.createDirectory(Paths.get(path + "/config"));
                 if (!Files.exists(Paths.get(path + "/config/glowstone.yml")))
                     FileUtils.copyCompiledFile("reformcloud/glowstone.yml", path + "/config/glowstone.yml");
+            } else {
+                FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
+                FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
             }
         }
 
