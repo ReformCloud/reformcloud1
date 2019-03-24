@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>reformcloud-controller</artifactId>
-    <version>${service.version}</version>
+  <version>1.1</version>
   <build>
     <finalName>ReformController</finalName>
     <plugins>
@@ -24,18 +24,18 @@
         </executions>
       </plugin>
       <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${plugin.jar.version}</version>
-          <configuration>
-              <archive>
-                  <manifestEntries>
-                      <Main-Class>systems.reformcloud.launcher.ReformCloudLauncher</Main-Class>
-                      <Version>${project.version}</Version>
-                      <Implementation-Version>${service.version}</Implementation-Version>
-                      <Specification-Version>${service.type}</Specification-Version>
-                  </manifestEntries>
-              </archive>
-          </configuration>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${plugin.jar.version}</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Main-Class>systems.reformcloud.launcher.ReformCloudLauncher</Main-Class>
+              <Version>${project.version}</Version>
+              <Implementation-Version>${service.version}</Implementation-Version>
+              <Specification-Version>${service.type}</Specification-Version>
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
-        <version>4.1.34.Final</version>
+      <version>4.1.34.Final</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -74,7 +74,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-        <version>1.18.6</version>
+      <version>1.18.6</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

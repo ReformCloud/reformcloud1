@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>${service.version}</version>
+    <version>1.1</version>
 
     <artifactId>reformcloud-library</artifactId>
 

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
 
-    <version>${service.version}</version>
+    <version>1.1</version>
 
     <artifactId>reformcloud-controller</artifactId>
 

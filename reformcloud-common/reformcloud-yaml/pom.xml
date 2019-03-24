@@ -11,7 +11,7 @@
 
     <artifactId>reformcloud-yaml</artifactId>
 
-    <version>${service.version}</version>
+    <version>1.1</version>
 
     <dependencies>
         <dependency>
