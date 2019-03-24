@@ -22,11 +22,10 @@ public final class CloudProxyPingListener {
         if (proxyGroup == null)
             return;
 
-        event.getPing().asBuilder()
+        event.setPing(event.getPing().asBuilder()
                 .maximumPlayers(proxyGroup.getMaxPlayers())
                 .onlinePlayers(VelocityBootstrap.getInstance().getProxyServer().getPlayerCount())
-                .build();
-
-        event.setPing(event.getPing());
+                .build()
+        );
     }
 }
