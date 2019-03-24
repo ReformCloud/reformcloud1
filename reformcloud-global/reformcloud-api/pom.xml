@@ -15,6 +15,7 @@
     <modules>
         <module>reformcloud-api-bungee</module>
         <module>reformcloud-api-spigot</module>
+        <module>reformcloud-api-velocity</module>
     </modules>
 
     <dependencies>

@@ -111,7 +111,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
      * @see LoggerProvider
      * @see CommandManager
      *
-     * @param loggerProvider    Main Cloud logger, will be used everywhere
+     * @param loggerProvider            Main Cloud logger, will be used everywhere
      * @param commandManager            Main CommandManager to manage all available commands
      * @param ssl                       If this is {@code true} the cloud will use a self-
      *                                  signed certificate

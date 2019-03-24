@@ -19,6 +19,7 @@ public final class StringUtil {
             BACK_SLASH = "\\",
             BUNGEE_API_DOWNLOAD = "3435f392RXKaSgB",
             SPIGOT_API_DOWNLOAD = "F52LL34cECayQrJ",
+            VELOCITY_API_DOWNLOAD = "FRWGTE4543EFWE",
             NULL = "null",
             OS_NAME = System.getProperty("os.name"),
             OS_ARCH = System.getProperty("os.arch"),

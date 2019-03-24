@@ -79,7 +79,7 @@ public final class CloudConnectListener implements Listener {
                                         Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
 
                                         copyOf.forEach((groupName, timeout) -> {
-                                            if (timeout <= System.currentTimeMillis())
+                                            if (timeout != -1 && timeout <= System.currentTimeMillis())
                                                 permissionHolder.getPermissionGroups().remove(groupName);
                                         });
 

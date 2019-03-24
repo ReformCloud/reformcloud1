@@ -139,48 +139,86 @@ public class ProxyStartupHandler {
             return false;
         }
 
-        FileUtils.deleteFileIfExists(Paths.get(path + "/config.yml"));
-        FileUtils.copyCompiledFile("reformcloud/config.yml", path + "/config.yml");
+        if (!proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)) {
+            FileUtils.deleteFileIfExists(Paths.get(path + "/config.yml"));
+            FileUtils.copyCompiledFile("reformcloud/config.yml", path + "/config.yml");
 
-        if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
-            if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
-                DownloadManager.downloadAndDisconnect(
-                        this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
-                        this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
-                        "reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+            if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
+                if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
+                    DownloadManager.downloadAndDisconnect(
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
+                            "reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                    );
+                }
+
+                FileUtils.copyFile("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions()), path + "/BungeeCord.jar");
+            }
+
+            if (!Files.exists(Paths.get("reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"))) {
+                DownloadManager.downloadSilentAndDisconnect(
+                        "https://dl.reformcloud.systems/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar",
+                        "reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"
                 );
+
+                final File dir = new File("reformcloud/apis");
+                if (dir.listFiles() != null) {
+                    Arrays.stream(dir.listFiles()).forEach(file -> {
+                        if (file.getName().startsWith("ReformAPIBungee")
+                                && file.getName().endsWith(".jar")
+                                && !file.getName().contains(StringUtil.BUNGEE_API_DOWNLOAD)) {
+                            file.delete();
+                        }
+                    });
+                }
             }
 
-            FileUtils.copyFile("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions()), path + "/BungeeCord.jar");
-        }
+            FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPIBungee.jar"));
+            FileUtils.copyFile("reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPIBungee.jar");
 
-        if (!Files.exists(Paths.get("reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"))) {
-            DownloadManager.downloadSilentAndDisconnect(
-                    "https://dl.reformcloud.systems/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar",
-                    "reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar"
-            );
-
-            final File dir = new File("reformcloud/apis");
-            if (dir.listFiles() != null) {
-                Arrays.stream(dir.listFiles()).forEach(file -> {
-                    if (file.getName().startsWith("ReformAPIBungee")
-                            && file.getName().endsWith(".jar")
-                            && !file.getName().contains(StringUtil.BUNGEE_API_DOWNLOAD)) {
-                        file.delete();
-                    }
-                });
+            try {
+                this.prepareConfiguration(new File(path + "/config.yml"), "\"" +
+                        ReformCloudClient.getInstance().getCloudConfiguration().getStartIP() + ":" + port + "\"");
+            } catch (final Throwable throwable) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while preparing proxy configuration, break", throwable);
+                return false;
             }
-        }
+        } else {
+            FileUtils.deleteFileIfExists(Paths.get(path + "/velocity.toml"));
+            FileUtils.copyCompiledFile("reformcloud/velocity.toml", path + "/velocity.toml");
 
-        FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPIBungee.jar"));
-        FileUtils.copyFile("reformcloud/apis/ReformAPIBungee-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPIBungee.jar");
+            if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
+                if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
+                    DownloadManager.downloadAndDisconnect(
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
+                            "reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                    );
+                }
 
-        try {
-            this.prepareConfiguration(new File(path + "/config.yml"), "\"" +
-                    ReformCloudClient.getInstance().getCloudConfiguration().getStartIP() + ":" + port + "\"");
-        } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while preparing proxy configuration, break", throwable);
-            return false;
+                FileUtils.copyFile("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions()), path + "/BungeeCord.jar");
+            }
+
+            if (!Files.exists(Paths.get("reformcloud/apis/ReformAPIVelocity-" + StringUtil.VELOCITY_API_DOWNLOAD + ".jar"))) {
+                DownloadManager.downloadSilentAndDisconnect(
+                        "https://dl.reformcloud.systems/apis/ReformAPIVelocity-" + StringUtil.VELOCITY_API_DOWNLOAD + ".jar",
+                        "reformcloud/apis/ReformAPIVelocity-" + StringUtil.VELOCITY_API_DOWNLOAD + ".jar"
+                );
+
+                final File dir = new File("reformcloud/apis");
+                if (dir.listFiles() != null) {
+                    Arrays.stream(dir.listFiles()).forEach(file -> {
+                        if (file.getName().startsWith("ReformAPIVelocity")
+                                && file.getName().endsWith(".jar")
+                                && !file.getName().contains(StringUtil.VELOCITY_API_DOWNLOAD)) {
+                            file.delete();
+                        }
+                    });
+                }
+            }
+
+            FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPIVelocity.jar"));
+            FileUtils.copyFile("reformcloud/apis/ReformAPIVelocity-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPIVelocity.jar");
         }
 
         ProxyInfo proxyInfo = new ProxyInfo(

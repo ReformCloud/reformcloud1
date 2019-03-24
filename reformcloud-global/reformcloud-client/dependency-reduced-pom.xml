@@ -71,10 +71,16 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-        <version>1.18.6</version>
-      <scope>provided</scope>
+        <groupId>systems.reformcloud</groupId>
+        <artifactId>reformcloud-yaml</artifactId>
+        <version>1.0</version>
+        <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok</artifactId>
+          <version>1.18.6</version>
+          <scope>provided</scope>
+      </dependency>
   </dependencies>
 </project>

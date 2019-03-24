@@ -170,7 +170,7 @@ public class AddonParallelLoader extends AddonExtendable {
     /**
      * Returns all Addon Class Configs of all jar files
      *
-     * @return {@link Set<AddonClassConfig>} of all Addons
+     * @return a set of all Addons
      */
     private Set<AddonClassConfig> checkForAddons() {
         Set<AddonClassConfig> moduleConfigs = new HashSet<>();
