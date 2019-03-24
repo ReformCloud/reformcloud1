@@ -17,7 +17,7 @@ public final class ReflectionUtil implements Serializable {
         try {
             final String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
             return Class.forName("org.bukkit.craftbukkit." + version + indentifier);
-        } catch (final ClassNotFoundException ex) {
+        } catch (final Throwable ex) {
             return null;
         }
     }
