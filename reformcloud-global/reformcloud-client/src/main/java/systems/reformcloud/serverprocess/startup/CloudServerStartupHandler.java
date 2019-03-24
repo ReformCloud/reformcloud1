@@ -142,8 +142,6 @@ public class CloudServerStartupHandler {
                 if (!Files.exists(Paths.get(path + "/config/glowstone.yml")))
                     FileUtils.copyCompiledFile("reformcloud/glowstone.yml", path + "/config/glowstone.yml");
             }
-            FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
-            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
         }
 
         this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
@@ -171,9 +169,11 @@ public class CloudServerStartupHandler {
                 section.set("name", this.serverStartupInfo.getName());
                 section.set("max-players", this.serverStartupInfo.getServerGroup().getMaxPlayers());
                 section.set("motd", this.serverStartupInfo.getServerGroup().getMotd());
+                section.set("log-file", "logs/latest.log");
 
                 configuration.set("server", section);
                 configuration.set("console.use-jline", false);
+                configuration.set("advanced.proxy-support", true);
                 try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(Files.newOutputStream(Paths.get(path +
                         "/config/glowstone.yml")), StandardCharsets.UTF_8)) {
                     ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, outputStreamWriter);

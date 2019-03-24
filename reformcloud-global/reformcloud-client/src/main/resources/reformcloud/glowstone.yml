@@ -7,7 +7,7 @@ server:
   ip: ''
   port: 25565
   name: Glowstone Server
-  log-file: logs/log-%D.txt
+  log-file: logs/latest.log
   online-mode: false
   max-players: 20
   whitelisted: false
@@ -17,7 +17,7 @@ server:
   snooper-enabled: false
   prevent-proxy-connections: true
 console:
-  use-jline: true
+  use-jline: false
   prompt: '>'
   date-format: HH:mm:ss
   log-date-format: yyyy/MM/dd HH:mm:ss
@@ -62,7 +62,7 @@ advanced:
   plugin-profiling: false
   deprecated-verbose: 'false'
   compression-threshold: 256
-  proxy-support: false
+  proxy-support: true
   player-sample-count: 12
   metrics: true
   metrics-server-uuid: f60a8a9a-1fc8-47da-9898-b16dec3f70c4
