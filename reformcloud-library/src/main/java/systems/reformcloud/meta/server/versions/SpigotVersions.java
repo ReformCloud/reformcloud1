@@ -85,7 +85,7 @@ public enum SpigotVersions implements Serializable {
     /**
      * GlowStone Versions
      */
-    GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2", "https://repo.glowstone.net/nexus/service/local/artifact/maven/redirect?r=snapshots&g=net.glowstone&a=glowstone&v=LATEST");
+    GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2", "https://github.com/GlowstoneMC/Glowstone/releases/download/2018.9.0/glowstone.jar");
 
     public static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();
