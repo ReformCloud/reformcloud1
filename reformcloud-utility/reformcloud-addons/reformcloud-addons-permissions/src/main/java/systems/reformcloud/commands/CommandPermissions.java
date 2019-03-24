@@ -285,7 +285,6 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
-            //perms <USERNAME> <SETGROUP> <GROUPNAME> <TIMEOUT>
         } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
             if (!this.isLong(args[3])) {
                 commandSender.sendMessage("The given time is not valid");

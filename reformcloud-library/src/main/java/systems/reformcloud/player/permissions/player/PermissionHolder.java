@@ -6,6 +6,7 @@ package systems.reformcloud.player.permissions.player;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
@@ -47,10 +49,10 @@ public final class PermissionHolder implements Serializable {
     }
 
     private boolean checkPermission(Map<String, Boolean> permissions, String permission) {
-        for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
-            if (entry.getKey().equalsIgnoreCase("*") && entry.getValue())
-                return true;
+        if (permissions.containsKey("*") && permissions.get("*"))
+            return true;
 
+        for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
             if (entry.getKey().endsWith("*") && entry.getKey().length() > 1
                     && permission.startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))
                     && entry.getValue()) {
@@ -83,5 +85,17 @@ public final class PermissionHolder implements Serializable {
         });
 
         return permissions;
+    }
+
+    public List<PermissionGroup> getAllPermissionGroups(PermissionCache permissionCache) {
+        List<PermissionGroup> permissionGroups = permissionCache.getAllRegisteredGroups().stream().filter(e -> this
+                .getPermissionGroups()
+                .containsKey(e.getName()))
+                .collect(Collectors.toList());
+
+        if (this.getPermissionGroups().containsKey(permissionCache.getDefaultGroup().getName()))
+            permissionGroups.add(permissionCache.getDefaultGroup());
+
+        return permissionGroups;
     }
 }
