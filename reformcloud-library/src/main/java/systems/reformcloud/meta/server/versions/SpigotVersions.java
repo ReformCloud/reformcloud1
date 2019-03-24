@@ -59,9 +59,44 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_12_2("Paper 1.12.2", "1.12.2", "https://mcmirror.io/files/Paper/Paper-1.12.2-ac69748-20181207-0309.jar"),
     PAPER_1_13_2("Paper 1.13.2", "1.13.2", "https://mcmirror.io/files/Paper/Paper-1.13.2-44e66f7-20190121-0708.jar"),
     /**
+     * SpongeVanilla Versions
+     */
+    SPONGEVANILLA_1_10_2("SpongeVanilla 1.10.2", "1.10.2", "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.10.2-5.2.0-BETA-403.jar"),
+    SPONGEVANILLA_1_11_2("SpongeVanilla 1.11.2", "1.11.2", "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.11.2-6.1.0-BETA-27.jar"),
+    SPONGEVANILLA_1_12_2("SpongeVanilla 1.12.2", "1.12.2", "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.12.2-7.1.0-BETA-59.jar"),
+    /**
+     * SpongeForge Versions
+     */
+    SPONGEFORGE_1_8_9("SpongeForge 1.8.9", "1.8.9", "https://dl.reformcloud.systems/forge/sponge-1.8.9.zip"),
+    SPONGEFORGE_1_10_2("SpongeForge 1.10.2", "1.10.2", "https://dl.reformcloud.systems/forge/sponge-1.10.2.zip"),
+    SPONGEFORGE_1_11_2("SpongeForge 1.11.2", "1.11.2", "https://dl.reformcloud.systems/forge/sponge-1.11.2.zip"),
+    SPONGEFORGE_1_12_2("SpongeForge 1.12.2", "1.12.2", "https://dl.reformcloud.systems/forge/sponge-1.12.2.zip"),
+    /**
+     * TacoSpigot Versions
+     */
+    TACO_1_8_8("Taco 1.8.8", "1.8.8", "https://mcmirror.io/files/TacoSpigot/TacoSpigot-1.8.8-95870a9-20180608-0352.jar"),
+    TACO_1_11_2("Taco 1.11.2", "1.11.2", "https://mcmirror.io/files/TacoSpigot/TacoSpigot-1.11.2-8aa5e7e-20170515-0636.jar"),
+    TACO_1_12_2("Taco 1.12.2", "1.12.2", "https://mcmirror.io/files/TacoSpigot/TacoSpigot-1.12.2-f8ba67d-20180610-1914.jar"),
+    /**
+     * TorchSpigot Versions
+     */
+    TORCH_1_8_8("Torch 1.8.8", "1.8.8", "https://archive.mcmirror.io/Torch/Torch-1.8.8-R0.1.3-RC4.jar"),
+    TORCH_1_9_4("Torch 1.9.4", "1.9.4", "https://archive.mcmirror.io/Torch/Torch-1.9.4-R2.0-Light-RELEASE.jar"),
+    TORCH_1_11_2("Torch 1.11.2", "1.11.2", "https://archive.mcmirror.io/Torch/Torchpowered-latest.jar"),
+    /**
+     * Hose Versions
+     */
+    HOSE_1_8_8("Hose 1.8.8", "1.8.8", "https://archive.mcmirror.io/HOSE/hose-1.8.8.jar"),
+    HOSE_1_9_4("Hose 1.9.4", "1.9.4", "https://archive.mcmirror.io/HOSE/hose-1.9.4.jar"),
+    HOSE_1_10_2("Hose 1.10.2", "1.10.2", "https://archive.mcmirror.io/HOSE/hose-1.10.2.jar"),
+    /**
      * ShortSpigot Versions
      */
     SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", "https://dl.shortspigot.sh/file/latest"),
+    /**
+     * Akarin Versions
+     */
+    AKARIN_1_12_2("Akarin 1.12.2", "1.12.2", "https://github.com/Akarin-project/Akarin/releases/download/1.12.2-R0.4.2/akarin-1.12.2.jar"),
     /**
      * GlowStone Versions
      */

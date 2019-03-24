@@ -74,6 +74,10 @@ public class FileUtils {
         }
     }
 
+    public static void rename(final String file, final String newName) {
+        new File(file).renameTo(new File(newName));
+    }
+
     /**
      * Copies all files to the given directory
      *

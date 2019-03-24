@@ -128,6 +128,45 @@ public class CloudServerStartupHandler {
             FileUtils.createDirectory(Paths.get(path + "/configs"));
         }
 
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_10_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_11_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_12_2)) {
+            if (!Files.exists(Paths.get(path + "/config/sponge")))
+                FileUtils.createDirectory(Paths.get(path + "/config/sponge"));
+            if (!Files.exists(Paths.get(path + "/config/sponge/global.conf")))
+                FileUtils.copyCompiledFile("reformcloud/sponge/vanilla/global.conf", path + "/config/sponge/global.conf");
+
+            File file = new File(path + "/config/sponge/global.conf");
+
+            try {
+                String conf = org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                conf.replace("ip-forwarding=false", "ip-forwarding=true");
+                org.apache.commons.io.FileUtils.write(file, conf, StandardCharsets.UTF_8);
+            } catch (final IOException ex) {
+                return false;
+            }
+        }
+
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_8_9)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_10_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_11_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_12_2)) {
+            if (!Files.exists(Paths.get(path + "/config/sponge")))
+                FileUtils.createDirectory(Paths.get(path + "/config/sponge"));
+            if (!Files.exists(Paths.get(path + "/config/sponge/global.conf")))
+                FileUtils.copyCompiledFile("reformcloud/sponge/forge/global.conf", path + "/config/sponge/global.conf");
+
+            File file = new File(path + "/config/sponge/global.conf");
+
+            try {
+                String conf = org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                conf.replace("ip-forwarding=false", "ip-forwarding=true");
+                org.apache.commons.io.FileUtils.write(file, conf, StandardCharsets.UTF_8);
+            } catch (final IOException ex) {
+                return false;
+            }
+        }
+
         FileUtils.createDirectory(Paths.get(path + "/reformcloud"));
 
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
@@ -220,15 +259,43 @@ public class CloudServerStartupHandler {
         }
 
         if (!Files.exists(Paths.get(path + "/spigot.jar"))) {
-            if (!Files.exists(Paths.get("reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())))) {
-                DownloadManager.downloadAndDisconnect(
-                        this.serverStartupInfo.getServerGroup().getSpigotVersions().getName(),
-                        this.serverStartupInfo.getServerGroup().getSpigotVersions().getUrl(),
-                        "reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())
-                );
-            }
+            if (!this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_8_9)
+                    && !this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_10_2)
+                    && !this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_11_2)
+                    && !this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_12_2)) {
+                if (!Files.exists(Paths.get("reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())))) {
+                    DownloadManager.downloadAndDisconnect(
+                            this.serverStartupInfo.getServerGroup().getSpigotVersions().getName(),
+                            this.serverStartupInfo.getServerGroup().getSpigotVersions().getUrl(),
+                            "reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions())
+                    );
+                }
 
-            FileUtils.copyFile("reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions()), path + "/spigot.jar");
+                FileUtils.copyFile("reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(this.serverStartupInfo.getServerGroup().getSpigotVersions()), path + "/spigot.jar");
+            } else {
+                if (!Files.exists(Paths.get("reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion()))) {
+                    try {
+                        DownloadManager.downloadAndDisconnect(
+                                "Sponge-Server " + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion(),
+                                this.serverStartupInfo.getServerGroup().getSpigotVersions().getUrl(),
+                                "reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion() + ".zip"
+                        );
+                        FileUtils.createDirectory(Paths.get("reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion()));
+                        ZoneInformationProtocolUtility.unZip(
+                                new File("reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion() + ".zip"),
+                                "reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion()
+                        );
+                    } catch (final Throwable throwable) {
+                        return false;
+                    }
+                }
+
+                FileUtils.copyAllFiles(
+                        Paths.get("reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion()),
+                        path + ""
+                );
+                FileUtils.rename(path + "/sponge.jar", path + "/spigot.jar");
+            }
         }
 
         if (!Files.exists(Paths.get("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"))) {
