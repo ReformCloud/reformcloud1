@@ -88,6 +88,7 @@ public class CloudServerStartupHandler {
         else
             loaded = this.serverStartupInfo.getServerGroup().randomTemplate();
 
+        this.overrideEula();
         this.processStartupStage = ProcessStartupStage.COPY;
         this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
                 .replace("%path%", this.path + ""));
@@ -133,17 +134,17 @@ public class CloudServerStartupHandler {
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
         if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/configs/spigot.yml");
-            FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/configs/server.properties");
+            FileUtils.copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/configs/spigot.yml");
+            FileUtils.copyCompiledFile("reformcloud/default/server.properties", path + "/configs/server.properties");
         } else {
             if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.GLOWSTONE_1_12_2)) {
                 if (!Files.exists(Paths.get(path + "/config")))
                     FileUtils.createDirectory(Paths.get(path + "/config"));
                 if (!Files.exists(Paths.get(path + "/config/glowstone.yml")))
-                    FileUtils.copyCompiledFile("reformcloud/glowstone.yml", path + "/config/glowstone.yml");
+                    FileUtils.copyCompiledFile("reformcloud/glowstone/glowstone.yml", path + "/config/glowstone.yml");
             } else {
-                FileUtils.copyCompiledFile("reformcloud/spigot.yml", path + "/spigot.yml");
-                FileUtils.copyCompiledFile("reformcloud/server.properties", path + "/server.properties");
+                FileUtils.copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
+                FileUtils.copyCompiledFile("reformcloud/default/server.properties", path + "/server.properties");
             }
         }
 
@@ -397,6 +398,11 @@ public class CloudServerStartupHandler {
         }
 
         return true;
+    }
+
+    public void overrideEula() {
+        FileUtils.deleteFileIfExists(Paths.get(path + "/eula.txt"));
+        FileUtils.copyCompiledFile("reformcloud/eula/eula.txt", path + "/eula.txt");
     }
 
     /**

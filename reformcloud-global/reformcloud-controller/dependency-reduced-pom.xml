@@ -7,6 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>reformcloud-controller</artifactId>
+    <version>${service.version}</version>
   <build>
     <finalName>ReformController</finalName>
     <plugins>

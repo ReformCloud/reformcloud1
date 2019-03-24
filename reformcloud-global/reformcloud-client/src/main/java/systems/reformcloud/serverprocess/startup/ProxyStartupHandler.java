@@ -124,7 +124,7 @@ public class ProxyStartupHandler {
         }
 
         if (!Files.exists(Paths.get(path + "/server-icon.png")))
-            FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/server-icon.png");
+            FileUtils.copyCompiledFile("reformcloud/bungeecord/icon/server-icon.png", path + "/server-icon.png");
 
         try {
             BufferedImage bufferedImage = ImageIO.read(new File(path + "/server-icon.png"));
@@ -132,7 +132,7 @@ public class ProxyStartupHandler {
                 ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
                         new PacketOutIconSizeIncorrect(this.proxyStartupInfo.getName()));
                 FileUtils.deleteFileIfExists(Paths.get(path + "/server-icon.png"));
-                FileUtils.copyCompiledFile("reformcloud/server-icon.png", path + "/server-icon.png");
+                FileUtils.copyCompiledFile("reformcloud/bungeecord/icon/server-icon.png", path + "/server-icon.png");
             }
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error while reading image", ex);
@@ -141,7 +141,7 @@ public class ProxyStartupHandler {
 
         if (!proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)) {
             FileUtils.deleteFileIfExists(Paths.get(path + "/config.yml"));
-            FileUtils.copyCompiledFile("reformcloud/config.yml", path + "/config.yml");
+            FileUtils.copyCompiledFile("reformcloud/bungeecord/config/config.yml", path + "/config.yml");
 
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
@@ -185,7 +185,7 @@ public class ProxyStartupHandler {
             }
         } else {
             FileUtils.deleteFileIfExists(Paths.get(path + "/velocity.toml"));
-            FileUtils.copyCompiledFile("reformcloud/velocity.toml", path + "/velocity.toml");
+            FileUtils.copyCompiledFile("reformcloud/bungeecord/config/velocity.toml", path + "/velocity.toml");
 
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {

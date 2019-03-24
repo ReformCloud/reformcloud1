@@ -12,6 +12,8 @@
 
     <artifactId>reformcloud-client</artifactId>
 
+    <version>${service.version}</version>
+
     <dependencies>
         <dependency>
             <groupId>io.netty</groupId>

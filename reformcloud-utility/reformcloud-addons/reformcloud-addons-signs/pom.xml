@@ -9,6 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <version>${service.version}</version>
+
     <artifactId>reformcloud-addons-signs</artifactId>
 
     <build>

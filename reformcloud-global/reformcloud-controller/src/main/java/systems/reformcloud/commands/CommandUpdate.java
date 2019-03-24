@@ -25,7 +25,7 @@ public final class CommandUpdate extends Command implements Serializable {
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        if (args.length == 1) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("confirm")) {
             if (VersionController.isVersionAvailable()) {
                 try {
                     commandSender.sendMessage("Trying to update the full cloud system....");
