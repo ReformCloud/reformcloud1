@@ -200,8 +200,9 @@ public class ProxyStartupHandler {
             }
 
             try {
-                this.prepareConfiguration(new File("velocity.toml"), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP() + ":" + port);
+                this.prepareConfiguration(new File(path + "/velocity.toml"), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP() + ":" + port);
             } catch (Throwable throwable) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while starting proxy process", throwable);
                 return false;
             }
 
