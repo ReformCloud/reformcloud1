@@ -218,7 +218,7 @@ public class ProxyStartupHandler {
             }
 
             FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPIVelocity.jar"));
-            FileUtils.copyFile("reformcloud/apis/ReformAPIVelocity-" + StringUtil.BUNGEE_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPIVelocity.jar");
+            FileUtils.copyFile("reformcloud/apis/ReformAPIVelocity-" + StringUtil.VELOCITY_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPIVelocity.jar");
         }
 
         ProxyInfo proxyInfo = new ProxyInfo(
