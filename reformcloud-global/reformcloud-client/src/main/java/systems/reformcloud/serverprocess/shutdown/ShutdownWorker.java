@@ -9,6 +9,7 @@ import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
 import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 04.02.2019
@@ -25,8 +26,16 @@ public final class ShutdownWorker implements Serializable, Runnable {
         final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance().getCloudProcessScreenService();
 
         cloudProcessScreenService.getRegisteredServerProcesses().forEach(handler -> {
-            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown())
-                handler.shutdown(true);
+            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown()) {
+                if (!handler.isForge()) {
+                    handler.shutdown(true);
+                } else {
+                    long shutdown = handler.getStartupTime() + TimeUnit.MINUTES.toMillis(2);
+                    if (shutdown <= System.currentTimeMillis()) {
+                        handler.shutdown(true);
+                    }
+                }
+            }
         });
 
         cloudProcessScreenService.getRegisteredProxyProcesses().forEach(handler -> {

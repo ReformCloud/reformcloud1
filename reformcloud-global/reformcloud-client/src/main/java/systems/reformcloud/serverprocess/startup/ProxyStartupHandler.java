@@ -54,12 +54,15 @@ public class ProxyStartupHandler {
 
     private Template template;
 
+    private long startupTime, finishedTime;
+
     /**
      * Creates a instance of a ProxyStartupHandler
      *
      * @param proxyStartupInfo
      */
     public ProxyStartupHandler(final ProxyStartupInfo proxyStartupInfo) {
+        this.startupTime = System.currentTimeMillis();
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.proxyStartupInfo = proxyStartupInfo;
         this.path = Paths.get("reformcloud/temp/proxies/" + proxyStartupInfo.getName() + "-" + proxyStartupInfo.getUid());
@@ -275,6 +278,9 @@ public class ProxyStartupHandler {
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().registerProxyProcess(proxyStartupInfo.getName(), this);
         ReformCloudClient.getInstance().getClientInfo().getStartedProxies().add(proxyInfo.getCloudProcess().getName());
+
+        this.finishedTime = System.currentTimeMillis();
+
         this.processStartupStage = ProcessStartupStage.DONE;
         return true;
     }

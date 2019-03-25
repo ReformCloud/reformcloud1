@@ -56,12 +56,15 @@ public class CloudServerStartupHandler {
 
     private boolean firstGroupStart;
 
+    private long startupTime, finishedTime;
+
     /**
      * Creates a instance of a CloudServerStartupHandler
      *
      * @param serverStartupInfo
      */
     public CloudServerStartupHandler(final ServerStartupInfo serverStartupInfo, final boolean firstGroupStart) {
+        this.startupTime = System.currentTimeMillis();
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.serverStartupInfo = serverStartupInfo;
         this.firstGroupStart = firstGroupStart;
@@ -376,6 +379,9 @@ public class CloudServerStartupHandler {
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().registerServerProcess(serverStartupInfo.getName(), this);
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().add(serverInfo.getCloudProcess().getName());
+
+        this.finishedTime = System.currentTimeMillis();
+
         this.processStartupStage = ProcessStartupStage.DONE;
         return true;
     }
@@ -508,5 +514,15 @@ public class CloudServerStartupHandler {
         Files.readAllLines(Paths.get(this.path + "/logs/latest.log"), StandardCharsets.UTF_8).forEach(e -> stringBuilder.append(e).append("\n"));
 
         return ReformCloudClient.getInstance().getLoggerProvider().uploadLog(stringBuilder.substring(0));
+    }
+
+    public boolean isForge() {
+        return this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_8_9)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_10_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_11_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEFORGE_1_12_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_10_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_11_2)
+                || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_12_2);
     }
 }
