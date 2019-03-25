@@ -26,7 +26,7 @@ public final class PacketInCopyServerIntoTemplate implements NetworkInboundHandl
         switch (configuration.getStringValue("type").toLowerCase()) {
             case "server": {
                 ServerInfo serverInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
-                        .getServerProcessManager().getRegisteredServerByName(configuration.getStringValue("name"));
+                        .getServerProcessManager().getRegisteredServerByName(configuration.getStringValue("serverName"));
                 CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient.getInstance()
                         .getCloudProcessScreenService().getRegisteredServerHandler(configuration.getStringValue("serverName"));
                 if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.DYNAMIC)
