@@ -10,10 +10,7 @@ import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -97,5 +94,21 @@ public final class PermissionHolder implements Serializable {
             permissionGroups.add(permissionCache.getDefaultGroup());
 
         return permissionGroups;
+    }
+
+    public Optional<PermissionGroup> getHighestPlayerGroup(PermissionCache permissionCache) {
+        List<PermissionGroup> permissionGroups = this.getAllPermissionGroups(permissionCache);
+
+        PermissionGroup permissionGroup = null;
+        for (PermissionGroup group : permissionGroups) {
+            if (permissionGroup == null)
+                permissionGroup = group;
+            else {
+                if (group.getGroupID() > group.getGroupID())
+                    permissionGroup = group;
+            }
+        }
+
+        return Optional.ofNullable(permissionGroup);
     }
 }

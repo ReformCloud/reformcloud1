@@ -16,6 +16,7 @@
     <modules>
         <module>reformcloud-examples</module>
         <module>reformcloud-addons</module>
+        <module>reformcloud-plugins</module>
     </modules>
 
     <dependencies>
