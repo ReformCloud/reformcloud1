@@ -15,6 +15,7 @@ import systems.reformcloud.event.events.IncomingPacketEvent;
 import systems.reformcloud.event.events.PacketHandleSuccessEvent;
 import systems.reformcloud.network.authentication.AuthenticationHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.IOException;
@@ -127,8 +128,21 @@ public class ChannelReader extends SimpleChannelInboundHandler {
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         IEventHandler.instance.get().channelExceptionCaught(ctx, cause);
         if (!(cause instanceof IOException)) {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve("An exceptionCaught() event was fired, and it reached at the tail of the pipeline. It usually means the last handler in the pipeline did not handle the exception.");
-            cause.printStackTrace();
+            StringUtil.printError(
+                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "An exceptionCaught() event was fired, and it reached at the " +
+                            "tail of the pipeline. It usually means the last handler in the " +
+                            "pipeline did not handle the exception.",
+                    cause
+            );
+        } else if (ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().isDebug()) {
+            StringUtil.printError(
+                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "An exceptionCaught() event was fired, and it reached at the " +
+                            "tail of the pipeline. It usually means the last handler in the " +
+                            "pipeline did not handle the exception.",
+                    cause
+            );
         }
     }
 }
