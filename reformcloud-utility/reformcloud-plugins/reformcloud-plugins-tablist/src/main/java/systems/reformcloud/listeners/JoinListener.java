@@ -45,9 +45,11 @@ public final class JoinListener implements Serializable, Listener {
                 if (online.getScoreboard() == null)
                     online.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
-                Team team = online.getScoreboard().getTeam(permissionGroup.getName());
+                String teamName = permissionGroup.getGroupID() + permissionGroup.getName();
+
+                Team team = online.getScoreboard().getTeam(teamName);
                 if (team == null)
-                    team = online.getScoreboard().registerNewTeam(permissionGroup.getName());
+                    team = online.getScoreboard().registerNewTeam(teamName);
 
                 team.addEntry(player.getName());
 
@@ -63,15 +65,17 @@ public final class JoinListener implements Serializable, Listener {
                 if (onlinePermissionGroup == null)
                     return;
 
-                Team onlineTeam = online.getScoreboard().getTeam(permissionGroup.getName());
+                String onlineTeamName = onlinePermissionGroup.getGroupID() + onlinePermissionGroup.getName();
+
+                Team onlineTeam = online.getScoreboard().getTeam(onlineTeamName);
                 if (onlineTeam == null)
-                    onlineTeam = online.getScoreboard().registerNewTeam(permissionGroup.getName());
+                    onlineTeam = online.getScoreboard().registerNewTeam(onlineTeamName);
 
                 onlineTeam.addEntry(online.getName());
 
-                onlineTeam.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
-                onlineTeam.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
-                online.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()));
+                onlineTeam.setPrefix(ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getPrefix()));
+                onlineTeam.setSuffix(ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getSuffix()));
+                online.setDisplayName(ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getDisplay()));
             });
         }, 3L);
     }
