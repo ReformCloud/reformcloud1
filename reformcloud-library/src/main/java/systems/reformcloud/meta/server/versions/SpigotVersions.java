@@ -7,10 +7,7 @@ package systems.reformcloud.meta.server.versions;
 import lombok.Getter;
 
 import java.io.Serializable;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -111,7 +108,30 @@ public enum SpigotVersions implements Serializable {
                 PROVIDERS.put(SpigotVersions.name(), SpigotVersions);
 
             if (!AVAILABLE_VERSIONS.contains(SpigotVersions.version)) {
-                AVAILABLE_VERSIONS.add(SpigotVersions.version);
+                AVAILABLE_VERSIONS.addAll(Arrays.asList(
+                        "1.7.10",
+                        "1.8",
+                        "1.8.3",
+                        "1.8.4",
+                        "1.8.5",
+                        "1.8.6",
+                        "1.8.7",
+                        "1.8.8",
+                        "1.8.9",
+                        "1.9",
+                        "1.9.2",
+                        "1.9.4",
+                        "1.10",
+                        "1.10.2",
+                        "1.11",
+                        "1.11.2",
+                        "1.12",
+                        "1.12.1",
+                        "1.12.2",
+                        "1.13",
+                        "1.13.1",
+                        "1.13.2"
+                ));
             }
         }
     }

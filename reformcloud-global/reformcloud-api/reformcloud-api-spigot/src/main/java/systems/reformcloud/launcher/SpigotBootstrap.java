@@ -73,7 +73,8 @@ public class SpigotBootstrap extends JavaPlugin {
                 commandMap = (CommandMap) clazz.getMethod("getCommandMap").invoke(Bukkit.getServer());
             else
                 commandMap = (CommandMap) Class.forName("net.glowstone.GlowServer").getMethod("getCommandMap").invoke(Bukkit.getServer());
-            commandMap.register("cloud", command);
+
+            commandMap.register("reformcloud", command);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
         }

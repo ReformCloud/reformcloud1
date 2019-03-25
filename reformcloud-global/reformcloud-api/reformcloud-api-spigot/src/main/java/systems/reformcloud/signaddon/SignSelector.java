@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -81,7 +82,10 @@ public final class SignSelector {
 
                     CommandSelectors commandSelectors = new CommandSelectors();
                     SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(commandSelectors, SpigotBootstrap.getInstance());
-                    SpigotBootstrap.getInstance().registerCommand(commandSelectors);
+
+                    PluginCommand pluginCommand = SpigotBootstrap.getInstance().getCommand("selectors");
+                    pluginCommand.setExecutor(commandSelectors);
+                    pluginCommand.setPermission("reformcloud.command.selectors");
 
                     this.worker = new Worker(this.signLayoutConfiguration.getLoadingLayout().getPerSecondAnimation());
                     this.worker.setDaemon(true);
