@@ -11,5 +11,8 @@
 
     <artifactId>reformcloud-plugins-tablist</artifactId>
 
+    <build>
+        <finalName>ReformPluginsTablist</finalName>
+    </build>
 
 </project>

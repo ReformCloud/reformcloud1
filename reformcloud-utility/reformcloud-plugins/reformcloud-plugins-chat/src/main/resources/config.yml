@@ -1,1 +1,1 @@
-format: "%display% > %player% &7|&r %message%"
+format: "%display% %player% &7|&r %message%"
