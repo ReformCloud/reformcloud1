@@ -222,6 +222,7 @@ public final class CommandProcess extends Command implements Serializable {
                 } else {
                     commandSender.sendMessage("process stop <name>");
                 }
+                break;
             }
             case "stopgroup": {
                 if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]) != null) {
