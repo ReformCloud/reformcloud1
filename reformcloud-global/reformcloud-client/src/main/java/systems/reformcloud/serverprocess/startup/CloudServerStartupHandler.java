@@ -140,7 +140,7 @@ public class CloudServerStartupHandler {
 
             try {
                 String conf = org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-                conf.replace("ip-forwarding=false", "ip-forwarding=true");
+                conf = conf.replace("ip-forwarding=false", "ip-forwarding=true");
                 org.apache.commons.io.FileUtils.write(file, conf, StandardCharsets.UTF_8);
             } catch (final IOException ex) {
                 return false;
@@ -160,7 +160,7 @@ public class CloudServerStartupHandler {
 
             try {
                 String conf = org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-                conf.replace("ip-forwarding=false", "ip-forwarding=true");
+                conf = conf.replace("ip-forwarding=false", "ip-forwarding=true");
                 org.apache.commons.io.FileUtils.write(file, conf, StandardCharsets.UTF_8);
             } catch (final IOException ex) {
                 return false;
