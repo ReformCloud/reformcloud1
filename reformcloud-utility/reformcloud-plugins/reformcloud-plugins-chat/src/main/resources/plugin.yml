@@ -3,4 +3,4 @@ version: 1.0
 author: _Klaro
 main: systems.reformcloud.ReformAddonChat
 
-softdepend: [ReformCloudAPISpigot]
+depend: [ReformCloudAPISpigot]

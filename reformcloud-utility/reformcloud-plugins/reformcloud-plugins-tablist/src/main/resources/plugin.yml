@@ -1,0 +1,6 @@
+name: ReformCloudPluginsTablist
+version: 1.0
+author: _Klaro
+main: systems.reformcloud.TablistPlugin
+
+depend: [ReformCloudAPISpigot]
