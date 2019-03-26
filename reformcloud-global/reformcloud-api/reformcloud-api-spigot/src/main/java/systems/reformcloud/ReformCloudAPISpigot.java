@@ -138,6 +138,10 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
         this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
     }
 
+    public void update() {
+        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
+    }
+
     @Override
     public void startGameServer(final String serverGroupName) {
         this.startGameServer(serverGroupName, new Configuration());

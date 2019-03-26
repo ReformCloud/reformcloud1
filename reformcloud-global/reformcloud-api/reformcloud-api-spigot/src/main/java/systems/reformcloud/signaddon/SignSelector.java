@@ -31,6 +31,7 @@ import systems.reformcloud.internal.events.CloudServerAddEvent;
 import systems.reformcloud.internal.events.CloudServerInfoUpdateEvent;
 import systems.reformcloud.internal.events.CloudServerRemoveEvent;
 import systems.reformcloud.launcher.SpigotBootstrap;
+import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.query.out.PacketOutQueryGetSigns;
@@ -339,6 +340,9 @@ public final class SignSelector {
 
                     if (SpigotBootstrap.getInstance().isEnabled()) {
                         SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
+                            if (!sign.getServerInfo().getServerState().isJoineable() || sign.getServerInfo().getServerState().equals(ServerState.HIDDEN))
+                                return;
+
                             if (sign.getServerInfo() == null)
                                 SignSelector.this.setLoading(sign, this.currentLoadingLayout);
                             else if (serverGroup.isMaintenance())

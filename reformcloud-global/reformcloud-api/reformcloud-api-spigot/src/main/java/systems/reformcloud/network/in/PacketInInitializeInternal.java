@@ -6,8 +6,10 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.utility.TypeTokenAdaptor;
@@ -29,6 +31,11 @@ public class PacketInInitializeInternal implements NetworkInboundHandler {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+
+        ReformCloudAPISpigot.getInstance().getServerInfo().setServerState(ServerState.READY);
+        ReformCloudAPISpigot.getInstance().sendPacketSync("ReformCloudController", new PacketOutServerInfoUpdate(
+                ReformCloudAPISpigot.getInstance().getServerInfo()
+        ));
 
         ReformCloudAPISpigot.getInstance().sendPacketQuery("ReformCloudController",
                 new PacketOutQueryGetPermissionCache(), (configuration1, resultID) ->

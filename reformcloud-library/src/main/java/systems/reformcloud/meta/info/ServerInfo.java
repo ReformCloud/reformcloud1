@@ -4,11 +4,12 @@
 
 package systems.reformcloud.meta.info;
 
-import systems.reformcloud.meta.CloudProcess;
-import systems.reformcloud.meta.server.ServerGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.enums.ServerState;
+import systems.reformcloud.meta.server.ServerGroup;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,6 +28,8 @@ public final class ServerInfo implements Serializable {
     private CloudProcess cloudProcess;
 
     private ServerGroup serverGroup;
+
+    private ServerState serverState;
 
     private String group, host, motd;
     private int port, online, maxMemory;

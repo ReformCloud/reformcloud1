@@ -14,6 +14,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.CloudProcess;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.enums.ServerModeType;
+import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
@@ -325,9 +326,10 @@ public class CloudServerStartupHandler {
         FileUtils.copyFile("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPISpigot.jar");
 
         ServerInfo serverInfo = new ServerInfo(
-                new CloudProcess(serverStartupInfo.getName(), serverStartupInfo.getUid(), ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+                new CloudProcess(serverStartupInfo.getName(), serverStartupInfo.getUid(),
+                        ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
                         loaded, serverStartupInfo.getId()),
-                serverStartupInfo.getServerGroup(), serverStartupInfo.getServerGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
+                serverStartupInfo.getServerGroup(), ServerState.READY, serverStartupInfo.getServerGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
                 serverStartupInfo.getServerGroup().getMotd(), this.port, 0, serverStartupInfo.getServerGroup().getMemory(),
                 false, new ArrayList<>()
         );
