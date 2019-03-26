@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.1</version>
+    <version>1.2</version>
 
     <artifactId>reformcloud-global</artifactId>
     <packaging>pom</packaging>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-library</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
