@@ -12,6 +12,7 @@ import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -46,5 +47,10 @@ public class ServerGroup implements Serializable {
         }
 
         return this.templates.get(new Random().nextInt(this.templates.size()));
+    }
+
+    public void deleteTemplate(String name) {
+        List<Template> copyOf = new ArrayList<>(this.templates);
+        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst().ifPresent(template -> this.templates.remove(template));
     }
 }

@@ -196,6 +196,10 @@ public final class ReformCloudLibraryService {
         }
     }
 
+    public static boolean checkIsValidBoolean(String key) {
+        return key.equalsIgnoreCase("true") || key.equalsIgnoreCase("false");
+    }
+
     /**
      * Returns the cpu usage of the system
      *

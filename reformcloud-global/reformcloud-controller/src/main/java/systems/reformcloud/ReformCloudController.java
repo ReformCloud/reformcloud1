@@ -879,6 +879,14 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         System.exit(0);
     }
 
+    public void reloadAllSave() {
+        try {
+            this.reloadAll();
+        } catch (Throwable throwable) {
+            StringUtil.printError(loggerProvider, "Error while reloading cloudsystem", throwable);
+        }
+    }
+
     public Language getLoadedLanguage() {
         return this.internalCloudNetwork.getLoaded();
     }
