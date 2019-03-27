@@ -4,7 +4,6 @@
 
 package systems.reformcloud.serverprocess.screen;
 
-import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
@@ -14,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -104,11 +104,15 @@ public class CloudProcessScreenService implements Runnable {
 
     @Override
     public void run() {
-        for (CloudServerStartupHandler cloudServerStartupHandler : this.cloudServerStartupHandlerMap.values())
-            this.readLog(cloudServerStartupHandler);
+        while (!Thread.currentThread().isInterrupted()) {
+            for (CloudServerStartupHandler cloudServerStartupHandler : this.cloudServerStartupHandlerMap.values())
+                this.readLog(cloudServerStartupHandler);
 
-        for (ProxyStartupHandler proxyStartupHandler : this.proxyStartupHandlerMap.values())
-            this.readLog(proxyStartupHandler);
+            for (ProxyStartupHandler proxyStartupHandler : this.proxyStartupHandlerMap.values())
+                this.readLog(proxyStartupHandler);
+
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 3);
+        }
     }
 
     private synchronized void readLog(final CloudServerStartupHandler cloudServerStartupHandler) {

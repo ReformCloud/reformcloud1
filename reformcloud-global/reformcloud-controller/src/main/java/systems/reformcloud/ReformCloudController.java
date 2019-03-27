@@ -57,7 +57,6 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
-import systems.reformcloud.utility.threading.scheduler.Scheduler;
 import systems.reformcloud.utility.time.TimeSync;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
@@ -67,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -88,7 +88,6 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     private final StatisticsProvider statisticsProvider = new StatisticsProvider();
     private final PlayerDatabase playerDatabase = new PlayerDatabase();
     private final ChannelHandler channelHandler = new ChannelHandler();
-    private final Scheduler scheduler = new Scheduler(40);
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
     private final CloudProcessOfferService cloudProcessOfferService = new CloudProcessOfferService();
     private final EventManager eventManager = new EventManager();
@@ -185,15 +184,14 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 !cloudConfiguration.getKeyFile().equalsIgnoreCase(StringUtil.NULL) ?
                         new File(cloudConfiguration.getKeyFile()) : null);
 
-        Thread thread = new Thread(this.scheduler);
-        thread.setDaemon(true);
-        thread.start();
-
-        this.scheduler.runTaskRepeatAsync(() -> {
-            this.databaseProviders.forEach(databaseProvider -> databaseProvider.save());
-        }, 0, 150000);
-        this.scheduler.runTaskRepeatAsync(cloudProcessOfferService, 0, 250);
-        this.scheduler.runTaskRepeatAsync(new TimeSync(), 0, 50);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                this.databaseProviders.forEach(databaseProvider -> databaseProvider.save());
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 30);
+            }
+        });
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessOfferService);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new TimeSync());
 
         this.shutdownHook = new Thread(this::shutdownAll, "Shutdown-Hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);

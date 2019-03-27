@@ -16,6 +16,7 @@ import systems.reformcloud.network.out.PacketOutStartProxy;
 import systems.reformcloud.utility.map.Trio;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -154,7 +155,11 @@ public class CloudProcessOfferService implements Runnable {
 
     @Override
     public void run() {
-        this.offerServers();
-        this.offerProxies();
+        while (!Thread.currentThread().isInterrupted()) {
+            this.offerServers();
+            this.offerProxies();
+
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 10);
+        }
     }
 }

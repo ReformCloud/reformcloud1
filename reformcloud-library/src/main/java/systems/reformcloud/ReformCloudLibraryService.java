@@ -30,8 +30,7 @@ import systems.reformcloud.utility.checkable.Checkable;
 
 import java.lang.management.ManagementFactory;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -48,6 +47,8 @@ public final class ReformCloudLibraryService {
     public static final boolean EPOLL = Epoll.isAvailable();
 
     public static final ThreadLocalRandom THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
+
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
     public static <K, V> ConcurrentHashMap<K, V> concurrentHashMap() {
         return new ConcurrentHashMap<>(0);
@@ -175,6 +176,13 @@ public final class ReformCloudLibraryService {
     public static void sleep(Thread thread, long time) {
         try {
             Thread.sleep(time);
+        } catch (final InterruptedException ignored) {
+        }
+    }
+
+    public static void sleep(TimeUnit timeUnit, long time) {
+        try {
+            timeUnit.sleep(time);
         } catch (final InterruptedException ignored) {
         }
     }

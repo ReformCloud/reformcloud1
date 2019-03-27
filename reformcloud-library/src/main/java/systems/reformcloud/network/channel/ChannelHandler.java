@@ -12,13 +12,13 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.OutGoingPacketEvent;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
+import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
-import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -31,7 +31,25 @@ public class ChannelHandler {
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
 
     @Getter
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = ReformCloudLibraryService.EXECUTOR_SERVICE;
+
+    private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
+
+    public ChannelHandler() {
+        this.executorService.execute(() -> {
+            while (true) {
+                if (!packetQueue.isEmpty()) {
+                    AwaitingPacket awaitingPacket = packetQueue.poll();
+                    if (!awaitingPacket.getChannelHandlerContext().channel().isWritable()) {
+                        packetQueue.offer(awaitingPacket);
+                        continue;
+                    }
+
+                    this.sendPacket(awaitingPacket);
+                }
+            }
+        });
+    }
 
     /**
      * Get a specific {@link ChannelHandlerContext} by name
@@ -155,11 +173,15 @@ public class ChannelHandler {
     }
 
     private void sendPacket(Packet packet, ChannelHandlerContext channelHandlerContext) {
-        if (channelHandlerContext.channel().eventLoop().inEventLoop()) {
-            channelHandlerContext.channel().writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        this.packetQueue.offer(new AwaitingPacket(channelHandlerContext, packet));
+    }
+
+    private void sendPacket(AwaitingPacket awaitingPacket) {
+        if (awaitingPacket.getChannelHandlerContext().channel().eventLoop().inEventLoop()) {
+            awaitingPacket.getChannelHandlerContext().channel().writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
         } else {
-            channelHandlerContext.channel().eventLoop().execute(() -> channelHandlerContext.channel()
-                    .writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE));
+            awaitingPacket.getChannelHandlerContext().channel().eventLoop().execute(() -> awaitingPacket.getChannelHandlerContext().channel()
+                    .writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE));
         }
     }
 
@@ -194,7 +216,7 @@ public class ChannelHandler {
         if (outGoingPacketEvent.isCancelled())
             return false;
 
-        TaskScheduler.runtimeScheduler().schedule(() -> {
+        this.executorService.execute(() -> {
             if (this.channelHandlerContextMap.containsKey(channel))
                 this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
         });
@@ -210,7 +232,7 @@ public class ChannelHandler {
      * @return if the channel is registered, to check if the packets were send
      */
     public boolean sendPacketAsynchronous(final String channel, final Packet... packets) {
-        TaskScheduler.runtimeScheduler().schedule(() -> {
+        this.executorService.execute(() -> {
             if (this.channelHandlerContextMap.containsKey(channel))
                 for (Packet packet : packets)
                     this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
@@ -294,7 +316,7 @@ public class ChannelHandler {
         if (outGoingPacketEvent.isCancelled())
             return;
 
-        TaskScheduler.runtimeScheduler().schedule(() ->
+        this.executorService.execute(() ->
                 this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket(packet, consumer)))
         );
     }

@@ -5,6 +5,7 @@
 package systems.reformcloud.serverprocess.shutdown;
 
 import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
 import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
 
@@ -20,27 +21,31 @@ public final class ShutdownWorker implements Serializable, Runnable {
 
     @Override
     public void run() {
-        if (!ReformCloudClient.RUNNING || ReformCloudClient.getInstance().isShutdown())
-            return;
+        while (!Thread.currentThread().isInterrupted()) {
+            if (!ReformCloudClient.RUNNING || ReformCloudClient.getInstance().isShutdown())
+                continue;
 
-        final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance().getCloudProcessScreenService();
+            final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance().getCloudProcessScreenService();
 
-        cloudProcessScreenService.getRegisteredServerProcesses().forEach(handler -> {
-            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown()) {
-                if (!handler.isForge()) {
-                    handler.shutdown(true);
-                } else {
-                    long shutdown = handler.getStartupTime() + TimeUnit.MINUTES.toMillis(2);
-                    if (shutdown <= System.currentTimeMillis()) {
+            cloudProcessScreenService.getRegisteredServerProcesses().forEach(handler -> {
+                if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown()) {
+                    if (!handler.isForge()) {
                         handler.shutdown(true);
+                    } else {
+                        long shutdown = handler.getStartupTime() + TimeUnit.MINUTES.toMillis(2);
+                        if (shutdown <= System.currentTimeMillis()) {
+                            handler.shutdown(true);
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        cloudProcessScreenService.getRegisteredProxyProcesses().forEach(handler -> {
-            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown())
-                handler.shutdown(null, true);
-        });
+            cloudProcessScreenService.getRegisteredProxyProcesses().forEach(handler -> {
+                if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown())
+                    handler.shutdown(null, true);
+            });
+
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 10);
+        }
     }
 }

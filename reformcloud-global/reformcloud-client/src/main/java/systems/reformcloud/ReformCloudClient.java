@@ -58,7 +58,6 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
-import systems.reformcloud.utility.threading.scheduler.Scheduler;
 import systems.reformcloud.versioneering.VersionController;
 
 import java.io.IOException;
@@ -95,7 +94,6 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
     private final ChannelHandler channelHandler = new ChannelHandler();
     private final NettySocketClient nettySocketClient = new NettySocketClient();
-    private final Scheduler scheduler = new Scheduler(40);
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
 
@@ -153,19 +151,14 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 ReformCloudLibraryService.usedMemorySystem()
         );
 
-        Thread scheduler = new Thread(this.scheduler);
-        scheduler.setPriority(Thread.MIN_PRIORITY);
-        scheduler.setDaemon(true);
-        scheduler.start();
-
         Thread startup = new Thread(this.cloudProcessStartupHandler, "Startup Handler Thread");
         startup.setPriority(Thread.MIN_PRIORITY);
         startup.setDaemon(true);
         startup.start();
 
-        this.scheduler.runTaskRepeatAsync(new SynchronizationHandler(), 0, 200);
-        this.scheduler.runTaskRepeatSync(new ShutdownWorker(), 0, 10);
-        this.scheduler.runTaskRepeatAsync(this.cloudProcessScreenService, 0, 50);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new SynchronizationHandler());
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new ShutdownWorker());
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessScreenService);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "ShutdownHook"));
 

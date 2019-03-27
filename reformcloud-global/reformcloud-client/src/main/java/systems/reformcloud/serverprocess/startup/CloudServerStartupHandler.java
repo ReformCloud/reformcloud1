@@ -329,7 +329,7 @@ public class CloudServerStartupHandler {
                 new CloudProcess(serverStartupInfo.getName(), serverStartupInfo.getUid(),
                         ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
                         loaded, serverStartupInfo.getId()),
-                serverStartupInfo.getServerGroup(), ServerState.READY, serverStartupInfo.getServerGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
+                serverStartupInfo.getServerGroup(), ServerState.NOT_READY, serverStartupInfo.getServerGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
                 serverStartupInfo.getServerGroup().getMotd(), this.port, 0, serverStartupInfo.getServerGroup().getMemory(),
                 false, new ArrayList<>()
         );
