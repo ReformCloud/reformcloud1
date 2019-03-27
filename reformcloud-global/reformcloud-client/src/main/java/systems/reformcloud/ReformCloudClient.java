@@ -190,6 +190,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 .registerHandler("UpdateProxyGroupPluginTemplate", new PacketInUpdateProxyGroupPluginTemplate())
                 .registerHandler("UpdateServerGroupPluginTemplate", new PacketInUpdateServerGroupPluginTemplate())
                 .registerHandler("PacketInUploadLog", new PacketInUploadLog())
+                .registerHandler("UpdateClientSetting", new PacketInUpdateClientSetting())
                 .registerHandler("JoinScreen", new PacketInSyncScreenJoin())
                 .registerHandler("ScreenDisable", new PacketInSyncScreenDisable())
                 .registerHandler("ReloadClient", new PacketInSyncUpdateClient())

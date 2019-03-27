@@ -323,6 +323,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerCommand(new CommandVersion())
                 .registerCommand(new CommandListGroups())
                 .registerCommand(new CommandUpload())
+                .registerCommand(new CommandAssignment())
                 .registerCommand(new CommandWebPermissions());
     }
 

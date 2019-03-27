@@ -6,6 +6,7 @@ package systems.reformcloud.utility;
 
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
+import systems.reformcloud.meta.client.settings.ClientSettings;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -64,6 +65,8 @@ public final class TypeTokenAdaptor {
             PERMISSION_CACHE_TYPE = new TypeToken<PermissionCache>() {
             }.getType(),
             PERMISSION_HOLDER_TYPE = new TypeToken<PermissionHolder>() {
+            }.getType(),
+            CLIENT_SETTING_TYPE = new TypeToken<ClientSettings>() {
             }.getType(),
             CLIENT_INFO_TYPE = new TypeToken<ClientInfo>() {
             }.getType();

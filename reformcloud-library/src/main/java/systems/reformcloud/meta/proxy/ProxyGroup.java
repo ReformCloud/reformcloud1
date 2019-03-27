@@ -4,17 +4,14 @@
 
 package systems.reformcloud.meta.proxy;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
@@ -47,5 +44,10 @@ public class ProxyGroup implements Serializable {
         }
 
         return this.templates.get(new Random().nextInt(this.templates.size()));
+    }
+
+    public void deleteTemplate(String name) {
+        List<Template> copyOf = new ArrayList<>(this.templates);
+        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst().ifPresent(template -> this.templates.remove(template));
     }
 }
