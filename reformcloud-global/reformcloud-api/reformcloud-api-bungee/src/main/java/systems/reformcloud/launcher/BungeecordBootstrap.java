@@ -4,6 +4,7 @@
 
 package systems.reformcloud.launcher;
 
+import io.netty.util.ResourceLeakDetector;
 import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -36,6 +37,8 @@ public class BungeecordBootstrap extends Plugin {
     public void onLoad() {
         new LibraryLoader().loadJarFileAndInjectLibraries();
         instance = this;
+
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
     }
 
     @Override

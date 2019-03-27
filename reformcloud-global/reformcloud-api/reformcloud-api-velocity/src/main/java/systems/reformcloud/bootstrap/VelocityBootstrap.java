@@ -16,6 +16,7 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import io.netty.util.ResourceLeakDetector;
 import lombok.Getter;
 import org.slf4j.Logger;
 import systems.reformcloud.ReformCloudAPIVelocity;
@@ -60,6 +61,8 @@ public final class VelocityBootstrap implements Serializable {
         this.proxy = proxyServer;
 
         new LibraryLoader().loadJarFileAndInjectLibraries();
+
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
         proxy.getConfiguration().getAttemptConnectionOrder().clear();
     }

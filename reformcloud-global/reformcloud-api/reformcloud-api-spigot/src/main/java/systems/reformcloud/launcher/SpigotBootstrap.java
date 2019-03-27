@@ -4,6 +4,7 @@
 
 package systems.reformcloud.launcher;
 
+import io.netty.util.ResourceLeakDetector;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -41,6 +42,8 @@ public class SpigotBootstrap extends JavaPlugin {
         this.start = System.currentTimeMillis();
         new LibraryLoader().loadJarFileAndInjectLibraries();
         instance = this;
+
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
     }
 
     @Override
