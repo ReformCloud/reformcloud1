@@ -216,10 +216,8 @@ public class ChannelHandler {
         if (outGoingPacketEvent.isCancelled())
             return false;
 
-        this.executorService.execute(() -> {
-            if (this.channelHandlerContextMap.containsKey(channel))
-                this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
-        });
+        if (this.channelHandlerContextMap.containsKey(channel))
+            this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
 
         return this.channelHandlerContextMap.containsKey(channel);
     }
@@ -232,11 +230,9 @@ public class ChannelHandler {
      * @return if the channel is registered, to check if the packets were send
      */
     public boolean sendPacketAsynchronous(final String channel, final Packet... packets) {
-        this.executorService.execute(() -> {
-            if (this.channelHandlerContextMap.containsKey(channel))
-                for (Packet packet : packets)
-                    this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
-        });
+        if (this.channelHandlerContextMap.containsKey(channel))
+            for (Packet packet : packets)
+                this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
 
         return this.channelHandlerContextMap.containsKey(channel);
     }
@@ -316,9 +312,7 @@ public class ChannelHandler {
         if (outGoingPacketEvent.isCancelled())
             return;
 
-        this.executorService.execute(() ->
-                this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket(packet, consumer)))
-        );
+        this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket(packet, consumer)));
     }
 
     /**
