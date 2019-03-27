@@ -127,10 +127,8 @@ public class PlayerConnectListener implements Listener {
 
         if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers()) {
             serverInfo.setFull(true);
-            serverInfo.setServerState(serverInfo.getServerState().equals(ServerState.HIDDEN) ? ServerState.HIDDEN : ServerState.NOT_READY);
         } else {
             serverInfo.setFull(false);
-            serverInfo.setServerState(serverInfo.getServerState().equals(ServerState.HIDDEN) ? ServerState.HIDDEN : ServerState.READY);
         }
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
