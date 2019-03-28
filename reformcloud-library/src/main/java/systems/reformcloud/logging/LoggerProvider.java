@@ -64,6 +64,8 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     public LoggerProvider() throws IOException {
         super("ReformLogger", null);
 
+        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
+
         setLevel(Level.ALL);
         setUseParentHandlers(false);
 
