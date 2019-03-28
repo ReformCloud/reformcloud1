@@ -4,25 +4,23 @@
 
 package systems.reformcloud.utility.time;
 
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.network.sync.out.PacketOutSyncControllerTime;
 
 import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
-public final class TimeSync implements Serializable, Runnable {
+public final class TimeSync implements Serializable, Job {
     @Override
-    public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            ReformCloudController.getInstance().getLoggerProvider().setControllerTime(System.currentTimeMillis());
-            ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutSyncControllerTime());
+    public void execute(JobExecutionContext jobExecutionContext) {
+        ReformCloudController.getInstance().getLoggerProvider().info("Task-2 success");
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
-        }
+        ReformCloudController.getInstance().getLoggerProvider().setControllerTime(System.currentTimeMillis());
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutSyncControllerTime());
     }
 }

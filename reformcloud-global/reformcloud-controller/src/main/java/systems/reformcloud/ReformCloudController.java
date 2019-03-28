@@ -18,6 +18,7 @@ import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.database.DatabaseProvider;
+import systems.reformcloud.database.DatabaseSaver;
 import systems.reformcloud.database.player.PlayerDatabase;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
@@ -57,6 +58,7 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
+import systems.reformcloud.utility.threading.TaskScheduler;
 import systems.reformcloud.utility.time.TimeSync;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
@@ -94,6 +96,8 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     private final ScreenSessionProvider screenSessionProvider = new ScreenSessionProvider();
     private final IngameCommandManger ingameCommandManger = new IngameCommandMangerImpl();
 
+    private final TaskScheduler taskScheduler;
+
     private List<UUID> uuid = new ArrayList<>();
     private List<DatabaseProvider> databaseProviders = new ArrayList<>();
 
@@ -126,6 +130,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
         this.loggerProvider = loggerProvider;
         this.commandManager = commandManager;
+        this.taskScheduler = new TaskScheduler();
 
         cloudConfiguration = new CloudConfiguration();
         this.reformCloudLibraryServiceProvider = new ReformCloudLibraryServiceProvider(loggerProvider,
@@ -184,14 +189,10 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 !cloudConfiguration.getKeyFile().equalsIgnoreCase(StringUtil.NULL) ?
                         new File(cloudConfiguration.getKeyFile()) : null);
 
-        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                this.databaseProviders.forEach(databaseProvider -> databaseProvider.save());
-                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 30);
-            }
-        });
+        this.taskScheduler.schedule(DatabaseSaver.class, TimeUnit.SECONDS, 30);
+        this.taskScheduler.schedule(TimeSync.class, TimeUnit.SECONDS, 1);
+
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessOfferService);
-        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new TimeSync());
 
         this.shutdownHook = new Thread(this::shutdownAll, "Shutdown-Hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);

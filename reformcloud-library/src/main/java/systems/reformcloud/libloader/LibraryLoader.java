@@ -43,7 +43,7 @@ public final class LibraryLoader {
             return;
         }
 
-        this.libraries.addAll(Arrays.asList(new Netty(), new SnakeYaml(), new CommonsIO(), new JLine(), new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents()));
+        this.libraries.addAll(Arrays.asList(new Netty(), new Quartz(), new SnakeYaml(), new CommonsIO(), new JLine(), new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents()));
     }
 
     public void loadJarFileAndInjectLibraries() {
