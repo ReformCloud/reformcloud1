@@ -36,7 +36,7 @@ public class ChannelHandler {
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
     public ChannelHandler() {
-        this.executorService.execute(() -> {
+        Thread thread = new Thread(() -> {
             while (true) {
                 if (!packetQueue.isEmpty()) {
                     AwaitingPacket awaitingPacket = packetQueue.poll();
@@ -49,6 +49,8 @@ public class ChannelHandler {
                 }
             }
         });
+        thread.setDaemon(true);
+        thread.start();
     }
 
     /**
