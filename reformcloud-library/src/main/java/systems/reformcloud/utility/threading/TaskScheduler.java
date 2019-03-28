@@ -6,6 +6,7 @@ package systems.reformcloud.utility.threading;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import systems.reformcloud.ReformCloudLibraryService;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +28,11 @@ public final class TaskScheduler implements Serializable {
     }
 
     public TaskScheduler schedule(Class<? extends Job> clazz, TimeUnit timeUnit, long repeat) {
-        JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity("ReformCloud-Trigger-Default").build();
+        long id = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong();
+        JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity("ReformCloud-Trigger-Default-" + id).build();
         Trigger trigger = TriggerBuilder
                 .newTrigger()
-                .withIdentity("ReformCloud-Trigger-Default")
+                .withIdentity("ReformCloud-Trigger-Default-" + id)
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(timeUnit.toMillis(repeat)).repeatForever())
                 .build();
 
