@@ -36,6 +36,7 @@ public class ChannelHandler {
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
     public ChannelHandler() {
+        /*
         Thread thread = new Thread(() -> {
             while (true) {
                 if (!packetQueue.isEmpty()) {
@@ -51,6 +52,7 @@ public class ChannelHandler {
         });
         thread.setDaemon(true);
         thread.start();
+        */
     }
 
     /**
