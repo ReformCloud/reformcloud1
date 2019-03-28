@@ -7,6 +7,8 @@ package systems.reformcloud.network.channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.enums.EventTargetType;
@@ -15,10 +17,12 @@ import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
+import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -35,24 +39,8 @@ public class ChannelHandler {
 
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
-    public ChannelHandler() {
-        /*
-        Thread thread = new Thread(() -> {
-            while (true) {
-                if (!packetQueue.isEmpty()) {
-                    AwaitingPacket awaitingPacket = packetQueue.poll();
-                    if (!awaitingPacket.getChannelHandlerContext().channel().isWritable()) {
-                        packetQueue.offer(awaitingPacket);
-                        continue;
-                    }
-
-                    this.sendPacket(awaitingPacket);
-                }
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-        */
+    public ChannelHandler(TaskScheduler taskScheduler) {
+        taskScheduler.schedule(Worker.class, TimeUnit.MILLISECONDS, 50);
     }
 
     /**
@@ -342,5 +330,19 @@ public class ChannelHandler {
     public void toQueryPacket(Packet packet, UUID resultID, String component) {
         packet.setResult(resultID);
         packet.getConfiguration().addStringProperty("from", component);
+    }
+
+    private class Worker implements Job {
+        @Override
+        public void execute(JobExecutionContext jobExecutionContext) {
+            if (!packetQueue.isEmpty()) {
+                AwaitingPacket awaitingPacket = packetQueue.poll();
+                if (!awaitingPacket.getChannelHandlerContext().channel().isWritable()) {
+                    packetQueue.offer(awaitingPacket);
+                }
+
+                ChannelHandler.this.sendPacket(awaitingPacket);
+            }
+        }
     }
 }

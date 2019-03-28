@@ -58,6 +58,7 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
+import systems.reformcloud.utility.threading.TaskScheduler;
 import systems.reformcloud.versioneering.VersionController;
 
 import java.io.IOException;
@@ -92,7 +93,8 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
-    private final ChannelHandler channelHandler = new ChannelHandler();
+    //TODO
+    private final ChannelHandler channelHandler = new ChannelHandler(new TaskScheduler());
     private final NettySocketClient nettySocketClient = new NettySocketClient();
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();

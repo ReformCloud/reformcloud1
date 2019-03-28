@@ -50,6 +50,7 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
@@ -67,7 +68,8 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
     public static ReformCloudAPIVelocity instance;
 
     private final NettySocketClient nettySocketClient;
-    private final ChannelHandler channelHandler = new ChannelHandler();
+    //TODO
+    private final ChannelHandler channelHandler = new ChannelHandler(new TaskScheduler());
 
     private final ProxyStartupInfo proxyStartupInfo;
     private ProxyInfo proxyInfo;

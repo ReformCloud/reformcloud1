@@ -46,6 +46,7 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -63,7 +64,8 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
     public static ReformCloudAPISpigot instance;
 
     private final NettySocketClient nettySocketClient;
-    private final ChannelHandler channelHandler = new ChannelHandler();
+    //TODO
+    private final ChannelHandler channelHandler = new ChannelHandler(new TaskScheduler());
 
     private final ServerStartupInfo serverStartupInfo;
     private ServerInfo serverInfo;

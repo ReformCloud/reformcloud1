@@ -89,7 +89,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
     private final StatisticsProvider statisticsProvider = new StatisticsProvider();
     private final PlayerDatabase playerDatabase = new PlayerDatabase();
-    private final ChannelHandler channelHandler = new ChannelHandler();
+    private final ChannelHandler channelHandler;
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
     private final CloudProcessOfferService cloudProcessOfferService = new CloudProcessOfferService();
     private final EventManager eventManager = new EventManager();
@@ -131,6 +131,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         this.loggerProvider = loggerProvider;
         this.commandManager = commandManager;
         this.taskScheduler = new TaskScheduler();
+        this.channelHandler = new ChannelHandler(this.taskScheduler);
 
         cloudConfiguration = new CloudConfiguration();
         this.reformCloudLibraryServiceProvider = new ReformCloudLibraryServiceProvider(loggerProvider,
