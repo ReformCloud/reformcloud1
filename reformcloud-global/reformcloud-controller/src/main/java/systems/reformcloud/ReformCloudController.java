@@ -192,7 +192,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         this.taskScheduler.schedule(DatabaseSaver.class, TimeUnit.SECONDS, 30);
         this.taskScheduler.schedule(TimeSync.class, TimeUnit.SECONDS, 1);
 
-        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessOfferService);
+        //ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessOfferService);
 
         this.shutdownHook = new Thread(this::shutdownAll, "Shutdown-Hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);
