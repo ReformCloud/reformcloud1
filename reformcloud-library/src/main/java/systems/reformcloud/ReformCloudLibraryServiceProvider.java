@@ -12,6 +12,7 @@ import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.NettyHandler;
+import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
 /**
@@ -27,6 +28,8 @@ public final class ReformCloudLibraryServiceProvider {
     public Language loaded;
 
     private EventManager eventManager;
+
+    private ChannelHandler channelHandler;
 
     private LoggerProvider loggerProvider;
     private String key, controllerIP;

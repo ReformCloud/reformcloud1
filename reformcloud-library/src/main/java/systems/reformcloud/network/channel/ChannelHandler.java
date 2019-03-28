@@ -7,12 +7,11 @@ package systems.reformcloud.network.channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.OutGoingPacketEvent;
+import systems.reformcloud.network.channel.queue.QueueWorker;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
@@ -37,10 +36,12 @@ public class ChannelHandler {
     @Getter
     private final ExecutorService executorService = ReformCloudLibraryService.EXECUTOR_SERVICE;
 
+    @Getter
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
     public ChannelHandler(TaskScheduler taskScheduler) {
-        taskScheduler.schedule(Worker.class, TimeUnit.MILLISECONDS, 50);
+        ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
+        taskScheduler.schedule(QueueWorker.class, TimeUnit.MILLISECONDS, 50);
     }
 
     /**
@@ -168,7 +169,7 @@ public class ChannelHandler {
         this.packetQueue.offer(new AwaitingPacket(channelHandlerContext, packet));
     }
 
-    private void sendPacket(AwaitingPacket awaitingPacket) {
+    public void sendPacket(AwaitingPacket awaitingPacket) {
         if (awaitingPacket.getChannelHandlerContext().channel().eventLoop().inEventLoop()) {
             awaitingPacket.getChannelHandlerContext().channel().writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
         } else {
@@ -330,19 +331,5 @@ public class ChannelHandler {
     public void toQueryPacket(Packet packet, UUID resultID, String component) {
         packet.setResult(resultID);
         packet.getConfiguration().addStringProperty("from", component);
-    }
-
-    private class Worker implements Job {
-        @Override
-        public void execute(JobExecutionContext jobExecutionContext) {
-            if (!packetQueue.isEmpty()) {
-                AwaitingPacket awaitingPacket = packetQueue.poll();
-                if (!awaitingPacket.getChannelHandlerContext().channel().isWritable()) {
-                    packetQueue.offer(awaitingPacket);
-                }
-
-                ChannelHandler.this.sendPacket(awaitingPacket);
-            }
-        }
     }
 }
