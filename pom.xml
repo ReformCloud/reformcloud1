@@ -55,8 +55,8 @@
         <dependency.netty.version>4.1.34.Final</dependency.netty.version>
         <dependency.spigot.version>1.13</dependency.spigot.version>
         <dependency.lombok.version>1.18.6</dependency.lombok.version>
-        <dependency.snakeyaml.version>1.23</dependency.snakeyaml.version>
-        <dependency.commons-io.version>2.5</dependency.commons-io.version>
+        <dependency.snakeyaml.version>1.24</dependency.snakeyaml.version>
+        <dependency.commons-io.version>2.6</dependency.commons-io.version>
         <dependency.jda.version>4.ALPHA.0_66</dependency.jda.version>
         <dependency.quartz.version>2.2.1</dependency.quartz.version>
     </properties>
