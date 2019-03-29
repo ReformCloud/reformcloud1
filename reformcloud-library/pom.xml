@@ -5,11 +5,11 @@
     <parent>
         <artifactId>reformcloud-parent</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.2</version>
+        <version>1.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.2</version>
+    <version>1.3</version>
 
     <artifactId>reformcloud-library</artifactId>
 
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-yaml</artifactId>
-            <version>1.2</version>
+            <version>1.3</version>
             <scope>provided</scope>
         </dependency>
 
