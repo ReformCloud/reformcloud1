@@ -18,6 +18,5 @@ public final class DatabaseSaver implements Serializable, Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
         ReformCloudController.getInstance().getDatabaseProviders().forEach(databaseProvider -> databaseProvider.save());
-        ReformCloudController.getInstance().getLoggerProvider().info("Task-1 success");
     }
 }
