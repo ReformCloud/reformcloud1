@@ -31,6 +31,6 @@ public final class CommonsIO extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "2.5";
+        return "2.6";
     }
 }

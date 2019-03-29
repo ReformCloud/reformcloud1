@@ -29,6 +29,6 @@ public final class SnakeYaml extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "1.23";
+        return "1.24";
     }
 }
