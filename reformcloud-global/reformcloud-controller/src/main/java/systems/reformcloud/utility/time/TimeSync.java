@@ -18,8 +18,6 @@ import java.io.Serializable;
 public final class TimeSync implements Serializable, Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
-        ReformCloudController.getInstance().getLoggerProvider().info("Task-2 success");
-
         ReformCloudController.getInstance().getLoggerProvider().setControllerTime(System.currentTimeMillis());
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutSyncControllerTime());
     }
