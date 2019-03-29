@@ -93,8 +93,8 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
-    //TODO
-    private final ChannelHandler channelHandler = new ChannelHandler(new TaskScheduler());
+    private final TaskScheduler taskScheduler;
+    private final ChannelHandler channelHandler;
     private final NettySocketClient nettySocketClient = new NettySocketClient();
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
@@ -131,6 +131,9 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         this.cloudConfiguration = new CloudConfiguration(false);
         new ReformCloudLibraryServiceProvider(loggerProvider, this.cloudConfiguration.getControllerKey(), cloudConfiguration.getEthernetAddress().getHost(), eventManager, null);
 
+        this.taskScheduler = ReformCloudLibraryServiceProvider.getInstance().getTaskScheduler();
+        this.channelHandler = new ChannelHandler(this.taskScheduler);
+
         this.registerNetworkHandlers();
         this.registerCommands();
 
@@ -153,14 +156,11 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 ReformCloudLibraryService.usedMemorySystem()
         );
 
-        Thread startup = new Thread(this.cloudProcessStartupHandler, "Startup Handler Thread");
-        startup.setPriority(Thread.MIN_PRIORITY);
-        startup.setDaemon(true);
-        startup.start();
+        this.taskScheduler.schedule(SynchronizationHandler.class, TimeUnit.SECONDS, 30);
+        this.taskScheduler.schedule(ShutdownWorker.class, TimeUnit.SECONDS, 10);
 
-        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new SynchronizationHandler());
-        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new ShutdownWorker());
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessScreenService);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessStartupHandler);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "ShutdownHook"));
 

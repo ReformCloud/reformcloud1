@@ -50,7 +50,6 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
-import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -68,8 +67,7 @@ public class ReformCloudAPIBungee implements IAPIService {
     public static ReformCloudAPIBungee instance;
 
     private final NettySocketClient nettySocketClient;
-    //TODO
-    private final ChannelHandler channelHandler = new ChannelHandler(new TaskScheduler());
+    private final ChannelHandler channelHandler;
 
     private final ProxyStartupInfo proxyStartupInfo;
     private ProxyInfo proxyInfo;
@@ -103,6 +101,8 @@ public class ReformCloudAPIBungee implements IAPIService {
         final EthernetAddress ethernetAddress = configuration.getValue("address", TypeTokenAdaptor.getETHERNET_ADDRESS_TYPE());
         new ReformCloudLibraryServiceProvider(new LoggerProvider(), configuration.getStringValue("controllerKey"), ethernetAddress.getHost(), new EventManager(), null);
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().setDebug(configuration.getBooleanValue("debug"));
+
+        this.channelHandler = new ChannelHandler(ReformCloudLibraryServiceProvider.getInstance().getTaskScheduler());
 
         this.proxyStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getPROXY_STARTUP_INFO_TYPE());
         this.proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());

@@ -46,7 +46,6 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
-import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -64,8 +63,7 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
     public static ReformCloudAPISpigot instance;
 
     private final NettySocketClient nettySocketClient;
-    //TODO
-    private final ChannelHandler channelHandler = new ChannelHandler(new TaskScheduler());
+    private final ChannelHandler channelHandler;
 
     private final ServerStartupInfo serverStartupInfo;
     private ServerInfo serverInfo;
@@ -103,6 +101,8 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
         final EthernetAddress ethernetAddress = configuration.getValue("address", TypeTokenAdaptor.getETHERNET_ADDRESS_TYPE());
         new ReformCloudLibraryServiceProvider(new LoggerProvider(), configuration.getStringValue("controllerKey"), ethernetAddress.getHost(), new EventManager(), null);
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().setDebug(configuration.getBooleanValue("debug"));
+
+        this.channelHandler = new ChannelHandler(ReformCloudLibraryServiceProvider.getInstance().getTaskScheduler());
 
         this.serverStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getSERVER_STARTUP_INFO_TYPE());
         this.serverInfo = configuration.getValue("info", TypeTokenAdaptor.getSERVER_INFO_TYPE());

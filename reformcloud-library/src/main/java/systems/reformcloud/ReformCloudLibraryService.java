@@ -48,7 +48,7 @@ public final class ReformCloudLibraryService {
 
     public static final ThreadLocalRandom THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
 
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(10);
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
     public static <K, V> ConcurrentHashMap<K, V> concurrentHashMap() {
         return new ConcurrentHashMap<>(0);

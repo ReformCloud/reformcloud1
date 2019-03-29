@@ -14,6 +14,7 @@ import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.threading.TaskScheduler;
 
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
@@ -35,6 +36,7 @@ public final class ReformCloudLibraryServiceProvider {
     private String key, controllerIP;
 
     private final NettyHandler nettyHandler = new NettyHandler();
+    private final TaskScheduler taskScheduler = new TaskScheduler();
 
     /**
      * Creates a new Instance of the {ReformCloudLibraryServiceProvider}
