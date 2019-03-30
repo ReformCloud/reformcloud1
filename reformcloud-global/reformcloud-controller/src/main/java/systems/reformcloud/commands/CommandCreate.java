@@ -5,7 +5,6 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.configuration.CloudConfiguration;
@@ -22,9 +21,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.defaults.DefaultGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
-import systems.reformcloud.utility.StringUtil;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -135,7 +132,7 @@ public final class CommandCreate extends Command implements Serializable {
                         .getServerGroups()
                         .get(args[1]);
                 if (serverGroup != null) {
-                    if (serverGroup.getTemplate(args[2]) != null) {
+                    if (serverGroup.getTemplateOrElseNull(args[2]) != null) {
                         commandSender.sendMessage("Template already exists");
                         return;
                     }
@@ -155,7 +152,7 @@ public final class CommandCreate extends Command implements Serializable {
                         return;
                     }
 
-                    if (proxyGroup.getTemplate(args[2]) != null) {
+                    if (proxyGroup.getTemplateOrElseNull(args[2]) != null) {
                         commandSender.sendMessage("Template already exists");
                         return;
                     }
