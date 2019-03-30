@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -506,11 +507,20 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
     @Override
     public int getOnlineCount() {
-        int online = 0;
-        for (ProxyInfo proxyInfo : this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses())
-            online += proxyInfo.getOnline();
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.getAllRegisteredProxies().stream()
+                .filter(info -> info.getCloudProcess().getClient().equals(this.cloudConfiguration.getClientName()))
+                .forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
 
-        return online;
+        return atomicInteger.get();
+    }
+
+    @Override
+    public int getGlobalOnlineCount() {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.getAllRegisteredProxies().forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
+
+        return atomicInteger.get();
     }
 
     @Override

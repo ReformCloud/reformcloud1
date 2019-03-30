@@ -50,6 +50,7 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -286,6 +287,14 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
     @Override
     public int getOnlineCount() {
         return this.serverInfo.getOnline();
+    }
+
+    @Override
+    public int getGlobalOnlineCount() {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.getAllRegisteredProxies().forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
+
+        return atomicInteger.get();
     }
 
     @Override

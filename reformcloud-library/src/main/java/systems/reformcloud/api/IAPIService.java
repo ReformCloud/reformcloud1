@@ -222,6 +222,13 @@ public interface IAPIService {
     int getOnlineCount();
 
     /**
+     * Returns the global online count
+     *
+     * @return the global online count
+     */
+    int getGlobalOnlineCount();
+
+    /**
      * Gets all registered clients
      *
      * @return a list of all registered clients

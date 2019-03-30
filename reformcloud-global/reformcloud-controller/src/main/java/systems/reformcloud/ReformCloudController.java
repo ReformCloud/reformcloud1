@@ -69,6 +69,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -690,6 +691,14 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
             online += proxyInfo.getOnline();
 
         return online;
+    }
+
+    @Override
+    public int getGlobalOnlineCount() {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.getAllRegisteredProxies().forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
+
+        return atomicInteger.get();
     }
 
     @Override
