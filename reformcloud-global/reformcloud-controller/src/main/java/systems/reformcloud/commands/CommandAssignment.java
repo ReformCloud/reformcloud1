@@ -95,7 +95,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 if (toRemove) {
                     args[3] = args[3].replaceFirst("-", "");
 
-                    if (serverGroup.getTemplate(args[3]) == null) {
+                    if (serverGroup.getTemplateOrElseNull(args[3]) == null) {
                         commandSender.sendMessage("Cannot remove template from servergroup");
                         return;
                     }
@@ -108,7 +108,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
                     commandSender.sendMessage("§aSuccessfully §rdeleted template §e" + args[3]);
                 } else {
-                    if (serverGroup.getTemplate(args[3]) != null) {
+                    if (serverGroup.getTemplateOrElseNull(args[3]) != null) {
                         commandSender.sendMessage("Cannot add template to the servergroup");
                         return;
                     }
@@ -386,7 +386,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 if (toRemove) {
                     args[3] = args[3].replaceFirst("-", "");
 
-                    if (proxyGroup.getTemplate(args[3]) == null) {
+                    if (proxyGroup.getTemplateOrElseNull(args[3]) == null) {
                         commandSender.sendMessage("Cannot remove template from proxygroup");
                         return;
                     }
@@ -399,7 +399,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
                     commandSender.sendMessage("§aSuccessfully §rdeleted template §e" + args[3]);
                 } else {
-                    if (proxyGroup.getTemplate(args[3]) != null) {
+                    if (proxyGroup.getTemplateOrElseNull(args[3]) != null) {
                         commandSender.sendMessage("Cannot add template to the proxygroup");
                         return;
                     }

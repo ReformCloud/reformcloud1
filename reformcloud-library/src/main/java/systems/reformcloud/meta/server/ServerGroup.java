@@ -41,6 +41,10 @@ public class ServerGroup implements Serializable {
         return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(randomTemplate());
     }
 
+    public Template getTemplateOrElseNull(final String name) {
+        return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(null);
+    }
+
     public Template randomTemplate() {
         if (this.templates.size() == 0) {
             return new Template("default", null, TemplateBackend.CLIENT);
