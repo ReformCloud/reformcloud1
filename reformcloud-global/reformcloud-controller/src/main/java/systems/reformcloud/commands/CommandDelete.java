@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ public final class CommandDelete extends Command implements Serializable {
                 }
                 break;
             }
+
             case "proxygroup": {
                 if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
                     try {
@@ -56,6 +58,7 @@ public final class CommandDelete extends Command implements Serializable {
                 }
                 break;
             }
+
             case "client": {
                 if (ReformCloudController.getInstance().getInternalCloudNetwork().getClients().containsKey(args[1])) {
                     ReformCloudController.getInstance().getCloudConfiguration().deleteClient(ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[1]));
@@ -64,10 +67,29 @@ public final class CommandDelete extends Command implements Serializable {
                 }
                 break;
             }
+
+            case "webuser": {
+                WebUser webUser = ReformCloudController.getInstance()
+                        .getCloudConfiguration()
+                        .getWebUsers()
+                        .stream()
+                        .filter(e -> e.getUser().equals(args[1]))
+                        .findFirst()
+                        .orElse(null);
+                if (webUser == null) {
+                    commandSender.sendMessage("WebUser not found");
+                    return;
+                }
+
+                ReformCloudController.getInstance().getCloudConfiguration().deleteWebuser(webUser);
+                break;
+            }
+
             default: {
-                commandSender.sendMessage("delete servergroup <name>");
-                commandSender.sendMessage("delete proxygroup <name>");
-                commandSender.sendMessage("delete client <name>");
+                commandSender.sendMessage("delete SERVERGROUP <name>");
+                commandSender.sendMessage("delete PROXYGROUP <name>");
+                commandSender.sendMessage("delete CLIENT <name>");
+                commandSender.sendMessage("delete WEBUSER <name>");
             }
         }
     }

@@ -467,6 +467,14 @@ public class CloudConfiguration {
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
     }
 
+    public void deleteWebuser(final WebUser webUser) {
+        this.webUsers.remove(webUser);
+        new Configuration().addProperty("users", this.webUsers).write(Paths.get("reformcloud/users.json"));
+
+        ReformCloudController.getInstance().getLoggerProvider().info("Deleting WebUser [Name=" + webUser.getUser() + "]...");
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+    }
+
     public void addPlayerToWhitelist(final String group, UUID playerUuid) {
         ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(group);
         proxyGroup.getWhitelist().add(playerUuid);
