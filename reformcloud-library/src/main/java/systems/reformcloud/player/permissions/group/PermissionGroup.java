@@ -6,6 +6,7 @@ package systems.reformcloud.player.permissions.group;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -28,5 +29,26 @@ public final class PermissionGroup implements Serializable {
 
     public void addPermission(String perm, boolean set) {
         this.permissions.put(perm.toLowerCase(), set);
+    }
+
+    public String getPrefix() {
+        if (prefix == null)
+            return StringUtil.EMPTY;
+
+        return prefix;
+    }
+
+    public String getSuffix() {
+        if (suffix == null)
+            return StringUtil.EMPTY;
+
+        return suffix;
+    }
+
+    public String getDisplay() {
+        if (display == null)
+            return StringUtil.EMPTY;
+
+        return display;
     }
 }
