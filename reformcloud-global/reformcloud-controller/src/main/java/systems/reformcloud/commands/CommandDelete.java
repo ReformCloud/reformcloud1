@@ -26,9 +26,10 @@ public final class CommandDelete extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length != 2) {
-            commandSender.sendMessage("delete servergroup <name>");
-            commandSender.sendMessage("delete proxygroup <name>");
-            commandSender.sendMessage("delete client <name>");
+            commandSender.sendMessage("delete SERVERGROUP <name>");
+            commandSender.sendMessage("delete PROXYGROUP <name>");
+            commandSender.sendMessage("delete CLIENT <name>");
+            commandSender.sendMessage("delete WEBUSER <name>");
             return;
         }
 
