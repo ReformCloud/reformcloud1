@@ -11,10 +11,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import systems.reformcloud.api.IAPIService;
-import systems.reformcloud.api.IDefaultPlayerProvider;
-import systems.reformcloud.api.IEventHandler;
-import systems.reformcloud.api.PlayerProvider;
+import systems.reformcloud.api.*;
+import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -92,6 +90,7 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
 
         ReformCloudLibraryService.sendHeader();
 
+        ISaveAPIService.instance.set(new SaveAPImpl());
         IAPIService.instance.set(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
@@ -489,6 +488,11 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
     @Override
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    @Override
+    public Optional<ISaveAPIService> getAPISave() {
+        return Optional.ofNullable(ISaveAPIService.instance.get());
     }
 
     @EventHandler

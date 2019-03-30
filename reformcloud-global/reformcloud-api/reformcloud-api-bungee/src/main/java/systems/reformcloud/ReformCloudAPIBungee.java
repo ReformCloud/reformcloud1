@@ -13,6 +13,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import systems.reformcloud.api.IAPIService;
 import systems.reformcloud.api.IDefaultPlayerProvider;
 import systems.reformcloud.api.IEventHandler;
+import systems.reformcloud.api.SaveAPIImpl;
+import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
 import systems.reformcloud.configurations.Configuration;
@@ -94,6 +96,7 @@ public class ReformCloudAPIBungee implements IAPIService {
 
         ReformCloudLibraryService.sendHeader();
 
+        ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
@@ -509,6 +512,11 @@ public class ReformCloudAPIBungee implements IAPIService {
     @Override
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    @Override
+    public Optional<ISaveAPIService> getAPISave() {
+        return Optional.ofNullable(ISaveAPIService.instance.get());
     }
 
     public void updateIngameCommands(List<IngameCommand> newIngameCommands) {

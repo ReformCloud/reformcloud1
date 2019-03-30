@@ -10,10 +10,8 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import lombok.Data;
 import lombok.Getter;
 import net.kyori.text.TextComponent;
-import systems.reformcloud.api.IAPIService;
-import systems.reformcloud.api.IDefaultPlayerProvider;
-import systems.reformcloud.api.IEventHandler;
-import systems.reformcloud.api.PlayerProvider;
+import systems.reformcloud.api.*;
+import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
@@ -94,6 +92,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
 
         ReformCloudLibraryService.sendHeader();
 
+        ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
@@ -509,6 +508,11 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
     @Override
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    @Override
+    public Optional<ISaveAPIService> getAPISave() {
+        return Optional.ofNullable(ISaveAPIService.instance.get());
     }
 
     public void updateIngameCommands(List<IngameCommand> newIngameCommands) {

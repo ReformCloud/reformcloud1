@@ -12,6 +12,8 @@ import systems.reformcloud.api.documentation.RestAPIDocumentation;
 import systems.reformcloud.api.ingame.command.IngameCommandMangerImpl;
 import systems.reformcloud.api.network.event.EventAdapter;
 import systems.reformcloud.api.player.PlayerProvider;
+import systems.reformcloud.api.save.ISaveAPIService;
+import systems.reformcloud.api.save.SaveAPIImpl;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.ingame.IngameCommandManger;
 import systems.reformcloud.commands.interfaces.Command;
@@ -64,10 +66,7 @@ import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -206,6 +205,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
         RUNNING = true;
 
+        ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
@@ -884,6 +884,11 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     @Override
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    @Override
+    public Optional<ISaveAPIService> getAPISave() {
+        return Optional.ofNullable(ISaveAPIService.instance.get());
     }
 
     @Override

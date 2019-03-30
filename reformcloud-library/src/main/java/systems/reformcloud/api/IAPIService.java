@@ -4,6 +4,7 @@
 
 package systems.reformcloud.api;
 
+import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ClientInfo;
@@ -19,6 +20,7 @@ import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -426,8 +428,12 @@ public interface IAPIService {
      */
     NettyHandler getNettyHandler();
 
-    //TODO: add save api
-    //Optional<ISaveAPIService> getAPISave();
+    /**
+     * Get the save instance of the api
+     *
+     * @return the save instance of the api
+     */
+    Optional<ISaveAPIService> getAPISave();
 
     /**
      * Closes the current process

@@ -7,10 +7,8 @@ package systems.reformcloud;
 import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
-import systems.reformcloud.api.EventAdapter;
-import systems.reformcloud.api.IAPIService;
-import systems.reformcloud.api.IDefaultPlayerProvider;
-import systems.reformcloud.api.PlayerProvider;
+import systems.reformcloud.api.*;
+import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
@@ -65,6 +63,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -126,6 +125,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         this.commandManager = commandManager;
         this.loggerProvider = loggerProvider;
 
+        ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
@@ -706,6 +706,11 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     @Override
     public NettyHandler getNettyHandler() {
         return ReformCloudLibraryServiceProvider.getInstance().getNettyHandler();
+    }
+
+    @Override
+    public Optional<ISaveAPIService> getAPISave() {
+        return Optional.ofNullable(ISaveAPIService.instance.get());
     }
 
     @Override
