@@ -46,6 +46,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
             if (args[2].equalsIgnoreCase("permission")) {
                 serverGroup.setJoin_permission(args[3]);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -65,6 +66,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     serverGroup.getClients().remove(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -77,6 +79,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     serverGroup.getClients().add(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -98,6 +101,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     serverGroup.deleteTemplate(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -110,6 +114,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     serverGroup.getTemplates().add(new Template(args[3], null, TemplateBackend.CLIENT));
+                    ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -133,6 +138,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 serverGroup.setMemory(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -154,6 +160,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 serverGroup.setMinOnline(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -175,6 +182,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 serverGroup.setMaxOnline(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -196,6 +204,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 serverGroup.setMaxPlayers(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -217,6 +226,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 serverGroup.setStartPort(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -233,6 +243,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
                 boolean maintenance = Boolean.parseBoolean(args[3]);
                 serverGroup.setMaintenance(maintenance);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -249,6 +260,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
                 boolean save = Boolean.parseBoolean(args[3]);
                 serverGroup.setSave_logs(save);
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -266,6 +278,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 serverGroup.setServerModeType(ServerModeType.valueOf(args[3].toUpperCase()));
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -281,6 +294,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 serverGroup.setSpigotVersions(SpigotVersions.getByName(args[3]));
+                ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -308,6 +322,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     proxyGroup.getClients().remove(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -320,6 +335,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     proxyGroup.getClients().add(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -341,6 +357,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     proxyGroup.getDisabledServerGroups().remove(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -353,6 +370,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     proxyGroup.getClients().add(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -374,6 +392,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     proxyGroup.deleteTemplate(args[3]);
+                    ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -386,6 +405,7 @@ public final class CommandAssignment extends Command implements Serializable {
                     }
 
                     proxyGroup.getTemplates().add(new Template(args[3], null, TemplateBackend.CLIENT));
+                    ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                     if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
@@ -404,6 +424,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
                 boolean maintenance = Boolean.parseBoolean(args[3]);
                 proxyGroup.setMaintenance(maintenance);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -420,6 +441,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
                 boolean save = Boolean.parseBoolean(args[3]);
                 proxyGroup.setSave_logs(save);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -436,6 +458,7 @@ public final class CommandAssignment extends Command implements Serializable {
 
                 boolean save = Boolean.parseBoolean(args[3]);
                 proxyGroup.setControllerCommandLogging(save);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -457,6 +480,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 proxyGroup.setMemory(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -478,6 +502,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 proxyGroup.setMinOnline(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -499,6 +524,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 proxyGroup.setMaxOnline(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -520,6 +546,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 proxyGroup.setMaxPlayers(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -541,6 +568,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 proxyGroup.setStartPort(integer);
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
@@ -556,6 +584,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 }
 
                 proxyGroup.setProxyVersions(ProxyVersions.getByName(args[3]));
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
