@@ -21,7 +21,6 @@ import systems.reformcloud.utility.threading.TaskScheduler;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -41,7 +40,7 @@ public class ChannelHandler {
 
     public ChannelHandler(TaskScheduler taskScheduler) {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
-        taskScheduler.schedule(QueueWorker.class, TimeUnit.MILLISECONDS, 50);
+        taskScheduler.schedule(QueueWorker.class, 20);
     }
 
     /**

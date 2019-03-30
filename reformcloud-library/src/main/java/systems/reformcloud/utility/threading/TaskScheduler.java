@@ -44,4 +44,22 @@ public final class TaskScheduler implements Serializable {
 
         return this;
     }
+
+    public TaskScheduler schedule(Class<? extends Job> clazz, long repeat) {
+        long id = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong();
+        JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity("ReformCloud-Trigger-Default-" + id).build();
+        Trigger trigger = TriggerBuilder
+                .newTrigger()
+                .withIdentity("ReformCloud-Trigger-Default-" + id)
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMilliseconds(repeat).repeatForever())
+                .build();
+
+        try {
+            this.scheduler.scheduleJob(jobDetail, trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+
+        return this;
+    }
 }

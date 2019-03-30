@@ -5,10 +5,12 @@
 package systems.reformcloud.network;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
+import systems.reformcloud.utility.StringUtil;
 
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +70,32 @@ public class NettyHandler {
 
     public NettyHandler registerQueryHandler(String type, NetworkQueryInboundHandler networkQueryInboundHandler) {
         this.networkQueryInboundHandlerMap.put(type, networkQueryInboundHandler);
+        return this;
+    }
+
+    public NettyHandler registerHandler(String type, Class<? extends NetworkInboundHandler> clazz) {
+        try {
+            this.networkInboundHandlerMap.put(type, clazz.newInstance());
+        } catch (final InstantiationException | IllegalAccessException ex) {
+            StringUtil.printError(
+                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error while registering network handler", ex
+            );
+        }
+
+        return this;
+    }
+
+    public NettyHandler registerQueryHandler(String type, Class<? extends NetworkQueryInboundHandler> clazz) {
+        try {
+            this.networkQueryInboundHandlerMap.put(type, clazz.newInstance());
+        } catch (final InstantiationException | IllegalAccessException ex) {
+            StringUtil.printError(
+                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error while registering query network handler", ex
+            );
+        }
+
         return this;
     }
 
