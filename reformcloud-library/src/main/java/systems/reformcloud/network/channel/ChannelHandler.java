@@ -16,7 +16,6 @@ import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
-import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -38,7 +37,7 @@ public class ChannelHandler {
     @Getter
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
-    public ChannelHandler(TaskScheduler taskScheduler) {
+    public ChannelHandler() {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new QueueWorker());
     }

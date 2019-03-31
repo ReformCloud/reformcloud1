@@ -10,6 +10,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.language.languages.defaults.English;
 import systems.reformcloud.language.languages.defaults.German;
 import systems.reformcloud.language.utility.Language;
+import systems.reformcloud.utility.StringUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -27,7 +28,7 @@ public final class LanguageManager implements Serializable {
     public Language loaded;
 
     public LanguageManager(final String lang) {
-        if (lang == null) {
+        if (lang == null || lang.equals(StringUtil.NULL)) {
             this.loaded = new English();
             return;
         }

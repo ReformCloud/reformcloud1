@@ -106,7 +106,7 @@ public class ReformCloudAPIBungee implements IAPIService {
         new ReformCloudLibraryServiceProvider(new LoggerProvider(), configuration.getStringValue("controllerKey"), ethernetAddress.getHost(), new EventManager(), null);
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().setDebug(configuration.getBooleanValue("debug"));
 
-        this.channelHandler = new ChannelHandler(ReformCloudLibraryServiceProvider.getInstance().getTaskScheduler());
+        this.channelHandler = new ChannelHandler();
 
         this.proxyStartupInfo = configuration.getValue("startupInfo", TypeTokenAdaptor.getPROXY_STARTUP_INFO_TYPE());
         this.proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());

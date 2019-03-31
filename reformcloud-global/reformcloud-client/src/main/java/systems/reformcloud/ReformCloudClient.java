@@ -130,10 +130,10 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         this.cloudConfiguration = new CloudConfiguration(false);
-        new ReformCloudLibraryServiceProvider(loggerProvider, this.cloudConfiguration.getControllerKey(), cloudConfiguration.getEthernetAddress().getHost(), eventManager, null);
+        new ReformCloudLibraryServiceProvider(loggerProvider, this.cloudConfiguration.getControllerKey(), cloudConfiguration.getEthernetAddress().getHost(), eventManager, StringUtil.NULL);
 
         this.taskScheduler = ReformCloudLibraryServiceProvider.getInstance().getTaskScheduler();
-        this.channelHandler = new ChannelHandler(this.taskScheduler);
+        this.channelHandler = new ChannelHandler();
 
         this.registerNetworkHandlers();
         this.registerCommands();
