@@ -322,7 +322,7 @@ public class CloudServerStartupHandler {
             }
         }
 
-        FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPISpigot.jar"));
+        FileUtils.deleteFileIfExists(Paths.get(this.path + "/plugins/ReformAPISpigot.jar"));
         FileUtils.copyFile("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPISpigot.jar");
 
         ServerInfo serverInfo = new ServerInfo(
