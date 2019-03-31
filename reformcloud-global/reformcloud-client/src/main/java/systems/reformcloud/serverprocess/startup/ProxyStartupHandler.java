@@ -259,6 +259,7 @@ public class ProxyStartupHandler {
                         "-XX:-UseAdaptiveSizePolicy",
                         "-XX:CompileThreshold=100",
                         "-Djline.terminal=jline.UnsupportedTerminal",
+                        "-DIReallyKnowWhatIAmDoingISwear=true",
                         "-Xmx" + this.proxyStartupInfo.getProxyGroup().getMemory() + "M",
                         StringUtil.JAVA_JAR,
                         "BungeeCord.jar"
