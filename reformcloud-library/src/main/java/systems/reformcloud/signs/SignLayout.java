@@ -21,7 +21,7 @@ public class SignLayout {
 
     public SignLayout(String[] lines) {
         this.lines = lines;
-        this.materialName = "STAINED_CLAY";
+        this.materialName = "SAND";
         this.materialData = 0;
     }
 

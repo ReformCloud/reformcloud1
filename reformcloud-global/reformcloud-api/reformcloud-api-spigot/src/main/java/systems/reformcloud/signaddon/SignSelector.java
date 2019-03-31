@@ -191,6 +191,7 @@ public final class SignSelector {
                         .replace("%motd%", serverInfo.getMotd())
                         .replace("%online_players%", Integer.toString(serverInfo.getOnlinePlayers().size()))
                         .replace("%max_players%", Integer.toString(serverInfo.getServerGroup().getMaxPlayers()))
+                        .replace("%state%", serverInfo.getServerState().name())
                         .replace("%client%", serverInfo.getCloudProcess().getClient()));
             }
             this.updateSignForAllPlayers(sign, lines);
