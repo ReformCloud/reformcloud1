@@ -94,10 +94,11 @@ public class CloudServerStartupHandler {
 
         this.overrideEula();
         this.processStartupStage = ProcessStartupStage.COPY;
-        this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
-                .replace("%path%", this.path + ""));
 
         if (!this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
+            this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
+                    .replace("%path%", this.path + ""));
+
             if (loaded.getTemplateBackend().equals(TemplateBackend.URL)
                     && loaded.getTemplate_url() != null) {
                 new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplate_url());
