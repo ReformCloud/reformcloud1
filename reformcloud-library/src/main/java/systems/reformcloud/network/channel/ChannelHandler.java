@@ -40,7 +40,7 @@ public class ChannelHandler {
 
     public ChannelHandler(TaskScheduler taskScheduler) {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
-        taskScheduler.schedule(QueueWorker.class, 20);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new QueueWorker());
     }
 
     /**
