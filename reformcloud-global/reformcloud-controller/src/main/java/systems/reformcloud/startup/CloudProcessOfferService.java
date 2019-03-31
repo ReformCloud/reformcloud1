@@ -13,7 +13,7 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.out.PacketOutStartGameServer;
 import systems.reformcloud.network.out.PacketOutStartProxy;
-import systems.reformcloud.utility.map.Trio;
+import systems.reformcloud.utility.map.maps.Trio;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

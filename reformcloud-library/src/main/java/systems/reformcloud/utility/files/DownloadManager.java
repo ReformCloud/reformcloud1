@@ -6,7 +6,7 @@ package systems.reformcloud.utility.files;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.map.Double;
+import systems.reformcloud.utility.map.maps.Double;
 
 import java.io.IOException;
 import java.io.InputStream;
