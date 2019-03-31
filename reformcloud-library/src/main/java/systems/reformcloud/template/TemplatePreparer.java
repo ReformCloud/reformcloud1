@@ -19,7 +19,7 @@ public class TemplatePreparer {
      * Downloads the packet with the {@link DownloadManager}
      *
      * @param url
-     * @return this
+     * @return an instance of this class
      */
     public void loadTemplate(String url) {
         if (url.isEmpty())

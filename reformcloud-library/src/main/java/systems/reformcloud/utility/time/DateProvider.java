@@ -58,8 +58,6 @@ public final class DateProvider {
 
     /**
      * Throws a new RuntimeException
-     *
-     * @see RuntimeException(String)
      */
     public static void throwDateException() {
         throw new RuntimeException("DateProvider Exception");

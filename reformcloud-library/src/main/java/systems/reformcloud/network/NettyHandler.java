@@ -120,7 +120,7 @@ public class NettyHandler {
     /**
      * Get all names of all registered {@link NetworkInboundHandler}
      *
-     * @return {@link Set<String>} with HandleName of all {@link NetworkInboundHandler}
+     * @return set with HandleName of all inbound handlers
      */
     public Set<String> getHandlers() {
         return this.networkInboundHandlerMap.keySet();

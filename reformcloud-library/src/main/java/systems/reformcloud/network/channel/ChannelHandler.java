@@ -75,7 +75,7 @@ public class ChannelHandler {
     /**
      * Get a Set of all registered channels
      *
-     * @return {@link Set<String>} of all registered channel names as {@link String}
+     * @return a set of all registered channel names as {@link String}
      */
     public Set<String> getChannels() {
         return this.channelHandlerContextMap.keySet();

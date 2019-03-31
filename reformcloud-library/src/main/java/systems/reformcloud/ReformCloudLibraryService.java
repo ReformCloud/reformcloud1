@@ -116,7 +116,7 @@ public final class ReformCloudLibraryService {
     /**
      * New EventLoopGroup
      *
-     * @return new EpollEventLoopGroup if {@see Epoll} is available or a new NioEventLoopGroup
+     * @return new EpollEventLoopGroup if EPOLLis available or a new NioEventLoopGroup
      * @see EpollEventLoopGroup
      * @see NioEventLoopGroup
      */
@@ -127,7 +127,7 @@ public final class ReformCloudLibraryService {
     /**
      * New EventLoopGroup
      *
-     * @return new EpollEventLoopGroup with the given threads if {@see Epoll} is available or a new NioEventLoopGroup with the given threads
+     * @return new EpollEventLoopGroup with the given threads if EPOLL is available or a new NioEventLoopGroup with the given threads
      * @see EpollEventLoopGroup
      * @see NioEventLoopGroup
      */
@@ -138,7 +138,7 @@ public final class ReformCloudLibraryService {
     /**
      * New ServerSocketChannel
      *
-     * @return EpollServerSocketChannel-Class if {@see Epoll} is available or a new NioServerSocketChannel-Class
+     * @return EpollServerSocketChannel-Class if EPOLL is available or a new NioServerSocketChannel-Class
      * @see ServerSocketChannel
      */
     public static Class<? extends ServerSocketChannel> serverSocketChannel() {
@@ -148,7 +148,7 @@ public final class ReformCloudLibraryService {
     /**
      * New SocketChannel
      *
-     * @return EpollSocketChannel-Class if {@see Epoll} is available or a new NioSocketChannel-Class
+     * @return EpollSocketChannel-Class if EPOLL is available or a new NioSocketChannel-Class
      * @see SocketChannel
      */
     public static Class<? extends SocketChannel> clientSocketChannel() {

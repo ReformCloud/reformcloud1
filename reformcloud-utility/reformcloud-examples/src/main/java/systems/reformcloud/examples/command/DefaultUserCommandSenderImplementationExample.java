@@ -16,7 +16,7 @@ import java.util.Map;
 public class DefaultUserCommandSenderImplementationExample extends DefaultUserCommandSender {
     /**
      * Creates a new {@link CommandSender} with the given permissions
-     * The {@link Map<String, Boolean>} because a permission can be given or revoked
+     * The map because a permission can be given or revoked
      *                      Example: * : true ; but you don't want the exit command
      *                              reformcloud.command.exit : false
      * If the user has {@code "*"} permissions, he has all permissions
