@@ -4,8 +4,8 @@
 
 package systems.reformcloud.template;
 
-import systems.reformcloud.utility.files.DownloadManager;
 import lombok.AllArgsConstructor;
+import systems.reformcloud.utility.files.DownloadManager;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
