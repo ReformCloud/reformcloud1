@@ -141,7 +141,7 @@ public final class ReformCloudLibraryService {
      * @return EpollServerSocketChannel-Class if {@see Epoll} is available or a new NioServerSocketChannel-Class
      * @see ServerSocketChannel
      */
-    public static Class<? extends ServerSocketChannel> serverSocketChanel() {
+    public static Class<? extends ServerSocketChannel> serverSocketChannel() {
         return EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
     }
 

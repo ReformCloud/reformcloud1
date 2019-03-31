@@ -81,7 +81,7 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
                     .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                     .option(ChannelOption.AUTO_READ, true)
 
-                    .channel(ReformCloudLibraryService.serverSocketChanel());
+                    .channel(ReformCloudLibraryService.serverSocketChannel());
 
             ChannelFuture channelFuture = serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort())
                     .addListener((handler) -> {
