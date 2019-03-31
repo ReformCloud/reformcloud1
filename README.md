@@ -1,6 +1,6 @@
 # ReformCloud 1.3
 
-An efficient Minecraft-Network Management System
+Official Cloud System
 
 [![pipeline status](https://gitlab.com/_Klaro/reformcloud/badges/master/pipeline.svg)](https://gitlab.com/_Klaro/reformcloud/commits/master)
 
