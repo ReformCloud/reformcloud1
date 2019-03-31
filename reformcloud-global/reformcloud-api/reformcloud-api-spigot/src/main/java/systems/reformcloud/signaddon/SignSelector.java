@@ -341,12 +341,11 @@ public final class SignSelector {
 
                     if (SpigotBootstrap.getInstance().isEnabled()) {
                         SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
-                            if (!sign.getServerInfo().getServerState().isJoineable() || sign.getServerInfo().getServerState().equals(ServerState.HIDDEN))
-                                return;
-
-                            if (sign.getServerInfo() == null)
+                            if (sign.getServerInfo() == null
+                                    || !sign.getServerInfo().getServerState().isJoineable()
+                                    || sign.getServerInfo().getServerState().equals(ServerState.HIDDEN)) {
                                 SignSelector.this.setLoading(sign, this.currentLoadingLayout);
-                            else if (serverGroup.isMaintenance())
+                            } else if (serverGroup.isMaintenance())
                                 SignSelector.this.setMaintenance(sign);
                             else if (sign.getServerInfo().getOnlinePlayers().size() == 0)
                                 SignSelector.this.setEmpty(sign);
