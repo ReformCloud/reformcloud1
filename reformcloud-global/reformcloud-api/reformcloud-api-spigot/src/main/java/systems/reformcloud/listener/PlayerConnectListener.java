@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.launcher.SpigotBootstrap;
-import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packets.PacketOutCheckPlayer;
@@ -114,10 +113,8 @@ public class PlayerConnectListener implements Listener {
 
         if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers()) {
             serverInfo.setFull(true);
-            serverInfo.setServerState(serverInfo.getServerState().equals(ServerState.HIDDEN) ? ServerState.HIDDEN : ServerState.NOT_READY);
         } else {
             serverInfo.setFull(false);
-            serverInfo.setServerState(serverInfo.getServerState().equals(ServerState.HIDDEN) ? ServerState.HIDDEN : ServerState.READY);
         }
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
