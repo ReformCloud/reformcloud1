@@ -43,7 +43,7 @@ public class PlayerConnectListener implements Listener {
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacket(
                 new AwaitingPacket(
                         ReformCloudAPISpigot.getInstance().getChannelHandler().getChannel(
-                                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()
+                                "ReformCloudController"
                         ), new PacketOutCheckPlayer(event.getUniqueId())
                 )
         );
