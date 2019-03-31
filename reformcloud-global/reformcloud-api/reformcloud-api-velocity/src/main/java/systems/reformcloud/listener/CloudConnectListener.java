@@ -131,8 +131,8 @@ public final class CloudConnectListener {
         else
             proxyInfo.setFull(false);
 
+        ReformCloudAPIVelocity.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLoginPlayer(event.getPlayer().getUniqueId()));
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
-                new PacketOutLoginPlayer(event.getPlayer().getUniqueId()),
                 new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getUsername() + "/UUID="
                         + event.getPlayer().getUniqueId() + "/IP="
@@ -152,8 +152,10 @@ public final class CloudConnectListener {
             proxyInfo.setFull(false);
 
         proxyInfo.setOnline(proxyInfo.getOnline() - 1);
+
+        ReformCloudAPIVelocity.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()), new PacketOutProxyInfoUpdate(proxyInfo),
+                new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getUsername() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getRemoteAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));

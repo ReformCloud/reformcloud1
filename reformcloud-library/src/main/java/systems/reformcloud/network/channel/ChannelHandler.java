@@ -167,6 +167,10 @@ public class ChannelHandler {
         this.packetQueue.offer(new AwaitingPacket(channelHandlerContext, packet));
     }
 
+    public void sendDirectPacket(String to, Packet packet) {
+        this.sendPacket(new AwaitingPacket(this.getChannel(to), packet));
+    }
+
     public void sendPacket(AwaitingPacket awaitingPacket) {
         if (awaitingPacket.getChannelHandlerContext().channel().eventLoop().inEventLoop()) {
             awaitingPacket.getChannelHandlerContext().channel().writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);

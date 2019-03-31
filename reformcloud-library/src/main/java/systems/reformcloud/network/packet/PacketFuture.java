@@ -61,7 +61,7 @@ public final class PacketFuture implements Serializable {
 
     public void send(String to) {
         this.executorService.execute(() -> {
-            this.channelHandler.sendPacketSynchronized(to, sentPacket);
+            this.channelHandler.sendDirectPacket(to, sentPacket);
 
             Packet packet = this.syncUninterruptedly();
             if (packet.getResult() == null && this.onFailure != null)
@@ -81,7 +81,7 @@ public final class PacketFuture implements Serializable {
 
     public void send(String to, long timeout, TimeUnit timeUnit) {
         executorService.execute(() -> {
-            this.channelHandler.sendPacketSynchronized(to, sentPacket);
+            this.channelHandler.sendDirectPacket(to, sentPacket);
 
             Packet packet = this.syncUninterruptedly(timeout, timeUnit);
             if (packet.getResult() == null && this.onFailure != null)

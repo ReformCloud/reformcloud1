@@ -134,8 +134,8 @@ public final class CloudConnectListener implements Listener {
         else
             proxyInfo.setFull(false);
 
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLoginPlayer(event.getConnection().getUniqueId()));
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
-                new PacketOutLoginPlayer(event.getConnection().getUniqueId()),
                 new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getConnection().getName() + "/UUID="
                         + event.getConnection().getUniqueId() + "/IP="
@@ -155,8 +155,8 @@ public final class CloudConnectListener implements Listener {
             proxyInfo.setFull(false);
 
         proxyInfo.setOnline(proxyInfo.getOnline() - 1);
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()),
                 new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getName() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() +
