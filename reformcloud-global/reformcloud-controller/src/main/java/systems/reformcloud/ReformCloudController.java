@@ -200,7 +200,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         this.shutdownHook = new Thread(this::shutdownAll, "Shutdown-Hook");
         Runtime.getRuntime().addShutdownHook(this.shutdownHook);
 
-        //TODO: Remove 2
+        //TODO: Remove
 
         this.addonParallelLoader.enableAddons();
         this.checkForUpdates();
