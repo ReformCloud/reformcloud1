@@ -16,6 +16,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packets.PacketOutCheckPlayer;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
@@ -40,7 +41,13 @@ public class PlayerConnectListener implements Listener {
             return;
         }
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutCheckPlayer(event.getUniqueId()));
+        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacket(
+                new AwaitingPacket(
+                        ReformCloudAPISpigot.getInstance().getChannelHandler().getChannel(
+                                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()
+                        ), new PacketOutCheckPlayer(event.getUniqueId())
+                )
+        );
         ReformCloudLibraryService.sleep(45);
         if (!SpigotBootstrap.getInstance().getAcceptedPlayers().contains(event.getUniqueId())) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));

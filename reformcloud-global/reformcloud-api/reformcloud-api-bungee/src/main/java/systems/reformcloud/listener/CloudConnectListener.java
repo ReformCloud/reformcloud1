@@ -156,7 +156,8 @@ public final class CloudConnectListener implements Listener {
 
         proxyInfo.setOnline(proxyInfo.getOnline() - 1);
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()), new PacketOutProxyInfoUpdate(proxyInfo),
+                new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()),
+                new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getName() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));

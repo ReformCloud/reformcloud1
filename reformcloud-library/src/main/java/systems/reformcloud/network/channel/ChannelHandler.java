@@ -188,7 +188,6 @@ public class ChannelHandler {
         if (this.channelHandlerContextMap.containsKey(channel))
             for (Packet packet : packets) {
                 this.sendPacketSynchronized(channel, packet);
-                ReformCloudLibraryService.sleep(10);
             }
 
         return this.channelHandlerContextMap.containsKey(channel);
