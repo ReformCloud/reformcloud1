@@ -456,6 +456,8 @@ public class CloudServerStartupHandler {
 
         if (!this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC))
             FileUtils.deleteFullDirectory(path);
+        else
+            FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPISpigot.jar"));
 
         ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
                 new PacketOutRemoveProcess(ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(this.serverStartupInfo.getUid()))
