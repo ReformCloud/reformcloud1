@@ -2,8 +2,6 @@
 
 Official Cloud System
 
-[![pipeline status](https://gitlab.com/_Klaro/reformcloud/badges/master/pipeline.svg)](https://gitlab.com/_Klaro/reformcloud/commits/master)
-
 ![LICENCE](https://img.shields.io/badge/license-Apache--2.0-brightgreen.svg)
 
 > <b>IMPORTANT NOTE:</b> ReformCloud is still in development. No stable version is available. The Full System is in beta support
