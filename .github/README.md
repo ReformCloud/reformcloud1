@@ -31,7 +31,7 @@ See also the list of [contributors](https://gitlab.com/_Klaro/reformcloud/graphs
 
 ## License
 
-This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LICENSE) file for details
+This project is licensed under the Apache-2.0 License - see the [LICENSE.md](../LICENSE) file for details
 
 ## Support
 
