@@ -39,10 +39,6 @@
           <groupId>com.moandjiezana.toml</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>guice</artifactId>
           <groupId>com.google.inject</groupId>
         </exclusion>
@@ -67,9 +63,21 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.5</version>
+        <version>2.6</version>
       <scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>org.quartz-scheduler</groupId>
+          <artifactId>quartz</artifactId>
+          <version>2.2.1</version>
+          <scope>provided</scope>
+          <exclusions>
+              <exclusion>
+                  <artifactId>c3p0</artifactId>
+                  <groupId>c3p0</groupId>
+              </exclusion>
+          </exclusions>
+      </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>

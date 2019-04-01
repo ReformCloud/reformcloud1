@@ -16,7 +16,6 @@ import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
-import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -38,9 +37,9 @@ public class ChannelHandler {
     @Getter
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
-    public ChannelHandler(TaskScheduler taskScheduler) {
+    public ChannelHandler() {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
-        taskScheduler.schedule(QueueWorker.class, 20);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new QueueWorker());
     }
 
     /**
@@ -76,7 +75,7 @@ public class ChannelHandler {
     /**
      * Get a Set of all registered channels
      *
-     * @return {@link Set<String>} of all registered channel names as {@link String}
+     * @return a set of all registered channel names as {@link String}
      */
     public Set<String> getChannels() {
         return this.channelHandlerContextMap.keySet();
@@ -168,6 +167,10 @@ public class ChannelHandler {
         this.packetQueue.offer(new AwaitingPacket(channelHandlerContext, packet));
     }
 
+    public void sendDirectPacket(String to, Packet packet) {
+        this.sendPacket(new AwaitingPacket(this.getChannel(to), packet));
+    }
+
     public void sendPacket(AwaitingPacket awaitingPacket) {
         if (awaitingPacket.getChannelHandlerContext().channel().eventLoop().inEventLoop()) {
             awaitingPacket.getChannelHandlerContext().channel().writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
@@ -188,7 +191,6 @@ public class ChannelHandler {
         if (this.channelHandlerContextMap.containsKey(channel))
             for (Packet packet : packets) {
                 this.sendPacketSynchronized(channel, packet);
-                ReformCloudLibraryService.sleep(10);
             }
 
         return this.channelHandlerContextMap.containsKey(channel);

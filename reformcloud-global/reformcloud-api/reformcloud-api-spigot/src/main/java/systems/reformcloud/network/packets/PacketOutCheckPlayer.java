@@ -16,6 +16,8 @@ import java.util.UUID;
 
 public final class PacketOutCheckPlayer extends Packet {
     public PacketOutCheckPlayer(final UUID uuid) {
-        super("PlayerAccepted", new Configuration().addStringProperty("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()).addProperty("uuid", uuid));
+        super("PlayerAccepted", new Configuration()
+                .addStringProperty("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
+                .addProperty("uuid", uuid));
     }
 }

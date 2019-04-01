@@ -64,7 +64,7 @@ public class CloudProcessScreenService implements Runnable {
     /**
      * Get all CloudServerStartupHandlers
      *
-     * @return a {@link List<CloudServerStartupHandler>} of all registered CloudServerStartupHandlers
+     * @return a list of all registered CloudServerStartupHandlers
      */
     public List<CloudServerStartupHandler> getRegisteredServerProcesses() {
         return new ArrayList<>(this.cloudServerStartupHandlerMap.values());
@@ -73,7 +73,7 @@ public class CloudProcessScreenService implements Runnable {
     /**
      * Get all ProxyStartupHandlers
      *
-     * @return a {@link List<ProxyStartupHandler>} of all registered ProxyStartupHandlers
+     * @return a list of all registered ProxyStartupHandlers
      */
     public List<ProxyStartupHandler> getRegisteredProxyProcesses() {
         return new ArrayList<>(this.proxyStartupHandlerMap.values());

@@ -152,7 +152,7 @@ public class ServerProcessManager {
     /**
      * Get all registeredProxyProcesses by UID
      *
-     * @return {@link Set<UUID>} with UID {@link UUID} of all registered ProxyProcesses
+     * @return a set with UID of all registered ProxyProcesses
      */
     public Set<UUID> getRegisteredProxyUIDProcesses() {
         return this.proxyProcessUIDMap.keySet();
@@ -161,7 +161,7 @@ public class ServerProcessManager {
     /**
      * Get all registeredProxyProcesses by name
      *
-     * @return {@link Set<String>} with name {@link String} of all registered ProxyProcesses
+     * @return set with name of all registered ProxyProcesses
      */
     public Set<String> getRegisteredProxyNameProcesses() {
         return this.proxyProcessNameMap.keySet();
@@ -170,7 +170,7 @@ public class ServerProcessManager {
     /**
      * Get all registeredServerProcesses by UID
      *
-     * @return {@link Set<UUID>} with UID {@link UUID} of all registered ServerProcesses
+     * @return set with UID of all registered ServerProcesses
      */
     public Set<UUID> getRegisteredServerUIDProcesses() {
         return this.serverProcessUIDMap.keySet();
@@ -179,7 +179,7 @@ public class ServerProcessManager {
     /**
      * Get all registeredServerProcesses by name
      *
-     * @return {@link Set<String>} with names {@link String} of all registered ServerProcesses
+     * @return a set with names of all registered ServerProcesses
      */
     public Set<String> getRegisteredServerNameProcesses() {
         return this.serverProcessNameMap.keySet();
@@ -255,7 +255,7 @@ public class ServerProcessManager {
      * Get all online Servers
      *
      * @param name
-     * @return {@link List<String>} of all registered serverProcesses
+     * @return a list of all registered serverProcesses
      */
     public List<String> getOnlineServers(final String name) {
         List<String> list = new ArrayList<>();
@@ -271,7 +271,7 @@ public class ServerProcessManager {
      * Get all online Proxies
      *
      * @param name
-     * @return {@link List<String>} of all registered proxyProcesses
+     * @return a list of all registered proxyProcesses
      */
     public List<String> getOnlineProxies(final String name) {
         List<String> list = new ArrayList<>();
@@ -297,7 +297,7 @@ public class ServerProcessManager {
      * Get next free port
      *
      * @param startPort
-     * @return next free port, starting at the given {@param startPort}
+     * @return next free port, starting at the given startport
      */
     public int nextFreePort(int startPort) {
         while (this.ports.contains(startPort)) {
@@ -309,7 +309,7 @@ public class ServerProcessManager {
     /**
      * Get all registered ServerInfo
      *
-     * @return {@link ArrayList<ServerInfo>} of all serverProcesses
+     * @return a list of all serverProcesses
      */
     public List<ServerInfo> getAllRegisteredServerProcesses() {
         return new ArrayList<>(this.serverProcessUIDMap.values());
@@ -318,7 +318,7 @@ public class ServerProcessManager {
     /**
      * Get all registered ProxyInfo
      *
-     * @return {@link ArrayList<ProxyInfo>} of all proxyProcesses
+     * @return a List of all proxyProcesses
      */
     public List<ProxyInfo> getAllRegisteredProxyProcesses() {
         return new ArrayList<>(this.proxyProcessUIDMap.values());

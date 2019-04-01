@@ -19,6 +19,9 @@ public final class PacketInPlayerAccepted implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(configuration.getStringValue("name"),
-                new Packet("PlayerAccepted", new Configuration().addBooleanProperty("accepted", ReformCloudController.getInstance().getUuid().contains(configuration.getValue("uuid", UUID.class))).addProperty("uuid", configuration.getValue("uuid", UUID.class))));
+                new Packet("PlayerAccepted", new Configuration()
+                        .addBooleanProperty("accepted", ReformCloudController.getInstance().getUuid()
+                                .contains(configuration.getValue("uuid", UUID.class)))
+                        .addProperty("uuid", configuration.getValue("uuid", UUID.class))));
     }
 }

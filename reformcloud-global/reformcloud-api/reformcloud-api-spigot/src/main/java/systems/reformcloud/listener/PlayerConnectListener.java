@@ -14,8 +14,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.launcher.SpigotBootstrap;
-import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packets.PacketOutCheckPlayer;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
@@ -40,8 +40,14 @@ public class PlayerConnectListener implements Listener {
             return;
         }
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutCheckPlayer(event.getUniqueId()));
-        ReformCloudLibraryService.sleep(25);
+        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacket(
+                new AwaitingPacket(
+                        ReformCloudAPISpigot.getInstance().getChannelHandler().getChannel(
+                                "ReformCloudController"
+                        ), new PacketOutCheckPlayer(event.getUniqueId())
+                )
+        );
+        ReformCloudLibraryService.sleep(45);
         if (!SpigotBootstrap.getInstance().getAcceptedPlayers().contains(event.getUniqueId())) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));
             return;
@@ -107,10 +113,8 @@ public class PlayerConnectListener implements Listener {
 
         if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers()) {
             serverInfo.setFull(true);
-            serverInfo.setServerState(serverInfo.getServerState().equals(ServerState.HIDDEN) ? ServerState.HIDDEN : ServerState.NOT_READY);
         } else {
             serverInfo.setFull(false);
-            serverInfo.setServerState(serverInfo.getServerState().equals(ServerState.HIDDEN) ? ServerState.HIDDEN : ServerState.READY);
         }
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));

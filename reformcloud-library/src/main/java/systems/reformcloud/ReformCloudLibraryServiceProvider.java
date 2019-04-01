@@ -36,7 +36,7 @@ public final class ReformCloudLibraryServiceProvider {
     private String key, controllerIP;
 
     private final NettyHandler nettyHandler = new NettyHandler();
-    private final TaskScheduler taskScheduler = new TaskScheduler();
+    private TaskScheduler taskScheduler;
 
     /**
      * Creates a new Instance of the {ReformCloudLibraryServiceProvider}
@@ -52,6 +52,9 @@ public final class ReformCloudLibraryServiceProvider {
             instance = this;
         else
             throw new InstanceAlreadyExistsException();
+
+        if (lang != null)
+            this.taskScheduler = new TaskScheduler();
 
         this.key = key;
         this.controllerIP = controllerIP;

@@ -4,11 +4,6 @@
 
 package systems.reformcloud.web;
 
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.utility.cloudsystem.EthernetAddress;
-import systems.reformcloud.web.handler.WebServerHandler;
-import systems.reformcloud.web.utils.WebHandlerAdapter;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -20,6 +15,11 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import lombok.Getter;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.utility.cloudsystem.EthernetAddress;
+import systems.reformcloud.web.handler.WebServerHandler;
+import systems.reformcloud.web.utils.WebHandlerAdapter;
 
 import javax.net.ssl.SSLException;
 import java.io.File;
@@ -71,7 +71,7 @@ public class ReformWebServer {
                 .childOption(ChannelOption.AUTO_READ, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
 
-                .channel(ReformCloudLibraryService.serverSocketChanel())
+                .channel(ReformCloudLibraryService.serverSocketChannel())
 
                 .childHandler(new ChannelInitializer<Channel>() {
                     @Override

@@ -74,7 +74,7 @@ public final class CommandSelectors implements Listener, CommandExecutor {
                     final Block block = ((Player) commandSender).getTargetBlock((Set<Material>) null, 15);
                     if (block.getState() instanceof org.bukkit.block.Sign) {
                         if (SignSelector.getInstance().getSign(block.getLocation()) == null) {
-                            ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutCreateSign(new Sign(UUID.randomUUID(), SignSelector.getInstance().toSignPosition(strings[3], block.getLocation()), null)));
+                            ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutCreateSign(new Sign(UUID.randomUUID(), SignSelector.getInstance().toSignPosition(strings[3], block.getLocation()), null)));
                             commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-create-success"));
                             return true;
                         } else {
@@ -95,7 +95,7 @@ public final class CommandSelectors implements Listener, CommandExecutor {
                     if (block.getState() instanceof org.bukkit.block.Sign) {
                         final Sign sign = SignSelector.getInstance().getSign(block.getLocation());
                         if (sign != null) {
-                            ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutDeleteSign(sign));
+                            ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutDeleteSign(sign));
                             commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-delete-success"));
                             return true;
                         } else {
@@ -160,7 +160,7 @@ public final class CommandSelectors implements Listener, CommandExecutor {
 
                 final Block block = event.getClickedBlock();
                 if (SignSelector.getInstance().getSign(block.getLocation()) == null) {
-                    ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutCreateSign(new Sign(UUID.randomUUID(), SignSelector.getInstance().toSignPosition(group, block.getLocation()), null)));
+                    ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutCreateSign(new Sign(UUID.randomUUID(), SignSelector.getInstance().toSignPosition(group, block.getLocation()), null)));
                     player.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-create-success"));
                 } else {
                     player.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-create-already-exists"));
@@ -176,7 +176,7 @@ public final class CommandSelectors implements Listener, CommandExecutor {
                 final Block block = event.getClickedBlock();
                 final Sign sign = SignSelector.getInstance().getSign(block.getLocation());
                 if (sign != null && sign.getSignPosition().getTargetGroup().equals(group)) {
-                    ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutDeleteSign(sign));
+                    ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutDeleteSign(sign));
                     player.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-delete-success"));
                 } else {
                     player.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-delete-not-exists"));

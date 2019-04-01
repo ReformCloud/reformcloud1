@@ -28,6 +28,12 @@ public final class TaskScheduler implements Serializable {
     }
 
     public TaskScheduler schedule(Class<? extends Job> clazz, TimeUnit timeUnit, long repeat) {
+        try {
+            if (scheduler.isInStandbyMode())
+                scheduler.start();
+        } catch (final SchedulerException ignored) {
+        }
+
         long id = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong();
         JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity("ReformCloud-Trigger-Default-" + id).build();
         Trigger trigger = TriggerBuilder
@@ -46,6 +52,12 @@ public final class TaskScheduler implements Serializable {
     }
 
     public TaskScheduler schedule(Class<? extends Job> clazz, long repeat) {
+        try {
+            if (scheduler.isInStandbyMode())
+                scheduler.start();
+        } catch (final SchedulerException ignored) {
+        }
+
         long id = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong();
         JobDetail jobDetail = JobBuilder.newJob(clazz).withIdentity("ReformCloud-Trigger-Default-" + id).build();
         Trigger trigger = TriggerBuilder

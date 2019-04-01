@@ -94,10 +94,11 @@ public class CloudServerStartupHandler {
 
         this.overrideEula();
         this.processStartupStage = ProcessStartupStage.COPY;
-        this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
-                .replace("%path%", this.path + ""));
 
         if (!this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
+            this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
+                    .replace("%path%", this.path + ""));
+
             if (loaded.getTemplateBackend().equals(TemplateBackend.URL)
                     && loaded.getTemplate_url() != null) {
                 new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplate_url());
@@ -322,7 +323,7 @@ public class CloudServerStartupHandler {
             }
         }
 
-        FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPISpigot.jar"));
+        FileUtils.deleteFileIfExists(Paths.get(this.path + "/plugins/ReformAPISpigot.jar"));
         FileUtils.copyFile("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar", this.path + "/plugins/ReformAPISpigot.jar");
 
         ServerInfo serverInfo = new ServerInfo(
@@ -456,6 +457,8 @@ public class CloudServerStartupHandler {
 
         if (!this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC))
             FileUtils.deleteFullDirectory(path);
+        else
+            FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPISpigot.jar"));
 
         ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
                 new PacketOutRemoveProcess(ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(this.serverStartupInfo.getUid()))

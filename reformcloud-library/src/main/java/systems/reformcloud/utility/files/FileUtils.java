@@ -172,7 +172,8 @@ public class FileUtils {
      */
     public static void deleteFileIfExists(Path path) {
         try {
-            Files.deleteIfExists(path);
+            if (Files.exists(path))
+                Files.delete(path);
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not delete file", ex);
         }

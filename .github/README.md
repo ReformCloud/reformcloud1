@@ -1,6 +1,6 @@
 # ReformCloud 1.3
 
-An efficient Minecraft-Network Management System
+Official Cloud System
 
 [![pipeline status](https://gitlab.com/_Klaro/reformcloud/badges/master/pipeline.svg)](https://gitlab.com/_Klaro/reformcloud/commits/master)
 
@@ -31,7 +31,7 @@ See also the list of [contributors](https://gitlab.com/_Klaro/reformcloud/graphs
 
 ## License
 
-This project is licensed under the Apache-2.0 License - see the [LICENSE.md](LICENSE) file for details
+This project is licensed under the Apache-2.0 License - see the [LICENSE.md](../LICENSE) file for details
 
 ## Support
 
