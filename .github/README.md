@@ -27,13 +27,13 @@ To run ReformCloud you need
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gitlab.com/_Klaro/reformcloud/blob/master/.gitlab/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/reformcloudproject/reformcloud/blob/progress/.github/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-* **Pasqual K.** - *Initial work* - [Profile](https://gitlab.com/_Klaro)
+* **Pasqual K.** - *Initial work* - [Profile](https://github.com/KlaroYT)
 
-See also the list of [contributors](https://gitlab.com/_Klaro/reformcloud/graphs/master) who participated in this project.
+See also the list of [contributors](https://github.com/reformcloudproject/reformcloud/graphs/contributors) who participated in this project.
 
 ## License
 
