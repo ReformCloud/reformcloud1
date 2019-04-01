@@ -2,7 +2,15 @@
 
 Official Cloud System
 
-![LICENCE](https://img.shields.io/badge/license-Apache--2.0-brightgreen.svg)
+![LICENCE](https://img.shields.io/github/license/reformcloudproject/reformcloud.svg)
+![RELEASE](https://img.shields.io/github/release/reformcloudproject/reformcloud.svg)
+![ISSUES](https://img.shields.io/github/issues/reformcloudproject/reformcloud.svg)
+![CLOSES_ISSUES](https://img.shields.io/github/issues-closed/reformcloudproject/reformcloud.svg)
+![PRS](https://img.shields.io/github/issues-pr/reformcloudproject/reformcloud.svg)
+![CLOSES_PRS](https://img.shields.io/github/issues-pr-closed/reformcloudproject/reformcloud.svg)
+![UPDATED](https://img.shields.io/github/last-commit/reformcloudproject/reformcloud.svg)
+![FORKS](https://img.shields.io/github/forks/reformcloudproject/reformcloud.svg)
+![STARS](https://img.shields.io/github/stars/reformcloudproject/reformcloud.svg)
 
 > <b>IMPORTANT NOTE:</b> ReformCloud is still in development. No stable version is available. The Full System is in beta support
 
