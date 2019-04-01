@@ -18,7 +18,7 @@ import java.util.UUID;
 public final class PacketInPlayerAccepted implements NetworkInboundHandler {
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(configuration.getStringValue("name"),
+        ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(configuration.getStringValue("name"),
                 new Packet("PlayerAccepted", new Configuration()
                         .addBooleanProperty("accepted", ReformCloudController.getInstance().getUuid()
                                 .contains(configuration.getValue("uuid", UUID.class)))
