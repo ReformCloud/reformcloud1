@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,14 +23,13 @@ import systems.reformcloud.network.packets.PacketOutDeleteSign;
 import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.signs.Sign;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.12.2018
  */
 
-public final class CommandSelectors implements Listener, CommandExecutor {
+public final class CommandSelectors implements Listener, CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player))
@@ -193,5 +193,30 @@ public final class CommandSelectors implements Listener, CommandExecutor {
         itemStack.setItemMeta(itemMeta);
 
         return itemStack;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (strings.length == 0)
+            return Collections.singletonList("selector");
+        else if (strings.length == 1)
+            return Collections.singletonList("signs");
+        else if (strings.length == 2) {
+            if (strings[1].startsWith("n")) {
+                return Collections.singletonList("new");
+            } else if (strings[1].startsWith("r")) {
+                return Collections.singletonList("remove");
+            } else if (strings[1].startsWith("l")) {
+                return Collections.singletonList("list");
+            }
+
+            return Arrays.asList("new", "remove", "list");
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("new")) {
+            List<String> groups = new ArrayList<>();
+            ReformCloudAPISpigot.getInstance().getAllServerGroups().forEach(serverGroup -> groups.add(serverGroup.getName()));
+            return groups;
+        }
+
+        return Collections.singletonList("/selectors selector <signs> new <group>");
     }
 }

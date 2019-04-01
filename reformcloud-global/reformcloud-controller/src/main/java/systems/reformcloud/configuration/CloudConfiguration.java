@@ -284,7 +284,7 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-spigot-command-signs-delete-not-exists", "%prefix% §7Sign doesn't exits")
                     .addStringProperty("internal-api-spigot-command-signs-list", "%prefix% §7The Following Signs are registered:")
                     .addStringProperty("internal-api-spigot-command-signs-usage-1", "%prefix% §7/selectors selector <signs> new <group>")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/selectors selector <signs> remove <group-name>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/selectors selector <signs> remove")
                     .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/selectors selector <signs> list")
 
                     .write(Paths.get(messagePath));

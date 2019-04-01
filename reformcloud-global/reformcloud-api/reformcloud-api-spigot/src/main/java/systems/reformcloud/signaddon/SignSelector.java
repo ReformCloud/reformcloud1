@@ -86,6 +86,7 @@ public final class SignSelector {
 
                     PluginCommand pluginCommand = SpigotBootstrap.getInstance().getCommand("selectors");
                     pluginCommand.setExecutor(commandSelectors);
+                    pluginCommand.setTabCompleter(commandSelectors);
                     pluginCommand.setPermission("reformcloud.command.selectors");
 
                     this.worker = new Worker(this.signLayoutConfiguration.getLoadingLayout().getPerSecondAnimation());
