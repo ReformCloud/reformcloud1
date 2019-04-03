@@ -32,7 +32,7 @@ public class ServerGroup implements Serializable {
 
     protected int memory, minOnline, maxOnline, maxPlayers, startPort;
 
-    protected boolean maintenance, save_logs;
+    protected boolean maintenance, save_logs, one_startup_when_server_full;
     protected ServerModeType serverModeType;
 
     protected SpigotVersions spigotVersions;

@@ -33,6 +33,8 @@ import java.util.HashMap;
  */
 
 public class PlayerConnectListener implements Listener {
+    private boolean started = false;
+
     @EventHandler(priority = EventPriority.LOW)
     public void handle(final AsyncPlayerPreLoginEvent event) {
         if (!ReformCloudAPISpigot.getInstance().getServerInfo().getServerState().isJoineable()) {
@@ -111,13 +113,19 @@ public class PlayerConnectListener implements Listener {
         serverInfo.getOnlinePlayers().add(event.getPlayer().getUniqueId());
         serverInfo.setOnline(serverInfo.getOnline() + 1);
 
-        if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers()) {
+        if (serverInfo.getOnline() >= serverInfo.getServerGroup().getMaxPlayers()) {
             serverInfo.setFull(true);
         } else {
             serverInfo.setFull(false);
         }
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
+        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isOne_startup_when_server_full()
+                && serverInfo.isFull()
+                && !started) {
+            started = true;
+            ReformCloudAPISpigot.getInstance().startGameServer(serverInfo.getServerGroup().getName());
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -129,7 +137,7 @@ public class PlayerConnectListener implements Listener {
 
         serverInfo.setOnline(serverInfo.getOnline() - 1);
 
-        if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers()) {
+        if (serverInfo.getOnline() >= serverInfo.getServerGroup().getMaxPlayers()) {
             serverInfo.setFull(true);
         } else {
             serverInfo.setFull(false);
