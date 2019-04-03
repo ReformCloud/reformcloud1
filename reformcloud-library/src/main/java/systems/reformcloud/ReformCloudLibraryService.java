@@ -21,6 +21,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
+import systems.reformcloud.cache.Cache;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
@@ -240,5 +241,9 @@ public final class ReformCloudLibraryService {
 
     public static boolean check(Checkable<Object> checkable, final Object toCheck) {
         return toCheck != null && checkable != null && checkable.isChecked(toCheck);
+    }
+
+    public static <K, V> Cache<K, V> newCache(long maxSize) {
+        return new Cache<>(maxSize);
     }
 }
