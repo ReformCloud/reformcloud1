@@ -322,7 +322,7 @@ public class ReformCloudAPIBungee implements IAPIService {
 
     @Override
     public List<ServerInfo> getAllRegisteredServers(String groupName) {
-        return null;
+        return new ArrayList<>(this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerGroupProcesses(groupName));
     }
 
     @Override
