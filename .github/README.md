@@ -4,6 +4,7 @@ Official Cloud System
 
 ![LICENCE](https://img.shields.io/github/license/reformcloudproject/reformcloud.svg)
 ![RELEASE](https://img.shields.io/github/release/reformcloudproject/reformcloud.svg)
+![BUILD_STATUS](https://travis-ci.com/reformcloudproject/reformcloud.svg?branch=progress)
 ![ISSUES](https://img.shields.io/github/issues/reformcloudproject/reformcloud.svg)
 ![CLOSES_ISSUES](https://img.shields.io/github/issues-closed/reformcloudproject/reformcloud.svg)
 ![PRS](https://img.shields.io/github/issues-pr/reformcloudproject/reformcloud.svg)
