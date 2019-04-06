@@ -11,6 +11,7 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.CommandManager;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.time.DateProvider;
@@ -42,7 +43,7 @@ final class ReformCloudLauncher {
                 Thread.sleep(2000);
             } catch (final InterruptedException ignored) {
             }
-            System.exit(1);
+            System.exit(ExitUtil.STARTED_AS_ROOT);
             return;
         }
 

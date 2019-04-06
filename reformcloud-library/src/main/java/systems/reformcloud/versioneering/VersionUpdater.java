@@ -6,6 +6,7 @@ package systems.reformcloud.versioneering;
 
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
@@ -21,7 +22,7 @@ public final class VersionUpdater {
         if (!VersionLoader.getNewestVersion().equalsIgnoreCase(StringUtil.REFORM_VERSION)) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/update/latest/" + whereIAm() + ".jar", whereIAm() + "-Update-" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong() + ".jar");
             FileUtils.deleteOnExit(new File(FileUtils.getInternalFileName()));
-            System.exit(1);
+            System.exit(ExitUtil.VERSION_UPDATE);
         }
     }
 

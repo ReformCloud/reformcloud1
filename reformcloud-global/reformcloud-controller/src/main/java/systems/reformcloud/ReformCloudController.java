@@ -55,6 +55,7 @@ import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.startup.CloudProcessOfferService;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.runtime.Reload;
@@ -894,7 +895,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
     @Override
     public void removeInternalProcess() {
-        System.exit(0);
+        System.exit(ExitUtil.STOPPED_SUCESS);
     }
 
     public void reloadAllSave() {

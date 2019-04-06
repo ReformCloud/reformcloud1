@@ -7,6 +7,7 @@ package systems.reformcloud.libloader;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.libloader.libraries.*;
 import systems.reformcloud.libloader.utility.Dependency;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public final class LibraryLoader {
                 Thread.sleep(2000);
             } catch (final InterruptedException ignored) {
             }
-            System.exit(-2);
+            System.exit(ExitUtil.NOT_JAVA_8);
             return;
         }
 

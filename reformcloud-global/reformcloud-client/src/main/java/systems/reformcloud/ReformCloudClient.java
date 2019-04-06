@@ -50,6 +50,7 @@ import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
 import systems.reformcloud.serverprocess.screen.internal.ClientScreenHandler;
 import systems.reformcloud.serverprocess.shutdown.ShutdownWorker;
 import systems.reformcloud.synchronization.SynchronizationHandler;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -320,7 +321,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
         while (this.nettySocketClient.getConnections() != -1 && !shutdown) {
             if (this.nettySocketClient.getConnections() == 8)
-                System.exit(1);
+                System.exit(ExitUtil.CONTROLLER_NOT_REACHABLE);
 
             this.nettySocketClient.connect(cloudConfiguration.getEthernetAddress(), this.channelHandler, ssl);
 
@@ -715,6 +716,6 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
     @Override
     public void removeInternalProcess() {
-        System.exit(0);
+        System.exit(ExitUtil.STOPPED_SUCESS);
     }
 }
