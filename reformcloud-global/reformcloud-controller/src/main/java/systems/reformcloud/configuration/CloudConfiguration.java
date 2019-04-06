@@ -158,6 +158,12 @@ public class CloudConfiguration {
         if (permissions.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
         }
+
+        loggerProvider.info("Do you want to load the proxy addon [\"yes\", \"no\"]");
+        String proxy = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
+        if (proxy.equalsIgnoreCase("yes")) {
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProxy.jar", "reformcloud/addons/ReformCloudProxy.jar");
+        }
         
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
         String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
