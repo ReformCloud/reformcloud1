@@ -25,6 +25,7 @@ import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.network.NettyHandler;
@@ -67,6 +68,8 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
 
     private final NettySocketClient nettySocketClient;
     private final ChannelHandler channelHandler;
+
+    private ProxySettings proxySettings;
 
     private final ProxyStartupInfo proxyStartupInfo;
     private ProxyInfo proxyInfo;
@@ -114,6 +117,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("UpdateAll", new PacketInUpdateAll())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
+                .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
                 .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache())
                 .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
@@ -728,5 +732,11 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
             return null;
 
         return this.registeredIngameCommands.stream().filter(e -> e.getName().equalsIgnoreCase(strings[0])).findFirst().orElse(null);
+    }
+
+    public int getGlobalMaxOnlineCount() {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.getAllProxyGroups().forEach(e -> atomicInteger.addAndGet(e.getMaxPlayers()));
+        return atomicInteger.get();
     }
 }

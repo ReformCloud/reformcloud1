@@ -7,22 +7,31 @@ package systems.reformcloud.listener;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.permission.PermissionsSetupEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
+import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.permission.PermissionFunction;
 import com.velocitypowered.api.permission.PermissionProvider;
 import com.velocitypowered.api.permission.PermissionSubject;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.server.ServerPing;
+import net.kyori.text.TextComponent;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import systems.reformcloud.ReformCloudAPIVelocity;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
+import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.packets.PacketOutCommandExecute;
 import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
+import systems.reformcloud.utility.map.maps.Double;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018
@@ -50,6 +59,86 @@ public final class CloudAddonsListener {
                     event.getMessage()
             );
         }
+    }
+
+    @Subscribe
+    public void handle(final ProxyPingEvent event) {
+        if (ReformCloudAPIVelocity.getInstance().getProxySettings() == null)
+            return;
+
+        ServerPing serverPing = event.getPing();
+        ProxySettings proxySettings = ReformCloudAPIVelocity.getInstance().getProxySettings();
+        final ProxyGroup proxyGroup = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                .getProxyGroups().get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());
+
+        if (proxyGroup.isMaintenance()) {
+            if (proxySettings.isMotdEnabled()) {
+                Double<String, String> motd = proxySettings.getMaintenanceMotd().get(
+                        ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextInt(proxySettings.getMaintenanceMotd().size())
+                );
+                serverPing.asBuilder().description(
+                        TextComponent.of(translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
+                ).build();
+            }
+
+            ServerPing.SamplePlayer[] playerInfo = new ServerPing.SamplePlayer[proxySettings.getPlayerInfo().length];
+            for (short i = 0; i < playerInfo.length; i++)
+                playerInfo[i] = new ServerPing.SamplePlayer(translateAlternateColorCodes(
+                        '&',
+                        proxySettings.getPlayerInfo()[i]),
+                        UUID.randomUUID()
+                );
+
+            serverPing.asBuilder().samplePlayers(playerInfo)
+                    .maximumPlayers(0)
+                    .onlinePlayers(0).build();
+
+            if (proxySettings.isProtocolEnabled()) {
+                serverPing.asBuilder().version(new ServerPing.Version(
+                        1,
+                        translateAlternateColorCodes('&', proxySettings.getMaintenanceProtocol()
+                                .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount())
+                                        .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount())))))
+                ).build();
+            }
+        } else {
+            if (proxySettings.isMotdEnabled()) {
+                Double<String, String> motd = proxySettings.getNormalMotd().get(
+                        ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextInt(proxySettings.getNormalMotd().size())
+                );
+                serverPing.asBuilder().description(
+                        TextComponent.of(
+                                translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
+                ).build();
+            }
+
+            ServerPing.SamplePlayer[] playerInfo = new ServerPing.SamplePlayer[proxySettings.getPlayerInfo().length];
+            for (short i = 0; i < playerInfo.length; i++)
+                playerInfo[i] = new ServerPing.SamplePlayer(translateAlternateColorCodes(
+                        '&',
+                        proxySettings.getPlayerInfo()[i]),
+                        UUID.randomUUID()
+                );
+
+            int max = proxySettings.isSlotCounter() ? ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount() + proxySettings.getMoreSlots() :
+                    ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount();
+
+            serverPing.asBuilder()
+                    .maximumPlayers(max)
+                    .onlinePlayers(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount())
+                    .samplePlayers(playerInfo).build();
+
+            if (proxySettings.isProtocolEnabled()) {
+                serverPing.asBuilder().version(new ServerPing.Version(
+                        1,
+                        translateAlternateColorCodes('&', proxySettings.getProtocol()
+                                .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount())
+                                        .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount())))))
+                ).build();
+            }
+        }
+
+        event.setPing(serverPing);
     }
 
     @Subscribe
@@ -109,5 +198,18 @@ public final class CloudAddonsListener {
 
             return this;
         }
+    }
+
+    private static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
+        char[] b = textToTranslate.toCharArray();
+
+        for (int i = 0; i < b.length - 1; ++i) {
+            if (b[i] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+                b[i] = 167;
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+
+        return new String(b);
     }
 }
