@@ -14,6 +14,10 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.kqueue.KQueue;
+import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.kqueue.KQueueServerSocketChannel;
+import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
@@ -47,12 +51,14 @@ public final class ReformCloudLibraryService {
         System.setProperty("io.netty.leakDetectionLevel", "DISABLED");
         System.setProperty("io.netty.recycler.maxCapacity", "0");
         System.setProperty("io.netty.recycler.maxCapacity.default", "0");
+        System.setProperty("io.netty.noPreferDirect", "true");
+        System.setProperty("io.netty.allocator.type", "UNPOOLED");
     }
 
     public static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
     public static final JsonParser PARSER = new JsonParser();
 
-    public static final boolean EPOLL = Epoll.isAvailable();
+    public static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
 
     public static final ThreadLocalRandom THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
 
@@ -129,7 +135,7 @@ public final class ReformCloudLibraryService {
      * @see NioEventLoopGroup
      */
     public static EventLoopGroup eventLoopGroup() {
-        return EPOLL ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        return EPOLL ? new EpollEventLoopGroup() : KQUEUE ? new KQueueEventLoopGroup() : new NioEventLoopGroup();
     }
 
     /**
@@ -140,7 +146,7 @@ public final class ReformCloudLibraryService {
      * @see NioEventLoopGroup
      */
     public static EventLoopGroup eventLoopGroup(int threads) {
-        return EPOLL ? new EpollEventLoopGroup(threads) : new NioEventLoopGroup(threads);
+        return EPOLL ? new EpollEventLoopGroup(threads) : KQUEUE ? new KQueueEventLoopGroup(threads) : new NioEventLoopGroup(threads);
     }
 
     /**
@@ -150,7 +156,7 @@ public final class ReformCloudLibraryService {
      * @see ServerSocketChannel
      */
     public static Class<? extends ServerSocketChannel> serverSocketChannel() {
-        return EPOLL ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
+        return EPOLL ? EpollServerSocketChannel.class : KQUEUE ? KQueueServerSocketChannel.class : NioServerSocketChannel.class;
     }
 
     /**
@@ -160,7 +166,7 @@ public final class ReformCloudLibraryService {
      * @see SocketChannel
      */
     public static Class<? extends SocketChannel> clientSocketChannel() {
-        return EPOLL ? EpollSocketChannel.class : NioSocketChannel.class;
+        return EPOLL ? EpollSocketChannel.class : KQUEUE ? KQueueSocketChannel.class : NioSocketChannel.class;
     }
 
     /**
