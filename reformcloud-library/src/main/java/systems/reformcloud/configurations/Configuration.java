@@ -15,13 +15,12 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-/**
- * @author _Klaro | Pasqual K. / created on 18.10.2018
- */
+import java.nio.file.Paths;
 
 /**
  * Class to create easier Configuration files
+ *
+ * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
 @Data
@@ -134,6 +133,10 @@ public final class Configuration {
         return this.write(path.toFile());
     }
 
+    public boolean write(String path) {
+        return write(Paths.get(path));
+    }
+
     public static Configuration parse(File file) {
         try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8.name()); BufferedReader bufferedReader = new BufferedReader(reader)) {
             return new Configuration(ReformCloudLibraryService.PARSER.parse(bufferedReader).getAsJsonObject());
@@ -147,7 +150,10 @@ public final class Configuration {
         return parse(path.toFile());
     }
 
-    @Deprecated
+    public static Configuration parse(String path) {
+        return parse(Paths.get(path));
+    }
+
     public Configuration clear() {
         this.jsonObject.entrySet().forEach(jsonObject -> remove(jsonObject.getKey()));
         return this;
