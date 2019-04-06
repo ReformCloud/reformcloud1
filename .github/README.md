@@ -12,6 +12,7 @@ Official Cloud System
 ![UPDATED](https://img.shields.io/github/last-commit/reformcloudproject/reformcloud.svg)
 ![FORKS](https://img.shields.io/github/forks/reformcloudproject/reformcloud.svg)
 ![STARS](https://img.shields.io/github/stars/reformcloudproject/reformcloud.svg)
+![CHAT](https://img.shields.io/discord/499666347337449472.svg)
 
 > <b>IMPORTANT NOTE:</b> ReformCloud is still in development. No stable version is available. The Full System is in beta support
 
