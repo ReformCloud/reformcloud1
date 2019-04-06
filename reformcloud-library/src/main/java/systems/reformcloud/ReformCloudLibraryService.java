@@ -40,6 +40,13 @@ import java.util.concurrent.*;
 public final class ReformCloudLibraryService {
     static {
         Thread.currentThread().setName("ReformCloud-Main");
+
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        System.setProperty("io.netty.noPreferDirect", "true");
+        System.setProperty("io.netty.maxDirectMemory", "0");
+        System.setProperty("io.netty.leakDetectionLevel", "DISABLED");
+        System.setProperty("io.netty.recycler.maxCapacity", "0");
+        System.setProperty("io.netty.recycler.maxCapacity.default", "0");
     }
 
     public static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
