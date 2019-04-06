@@ -44,6 +44,14 @@ public class FileUtils {
         path.toFile().delete();
     }
 
+    public static void deleteFullDirectory(File path) {
+        deleteFullDirectory(path.toPath());
+    }
+
+    public static void deleteFullDirectory(String path) {
+        deleteFullDirectory(Paths.get(path));
+    }
+
     /**
      * Copies a file from the given directory {@param from} to the given directory {@param to}
      *
@@ -57,6 +65,14 @@ public class FileUtils {
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not copy file", ex);
         }
+    }
+
+    public static void copyFile(final Path from, final Path to) {
+        copyFile(from.toString(), to.toString());
+    }
+
+    public static void copyFile(final File from, final File to) {
+        copyFile(from.toPath(), to.toPath());
     }
 
     /**
@@ -74,8 +90,24 @@ public class FileUtils {
         }
     }
 
+    public static void copyCompiledFile(final Path from, final Path to) {
+        copyCompiledFile(from.toString(), to.toString());
+    }
+
+    public static void copyCompiledFile(final File from, final File to) {
+        copyCompiledFile(from.toPath(), to.toPath());
+    }
+
     public static void rename(final String file, final String newName) {
-        new File(file).renameTo(new File(newName));
+        rename(Paths.get(file), newName);
+    }
+
+    public static void rename(final Path file, final String newName) {
+        rename(file.toFile(), newName);
+    }
+
+    public static void rename(final File file, final String newName) {
+        file.renameTo(new File(newName));
     }
 
     /**

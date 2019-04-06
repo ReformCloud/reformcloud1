@@ -31,6 +31,9 @@ public final class EventManager {
     }
 
     public void callEvent(final EventTargetType eventTargetType, final Event event) {
+        if (!event.isCallable())
+            throw new IllegalStateException("Cannot call an event which isn't callable");
+
         listeners.stream()
                 .filter(e -> e.getEventTargetType().equals(eventTargetType))
                 .forEach(e -> handleEvent(event, eventTargetType.name(), e));
