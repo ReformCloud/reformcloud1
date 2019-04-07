@@ -134,8 +134,8 @@ public final class CloudAddonsListener implements Listener {
             if (proxySettings.isProtocolEnabled()) {
                 serverPing.setVersion(new ServerPing.Protocol(
                         ChatColor.translateAlternateColorCodes('&', proxySettings.getMaintenanceProtocol()
-                                .replace("%online_players%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount())
-                                        .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount())))),
+                                .replace("%online_players%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))),
                         1)
                 );
             }

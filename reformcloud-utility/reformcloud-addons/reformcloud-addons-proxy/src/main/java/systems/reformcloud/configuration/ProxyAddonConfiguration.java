@@ -70,6 +70,52 @@ public final class ProxyAddonConfiguration implements Serializable {
         return this.proxySettings.stream().filter(e -> e.getTargetProxyGroup().equals(name)).findFirst();
     }
 
+    public boolean createForProxy(String name) {
+        if (this.getForProxy(name).orElse(null) != null)
+            return false;
+
+        ProxySettings proxySetting = new ProxySettings(
+                name,
+                "§2Reform§fCloud §8● §a§lOfficial Cloud System §8» §7%current_server% §8● §7%current_proxy% \n §7Online count §8» " +
+                        "§a%online_players%§8/§a%max_players_current%§8/§a%max_players_global%",
+                "§7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud \n §2Reform§fCloud " +
+                        "§8by §a_Klaro §8» §7@k_klaro",
+                "§4§lMaintenance §8● §c§l✘",
+                "§2§lReform§f§lCloud §8● §7§l%online_players%§8§l/§7§l%max_players_global%",
+                new String[]{" ", "§7powered by §2Reform§fCloud §8● §a§lOfficial Cloud System", " "},
+                true,
+                true,
+                true,
+                false,
+                1,
+                Collections.singletonList(new Double<>(
+                        "§2Reform§fCloud §8● §a§lOfficial Cloud System §7by §a_Klaro",
+                        "§7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud"
+                )),
+                Collections.singletonList(new Double<>(
+                        "§m§2Reform§fCloud §8● §a§lOfficial Cloud System §7by §a_Klaro",
+                        "§7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud"
+                ))
+        );
+        this.proxySettings.add(proxySetting);
+        new Configuration().addProperty("config", proxySettings)
+                .write(Paths.get("reformcloud/proxy/configs.json"));
+        this.reload();
+        return true;
+    }
+
+    public boolean deleteForProxy(String name) {
+        if (this.getForProxy(name).orElse(null) == null)
+            return false;
+
+        ProxySettings proxySetting = this.getForProxy(name).get();
+        this.proxySettings.remove(proxySetting);
+        new Configuration().addProperty("config", proxySettings)
+                .write(Paths.get("reformcloud/proxy/configs.json"));
+        this.reload();
+        return true;
+    }
+
     public void reload() {
         this.proxySettings = Configuration.parse(Paths.get("reformcloud/proxy/configs.json"))
                 .getValue("config", new TypeToken<List<ProxySettings>>() {

@@ -5,7 +5,7 @@
 package systems.reformcloud;
 
 import lombok.Getter;
-import systems.reformcloud.commands.ProxyReloadCommand;
+import systems.reformcloud.commands.ProxyCommand;
 import systems.reformcloud.configuration.ProxyAddonConfiguration;
 import systems.reformcloud.utility.ControllerAddonImpl;
 
@@ -30,7 +30,7 @@ public final class ProxyAddon extends ControllerAddonImpl implements Serializabl
     @Override
     public void onAddonLoading() {
         this.proxyAddonConfiguration = new ProxyAddonConfiguration();
-        ReformCloudController.getInstance().getCommandManager().registerCommand(new ProxyReloadCommand());
+        ReformCloudController.getInstance().getCommandManager().registerCommand(new ProxyCommand());
     }
 
     @Override

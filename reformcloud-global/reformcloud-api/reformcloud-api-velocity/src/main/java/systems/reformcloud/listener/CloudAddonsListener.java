@@ -89,7 +89,8 @@ public final class CloudAddonsListener {
                         UUID.randomUUID()
                 );
 
-            serverPing = serverPing.asBuilder().samplePlayers(playerInfo)
+            serverPing = serverPing.asBuilder()
+                    .samplePlayers(playerInfo)
                     .maximumPlayers(0)
                     .onlinePlayers(0).build();
 
@@ -132,8 +133,8 @@ public final class CloudAddonsListener {
                 serverPing = serverPing.asBuilder().version(new ServerPing.Version(
                         1,
                         translateAlternateColorCodes('&', proxySettings.getProtocol()
-                                .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount())
-                                        .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount())))))
+                                .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))))
                 ).build();
             }
         }
