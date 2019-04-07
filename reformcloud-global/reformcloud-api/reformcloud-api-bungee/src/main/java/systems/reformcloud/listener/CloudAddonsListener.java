@@ -16,6 +16,7 @@ import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
+import systems.reformcloud.internal.events.CloudProxyInfoUpdateEvent;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
@@ -117,8 +118,10 @@ public final class CloudAddonsListener implements Listener {
                 );
                 serverPing.setDescriptionComponent(
                         new TextComponent(TextComponent.fromLegacyText(
-                                ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
-                        ));
+                                ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
+                                        .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
+                                        .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                        )));
             }
 
             ServerPing.PlayerInfo[] playerInfo = new ServerPing.PlayerInfo[proxySettings.getPlayerInfo().length];
@@ -146,8 +149,10 @@ public final class CloudAddonsListener implements Listener {
                 );
                 serverPing.setDescriptionComponent(
                         new TextComponent(TextComponent.fromLegacyText(
-                                ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
-                        ));
+                                ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
+                                        .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
+                                        .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                        )));
             }
 
             ServerPing.PlayerInfo[] playerInfo = new ServerPing.PlayerInfo[proxySettings.getPlayerInfo().length];
@@ -166,11 +171,22 @@ public final class CloudAddonsListener implements Listener {
             if (proxySettings.isProtocolEnabled()) {
                 serverPing.setVersion(new ServerPing.Protocol(
                         ChatColor.translateAlternateColorCodes('&', proxySettings.getProtocol()
-                                .replace("%online_players%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount())
-                                        .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount())))),
+                                .replace("%online_players%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))),
                         1)
                 );
             }
+        }
+    }
+
+    private int online = 0;
+
+    @EventHandler(priority = -125)
+    public void handle(final CloudProxyInfoUpdateEvent event) {
+        int current = ReformCloudAPIBungee.getInstance().getGlobalOnlineCount();
+        if (current != online) {
+            online = current;
+            BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> CloudConnectListener.initTab(e));
         }
     }
 }

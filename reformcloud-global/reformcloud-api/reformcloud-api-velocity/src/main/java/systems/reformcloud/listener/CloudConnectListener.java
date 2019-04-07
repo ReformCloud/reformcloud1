@@ -10,12 +10,15 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
+import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.text.TextComponent;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.packets.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
@@ -102,6 +105,7 @@ public final class CloudConnectListener {
                         event.setResult(ServerPreConnectEvent.ServerResult.allowed(
                                 VelocityBootstrap.getInstance().getProxyServer().getServer(serverInfo.getCloudProcess().getName()).get()
                         ));
+                        VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> initTab(e));
                     }, (configuration, resultID) -> event.setResult(ServerPreConnectEvent.ServerResult.denied())
             );
         }
@@ -140,6 +144,15 @@ public final class CloudConnectListener {
     }
 
     @Subscribe(order = PostOrder.FIRST)
+    public void handle(final ServerConnectedEvent event) {
+        OnlinePlayer onlinePlayer = ReformCloudAPIVelocity.getInstance().getOnlinePlayer(event.getPlayer().getUniqueId());
+        onlinePlayer.setCurrentServer(event.getServer().getServerInfo().getName());
+        ReformCloudAPIVelocity.getInstance().updateOnlinePlayer(onlinePlayer);
+
+        initTab(event.getPlayer());
+    }
+
+    @Subscribe(order = PostOrder.FIRST)
     public void handle(final DisconnectEvent event) {
         ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
         ProxyInfo proxyInfo = ReformCloudAPIVelocity.getInstance().getProxyInfo();
@@ -159,6 +172,7 @@ public final class CloudConnectListener {
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getUsername() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getRemoteAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));
+        VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> initTab(e));
     }
 
     @Subscribe(order = PostOrder.FIRST)
@@ -180,5 +194,37 @@ public final class CloudConnectListener {
                 ));
             }
         }
+    }
+
+    public static void initTab(final Player proxiedPlayer) {
+        ProxySettings proxySettings = ReformCloudAPIVelocity.getInstance().getProxySettings();
+        if (proxySettings == null || !proxySettings.isTabEnabled())
+            return;
+
+        proxiedPlayer.getTabList().clearHeaderAndFooter();
+        proxiedPlayer.getTabList().setHeaderAndFooter(TextComponent.of(
+                CloudAddonsListener.translateAlternateColorCodes('&',
+                        proxySettings.getTabHeader()
+                                .replace("%current_server_group%", ReformCloudAPIVelocity.getInstance().getServerInfo(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()).getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+                                .replace("%current_server%", proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
+                                .replace("%online_players_current%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
+                                .replace("%online_players%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount()))
+                                .replace("%max_players_current%", Integer.toString(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
+                )), TextComponent.of(
+                CloudAddonsListener.translateAlternateColorCodes('&',
+                        proxySettings.getTabHeader()
+                                .replace("%current_server_group%", ReformCloudAPIVelocity.getInstance().getServerInfo(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()).getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+                                .replace("%current_server%", proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
+                                .replace("%online_players_current%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
+                                .replace("%online_players%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount()))
+                                .replace("%max_players_current%", Integer.toString(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
+                ))
+        );
     }
 }

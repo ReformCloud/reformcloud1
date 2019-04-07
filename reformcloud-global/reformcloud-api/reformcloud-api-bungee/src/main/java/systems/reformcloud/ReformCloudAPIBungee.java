@@ -81,6 +81,7 @@ public class ReformCloudAPIBungee implements IAPIService {
 
     private PermissionCache permissionCache;
 
+    private Map<UUID, OnlinePlayer> onlinePlayers = new HashMap<>();
     private Map<UUID, PermissionHolder> cachedPermissionHolders = new HashMap<>();
     private List<IngameCommand> registeredIngameCommands = new ArrayList<>();
 
@@ -191,6 +192,9 @@ public class ReformCloudAPIBungee implements IAPIService {
 
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
+        if (this.onlinePlayers.containsKey(uniqueId))
+            return this.onlinePlayers.get(uniqueId);
+
         PacketFuture packetFuture = this.createPacketFuture(
                 new PacketOutQueryGetOnlinePlayer(uniqueId),
                 "ReformCloudController"

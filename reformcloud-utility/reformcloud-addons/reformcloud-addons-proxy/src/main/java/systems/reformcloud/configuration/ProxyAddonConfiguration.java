@@ -89,12 +89,12 @@ public final class ProxyAddonConfiguration implements Serializable {
                 false,
                 1,
                 Collections.singletonList(new Double<>(
-                        "§2Reform§fCloud §8● §a§lOfficial Cloud System §7by §a_Klaro",
-                        "§7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud"
+                        "§2§lReform§f§lCloud §8● §aOfficial Cloud System §7by §a§l_Klaro",
+                        "         §8§l» §7Twitter §8● §a§l@ReformCloud §8§l«"
                 )),
                 Collections.singletonList(new Double<>(
                         "§m§2Reform§fCloud §8● §a§lOfficial Cloud System §7by §a_Klaro",
-                        "§7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud"
+                        "         §8§l» §7Twitter §8● §a§l@ReformCloud §8§l«"
                 ))
         );
         this.proxySettings.add(proxySetting);

@@ -4,6 +4,7 @@
 
 package systems.reformcloud.listener;
 
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.permission.PermissionsSetupEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
@@ -20,6 +21,7 @@ import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
+import systems.reformcloud.events.CloudProxyInfoUpdateEvent;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.packets.PacketOutCommandExecute;
@@ -77,7 +79,10 @@ public final class CloudAddonsListener {
                         ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextInt(proxySettings.getMaintenanceMotd().size())
                 );
                 serverPing = serverPing.asBuilder().description(
-                        TextComponent.of(translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
+                        TextComponent.of(translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
+                                .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+                                .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                        )
                 ).build();
             }
 
@@ -98,8 +103,8 @@ public final class CloudAddonsListener {
                 serverPing = serverPing.asBuilder().version(new ServerPing.Version(
                         1,
                         translateAlternateColorCodes('&', proxySettings.getMaintenanceProtocol()
-                                .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount())
-                                        .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount())))))
+                                .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))))
                 ).build();
             }
         } else {
@@ -109,7 +114,10 @@ public final class CloudAddonsListener {
                 );
                 serverPing = serverPing.asBuilder().description(
                         TextComponent.of(
-                                translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
+                                translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
+                                        .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+                                        .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                        )
                 ).build();
             }
 
@@ -201,7 +209,18 @@ public final class CloudAddonsListener {
         }
     }
 
-    private static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
+    private int onlineCount = 0;
+
+    @Subscribe(order = PostOrder.EARLY)
+    public void handle(final CloudProxyInfoUpdateEvent event) {
+        int current = ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount();
+        if (current != onlineCount) {
+            onlineCount = current;
+            VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> CloudConnectListener.initTab(e));
+        }
+    }
+
+    public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
 
         for (int i = 0; i < b.length - 1; ++i) {
