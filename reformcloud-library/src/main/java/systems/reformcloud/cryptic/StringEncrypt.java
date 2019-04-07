@@ -18,4 +18,8 @@ public final class StringEncrypt implements Serializable {
     public static String encrypt(final String in) {
         return DigestUtils.sha512Hex(in);
     }
+
+    public static String encryptSHA256(final String in) {
+        return DigestUtils.sha256Hex(in);
+    }
 }
