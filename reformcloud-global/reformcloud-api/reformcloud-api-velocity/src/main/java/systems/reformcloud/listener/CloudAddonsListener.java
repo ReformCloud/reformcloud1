@@ -76,7 +76,7 @@ public final class CloudAddonsListener {
                 Double<String, String> motd = proxySettings.getMaintenanceMotd().get(
                         ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextInt(proxySettings.getMaintenanceMotd().size())
                 );
-                serverPing.asBuilder().description(
+                serverPing = serverPing.asBuilder().description(
                         TextComponent.of(translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
                 ).build();
             }
@@ -89,12 +89,12 @@ public final class CloudAddonsListener {
                         UUID.randomUUID()
                 );
 
-            serverPing.asBuilder().samplePlayers(playerInfo)
+            serverPing = serverPing.asBuilder().samplePlayers(playerInfo)
                     .maximumPlayers(0)
                     .onlinePlayers(0).build();
 
             if (proxySettings.isProtocolEnabled()) {
-                serverPing.asBuilder().version(new ServerPing.Version(
+                serverPing = serverPing.asBuilder().version(new ServerPing.Version(
                         1,
                         translateAlternateColorCodes('&', proxySettings.getMaintenanceProtocol()
                                 .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount())
@@ -106,7 +106,7 @@ public final class CloudAddonsListener {
                 Double<String, String> motd = proxySettings.getNormalMotd().get(
                         ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextInt(proxySettings.getNormalMotd().size())
                 );
-                serverPing.asBuilder().description(
+                serverPing = serverPing.asBuilder().description(
                         TextComponent.of(
                                 translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond()))
                 ).build();
@@ -123,13 +123,13 @@ public final class CloudAddonsListener {
             int max = proxySettings.isSlotCounter() ? ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount() + proxySettings.getMoreSlots() :
                     ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount();
 
-            serverPing.asBuilder()
+            serverPing = serverPing.asBuilder()
                     .maximumPlayers(max)
                     .onlinePlayers(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount())
                     .samplePlayers(playerInfo).build();
 
             if (proxySettings.isProtocolEnabled()) {
-                serverPing.asBuilder().version(new ServerPing.Version(
+                serverPing = serverPing.asBuilder().version(new ServerPing.Version(
                         1,
                         translateAlternateColorCodes('&', proxySettings.getProtocol()
                                 .replace("%online_players%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount())
