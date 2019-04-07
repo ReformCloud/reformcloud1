@@ -16,7 +16,6 @@ import systems.reformcloud.utility.map.maps.Double;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,7 @@ import java.util.Optional;
  */
 
 public final class ProxyAddonConfiguration implements Serializable {
-    private List<ProxySettings> proxySettings = new ArrayList<>();
+    private List<ProxySettings> proxySettings;
 
     public ProxyAddonConfiguration() {
         if (!Files.exists(Paths.get("reformcloud/proxy/configs.json"))) {

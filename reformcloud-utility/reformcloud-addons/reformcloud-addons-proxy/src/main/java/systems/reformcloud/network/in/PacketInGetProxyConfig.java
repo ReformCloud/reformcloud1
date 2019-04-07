@@ -20,7 +20,7 @@ import java.util.UUID;
 public final class PacketInGetProxyConfig implements Serializable, NetworkQueryInboundHandler {
     @Override
     public void handle(Configuration configuration, UUID resultID) {
-        ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+        ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                 configuration.getStringValue("from"),
                 new PacketOutGetProxyConfig(resultID, ProxyAddon.getInstance().getProxyAddonConfiguration().getForProxy(
                         configuration.getStringValue("from")
