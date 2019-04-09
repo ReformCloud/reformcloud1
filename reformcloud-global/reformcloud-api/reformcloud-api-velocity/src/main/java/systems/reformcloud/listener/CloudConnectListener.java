@@ -219,7 +219,7 @@ public final class CloudConnectListener {
                                     .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
                     )), TextComponent.of(
                     CloudAddonsListener.translateAlternateColorCodes('&',
-                            proxySettings.getTabHeader()
+                            proxySettings.getTabFooter()
                                     .replace("%current_server_group%", ReformCloudAPIVelocity.getInstance().getServerInfo(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()).getGroup())
                                     .replace("%current_proxy_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
                                     .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())

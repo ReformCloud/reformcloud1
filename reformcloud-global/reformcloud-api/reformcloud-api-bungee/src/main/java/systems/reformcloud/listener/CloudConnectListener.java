@@ -215,7 +215,7 @@ public final class CloudConnectListener implements Listener {
                                 .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))
                 )), TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&',
-                        proxySettings.getTabHeader()
+                        proxySettings.getTabFooter()
                                 .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getGroup())
                                 .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
                                 .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
