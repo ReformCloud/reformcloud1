@@ -427,7 +427,8 @@ public class ProxyStartupHandler {
                 || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.HEXACORD)) {
             Files.readAllLines(Paths.get(this.path + "/proxy.log.0"), StandardCharsets.UTF_8).forEach(e -> stringBuilder.append(e).append("\n"));
         } else if (this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.TRAVERTINE)
-                || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.WATERFALL)) {
+                || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.WATERFALL)
+                || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)) {
             Files.readAllLines(Paths.get(this.path + "/logs/latest.log"), StandardCharsets.UTF_8).forEach(e -> stringBuilder.append(e).append("\n"));
         }
 
