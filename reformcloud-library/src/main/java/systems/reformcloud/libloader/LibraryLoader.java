@@ -34,7 +34,7 @@ public final class LibraryLoader {
     private List<Dependency> libraries = new ArrayList<>();
 
     public LibraryLoader() {
-        if (Float.parseFloat(System.getProperty("java.class.version")) != 52D) {
+        if (Float.parseFloat(System.getProperty("java.class.version")) != 52.0D) {
             System.out.println("This application currently needs Java 8.");
             try {
                 Thread.sleep(2000);
