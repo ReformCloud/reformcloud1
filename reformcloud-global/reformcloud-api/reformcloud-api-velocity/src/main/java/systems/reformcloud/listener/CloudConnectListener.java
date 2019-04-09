@@ -107,7 +107,6 @@ public final class CloudConnectListener {
                         event.setResult(ServerPreConnectEvent.ServerResult.allowed(
                                 VelocityBootstrap.getInstance().getProxyServer().getServer(serverInfo.getCloudProcess().getName()).get()
                         ));
-                        VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> initTab(e));
                     }, (configuration, resultID) -> event.setResult(ServerPreConnectEvent.ServerResult.denied())
             );
         }

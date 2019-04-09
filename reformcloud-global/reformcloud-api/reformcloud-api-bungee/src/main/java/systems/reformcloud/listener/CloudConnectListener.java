@@ -102,7 +102,6 @@ public final class CloudConnectListener implements Listener {
 
                         event.setCancelled(false);
                         event.setTarget(BungeecordBootstrap.getInstance().getProxy().getServerInfo(serverInfo.getCloudProcess().getName()));
-                        BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> initTab(e));
                     }, (configuration, resultID) -> event.setCancelled(true)
             );
         }
