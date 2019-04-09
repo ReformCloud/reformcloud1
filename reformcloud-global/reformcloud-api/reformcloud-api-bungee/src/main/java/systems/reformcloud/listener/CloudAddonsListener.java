@@ -173,7 +173,7 @@ public final class CloudAddonsListener implements Listener {
                         ChatColor.translateAlternateColorCodes('&', proxySettings.getProtocol()
                                 .replace("%online_players%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
                                 .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))),
-                        1)
+                        event.getConnection().getVersion())
                 );
             }
         }

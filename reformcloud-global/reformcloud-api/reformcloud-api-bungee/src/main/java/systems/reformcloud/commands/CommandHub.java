@@ -30,7 +30,8 @@ public final class CommandHub extends Command {
 
     @Override
     public void execute(CommandSender commandSender, String[] strings) {
-        if (!(commandSender instanceof ProxiedPlayer)) return;
+        if (!(commandSender instanceof ProxiedPlayer))
+            return;
 
         final ProxiedPlayer proxiedPlayer = (ProxiedPlayer) commandSender;
         if (ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager()

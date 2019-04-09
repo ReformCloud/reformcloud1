@@ -51,7 +51,7 @@ public class CloudProcessStartupHandler implements Runnable {
         while (!Thread.currentThread().isInterrupted()) {
             while (ReformCloudClient.RUNNING) {
 
-                while (!this.serverStartupInfo.isEmpty()) {
+                if (!this.serverStartupInfo.isEmpty()) {
                     final ServerStartupInfo serverStartupInfo = this.serverStartupInfo.poll();
 
                     boolean firstStart = false;
@@ -77,7 +77,7 @@ public class CloudProcessStartupHandler implements Runnable {
                         this.serverStartupInfo.add(serverStartupInfo);
                 }
 
-                while (!this.proxyStartupInfo.isEmpty()) {
+                if (!proxyStartupInfo.isEmpty()) {
                     final ProxyStartupInfo proxyStartupInfo = this.proxyStartupInfo.poll();
 
                     if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/default")))
@@ -100,7 +100,7 @@ public class CloudProcessStartupHandler implements Runnable {
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (final InterruptedException ignored) {
                 }
             }

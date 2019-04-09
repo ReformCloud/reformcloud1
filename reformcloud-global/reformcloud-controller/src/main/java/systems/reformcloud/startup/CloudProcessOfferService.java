@@ -159,7 +159,7 @@ public class CloudProcessOfferService implements Runnable {
             this.offerServers();
             this.offerProxies();
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 5);
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 2);
         }
     }
 }
