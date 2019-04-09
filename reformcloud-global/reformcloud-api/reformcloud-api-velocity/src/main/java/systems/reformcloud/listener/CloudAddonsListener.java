@@ -216,7 +216,10 @@ public final class CloudAddonsListener {
         int current = ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount();
         if (current != onlineCount) {
             onlineCount = current;
-            VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> CloudConnectListener.initTab(e));
+            VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> {
+                if (e.getCurrentServer().isPresent())
+                    CloudConnectListener.initTab(e);
+            });
         }
     }
 

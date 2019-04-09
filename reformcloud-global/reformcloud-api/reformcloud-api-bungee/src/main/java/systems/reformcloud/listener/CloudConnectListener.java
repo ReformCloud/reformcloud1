@@ -149,7 +149,7 @@ public final class CloudConnectListener implements Listener {
         onlinePlayer.setCurrentServer(event.getPlayer().getServer().getInfo().getName());
         ReformCloudAPIBungee.getInstance().updateOnlinePlayer(onlinePlayer);
 
-        this.initTab(event.getPlayer());
+        initTab(event.getPlayer());
     }
 
     @EventHandler(priority = - 128)

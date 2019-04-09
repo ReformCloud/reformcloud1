@@ -186,7 +186,12 @@ public final class CloudAddonsListener implements Listener {
         int current = ReformCloudAPIBungee.getInstance().getGlobalOnlineCount();
         if (current != online) {
             online = current;
-            BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> CloudConnectListener.initTab(e));
+            BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> {
+                if (e.getServer() == null || e.getServer().getInfo() == null || e.getServer().getInfo().getName() == null)
+                    return;
+
+                CloudConnectListener.initTab(e);
+            });
         }
     }
 }
