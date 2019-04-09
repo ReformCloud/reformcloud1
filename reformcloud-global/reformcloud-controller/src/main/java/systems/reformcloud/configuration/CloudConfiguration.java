@@ -281,7 +281,7 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-spigot-connect-only-proxy", "%prefix% §cOnly Proxy join allowed")
 
                     .addStringProperty("internal-api-spigot-command-signs-not-enabled", "%prefix% §7Signs aren't enabled")
-                    .addStringProperty("internal-api-spigot-command-signs-create-usage", "%prefix% §7/selectors selector signs new <group>")
+                    .addStringProperty("internal-api-spigot-command-signs-create-usage", "%prefix% §7/reformsigns <create/createitem> <group-name>")
                     .addStringProperty("internal-api-spigot-command-signs-create-success", "%prefix% §7Sign was created successfully")
                     .addStringProperty("internal-api-spigot-command-signs-create-already-exists", "%prefix% §7Sign already exits")
                     .addStringProperty("internal-api-spigot-command-signs-block-not-sign", "%prefix% §7Target block isn't a sign")
@@ -289,9 +289,9 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-spigot-command-signs-item-success", "%prefix% §7The Sign-Item was added to your Inventory")
                     .addStringProperty("internal-api-spigot-command-signs-delete-not-exists", "%prefix% §7Sign doesn't exits")
                     .addStringProperty("internal-api-spigot-command-signs-list", "%prefix% §7The Following Signs are registered:")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-1", "%prefix% §7/selectors selector <signs> new <group>")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/selectors selector <signs> remove")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/selectors selector <signs> list")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-1", "%prefix% §7/reformsigns <create/createitem> <group-name>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/reformsigns <delete/deleteitem>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/reformsigns list")
 
                     .write(Paths.get(messagePath));
         }

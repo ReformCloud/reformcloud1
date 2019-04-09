@@ -25,7 +25,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.MaterialData;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.CommandSelectors;
+import systems.reformcloud.commands.CommandReformSigns;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.internal.events.CloudServerAddEvent;
 import systems.reformcloud.internal.events.CloudServerInfoUpdateEvent;
@@ -42,6 +42,7 @@ import systems.reformcloud.signs.SignPosition;
 import systems.reformcloud.signs.map.TemplateMap;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -81,12 +82,13 @@ public final class SignSelector {
                     SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
                     SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
 
-                    CommandSelectors commandSelectors = new CommandSelectors();
-                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(commandSelectors, SpigotBootstrap.getInstance());
+                    CommandReformSigns commandReformSigns = new CommandReformSigns();
+                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(commandReformSigns, SpigotBootstrap.getInstance());
 
-                    PluginCommand pluginCommand = SpigotBootstrap.getInstance().getCommand("selectors");
-                    pluginCommand.setExecutor(commandSelectors);
-                    pluginCommand.setTabCompleter(commandSelectors);
+                    PluginCommand pluginCommand = SpigotBootstrap.getInstance().getCommand("reformsigns");
+                    pluginCommand.setExecutor(commandReformSigns);
+                    pluginCommand.setAliases(Arrays.asList("rs", "sings", "cloudsigns"));
+                    pluginCommand.setTabCompleter(commandReformSigns);
                     pluginCommand.setPermission("reformcloud.command.selectors");
 
                     this.worker = new Worker(this.signLayoutConfiguration.getLoadingLayout().getPerSecondAnimation());
@@ -100,7 +102,10 @@ public final class SignSelector {
                                 updateSign(sign, serverInfo);
                         }
                     }
-                }, (configuration, resultID) -> instance = null);
+                }, (configuration, resultID) -> {
+                    instance = null;
+                    SpigotBootstrap.getInstance().getServer().getPluginCommand("reformsigns").unregister(SpigotBootstrap.getInstance().getCommandMap());
+                });
     }
 
     public void updateAll() {

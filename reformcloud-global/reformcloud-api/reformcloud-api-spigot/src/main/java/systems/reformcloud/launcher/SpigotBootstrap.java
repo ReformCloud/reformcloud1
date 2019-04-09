@@ -7,7 +7,6 @@ package systems.reformcloud.launcher;
 import io.netty.util.ResourceLeakDetector;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
@@ -67,19 +66,21 @@ public class SpigotBootstrap extends JavaPlugin {
         ReformCloudLibraryService.sleep(1000000000);
     }
 
-    public void registerCommand(Command command) {
+    public CommandMap getCommandMap() {
+        CommandMap commandMap;
+
         try {
             Class<?> clazz = ReflectionUtil.reflectClazz(".CraftServer");
-            CommandMap commandMap;
 
             if (clazz != null)
                 commandMap = (CommandMap) clazz.getMethod("getCommandMap").invoke(Bukkit.getServer());
             else
                 commandMap = (CommandMap) Class.forName("net.glowstone.GlowServer").getMethod("getCommandMap").invoke(Bukkit.getServer());
-
-            commandMap.register("reformcloud", command);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
+            commandMap = null;
         }
+
+        return commandMap;
     }
 }
