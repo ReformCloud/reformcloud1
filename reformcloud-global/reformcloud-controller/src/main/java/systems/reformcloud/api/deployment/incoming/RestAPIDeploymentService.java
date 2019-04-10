@@ -12,7 +12,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.meta.web.InternalWebUser;
 import systems.reformcloud.web.utils.WebHandler;
 
@@ -39,7 +38,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
             return fullHttpResponse;
         }
 
-        if (!internalWebUser.getPassword().equals(StringEncrypt.encrypt(httpHeaders.get("-XPassword")))) {
+        if (!internalWebUser.getPassword().equals(httpHeaders.get("-XPassword"))) {
             answer.addProperty("response", Arrays.asList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
