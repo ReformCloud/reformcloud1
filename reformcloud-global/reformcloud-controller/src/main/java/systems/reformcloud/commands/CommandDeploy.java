@@ -57,6 +57,6 @@ public final class CommandDeploy extends Command implements Serializable {
             }
         }
 
-        commandSender.sendMessage("deploy <proxy/server> <template> <client1> <client2>");
+        commandSender.sendMessage("deploy <proxy/server> <name> <template> <client1> <client2>");
     }
 }

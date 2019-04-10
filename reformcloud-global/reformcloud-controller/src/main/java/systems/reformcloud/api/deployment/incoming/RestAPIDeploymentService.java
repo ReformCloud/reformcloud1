@@ -33,7 +33,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
         HttpHeaders httpHeaders = httpRequest.headers();
 
         InternalWebUser internalWebUser = ReformCloudController.getInstance().getInternalCloudNetwork().getInternalWebUser();
-        if (internalWebUser == null || internalWebUser.getName().equals(httpHeaders.get("-XUser"))) {
+        if (internalWebUser == null || !internalWebUser.getName().equals(httpHeaders.get("-XUser"))) {
             answer.addProperty("response", Arrays.asList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
