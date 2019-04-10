@@ -154,6 +154,10 @@ public final class Configuration {
         return parse(Paths.get(path));
     }
 
+    public static Configuration fromString(String in) {
+        return new Configuration(ReformCloudLibraryService.PARSER.parse(in).getAsJsonObject());
+    }
+
     public Configuration clear() {
         this.jsonObject.entrySet().forEach(jsonObject -> remove(jsonObject.getKey()));
         return this;

@@ -23,15 +23,19 @@ public final class QueueWorker implements Serializable, Runnable {
 
     @Override
     public void run() {
-        while (!instance.getPacketQueue().isEmpty()) {
-            AwaitingPacket awaitingPacket = instance.getPacketQueue().poll();
-            if (!awaitingPacket.getChannelHandlerContext().channel().isWritable()) {
-                instance.getPacketQueue().offer(awaitingPacket);
-                continue;
+        while (!Thread.currentThread().isInterrupted()) {
+            while (!instance.getPacketQueue().isEmpty()) {
+                AwaitingPacket awaitingPacket = instance.getPacketQueue().poll();
+                if (!awaitingPacket.getChannelHandlerContext().channel().isWritable()) {
+                    instance.getPacketQueue().offer(awaitingPacket);
+                    continue;
+                }
+
+                instance.sendPacket(awaitingPacket);
+                ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, instance.getPacketQueue().isEmpty() ? 4 : 2);
             }
 
-            instance.sendPacket(awaitingPacket);
-            ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, instance.getPacketQueue().isEmpty() ? 4 : 2);
+            ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 4);
         }
     }
 }

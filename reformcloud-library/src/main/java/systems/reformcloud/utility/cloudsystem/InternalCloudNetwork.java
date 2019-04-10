@@ -4,8 +4,10 @@
 
 package systems.reformcloud.utility.cloudsystem;
 
+import lombok.Data;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.language.languages.defaults.English;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.meta.client.Client;
@@ -13,7 +15,6 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.web.InternalWebUser;
 import systems.reformcloud.utility.StringUtil;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -28,7 +29,11 @@ public class InternalCloudNetwork implements Serializable {
 
     private int webPort = 4790;
 
-    private InternalWebUser internalWebUser = new InternalWebUser(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + "-internal", ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + StringUtil.EMPTY + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE));
+    private InternalWebUser internalWebUser = new InternalWebUser(
+            ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + "-internal",
+            StringEncrypt.encrypt(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
+                    + StringUtil.EMPTY + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE))
+    );
 
     private Configuration messages;
     private Language loaded = new English();
