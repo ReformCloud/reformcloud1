@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
+import systems.reformcloud.api.deployment.incoming.RestAPIDeploymentService;
+import systems.reformcloud.api.deployment.outgoing.RestAPIDownloadService;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
 import systems.reformcloud.api.ingame.command.IngameCommandMangerImpl;
 import systems.reformcloud.api.network.event.EventAdapter;
@@ -299,6 +301,9 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
                     .registerHandler("/api/player/get", new RestAPIGetOfflinePlayer())
 
+                    .registerHandler("/api/deploy", new RestAPIDeploymentService())
+                    .registerHandler("/api/download", new RestAPIDownloadService())
+
                     .registerHandler("/api/stop/server", new RestAPIStopServer())
                     .registerHandler("/api/stop/proxy", new RestAPIStartProxy());
         }
@@ -331,6 +336,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerCommand(new CommandUpload())
                 .registerCommand(new CommandAssignment())
                 .registerCommand(new CommandInstall())
+                .registerCommand(new CommandDeploy())
                 .registerCommand(new CommandWebPermissions());
     }
 
