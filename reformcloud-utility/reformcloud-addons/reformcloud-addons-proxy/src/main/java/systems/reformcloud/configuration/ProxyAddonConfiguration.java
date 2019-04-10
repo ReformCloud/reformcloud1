@@ -34,8 +34,8 @@ public final class ProxyAddonConfiguration implements Serializable {
                     new ProxySettings(
                             ReformCloudController.getInstance().getAllProxyGroups().parallelStream().findFirst().get().getName(),
                             "§2Reform§fCloud §8● §a§lOfficial Cloud System §8» §7%current_server% §8● §7%current_proxy% \n §7Online count §8» " +
-                                    "§a%online_players%§8/§a%max_players_current%§8/§a%max_players_global%",
-                            "§7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud \n §2Reform§fCloud " +
+                                    "§a%online_players%§8/§a%max_players_current%§8/§a%max_players_global% \n",
+                            "\n §7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud \n §2Reform§fCloud " +
                                     "§8by §a_Klaro §8» §7@k_klaro",
                             "§4§lMaintenance §8● §c§l✘",
                             "§2§lReform§f§lCloud §8● §7§l%online_players%§8§l/§7§l%max_players_global%",

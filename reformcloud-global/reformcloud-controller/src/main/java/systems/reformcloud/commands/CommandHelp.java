@@ -21,7 +21,7 @@ public final class CommandHelp extends Command implements Serializable {
     private final DecimalFormat decimalFormat = new DecimalFormat("##.###");
 
     public CommandHelp() {
-        super("help", "Get help", null, new String[]{"?"});
+        super("help", "Get help", null, new String[]{"?", "ask", "ls"});
     }
 
     @Override
