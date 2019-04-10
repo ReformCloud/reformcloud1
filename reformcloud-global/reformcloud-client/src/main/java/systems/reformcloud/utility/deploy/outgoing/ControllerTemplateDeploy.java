@@ -6,7 +6,6 @@ package systems.reformcloud.utility.deploy.outgoing;
 
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
@@ -33,9 +32,7 @@ public final class ControllerTemplateDeploy implements Serializable {
                             "/api/deploy"
             ).openConnection();
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
-            httpURLConnection.setRequestProperty("-XPassword",
-                    StringEncrypt.encrypt(ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword())
-            );
+            httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
             httpURLConnection.setRequestProperty("-XConfig", new Configuration()
                     .addStringProperty("template", template)
                     .addStringProperty("group", group)
