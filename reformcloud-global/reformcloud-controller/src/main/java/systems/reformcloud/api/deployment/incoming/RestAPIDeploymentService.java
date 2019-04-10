@@ -13,10 +13,10 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.web.InternalWebUser;
+import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -51,12 +51,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
                     configuration.getStringValue("template") + ".zip"
             );
             file.getParentFile().mkdirs();
-            file.createNewFile();
-
-            try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-                fileOutputStream.write(fullHttpResponse.content().readBytes(fullHttpResponse.content().readableBytes()).array());
-                fileOutputStream.flush();
-            }
+            ZoneInformationProtocolUtility.toZip(fullHttpResponse.content().readBytes(fullHttpResponse.content().readableBytes()).array());
 
             ReformCloudController.getInstance().getLoggerProvider().info("Downloaded template " +
                     configuration.getStringValue("template") + " of group " + configuration.getStringValue("group"));

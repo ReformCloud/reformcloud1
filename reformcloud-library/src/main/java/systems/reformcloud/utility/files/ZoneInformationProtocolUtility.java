@@ -95,6 +95,28 @@ public class ZoneInformationProtocolUtility {
         return unzipped;
     }
 
+    public static void toZip(byte[] zip) {
+        try {
+            ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(zip));
+            ZipEntry entry = null;
+            while ((entry = zipStream.getNextEntry()) != null) {
+                String entryName = entry.getName();
+                FileOutputStream out = new FileOutputStream(entryName);
+
+                byte[] byteBuff = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = zipStream.read(byteBuff)) != -1) {
+                    out.write(byteBuff, 0, bytesRead);
+                }
+
+                out.close();
+                zipStream.closeEntry();
+            }
+            zipStream.close();
+        } catch (final IOException ignored) {
+        }
+    }
+
     public static Collection<File> unZip(byte[] zippedBytes, String destinationPath) throws Exception {
         File destDir = new File(destinationPath);
         return unZip(zippedBytes, destDir);
