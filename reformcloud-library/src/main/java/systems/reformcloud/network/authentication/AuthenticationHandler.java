@@ -25,7 +25,6 @@ public class AuthenticationHandler implements AuthenticationManager {
         switch (authenticationType) {
             case SERVER: {
                 if (ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()), packet.getConfiguration().getStringValue("key"))) {
-                    channelHandler.closeChannel(name);
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
