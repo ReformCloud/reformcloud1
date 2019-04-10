@@ -80,7 +80,7 @@ public final class CommandCreate extends Command implements Serializable {
 
             loggerProvider.info("Please enter the name of the client");
             String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) == null);
-            loggerProvider.info("Please enter the name of the client");
+            loggerProvider.info("Please enter the ip address of the client");
             String ip = cloudConfiguration.readString(loggerProvider, s -> s.split("\\.").length == 4);
 
             commandSender.sendMessage("Trying to create new Client...");
