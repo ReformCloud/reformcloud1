@@ -31,7 +31,6 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
@@ -203,32 +202,30 @@ public final class CloudConnectListener {
         if (proxySettings == null || !proxySettings.isTabEnabled())
             return;
 
-        VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
-            proxiedPlayer.getTabList().clearHeaderAndFooter();
-            proxiedPlayer.getTabList().setHeaderAndFooter(TextComponent.of(
-                    CloudAddonsListener.translateAlternateColorCodes('&',
-                            proxySettings.getTabHeader()
-                                    .replace("%current_server_group%", ReformCloudAPIVelocity.getInstance().getServerInfo(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()).getGroup())
-                                    .replace("%current_proxy_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
-                                    .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
-                                    .replace("%current_server%", proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
-                                    .replace("%online_players_current%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
-                                    .replace("%online_players%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount()))
-                                    .replace("%max_players_current%", Integer.toString(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
-                                    .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
-                    )), TextComponent.of(
-                    CloudAddonsListener.translateAlternateColorCodes('&',
-                            proxySettings.getTabFooter()
-                                    .replace("%current_server_group%", ReformCloudAPIVelocity.getInstance().getServerInfo(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()).getGroup())
-                                    .replace("%current_proxy_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
-                                    .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
-                                    .replace("%current_server%", proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
-                                    .replace("%online_players_current%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
-                                    .replace("%online_players%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount()))
-                                    .replace("%max_players_current%", Integer.toString(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
-                                    .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
-                    ))
-            );
-        }).delay(5, TimeUnit.MILLISECONDS).schedule();
+        proxiedPlayer.getTabList().clearHeaderAndFooter();
+        proxiedPlayer.getTabList().setHeaderAndFooter(TextComponent.of(
+                CloudAddonsListener.translateAlternateColorCodes('&',
+                        proxySettings.getTabHeader()
+                                .replace("%current_server_group%", ReformCloudAPIVelocity.getInstance().getServerInfo(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()).getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+                                .replace("%current_server%", proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
+                                .replace("%online_players_current%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
+                                .replace("%online_players%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount()))
+                                .replace("%max_players_current%", Integer.toString(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
+                )), TextComponent.of(
+                CloudAddonsListener.translateAlternateColorCodes('&',
+                        proxySettings.getTabFooter()
+                                .replace("%current_server_group%", ReformCloudAPIVelocity.getInstance().getServerInfo(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()).getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+                                .replace("%current_server%", proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
+                                .replace("%online_players_current%", Integer.toString(VelocityBootstrap.getInstance().getProxy().getPlayerCount()))
+                                .replace("%online_players%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalOnlineCount()))
+                                .replace("%max_players_current%", Integer.toString(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
+                ))
+        );
     }
 }
