@@ -31,7 +31,6 @@ import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.handler.Decoder;
 import systems.reformcloud.network.handler.Encoder;
-import systems.reformcloud.signal.SignalBlocker;
 import systems.reformcloud.utility.checkable.Checkable;
 
 import java.lang.management.ManagementFactory;
@@ -45,8 +44,6 @@ import java.util.concurrent.*;
 public final class ReformCloudLibraryService {
     static {
         Thread.currentThread().setName("ReformCloud-Main");
-
-        new SignalBlocker();
 
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("io.netty.noPreferDirect", "true");
