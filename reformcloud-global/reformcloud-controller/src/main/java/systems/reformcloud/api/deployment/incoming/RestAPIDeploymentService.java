@@ -51,7 +51,10 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
                     configuration.getStringValue("template") + ".zip"
             );
             file.getParentFile().mkdirs();
-            ZoneInformationProtocolUtility.toZip(fullHttpResponse.content().readBytes(fullHttpResponse.content().readableBytes()).array());
+            ZoneInformationProtocolUtility.toZip(
+                    fullHttpResponse.content().readBytes(fullHttpResponse.content().readableBytes()).array(),
+                    file
+            );
 
             ReformCloudController.getInstance().getLoggerProvider().info("Downloaded template " +
                     configuration.getStringValue("template") + " of group " + configuration.getStringValue("group"));

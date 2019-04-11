@@ -8,7 +8,9 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.zip.ZipEntry;
@@ -95,26 +97,24 @@ public class ZoneInformationProtocolUtility {
         return unzipped;
     }
 
-    public static void toZip(byte[] zip) {
+    public static void toZip(byte[] zip, Path to) {
         try {
-            ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(zip));
-            ZipEntry entry = null;
-            while ((entry = zipStream.getNextEntry()) != null) {
-                String entryName = entry.getName();
-                FileOutputStream out = new FileOutputStream(entryName);
-
-                byte[] byteBuff = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = zipStream.read(byteBuff)) != -1) {
-                    out.write(byteBuff, 0, bytesRead);
-                }
-
-                out.close();
-                zipStream.closeEntry();
-            }
-            zipStream.close();
-        } catch (final IOException ignored) {
+            Files.write(to, zip);
+        } catch (final IOException ex) {
+            StringUtil.printError(
+                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error while writing byte array to zip file",
+                    ex
+            );
         }
+    }
+
+    public static void toZip(byte[] zip, File to) {
+        toZip(zip, to.toPath());
+    }
+
+    public static void toZip(byte[] zip, String to) {
+        toZip(zip, Paths.get(to));
     }
 
     public static Collection<File> unZip(byte[] zippedBytes, String destinationPath) throws Exception {
