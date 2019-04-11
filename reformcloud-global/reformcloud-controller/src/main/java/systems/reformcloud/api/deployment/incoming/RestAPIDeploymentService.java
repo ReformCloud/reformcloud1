@@ -62,7 +62,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
                     configuration.getStringValue("template") + " of group " + configuration.getStringValue("group"));
 
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                    httpHeaders.get("client"),
+                    configuration.getStringValue("client"),
                     new PacketOutTemplateDeployReady(
                             configuration.getStringValue("group"),
                             configuration.getStringValue("template"),
