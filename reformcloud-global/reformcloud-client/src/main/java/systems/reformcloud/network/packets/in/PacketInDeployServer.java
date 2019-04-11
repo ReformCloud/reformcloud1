@@ -21,7 +21,7 @@ public final class PacketInDeployServer implements Serializable, NetworkInboundH
         boolean proxy = configuration.getStringValue("type").equals("proxy");
         new ControllerTemplateDeploy().deploy(
                 new File(
-                        "reformcloud/templates/" + (proxy ? "proxies" : "server") + "/" +
+                        "reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" +
                                 configuration.getStringValue("group") + "/" + configuration.getStringValue("template")
                 ),
                 configuration.getStringValue("group"),

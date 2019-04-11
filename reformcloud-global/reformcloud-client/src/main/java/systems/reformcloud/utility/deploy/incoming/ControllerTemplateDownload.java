@@ -61,6 +61,8 @@ public final class ControllerTemplateDownload implements Serializable {
                 );
             }
 
+            FileUtils.deleteFileIfExists(Paths.get(path + ".zip"));
+
             ReformCloudClient.getInstance().getLoggerProvider().info("Successfully downloaded template " + template +
                     " of group " + group + " from controller");
             httpURLConnection.disconnect();
