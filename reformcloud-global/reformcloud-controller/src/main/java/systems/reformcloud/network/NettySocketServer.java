@@ -23,6 +23,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
@@ -120,8 +121,12 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
 
     @Override
     public void close() {
-        workerGroup.shutdownGracefully();
-        bossGroup.shutdownGracefully();
+        try {
+            workerGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            bossGroup.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (final InterruptedException ex) {
+            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(), "Error while termination of event groups", ex);
+        }
     }
 
     private boolean isIpAllowed(String ip) {

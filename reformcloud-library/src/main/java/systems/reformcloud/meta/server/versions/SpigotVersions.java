@@ -54,7 +54,7 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_8_8("Paper 1.8.8-R0-1-SNAPSHOT", "1.8.8", "https://archive.mcmirror.io/Paper/Paper-1.8.8-R0.1-SNAPSHOT-latest.jar"),
     PAPER_1_11_2("Paper 1.11.2", "1.11.2", "https://archive.mcmirror.io/Paper/Paper-1.11.2-b1000.jar"),
     PAPER_1_12_2("Paper 1.12.2", "1.12.2", "https://mcmirror.io/files/Paper/Paper-1.12.2-ac69748-20181207-0309.jar"),
-    PAPER_1_13_2("Paper 1.13.2", "1.13.2", "https://mcmirror.io/files/Paper/Paper-1.13.2-44e66f7-20190121-0708.jar"),
+    PAPER_1_13_2("Paper 1.13.2", "1.13.2", "https://mcmirror.io/files/Paper/Paper-1.13.2-ab8bbdf-20190411-0341.jar"),
     /**
      * SpongeVanilla Versions
      */

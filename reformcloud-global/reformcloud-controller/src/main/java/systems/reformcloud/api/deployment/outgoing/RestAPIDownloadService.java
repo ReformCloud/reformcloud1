@@ -13,6 +13,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.web.InternalWebUser;
+import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
@@ -58,6 +59,10 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
             fullHttpResponse.headers().set("content-response", configuration.getStringValue("group")
                     + "-" + configuration.getStringValue("template"));
             fullHttpResponse.content().writeBytes(out);
+
+            FileUtils.deleteFullDirectory("reformcloud/files/" +
+                    configuration.getStringValue("group") + "/" +
+                    configuration.getStringValue("template") + ".zip");
         }
 
         return fullHttpResponse;

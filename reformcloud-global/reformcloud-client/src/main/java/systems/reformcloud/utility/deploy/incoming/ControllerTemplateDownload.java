@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
+import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,7 +36,8 @@ public final class ControllerTemplateDownload implements Serializable {
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
             httpURLConnection.setRequestProperty("-XConfig", new Configuration()
                     .addStringProperty("template", template)
-                    .addStringProperty("group", group).getJsonString());
+                    .addStringProperty("group", group)
+                    .addBooleanProperty("proxy", proxy).getJsonString());
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setDoOutput(false);
             httpURLConnection.setDoInput(true);
@@ -44,7 +46,20 @@ public final class ControllerTemplateDownload implements Serializable {
             Path path = Paths.get("reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group + "/" + template);
 
             FileUtils.deleteFullDirectory(path);
-            Files.copy(httpURLConnection.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(httpURLConnection.getInputStream(), Paths.get(path + ".zip"), StandardCopyOption.REPLACE_EXISTING);
+
+            try {
+                ZoneInformationProtocolUtility.unZip(
+                        Paths.get(path + ".zip").toFile(),
+                        "reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group + "/" + template
+                );
+            } catch (final Exception ex) {
+                StringUtil.printError(
+                        ReformCloudClient.getInstance().getLoggerProvider(),
+                        "Error while unzipping downloaded template",
+                        ex
+                );
+            }
 
             ReformCloudClient.getInstance().getLoggerProvider().info("Successfully downloaded template " + template +
                     " of group " + group + " from controller");

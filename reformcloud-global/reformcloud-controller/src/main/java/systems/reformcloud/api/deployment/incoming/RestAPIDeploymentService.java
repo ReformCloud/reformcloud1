@@ -13,6 +13,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.web.InternalWebUser;
+import systems.reformcloud.network.out.PacketOutTemplateDeployReady;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.web.utils.WebHandler;
 
@@ -60,7 +61,14 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
             ReformCloudController.getInstance().getLoggerProvider().info("Downloaded template " +
                     configuration.getStringValue("template") + " of group " + configuration.getStringValue("group"));
 
-            //TODO: send packet to client to deploy template to
+            ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                    httpHeaders.get("client"),
+                    new PacketOutTemplateDeployReady(
+                            configuration.getStringValue("group"),
+                            configuration.getStringValue("template"),
+                            configuration.getBooleanValue("proxy")
+                    )
+            );
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;
         }
