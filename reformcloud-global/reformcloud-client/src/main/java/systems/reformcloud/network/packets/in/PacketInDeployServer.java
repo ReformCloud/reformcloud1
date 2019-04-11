@@ -26,7 +26,8 @@ public final class PacketInDeployServer implements Serializable, NetworkInboundH
                 ),
                 configuration.getStringValue("group"),
                 configuration.getStringValue("template"),
-                configuration.getStringValue("to")
+                configuration.getStringValue("to"),
+                proxy
         );
     }
 }

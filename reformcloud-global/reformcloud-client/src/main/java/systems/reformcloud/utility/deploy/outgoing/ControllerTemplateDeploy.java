@@ -22,7 +22,7 @@ import java.util.Base64;
  */
 
 public final class ControllerTemplateDeploy implements Serializable {
-    public void deploy(File dir, String group, String template, String requester) {
+    public void deploy(File dir, String group, String template, String requester, boolean proxy) {
         FileUtils.copyAllFiles(dir.toPath(), "reformcloud/files/" + group + "/" + template);
 
         try {
@@ -37,6 +37,7 @@ public final class ControllerTemplateDeploy implements Serializable {
             httpURLConnection.setRequestProperty("-XConfig", new Configuration()
                     .addStringProperty("template", template)
                     .addStringProperty("group", group)
+                    .addBooleanProperty("proxy", proxy)
                     .addStringProperty("client", requester).getJsonString());
             httpURLConnection.setRequestProperty("template", Base64.getEncoder().encodeToString(
                     ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
