@@ -30,7 +30,7 @@ public final class ControllerTemplateDownload implements Serializable {
                     ReformCloudClient.getInstance().isSsl() ? "https://" : "http://" +
                             ReformCloudClient.getInstance().getCloudConfiguration().getControllerIP() + ":" +
                             ReformCloudClient.getInstance().getCloudConfiguration().getControllerWebPort() +
-                            "/api/deploy"
+                            "/api/download"
             ).openConnection();
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
