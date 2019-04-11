@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.Base64;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -37,15 +38,13 @@ public final class ControllerTemplateDeploy implements Serializable {
                     .addStringProperty("template", template)
                     .addStringProperty("group", group)
                     .addStringProperty("client", requester).getJsonString());
+            httpURLConnection.setRequestProperty("template", Base64.getEncoder().encodeToString(
+                    ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
+            );
             httpURLConnection.setUseCaches(false);
-            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoOutput(false);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
-
-            try (OutputStream outputStream = httpURLConnection.getOutputStream()) {
-                outputStream.write(ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)));
-                outputStream.flush();
-            }
 
             try (InputStream inputStream = httpURLConnection.getInputStream();
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {

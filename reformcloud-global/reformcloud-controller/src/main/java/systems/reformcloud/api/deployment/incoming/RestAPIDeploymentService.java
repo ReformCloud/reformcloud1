@@ -19,6 +19,7 @@ import systems.reformcloud.web.utils.WebHandler;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -52,7 +53,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
             );
             file.getParentFile().mkdirs();
             ZoneInformationProtocolUtility.toZip(
-                    fullHttpResponse.content().readBytes(fullHttpResponse.content().readableBytes()).array(),
+                    Base64.getDecoder().decode(httpHeaders.get("template")),
                     file
             );
 
