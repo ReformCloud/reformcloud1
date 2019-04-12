@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +45,6 @@ public final class ControllerTemplateDeploy implements Serializable {
                     .addBooleanProperty("proxy", proxy)
                     .addStringProperty("client", requester);
 
-            httpURLConnection.setFixedLengthStreamingMode(configuration.getJsonString().getBytes(Charset.defaultCharset()).length);
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
