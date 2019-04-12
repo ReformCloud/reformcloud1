@@ -35,6 +35,8 @@ public final class RuntimeClassLoader extends ClassLoader implements Serializabl
         } catch (final NoSuchFieldException | IllegalAccessException ex) {
             ex.printStackTrace();
         }
+
+        System.out.println(ClassLoader.getSystemClassLoader());
     }
 
     @Override
