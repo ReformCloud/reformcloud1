@@ -42,7 +42,7 @@ public final class ControllerTemplateDeploy implements Serializable {
                     .addBooleanProperty("proxy", proxy)
                     .addStringProperty("client", requester);
 
-            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
             httpURLConnection.setRequestProperty("-XConfig", configuration.getJsonString());
@@ -50,11 +50,9 @@ public final class ControllerTemplateDeploy implements Serializable {
                     ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
             );
             httpURLConnection.setUseCaches(false);
-            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoOutput(false);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
-
-            httpURLConnection.getOutputStream().close();
 
             try (InputStream inputStream = httpURLConnection.getInputStream();
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {

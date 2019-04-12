@@ -258,10 +258,9 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         shutdown = true;
         RUNNING = false;
 
-        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientDisconnects());
+        this.channelHandler.sendDirectPacket("ReformCloudController", new PacketOutSyncClientDisconnects());
 
         ReformCloudLibraryService.sleep(500);
-        this.nettySocketClient.close();
 
         this.cloudProcessScreenService.getRegisteredProxyProcesses().forEach(proxyProcess -> {
             proxyProcess.shutdown(null, false);
@@ -276,6 +275,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
             ReformCloudLibraryService.sleep(1000);
         });
 
+        this.nettySocketClient.close();
         this.addonParallelLoader.disableAddons();
         ReformCloudLibraryService.sleep(1000);
     }
