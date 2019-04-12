@@ -168,6 +168,9 @@ public class ChannelHandler {
     }
 
     public void sendDirectPacket(String to, Packet packet) {
+        if (!this.channelHandlerContextMap.containsKey(to))
+            return;
+
         this.sendPacket(new AwaitingPacket(this.getChannel(to), packet));
     }
 

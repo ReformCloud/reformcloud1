@@ -72,6 +72,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
                     )
             );
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
+            fullHttpResponse.content().writeBytes(answer.addProperty("success", true).getJsonString().getBytes());
             return fullHttpResponse;
         }
 
