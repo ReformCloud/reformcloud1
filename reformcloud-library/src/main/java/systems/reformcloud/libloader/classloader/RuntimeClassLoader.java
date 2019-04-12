@@ -30,23 +30,28 @@ public final class RuntimeClassLoader extends ClassLoader implements Serializabl
     }
 
     @Override
-    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        return this.loadClass(name);
+    public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        return this.urlClassLoader.loadClass(name, resolve);
     }
 
     @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
+    public Class<?> findClass(String name) throws ClassNotFoundException {
         return this.urlClassLoader.findClass(name);
     }
 
     public class RuntimeURLClassLoader extends URLClassLoader {
-        public RuntimeURLClassLoader(URL[] urls, ClassLoader parent) {
+        private RuntimeURLClassLoader(URL[] urls, ClassLoader parent) {
             super(urls, parent);
         }
 
         @Override
         public Class<?> findClass(String name) throws ClassNotFoundException {
             return super.findClass(name);
+        }
+
+        @Override
+        public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            return super.loadClass(name, resolve);
         }
     }
 }

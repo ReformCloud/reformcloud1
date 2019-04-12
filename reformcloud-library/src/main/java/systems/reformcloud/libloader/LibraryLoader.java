@@ -14,12 +14,9 @@ import systems.reformcloud.utility.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -80,6 +77,7 @@ public final class LibraryLoader {
         RuntimeClassLoader classLoader = new RuntimeClassLoader(ClassLoader.getSystemClassLoader(),
                 urls.toArray(new URL[urls.size()]));
 
+        /*
         urls.forEach(url -> {
             try {
                 Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
@@ -92,6 +90,8 @@ public final class LibraryLoader {
             final String[] name = url.getFile().split("/");
             System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
         });
+
+         */
         Thread.currentThread().setContextClassLoader(classLoader);
     }
 
