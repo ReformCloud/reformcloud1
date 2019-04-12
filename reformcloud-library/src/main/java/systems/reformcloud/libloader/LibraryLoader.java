@@ -5,6 +5,7 @@
 package systems.reformcloud.libloader;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.libloader.classloader.RuntimeClassLoader;
 import systems.reformcloud.libloader.libraries.*;
 import systems.reformcloud.libloader.utility.Dependency;
 import systems.reformcloud.utility.ExitUtil;
@@ -75,7 +76,8 @@ public final class LibraryLoader {
             }
         });
 
-        URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        URLClassLoader urlClassLoader = new RuntimeClassLoader(ClassLoader.getSystemClassLoader(),
+                urls.toArray(new URL[urls.size()])).getUrlClassLoader();
 
         urls.forEach(url -> {
             try {
