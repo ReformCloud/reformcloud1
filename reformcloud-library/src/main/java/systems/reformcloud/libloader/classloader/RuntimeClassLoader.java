@@ -5,6 +5,7 @@
 package systems.reformcloud.libloader.classloader;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -19,6 +20,14 @@ public final class RuntimeClassLoader extends URLClassLoader implements Serializ
 
     public RuntimeClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
+
+        try {
+            Field field = ClassLoader.class.getDeclaredField("scl");
+            field.setAccessible(true);
+            field.set(ClassLoader.getSystemClassLoader(), this);
+        } catch (final NoSuchFieldException | IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
