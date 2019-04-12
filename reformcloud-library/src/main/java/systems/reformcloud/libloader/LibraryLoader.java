@@ -90,7 +90,7 @@ public final class LibraryLoader {
 
                 file.stream().forEach(e -> {
                     try {
-                        Class.forName(e.getName(), true, new URLClassLoader(new URL[]{url}));
+                        Class.forName(e.getName(), true, new URLClassLoader(new URL[]{url}, null));
                     } catch (final ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
