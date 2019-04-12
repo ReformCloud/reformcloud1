@@ -5,7 +5,6 @@
 package systems.reformcloud.libloader;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.libloader.classloader.RuntimeClassLoader;
 import systems.reformcloud.libloader.libraries.*;
 import systems.reformcloud.libloader.utility.Dependency;
 import systems.reformcloud.utility.ExitUtil;
@@ -14,17 +13,18 @@ import systems.reformcloud.utility.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarFile;
 
 /**
  * @author _Klaro | Pasqual K. / created on 23.01.2019
@@ -76,31 +76,21 @@ public final class LibraryLoader {
             }
         });
 
+        URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+
         urls.forEach(url -> {
+            try {
+                Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                addURL.setAccessible(true);
+                addURL.invoke(urlClassLoader, url);
+            } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while loading class", ex);
+            }
+
             final String[] name = url.getFile().split("/");
             System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
-
-            try {
-                TimeUnit.SECONDS.sleep(5);
-            } catch (final InterruptedException ex) {
-            }
-
-            RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(new URL[]{url});
-
-            try {
-                JarFile file = new JarFile(url.getFile());
-
-                file.stream().forEach(e -> {
-                    try {
-                        runtimeClassLoader.loadClass(e.getName());
-                    } catch (final ClassNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                });
-            } catch (final IOException ex) {
-                ex.printStackTrace();
-            }
         });
+        Thread.currentThread().setContextClassLoader(urlClassLoader);
     }
 
     private void downloadLib(final Dependency dependency) {

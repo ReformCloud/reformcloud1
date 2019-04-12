@@ -38,13 +38,18 @@ public final class ControllerTemplateDeploy implements Serializable {
                             ReformCloudClient.getInstance().getCloudConfiguration().getControllerWebPort() +
                             "/api/deploy"
             ).openConnection();
-            httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
-            httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
-            httpURLConnection.setRequestProperty("-XConfig", new Configuration()
+
+            Configuration configuration = new Configuration()
                     .addStringProperty("template", template)
                     .addStringProperty("group", group)
                     .addBooleanProperty("proxy", proxy)
-                    .addStringProperty("client", requester).getJsonString());
+                    .addStringProperty("client", requester);
+
+            ReformCloudClient.getInstance().getLoggerProvider().info(configuration.getJsonString());
+
+            httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
+            httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
+            httpURLConnection.setRequestProperty("-XConfig", configuration.getJsonString());
             httpURLConnection.setRequestProperty("template", Base64.getEncoder().encodeToString(
                     ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
             );
