@@ -8,6 +8,7 @@ import lombok.Getter;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
@@ -26,6 +27,14 @@ public final class RuntimeClassLoader extends ClassLoader implements Serializabl
         ClassLoader.registerAsParallelCapable();
         this.urlClassLoader = new RuntimeURLClassLoader(urls, parent);
         loadedURLs.forEach(this.urlClassLoader::addURL);
+
+        try {
+            Field field = ClassLoader.class.getDeclaredField("scl");
+            field.setAccessible(true);
+            field.set(ClassLoader.getSystemClassLoader(), this);
+        } catch (final NoSuchFieldException | IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
