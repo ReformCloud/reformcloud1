@@ -23,6 +23,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.jar.JarFile;
 
 /**
  * @author _Klaro | Pasqual K. / created on 23.01.2019
@@ -78,6 +79,19 @@ public final class LibraryLoader {
 
         urls.forEach(url -> {
             runtimeClassLoader.addURL(url);
+            try {
+                JarFile file = new JarFile(url.getFile());
+
+                file.stream().forEach(e -> {
+                    try {
+                        Class.forName(e.getName(), true, runtimeClassLoader);
+                    } catch (final ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+            } catch (final IOException ex) {
+                ex.printStackTrace();
+            }
 
             final String[] name = url.getFile().split("/");
             System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
