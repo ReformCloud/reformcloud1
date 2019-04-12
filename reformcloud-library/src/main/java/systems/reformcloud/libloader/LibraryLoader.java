@@ -74,25 +74,15 @@ public final class LibraryLoader {
             }
         });
 
-        RuntimeClassLoader classLoader = new RuntimeClassLoader(ClassLoader.getSystemClassLoader(),
-                urls.toArray(new URL[urls.size()]), urls);
+        RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(urls.toArray(new URL[urls.size()]), ClassLoader.getSystemClassLoader());
 
-        /*
         urls.forEach(url -> {
-            try {
-                Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-                addURL.setAccessible(true);
-                addURL.invoke(classLoader.getUrlClassLoader(), url);
-            } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while loading class", ex);
-            }
+            runtimeClassLoader.addURL(url);
 
             final String[] name = url.getFile().split("/");
             System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
         });
-
-         */
-        Thread.currentThread().setContextClassLoader(classLoader);
+        Thread.currentThread().setContextClassLoader(runtimeClassLoader);
     }
 
     private void downloadLib(final Dependency dependency) {
