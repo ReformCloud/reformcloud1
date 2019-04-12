@@ -4,8 +4,6 @@
 
 package systems.reformcloud.libloader.classloader;
 
-import sun.misc.Launcher;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -20,8 +18,8 @@ public final class RuntimeClassLoader extends URLClassLoader implements Serializ
         ClassLoader.registerAsParallelCapable();
     }
 
-    public RuntimeClassLoader(URL[] urls, ClassLoader parent) {
-        super(urls, parent);
+    public RuntimeClassLoader(URL[] urls) {
+        super(urls);
 
         try {
             Field field = ClassLoader.class.getDeclaredField("scl");
@@ -35,6 +33,20 @@ public final class RuntimeClassLoader extends URLClassLoader implements Serializ
     @Override
     public void addURL(URL url) {
         super.addURL(url);
-        Launcher.getBootstrapClassPath().addURL(url);
+    }
+
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        return super.findClass(name);
+    }
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        return super.loadClass(name, resolve);
+    }
+
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return super.loadClass(name);
     }
 }
