@@ -57,14 +57,7 @@ public final class ControllerTemplateDeploy implements Serializable {
             httpURLConnection.setDoInput(false);
             httpURLConnection.connect();
 
-            while (true) {
-                try {
-                    httpURLConnection.setRequestMethod("GET");
-                    break;
-                } catch (final Throwable throwable) {
-                    ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 1);
-                }
-            }
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 5);
 
             ReformCloudClient.getInstance().getLoggerProvider().info("Successfully send template " + template +
                     " of group " + group + " to controller");

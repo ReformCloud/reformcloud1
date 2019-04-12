@@ -4,8 +4,6 @@
 
 package systems.reformcloud.web.handler;
 
-import systems.reformcloud.web.utils.WebHandler;
-import systems.reformcloud.web.utils.WebHandlerAdapter;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,6 +13,8 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
+import systems.reformcloud.web.utils.WebHandler;
+import systems.reformcloud.web.utils.WebHandlerAdapter;
 
 import java.io.IOException;
 import java.net.URI;
@@ -52,7 +52,7 @@ public class WebServerHandler extends ChannelInboundHandlerAdapter {
             fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer("404 Page is not available!".getBytes()));
 
         fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
-        ctx.channel().writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
+        ctx.channel().writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE).channel().close().syncUninterruptibly();
     }
 
     @Override
