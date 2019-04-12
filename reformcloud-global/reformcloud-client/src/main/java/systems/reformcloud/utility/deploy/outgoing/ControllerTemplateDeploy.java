@@ -23,6 +23,12 @@ import java.util.Base64;
 
 public final class ControllerTemplateDeploy implements Serializable {
     public void deploy(File dir, String group, String template, String requester, boolean proxy) {
+        ReformCloudClient.getInstance().getLoggerProvider().info(
+          dir.toPath() + " " +
+          group + " " + 
+          template + " " + 
+          requester + " " +
+          proxy);
         FileUtils.copyAllFiles(dir.toPath(), "reformcloud/files/" + group + "/" + template);
 
         try {
