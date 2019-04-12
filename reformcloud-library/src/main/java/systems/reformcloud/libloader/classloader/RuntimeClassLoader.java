@@ -6,9 +6,12 @@ package systems.reformcloud.libloader.classloader;
 
 import lombok.Getter;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 12.04.2019
@@ -18,10 +21,12 @@ import java.net.URLClassLoader;
 public final class RuntimeClassLoader extends ClassLoader implements Serializable {
     private final RuntimeURLClassLoader urlClassLoader;
 
-    public RuntimeClassLoader(ClassLoader parent, URL[] urls) {
+    public RuntimeClassLoader(ClassLoader parent, URL[] urls, List<URL> loadedURLs) {
         super(parent);
         ClassLoader.registerAsParallelCapable();
         this.urlClassLoader = new RuntimeURLClassLoader(urls, parent);
+
+        loadedURLs.forEach(this.urlClassLoader::addURL);
     }
 
     @Override
@@ -39,6 +44,16 @@ public final class RuntimeClassLoader extends ClassLoader implements Serializabl
         return this.urlClassLoader.findClass(name);
     }
 
+    @Override
+    protected Enumeration<URL> findResources(String name) throws IOException {
+        return this.urlClassLoader.findResources(name);
+    }
+
+    @Override
+    protected URL findResource(String name) {
+        return this.urlClassLoader.findResource(name);
+    }
+
     public class RuntimeURLClassLoader extends URLClassLoader {
         private RuntimeURLClassLoader(URL[] urls, ClassLoader parent) {
             super(urls, parent);
@@ -52,6 +67,11 @@ public final class RuntimeClassLoader extends ClassLoader implements Serializabl
         @Override
         public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
             return super.loadClass(name, resolve);
+        }
+
+        @Override
+        public void addURL(URL url) {
+            super.addURL(url);
         }
     }
 }
