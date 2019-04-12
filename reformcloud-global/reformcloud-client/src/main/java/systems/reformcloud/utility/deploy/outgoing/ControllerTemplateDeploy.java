@@ -10,11 +10,12 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Base64;
 
@@ -53,14 +54,17 @@ public final class ControllerTemplateDeploy implements Serializable {
             );
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
+            httpURLConnection.setDoInput(false);
             httpURLConnection.connect();
 
+            /*
             try (InputStream inputStream = httpURLConnection.getInputStream();
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
                 String in;
                 while ((in = bufferedReader.readLine()) != null) ;
             }
+
+             */
             ReformCloudClient.getInstance().getLoggerProvider().info("Successfully send template " + template +
                     " of group " + group + " to controller");
             httpURLConnection.disconnect();
