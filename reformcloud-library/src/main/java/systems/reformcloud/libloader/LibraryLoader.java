@@ -5,7 +5,6 @@
 package systems.reformcloud.libloader;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.libloader.classloader.RuntimeClassLoader;
 import systems.reformcloud.libloader.libraries.*;
 import systems.reformcloud.libloader.utility.Dependency;
 import systems.reformcloud.utility.ExitUtil;
@@ -75,16 +74,13 @@ public final class LibraryLoader {
             }
         });
 
-        RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(new URL[0]);
-
         urls.forEach(url -> {
-            runtimeClassLoader.addURL(url);
             try {
                 JarFile file = new JarFile(url.getFile());
 
                 file.stream().forEach(e -> {
                     try {
-                        Class.forName(e.getName(), true, runtimeClassLoader);
+                        Class.forName(e.getName(), true, Thread.currentThread().getContextClassLoader());
                     } catch (final ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
@@ -96,7 +92,6 @@ public final class LibraryLoader {
             final String[] name = url.getFile().split("/");
             System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
         });
-        Thread.currentThread().setContextClassLoader(runtimeClassLoader);
     }
 
     private void downloadLib(final Dependency dependency) {
