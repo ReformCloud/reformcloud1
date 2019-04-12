@@ -34,4 +34,26 @@ public final class RuntimeClassLoader extends URLClassLoader implements Serializ
     public void addURL(URL url) {
         super.addURL(url);
     }
+
+    @Override
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        Class<?> loadedClass = findLoadedClass(name);
+        if (loadedClass == null) {
+            try {
+                loadedClass = findClass(name);
+            } catch (ClassNotFoundException e) {
+                loadedClass = super.loadClass(name, resolve);
+            }
+        }
+
+        if (resolve)
+            resolveClass(loadedClass);
+
+        return loadedClass;
+    }
+
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return this.loadClass(name, false);
+    }
 }

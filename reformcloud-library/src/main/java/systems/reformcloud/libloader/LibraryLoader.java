@@ -74,7 +74,7 @@ public final class LibraryLoader {
             }
         });
 
-        RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(urls.toArray(new URL[urls.size()]), ClassLoader.getSystemClassLoader());
+        RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(urls.toArray(new URL[urls.size()]), LibraryLoader.class.getClassLoader());
 
         urls.forEach(url -> {
             runtimeClassLoader.addURL(url);
