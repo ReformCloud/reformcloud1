@@ -5,6 +5,7 @@
 package systems.reformcloud.libloader;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.libloader.classloader.RuntimeClassLoader;
 import systems.reformcloud.libloader.libraries.*;
 import systems.reformcloud.libloader.utility.Dependency;
 import systems.reformcloud.utility.ExitUtil;
@@ -16,7 +17,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -85,12 +85,14 @@ public final class LibraryLoader {
             } catch (final InterruptedException ex) {
             }
 
+            RuntimeClassLoader runtimeClassLoader = new RuntimeClassLoader(new URL[]{url});
+
             try {
                 JarFile file = new JarFile(url.getFile());
 
                 file.stream().forEach(e -> {
                     try {
-                        Class.forName(e.getName(), true, new URLClassLoader(new URL[]{url}, null));
+                        runtimeClassLoader.loadClass(e.getName());
                     } catch (final ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
