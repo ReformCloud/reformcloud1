@@ -23,6 +23,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 
 /**
@@ -76,6 +77,14 @@ public final class LibraryLoader {
         });
 
         urls.forEach(url -> {
+            final String[] name = url.getFile().split("/");
+            System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
+
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (final InterruptedException ex) {
+            }
+
             try {
                 JarFile file = new JarFile(url.getFile());
 
@@ -89,9 +98,6 @@ public final class LibraryLoader {
             } catch (final IOException ex) {
                 ex.printStackTrace();
             }
-
-            final String[] name = url.getFile().split("/");
-            System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
         });
     }
 
