@@ -50,9 +50,11 @@ public final class ControllerTemplateDeploy implements Serializable {
                     ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
             );
             httpURLConnection.setUseCaches(false);
-            httpURLConnection.setDoOutput(false);
+            httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
+
+            httpURLConnection.getOutputStream().close();
 
             try (InputStream inputStream = httpURLConnection.getInputStream();
                  BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
