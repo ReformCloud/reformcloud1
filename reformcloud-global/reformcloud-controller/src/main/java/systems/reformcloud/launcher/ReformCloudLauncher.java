@@ -55,8 +55,6 @@ final class ReformCloudLauncher {
         if (Files.exists(Paths.get("reformcloud/logs")))
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));
 
-        System.out.println();
-
         new LibraryLoader().loadJarFileAndInjectLibraries();
 
         final CommandManager commandManager = new CommandManager();
