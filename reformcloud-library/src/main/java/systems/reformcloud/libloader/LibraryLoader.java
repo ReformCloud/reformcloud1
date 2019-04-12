@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -80,7 +81,7 @@ public final class LibraryLoader {
 
                 file.stream().forEach(e -> {
                     try {
-                        Class.forName(e.getName(), true, Thread.currentThread().getContextClassLoader());
+                        Class.forName(e.getName(), true, new URLClassLoader(new URL[]{url}));
                     } catch (final ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
