@@ -37,7 +37,7 @@ public final class ControllerTemplateDeploy implements Serializable {
             httpURLConnection.setRequestProperty("-XConfig", new Configuration()
                     .addStringProperty("template", template)
                     .addStringProperty("group", group)
-                    .addBooleanProperty("proxy", proxy)
+                    //.addBooleanProperty("proxy", proxy)
                     .addStringProperty("client", requester).getJsonString());
             httpURLConnection.setRequestProperty("template", Base64.getEncoder().encodeToString(
                     ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
