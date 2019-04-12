@@ -4,6 +4,8 @@
 
 package systems.reformcloud.libloader.classloader;
 
+import sun.misc.Launcher;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -33,6 +35,7 @@ public final class RuntimeClassLoader extends URLClassLoader implements Serializ
     @Override
     public void addURL(URL url) {
         super.addURL(url);
+        Launcher.getBootstrapClassPath().addURL(url);
     }
 
     @Override
