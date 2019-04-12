@@ -45,7 +45,8 @@ public final class LibraryLoader {
             return;
         }
 
-        this.libraries.addAll(Arrays.asList(new Netty(), new Quartz(), new SnakeYaml(), new CommonsIO(), new JLine(), new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents()));
+        this.libraries.addAll(Arrays.asList(new Netty(), new Quartz(), new SnakeYaml(), new CommonsIO(), new JLine(),
+                new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents()));
     }
 
     public void loadJarFileAndInjectLibraries() {
@@ -76,14 +77,14 @@ public final class LibraryLoader {
             }
         });
 
-        URLClassLoader urlClassLoader = new RuntimeClassLoader(ClassLoader.getSystemClassLoader(),
-                urls.toArray(new URL[urls.size()])).getUrlClassLoader();
+        RuntimeClassLoader classLoader = new RuntimeClassLoader(ClassLoader.getSystemClassLoader(),
+                urls.toArray(new URL[urls.size()]));
 
         urls.forEach(url -> {
             try {
                 Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                 addURL.setAccessible(true);
-                addURL.invoke(urlClassLoader, url);
+                addURL.invoke(classLoader.getUrlClassLoader(), url);
             } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while loading class", ex);
             }
@@ -91,7 +92,7 @@ public final class LibraryLoader {
             final String[] name = url.getFile().split("/");
             System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
         });
-        Thread.currentThread().setContextClassLoader(urlClassLoader);
+        Thread.currentThread().setContextClassLoader(classLoader);
     }
 
     private void downloadLib(final Dependency dependency) {
