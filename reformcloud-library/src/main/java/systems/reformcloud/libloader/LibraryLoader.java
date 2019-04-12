@@ -75,7 +75,7 @@ public final class LibraryLoader {
         });
 
         RuntimeClassLoader classLoader = new RuntimeClassLoader(ClassLoader.getSystemClassLoader(),
-                urls.toArray(new URL[urls.size()]));
+                urls.toArray(new URL[urls.size()]), urls);
 
         /*
         urls.forEach(url -> {

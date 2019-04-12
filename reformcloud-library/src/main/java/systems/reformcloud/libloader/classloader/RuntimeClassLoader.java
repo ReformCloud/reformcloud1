@@ -25,7 +25,6 @@ public final class RuntimeClassLoader extends ClassLoader implements Serializabl
         super(parent);
         ClassLoader.registerAsParallelCapable();
         this.urlClassLoader = new RuntimeURLClassLoader(urls, parent);
-
         loadedURLs.forEach(this.urlClassLoader::addURL);
     }
 
