@@ -92,7 +92,7 @@ public final class LibraryLoader {
         });
 
          */
-        Thread.currentThread().setContextClassLoader(classLoader);
+        Thread.currentThread().setContextClassLoader(classLoader.getUrlClassLoader());
     }
 
     private void downloadLib(final Dependency dependency) {
