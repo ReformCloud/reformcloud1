@@ -13,6 +13,7 @@ import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -42,6 +43,7 @@ public final class ControllerTemplateDeploy implements Serializable {
                     .addBooleanProperty("proxy", proxy)
                     .addStringProperty("client", requester);
 
+            httpURLConnection.setFixedLengthStreamingMode(configuration.getJsonString().getBytes(Charset.defaultCharset()).length);
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
@@ -50,7 +52,7 @@ public final class ControllerTemplateDeploy implements Serializable {
                     ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
             );
             httpURLConnection.setUseCaches(false);
-            httpURLConnection.setDoOutput(false);
+            httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
 
