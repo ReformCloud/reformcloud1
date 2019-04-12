@@ -5,6 +5,7 @@
 package systems.reformcloud.utility.deploy.outgoing;
 
 import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -57,18 +59,14 @@ public final class ControllerTemplateDeploy implements Serializable {
             httpURLConnection.setDoInput(false);
             httpURLConnection.connect();
 
-            /*
-            try (InputStream inputStream = httpURLConnection.getInputStream();
-                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                String in;
-                while ((in = bufferedReader.readLine()) != null) ;
+            while (httpURLConnection.getResponseCode() != 200) {
+                ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 1);
             }
 
-             */
             ReformCloudClient.getInstance().getLoggerProvider().info("Successfully send template " + template +
                     " of group " + group + " to controller");
             httpURLConnection.disconnect();
-            FileUtils.deleteFullDirectory(Paths.get("reformcloud/files/" + group + "/" + template));
+            FileUtils.deleteFullDirectory(Paths.get("reformcloud/files/" + group));
         } catch (final IOException ex) {
             StringUtil.printError(
                     ReformCloudClient.getInstance().getLoggerProvider(),
