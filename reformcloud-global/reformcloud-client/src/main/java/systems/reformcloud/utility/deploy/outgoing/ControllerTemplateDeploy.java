@@ -42,6 +42,7 @@ public final class ControllerTemplateDeploy implements Serializable {
                     .addBooleanProperty("proxy", proxy)
                     .addStringProperty("client", requester);
 
+            httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
             httpURLConnection.setRequestProperty("-XConfig", configuration.getJsonString());
