@@ -46,6 +46,7 @@ public final class ControllerTemplateDownload implements Serializable {
             Path path = Paths.get("reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group + "/" + template);
 
             FileUtils.deleteFullDirectory(path);
+            FileUtils.createDirectory(path);
             Files.copy(httpURLConnection.getInputStream(), Paths.get(path + ".zip"), StandardCopyOption.REPLACE_EXISTING);
 
             try {

@@ -23,12 +23,9 @@ import java.util.Base64;
 
 public final class ControllerTemplateDeploy implements Serializable {
     public void deploy(File dir, String group, String template, String requester, boolean proxy) {
-        ReformCloudClient.getInstance().getLoggerProvider().info(
-          dir.toPath() + " " +
-          group + " " + 
-          template + " " + 
-          requester + " " +
-          proxy);
+        if (dir.list().length == 0)
+            return;
+
         FileUtils.copyAllFiles(dir.toPath(), "reformcloud/files/" + group + "/" + template);
 
         try {
@@ -44,8 +41,6 @@ public final class ControllerTemplateDeploy implements Serializable {
                     .addStringProperty("group", group)
                     .addBooleanProperty("proxy", proxy)
                     .addStringProperty("client", requester);
-
-            ReformCloudClient.getInstance().getLoggerProvider().info(configuration.getJsonString());
 
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
