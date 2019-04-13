@@ -104,6 +104,9 @@ public class NettySocketClient implements AutoCloseable {
 
     @Override
     public void close() {
+        if (eventLoopGroup == null)
+            return;
+
         eventLoopGroup.shutdownGracefully();
         eventLoopGroup = null;
     }

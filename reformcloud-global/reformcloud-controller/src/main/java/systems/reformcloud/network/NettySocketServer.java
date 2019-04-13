@@ -120,8 +120,11 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
 
     @Override
     public void close() {
-        workerGroup.shutdownGracefully();
-        bossGroup.shutdownGracefully();
+        if (workerGroup != null)
+            workerGroup.shutdownGracefully();
+
+        if (bossGroup != null)
+            bossGroup.shutdownGracefully();
     }
 
     private boolean isIpAllowed(String ip) {
