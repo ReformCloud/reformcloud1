@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import systems.reformcloud.web.utils.WebHandler;
 import systems.reformcloud.web.utils.WebHandlerAdapter;
 
-import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -63,7 +62,6 @@ public class WebServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (!(cause instanceof IOException))
-            cause.printStackTrace();
+        cause.printStackTrace();
     }
 }

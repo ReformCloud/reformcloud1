@@ -5,20 +5,16 @@
 package systems.reformcloud.utility.deploy.outgoing;
 
 import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Base64;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -54,10 +50,13 @@ public final class ControllerTemplateDeploy implements Serializable {
             );
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(false);
             httpURLConnection.connect();
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 5);
+            httpURLConnection.getOutputStream().write("Sending data...".getBytes());
+            httpURLConnection.getOutputStream().flush();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) ;
 
             ReformCloudClient.getInstance().getLoggerProvider().info("Successfully send template " + template +
                     " of group " + group + " to controller");
