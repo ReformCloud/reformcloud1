@@ -14,7 +14,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Base64;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -45,15 +44,14 @@ public final class ControllerTemplateDeploy implements Serializable {
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
             httpURLConnection.setRequestProperty("-XConfig", configuration.getJsonString());
-            httpURLConnection.setRequestProperty("template", Base64.getEncoder().encodeToString(
-                    ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)))
-            );
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setDoOutput(true);
             httpURLConnection.connect();
 
-            httpURLConnection.getOutputStream().write("Sending data...".getBytes());
-            httpURLConnection.getOutputStream().flush();
+            try (OutputStream outputStream = httpURLConnection.getOutputStream()) {
+                outputStream.write(ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" + group + "/" + template)));
+                outputStream.flush();
+            }
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
             String line;

@@ -17,7 +17,6 @@ import systems.reformcloud.web.utils.WebHandler;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Base64;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -50,7 +49,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
             return fullHttpResponse;
         }
 
-        Configuration configuration = Configuration.fromString(fullHttpRequest.headers().get("-XConfig"));
+        Configuration configuration = Configuration.fromString(httpHeaders.get("-XConfig"));
         if (configuration.contains("template") && configuration.contains("group") && configuration.contains("client")) {
             File file = new File("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
@@ -58,7 +57,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
             );
             file.getParentFile().mkdirs();
             ZoneInformationProtocolUtility.toZip(
-                    Base64.getDecoder().decode(httpHeaders.get("template")),
+                    fullHttpRequest.content().readBytes(fullHttpRequest.content().readableBytes()).array(),
                     file
             );
 
