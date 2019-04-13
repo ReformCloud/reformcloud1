@@ -54,6 +54,7 @@ public final class ControllerTemplateDeploy implements Serializable {
 
             httpURLConnection.getOutputStream().write("Sending data...".getBytes());
             httpURLConnection.getOutputStream().flush();
+
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
             String line;
             while ((line = bufferedReader.readLine()) != null) ;

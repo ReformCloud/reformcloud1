@@ -5,10 +5,7 @@
 package systems.reformcloud.api.deployment.incoming;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.*;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
@@ -29,6 +26,11 @@ import java.util.Base64;
 public final class RestAPIDeploymentService implements Serializable, WebHandler {
     @Override
     public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
+        if (!(httpRequest instanceof FullHttpRequest))
+            return null;
+
+        FullHttpRequest fullHttpRequest = (FullHttpRequest) httpRequest;
+
         FullHttpResponse fullHttpResponse = RestAPIUtility.createFullHttpResponse(httpRequest.protocolVersion());
         Configuration answer = RestAPIUtility.createDefaultAnswer();
         HttpHeaders httpHeaders = httpRequest.headers();
@@ -48,7 +50,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
             return fullHttpResponse;
         }
 
-        Configuration configuration = Configuration.fromString(httpHeaders.get("-XConfig"));
+        Configuration configuration = Configuration.fromString(fullHttpRequest.headers().get("-XConfig"));
         if (configuration.contains("template") && configuration.contains("group") && configuration.contains("client")) {
             File file = new File("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
