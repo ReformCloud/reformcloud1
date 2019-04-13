@@ -4,11 +4,11 @@
 
 package systems.reformcloud.meta.proxy.defaults;
 
+import lombok.ToString;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
-import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;

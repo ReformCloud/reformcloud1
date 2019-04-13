@@ -4,10 +4,10 @@
 
 package systems.reformcloud.signs;
 
-import systems.reformcloud.meta.info.ServerInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import systems.reformcloud.meta.info.ServerInfo;
 
 import java.util.UUID;
 

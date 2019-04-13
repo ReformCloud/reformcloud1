@@ -268,7 +268,7 @@ public final class SignSelector {
 
     private org.bukkit.block.Sign toNormalSign(final SignPosition position) {
         final Block block = toLocation(position).getBlock();
-        if (! (block.getState() instanceof org.bukkit.block.Sign))
+        if (!(block.getState() instanceof org.bukkit.block.Sign))
             return null;
         return (org.bukkit.block.Sign) block.getState();
     }
@@ -394,7 +394,7 @@ public final class SignSelector {
 
         @EventHandler
         public void handle(final CloudServerInfoUpdateEvent event) {
-            if (! event.getServerInfo().getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())) {
+            if (!event.getServerInfo().getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())) {
                 final Sign sign = findSign(event.getServerInfo());
                 if (sign != null)
                     updateSign(sign, event.getServerInfo());

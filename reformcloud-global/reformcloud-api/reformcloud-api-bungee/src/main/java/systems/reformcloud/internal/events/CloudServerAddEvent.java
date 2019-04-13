@@ -13,8 +13,8 @@ import systems.reformcloud.meta.info.ServerInfo;
  * This class represents the cloud server info update
  * event
  *
- * @since RCS1.0
  * @author _Klaro | Pasqual K. / created on 07.11.2018
+ * @since RCS1.0
  */
 
 @AllArgsConstructor

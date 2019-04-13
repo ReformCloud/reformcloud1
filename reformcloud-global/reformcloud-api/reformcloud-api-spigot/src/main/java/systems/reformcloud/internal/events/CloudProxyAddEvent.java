@@ -4,11 +4,11 @@
 
 package systems.reformcloud.internal.events;
 
-import systems.reformcloud.meta.info.ProxyInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import systems.reformcloud.meta.info.ProxyInfo;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018

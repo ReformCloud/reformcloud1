@@ -164,7 +164,7 @@ public class CloudConfiguration {
         if (proxy.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProxy.jar", "reformcloud/addons/ReformCloudProxy.jar");
         }
-        
+
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
         String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
 

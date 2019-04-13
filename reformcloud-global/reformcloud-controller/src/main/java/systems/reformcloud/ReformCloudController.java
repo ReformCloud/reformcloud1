@@ -114,16 +114,15 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     /**
      * Creates a new instance of the ReformCloudController and prepares all needed handlers
      *
+     * @param loggerProvider Main Cloud logger, will be used everywhere
+     * @param commandManager Main CommandManager to manage all available commands
+     * @param ssl            If this is {@code true} the cloud will use a self-
+     *                       signed certificate
+     * @param time           Startup time for start time
+     * @throws Throwable If an error occurs while starting CloudSystem
+     *                   the error will be thrown here
      * @see LoggerProvider
      * @see CommandManager
-     *
-     * @param loggerProvider            Main Cloud logger, will be used everywhere
-     * @param commandManager            Main CommandManager to manage all available commands
-     * @param ssl                       If this is {@code true} the cloud will use a self-
-     *                                  signed certificate
-     * @param time                      Startup time for start time
-     * @throws Throwable                If an error occurs while starting CloudSystem
-     *                                  the error will be thrown here
      */
     public ReformCloudController(LoggerProvider loggerProvider, CommandManager commandManager, boolean ssl, long time) throws Throwable {
         if (instance == null)
@@ -213,7 +212,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         loggerProvider.info(this.getLoadedLanguage().getLoading_done()
-                    .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
+                .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
         this.eventManager.callEvent(EventTargetType.LOAD_SUCCESS, new LoadSuccessEvent(true));
     }
 
@@ -424,7 +423,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
             this.loggerProvider.info(this.getLoadedLanguage().getController_servprocess_stopped()
-                        .replace("%name%", e.getCloudProcess().getName()));
+                    .replace("%name%", e.getCloudProcess().getName()));
         });
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> {

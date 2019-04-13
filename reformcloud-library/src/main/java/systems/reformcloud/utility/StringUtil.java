@@ -32,7 +32,7 @@ public final class StringUtil {
             LOGGER_WARN = "[§e%date%§r] ",
             LOGGER_ERR = "[§c%date%§r] ";
 
-    private static final String[] unusedErrorComment = new String[] {
+    private static final String[] unusedErrorComment = new String[]{
             "Who set up this error?", "Oh that was the idea", "This should happen?", "Yes", "I feel sad now :(", "It was my fault :(", "I\'m sorry _Klaro",
             "I will bring you a poster", "Thank you :)", "Surprise!, Haha just a tiny joke", "What?", "I\'m crashaholic", "Oof", "He. Stop!", "Ouch that hurts",
             "No problem my friend", "That was my present for you", "I\'m gonna fix this error", "Ok bro, do that"

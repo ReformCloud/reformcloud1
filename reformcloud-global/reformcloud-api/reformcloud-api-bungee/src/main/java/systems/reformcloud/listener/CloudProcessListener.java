@@ -4,16 +4,16 @@
 
 package systems.reformcloud.listener;
 
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.internal.events.CloudProxyAddEvent;
 import systems.reformcloud.internal.events.CloudProxyRemoveEvent;
 import systems.reformcloud.internal.events.CloudServerAddEvent;
 import systems.reformcloud.internal.events.CloudServerRemoveEvent;
 import systems.reformcloud.meta.enums.ServerModeType;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
 
 import java.net.InetSocketAddress;
 

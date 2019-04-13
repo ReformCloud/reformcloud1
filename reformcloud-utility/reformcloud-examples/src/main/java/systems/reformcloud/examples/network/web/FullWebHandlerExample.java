@@ -4,12 +4,12 @@
 
 package systems.reformcloud.examples.network.web;
 
-import systems.reformcloud.web.utils.WebHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import systems.reformcloud.web.utils.WebHandler;
 
 import java.nio.charset.StandardCharsets;
 

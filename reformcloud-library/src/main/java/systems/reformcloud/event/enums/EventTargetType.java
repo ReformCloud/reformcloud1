@@ -1,7 +1,7 @@
 package systems.reformcloud.event.enums;
 
-import systems.reformcloud.utility.StringUtil;
 import lombok.Getter;
+import systems.reformcloud.utility.StringUtil;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018

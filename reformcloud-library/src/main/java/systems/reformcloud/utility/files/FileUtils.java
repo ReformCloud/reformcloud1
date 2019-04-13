@@ -118,7 +118,7 @@ public class FileUtils {
      * @see Files#copy(Path, Path, CopyOption...)
      */
     public static void copyAllFiles(final Path directory, final String targetDirectory) {
-        if (! Files.exists(directory)) return;
+        if (!Files.exists(directory)) return;
 
         try {
             Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
@@ -126,7 +126,7 @@ public class FileUtils {
                         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                             Path target = Paths.get(targetDirectory, directory.relativize(file).toString());
                             Path parent = target.getParent();
-                            if (parent != null && ! Files.exists(parent))
+                            if (parent != null && !Files.exists(parent))
                                 Files.createDirectories(parent);
                             Files.copy(file, target, StandardCopyOption.REPLACE_EXISTING);
                             return FileVisitResult.CONTINUE;
@@ -157,7 +157,7 @@ public class FileUtils {
                                 return FileVisitResult.CONTINUE;
                             Path target = Paths.get(targetDirectory, directory.relativize(file).toString());
                             Path parent = target.getParent();
-                            if (parent != null && ! Files.exists(parent))
+                            if (parent != null && !Files.exists(parent))
                                 Files.createDirectories(parent);
                             Files.copy(file, target, StandardCopyOption.REPLACE_EXISTING);
                             return FileVisitResult.CONTINUE;

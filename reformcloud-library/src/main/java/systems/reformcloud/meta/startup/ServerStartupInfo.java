@@ -4,10 +4,10 @@
 
 package systems.reformcloud.meta.startup;
 
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.meta.server.ServerGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.server.ServerGroup;
 
 import java.io.Serializable;
 import java.util.UUID;

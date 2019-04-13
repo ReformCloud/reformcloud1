@@ -4,9 +4,9 @@
 
 package systems.reformcloud.event.events;
 
-import systems.reformcloud.event.utility.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import systems.reformcloud.event.utility.Event;
 
 import java.io.Serializable;
 

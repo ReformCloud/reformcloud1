@@ -34,7 +34,7 @@ import java.util.Map;
  */
 
 public final class CloudConnectListener implements Listener {
-    @EventHandler(priority = - 127)
+    @EventHandler(priority = -127)
     public void handle(final ServerConnectEvent event) {
         if (event.getPlayer().getServer() == null) {
             ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
@@ -107,7 +107,7 @@ public final class CloudConnectListener implements Listener {
         }
     }
 
-    @EventHandler(priority = - 128)
+    @EventHandler(priority = -128)
     public void handle(final LoginEvent event) {
         ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
 
@@ -118,7 +118,7 @@ public final class CloudConnectListener implements Listener {
             event.setCancelled(true);
             return;
         } else if (proxyInfo.getProxyGroup().isMaintenance()
-                && ! ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                && !ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
                 .getProxyGroups().get(proxyInfo.getProxyGroup().getName()).getWhitelist()
                 .contains(event.getConnection().getUniqueId())) {
             event.setCancelReason(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-maintenance-join-no-permission")));
@@ -152,7 +152,7 @@ public final class CloudConnectListener implements Listener {
         initTab(event.getPlayer());
     }
 
-    @EventHandler(priority = - 128)
+    @EventHandler(priority = -128)
     public void handle(final PlayerDisconnectEvent event) {
         ReformCloudAPIBungee.getInstance().getOnlinePlayers().remove(event.getPlayer().getUniqueId());
         ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
@@ -175,7 +175,7 @@ public final class CloudConnectListener implements Listener {
         BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> initTab(e));
     }
 
-    @EventHandler(priority = - 127)
+    @EventHandler(priority = -127)
     public void handle(final ServerKickEvent event) {
         if (event.getCancelServer() != null) {
             final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().nextFreeLobby(

@@ -7,6 +7,7 @@ package systems.reformcloud.commands;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.out.PacketOutDeployServer;
@@ -42,6 +43,11 @@ public final class CommandDeploy extends Command implements Serializable {
                     return;
                 }
 
+                if (!proxyGroup.getTemplate(args[2]).getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                    commandSender.sendMessage("Template backend must be the controller");
+                    return;
+                }
+
                 if (ReformCloudController.getInstance().getConnectedClient(args[3]) == null
                         || ReformCloudController.getInstance().getConnectedClient(args[4]) == null) {
                     commandSender.sendMessage("Both clients have to be started");
@@ -63,6 +69,11 @@ public final class CommandDeploy extends Command implements Serializable {
 
                 if (serverGroup.getTemplateOrElseNull(args[2]) == null) {
                     commandSender.sendMessage("Template doesn't exist");
+                    return;
+                }
+
+                if (!serverGroup.getTemplate(args[2]).getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                    commandSender.sendMessage("Template backend must be the controller");
                     return;
                 }
 

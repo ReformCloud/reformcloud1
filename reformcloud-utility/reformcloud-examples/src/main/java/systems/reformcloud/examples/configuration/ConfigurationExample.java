@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.configurations.Configuration;
 
 import java.nio.file.Paths;
+
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */

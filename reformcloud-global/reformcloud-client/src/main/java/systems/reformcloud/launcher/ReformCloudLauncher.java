@@ -30,8 +30,8 @@ final class ReformCloudLauncher {
     /**
      * Main Method of ReformCloudClient
      *
-     * @param args          The given args by the executor
-     * @throws Throwable    Will be thrown if an error occurs
+     * @param args The given args by the executor
+     * @throws Throwable Will be thrown if an error occurs
      */
     public static synchronized void main(String[] args) throws Throwable {
         final List<String> options = Arrays.asList(args);

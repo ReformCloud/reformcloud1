@@ -46,15 +46,14 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
      * If an exceptions occurs it will be catch by {@link Throwable} below and
      * printed in the console. If an error occurs, you can contact the support.
      *
+     * @param ssl             If this is {@code true} the ssl context
+     *                        will be enabled and a self-signed certificate
+     *                        will be added to every channel, which tries to
+     *                        connect to the ReformCloudController
+     * @param ethernetAddress Main address where the cloud tries to bind
+     *                        the socket server to. Please make sure that
+     *                        the port is not in use, yet
      * @since 2.0
-     *
-     * @param ssl                   If this is {@code true} the ssl context
-     *                              will be enabled and a self-signed certificate
-     *                              will be added to every channel, which tries to
-     *                              connect to the ReformCloudController
-     * @param ethernetAddress    Main address where the cloud tries to bind
-     *                              the socket server to. Please make sure that
-     *                              the port is not in use, yet
      */
     public NettySocketServer(boolean ssl, EthernetAddress ethernetAddress, File cert, File key) {
         try {

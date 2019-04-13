@@ -29,6 +29,7 @@ public class EventExample extends Listener {
      * Returns the eventTargetType, use the given above or use your own
      * EventTargetType#NOT_DEFINED will throw an illegal access exception
      * You don't have to implement this method
+     *
      * @see Listener#getEventTargetType ()
      * or let the super call
      */

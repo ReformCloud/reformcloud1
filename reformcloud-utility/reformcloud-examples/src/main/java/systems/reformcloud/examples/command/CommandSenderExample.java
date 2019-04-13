@@ -29,6 +29,7 @@ public class CommandSenderExample implements CommandSender {
      * Returns if a sender has a specific permission
      * You can use for example a list with the permissions
      * For more Information
+     *
      * @see DefaultUserCommandSender
      */
     @Override

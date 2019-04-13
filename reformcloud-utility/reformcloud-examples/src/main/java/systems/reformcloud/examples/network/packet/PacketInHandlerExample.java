@@ -18,7 +18,7 @@ public class PacketInHandlerExample implements NetworkInboundHandler, NetworkQue
     /**
      * Method get called, when the handler gets triggered
      * Contains sent configuration, with all added stuff like String and Integers
-     *
+     * <p>
      * !! Dont forget to register the packet handler !!
      */
     @Override

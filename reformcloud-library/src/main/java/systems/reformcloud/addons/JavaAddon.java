@@ -4,11 +4,11 @@
 
 package systems.reformcloud.addons;
 
+import lombok.Data;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
-import lombok.Data;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.12.2018

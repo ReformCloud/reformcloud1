@@ -235,7 +235,7 @@ public class ProxyStartupHandler {
                 new CloudProcess(proxyStartupInfo.getName(), proxyStartupInfo.getUid(), ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
                         template, proxyStartupInfo.getId()),
                 proxyStartupInfo.getProxyGroup(), proxyStartupInfo.getProxyGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
-                this.port, 0, proxyStartupInfo.getProxyGroup().getMemory(),false, new ArrayList<>()
+                this.port, 0, proxyStartupInfo.getProxyGroup().getMemory(), false, new ArrayList<>()
         );
 
         new Configuration()

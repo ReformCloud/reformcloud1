@@ -4,11 +4,11 @@
 
 package systems.reformcloud.internal.events;
 
-import systems.reformcloud.meta.info.ServerInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import systems.reformcloud.meta.info.ServerInfo;
 
 /**
  * @author _Klaro | Pasqual K. / created on 12.12.2018

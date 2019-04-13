@@ -4,9 +4,9 @@
 
 package systems.reformcloud.commands.defaults;
 
+import lombok.AllArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.interfaces.CommandSender;
-import lombok.AllArgsConstructor;
 
 import java.util.Map;
 

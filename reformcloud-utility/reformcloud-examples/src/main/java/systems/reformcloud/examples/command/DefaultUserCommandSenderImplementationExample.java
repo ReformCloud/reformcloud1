@@ -17,8 +17,8 @@ public class DefaultUserCommandSenderImplementationExample extends DefaultUserCo
     /**
      * Creates a new {@link CommandSender} with the given permissions
      * The map because a permission can be given or revoked
-     *                      Example: * : true ; but you don't want the exit command
-     *                              reformcloud.command.exit : false
+     * Example: * : true ; but you don't want the exit command
+     * reformcloud.command.exit : false
      * If the user has {@code "*"} permissions, he has all permissions
      */
     public DefaultUserCommandSenderImplementationExample(Map<String, Boolean> permissions) {
@@ -27,7 +27,7 @@ public class DefaultUserCommandSenderImplementationExample extends DefaultUserCo
 
     /**
      * For documentation see {@link CommandSenderExample}
-     *
+     * <p>
      * You don't have to implement that ; Make sure you know, that reformcloud permission check is now revoked (If you don't use the super call)
      */
     @Override
@@ -37,7 +37,7 @@ public class DefaultUserCommandSenderImplementationExample extends DefaultUserCo
 
     /**
      * For documentation see {@link CommandSenderExample}
-     *
+     * <p>
      * You don't have to implement that ; Make sure you know, that reformcloud message send is now revoked (If you don't use the super call)
      */
     @Override

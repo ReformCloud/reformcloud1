@@ -10,5 +10,6 @@ package systems.reformcloud.event.utility;
 
 public abstract class Cancelable {
     public abstract void setCancelled(boolean cancelled);
+
     public abstract boolean isCancelled();
 }

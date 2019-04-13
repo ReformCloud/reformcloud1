@@ -5,7 +5,10 @@
 package systems.reformcloud.api;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;

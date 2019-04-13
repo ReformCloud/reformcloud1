@@ -71,13 +71,13 @@ public final class ReformCloudLibraryService {
     public static void sendHeader() {
         System.out.println(" ");
         System.out.println(
-                        "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n" +
+                "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n" +
                         "        |_____/ |______ |______ |     | |_____/ |  |  | |       |      |     | |     | |     \\\n" +
                         "        |    \\_ |______ |       |_____| |    \\_ |  |  | |_____  |_____ |_____| |_____| |_____/\n" +
                         "                                                                                              \n" +
                         "                                     The official CloudSystem                               \n" +
                         "      __________________________________________________________________________________________ \n\n" +
-                                "                            Support Discord: https://discord.gg/uskXdVZ      \n"
+                        "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
 
@@ -85,14 +85,14 @@ public final class ReformCloudLibraryService {
     public static void sendHeader(final LoggerProvider loggerProvider) {
         System.out.println(" ");
         loggerProvider.coloured(
-                        "§3" +
+                "§3" +
                         "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n" +
                         "        |_____/ |______ |______ |     | |_____/ |  |  | |       |      |     | |     | |     \\\n" +
                         "        |    \\_ |______ |       |_____| |    \\_ |  |  | |_____  |_____ |_____| |_____| |_____/\n" +
                         "                                                                                              \n" +
                         "                                     §rThe official CloudSystem                               \n" +
                         "      __________________________________________________________________________________________ \n\n" +
-                                "                            Support Discord: https://discord.gg/uskXdVZ      \n"
+                        "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
 
@@ -109,9 +109,9 @@ public final class ReformCloudLibraryService {
     /**
      * Prepares the given Channel with all utilities
      *
-     * @param channel               The given channel where all Handlers should be added
-     * @param channelHandler        The pre-initialized ChannelHandler where all channels are
-     *                              registered and handled
+     * @param channel        The given channel where all Handlers should be added
+     * @param channelHandler The pre-initialized ChannelHandler where all channels are
+     *                       registered and handled
      * @see Channel#pipeline()
      * @see LengthFieldBasedFrameDecoder
      * @see LengthFieldPrepender

@@ -42,17 +42,17 @@ public class ReformWebServer {
      * Creates a new WebServer instance and binds it to the given Port and IP, provided
      * by the {@link EthernetAddress}.
      *
-     * @param ethernetAddress            Ip and Port where the WebServer will be bound to
-     * @param ssl                           If ssl should be enabled or not
-     * @param certFile                      SSL-Certificate file, if this is {@code null} a
-     *                                      {@link SelfSignedCertificate} will be created
-     *                                      and used
-     * @param keyFile                       SSL-Certificate key-file if this is {@code null}
-     *                                      a {@link SelfSignedCertificate} will be created
-     *                                      and used
-     * @throws CertificateException         If the Certificate cant be created
-     * @throws SSLException                 If the Certificate cant be used
-     * @throws InterruptedException         If the Cloud cannot bind the Webservice
+     * @param ethernetAddress Ip and Port where the WebServer will be bound to
+     * @param ssl             If ssl should be enabled or not
+     * @param certFile        SSL-Certificate file, if this is {@code null} a
+     *                        {@link SelfSignedCertificate} will be created
+     *                        and used
+     * @param keyFile         SSL-Certificate key-file if this is {@code null}
+     *                        a {@link SelfSignedCertificate} will be created
+     *                        and used
+     * @throws CertificateException If the Certificate cant be created
+     * @throws SSLException         If the Certificate cant be used
+     * @throws InterruptedException If the Cloud cannot bind the Webservice
      */
     public ReformWebServer(EthernetAddress ethernetAddress, boolean ssl, final File certFile, final File keyFile) throws CertificateException, SSLException, InterruptedException {
         if (ssl) {

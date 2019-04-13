@@ -4,8 +4,8 @@
 
 package systems.reformcloud.event;
 
-import systems.reformcloud.event.enums.EventTargetType;
 import lombok.Getter;
+import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.*;
 
 /**

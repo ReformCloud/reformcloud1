@@ -4,10 +4,10 @@
 
 package systems.reformcloud.meta.web;
 
-import systems.reformcloud.ReformCloudLibraryService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import systems.reformcloud.ReformCloudLibraryService;
 
 import java.io.Serializable;
 import java.util.Map;
