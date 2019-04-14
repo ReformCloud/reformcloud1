@@ -18,5 +18,5 @@ import java.util.List;
 @Data
 public final class ParameterGroup implements Serializable {
     private String groupName, javaCommand;
-    private List<String> parameters;
+    private List<String> preParameters, afterParameters;
 }

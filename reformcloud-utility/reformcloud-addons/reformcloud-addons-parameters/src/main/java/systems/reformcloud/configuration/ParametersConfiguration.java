@@ -37,7 +37,7 @@ public final class ParametersConfiguration implements Serializable {
             Configuration configuration = new Configuration();
 
             configuration.addProperty("config", serverGroup == null ? Collections.EMPTY_LIST : Collections.singletonList(new ParameterGroup(
-                    serverGroup.getName(), StringUtil.JAVA, new ArrayList<>()
+                    serverGroup.getName(), StringUtil.JAVA, new ArrayList<>(), new ArrayList<>()
             )));
 
             configuration.write("reformcloud/addons/parameters/config.json");

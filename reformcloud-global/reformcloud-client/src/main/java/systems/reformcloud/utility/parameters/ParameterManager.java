@@ -41,10 +41,13 @@ public final class ParameterManager implements Serializable {
             stringBuilder.append(s).append(StringUtil.SPACE);
 
         if (parameterGroup != null)
-            parameterGroup.getParameters().forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+            parameterGroup.getPreParameters().forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
 
         for (String s : after)
             stringBuilder.append(s).append(StringUtil.SPACE);
+
+        if (parameterGroup != null)
+            parameterGroup.getAfterParameters().forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
 
         return stringBuilder.substring(0, stringBuilder.length() - 1);
     }
