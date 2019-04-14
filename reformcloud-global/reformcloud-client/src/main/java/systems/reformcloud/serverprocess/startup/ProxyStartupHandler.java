@@ -253,7 +253,6 @@ public class ProxyStartupHandler {
         this.processStartupStage = ProcessStartupStage.START;
         final String[] cmd = new String[]
                 {
-                        StringUtil.JAVA,
                         "-XX:+UseG1GC",
                         "-XX:MaxGCPauseMillis=50",
                         "-XX:-UseAdaptiveSizePolicy",
@@ -261,9 +260,15 @@ public class ProxyStartupHandler {
                         "-Djline.terminal=jline.UnsupportedTerminal",
                         "-DIReallyKnowWhatIAmDoingISwear=true",
                         "-Xmx" + this.proxyStartupInfo.getProxyGroup().getMemory() + "M",
+                };
+
+        final String[] after = new String[]
+                {
                         StringUtil.JAVA_JAR,
                         "BungeeCord.jar"
                 };
+
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getGroup(), cmd, after);
 
         try {
             this.process = Runtime.getRuntime().exec(cmd, null, new File(path.toString()));

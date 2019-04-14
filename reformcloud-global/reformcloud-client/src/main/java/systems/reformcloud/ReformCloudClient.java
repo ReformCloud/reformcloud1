@@ -55,6 +55,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
+import systems.reformcloud.utility.parameters.ParameterManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.threading.TaskScheduler;
@@ -92,6 +93,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     private final EventManager eventManager = new EventManager();
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
 
+    private final ParameterManager parameterManager = new ParameterManager(new ArrayList<>());
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private final TaskScheduler taskScheduler;
@@ -203,6 +205,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 .registerHandler("DeployServer", new PacketInDeployServer())
                 .registerHandler("TemplateDeployReady", new PacketInTemplateDeployReady())
                 .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
+                .registerHandler("ParametersUpdate", new PacketInParameterUpdate())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
                 .registerHandler("GetControllerTemplateResult", new PacketInGetControllerTemplateResult())

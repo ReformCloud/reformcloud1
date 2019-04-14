@@ -4,12 +4,17 @@
 
 package systems.reformcloud.network.packets.in;
 
+import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packets.out.PacketOutRequestParameters;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncUpdateClientInfo;
+import systems.reformcloud.parameters.ParameterGroup;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
@@ -27,5 +32,14 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
                 "AuthSuccess",
                 new Configuration().addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
         ));
+
+        ReformCloudClient.getInstance().getChannelHandler().sendPacketQuerySync(
+                "ReformCloudController",
+                ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+                new PacketOutRequestParameters(),
+                (configuration1, resultID) -> ReformCloudClient.getInstance().getParameterManager().update(
+                        configuration1.getValue("parameters", new TypeToken<List<ParameterGroup>>() {
+                        }.getType()))
+        );
     }
 }
