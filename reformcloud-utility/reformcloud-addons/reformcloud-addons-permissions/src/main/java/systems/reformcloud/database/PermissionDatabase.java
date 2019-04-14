@@ -38,17 +38,17 @@ public final class PermissionDatabase implements Serializable {
     public PermissionDatabase() {
         if (!playerDir.exists()) {
             playerDir.mkdirs();
-            new File("reformcloud/permissions").mkdirs();
+            new File("reformcloud/addons/permissions").mkdirs();
 
             new Configuration().addProperty("permissionConfig", new PermissionCache(
                     Collections.singletonList(new PermissionGroup(
                             "admin", null, null, null, 999, Collections.singletonMap("*", true)
                     )),
                     new PermissionGroup("default", null, null, null, 100, new HashMap<>())
-            )).write(Paths.get("reformcloud/permissions/config.json"));
+            )).write(Paths.get("reformcloud/addons/permissions/config.json"));
         }
 
-        this.permissionCache = Configuration.parse(Paths.get("reformcloud/permissions/config.json"))
+        this.permissionCache = Configuration.parse(Paths.get("reformcloud/addons/permissions/config.json"))
                 .getValue("permissionConfig", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE());
 
         ReformCloudController.getInstance().getNettyHandler()
@@ -165,7 +165,7 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public void update() {
-        new Configuration().addProperty("permissionConfig", this.permissionCache).write(Paths.get("reformcloud/permissions/config.json"));
+        new Configuration().addProperty("permissionConfig", this.permissionCache).write(Paths.get("reformcloud/addons/permissions/config.json"));
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
                 new PacketOutUpdatePermissionCache()
         );

@@ -39,12 +39,12 @@ public class SignConfiguration {
      * Loads the SignConfiguration
      */
     public void loadAll() {
-        if (!Files.exists(Paths.get("reformcloud/signs")))
-            FileUtils.createDirectory(Paths.get("reformcloud/signs"));
+        if (!Files.exists(Paths.get("reformcloud/addons/signs")))
+            FileUtils.createDirectory(Paths.get("reformcloud/addons/signs"));
         if (!Files.exists(Paths.get("reformcloud/database/signs")))
             FileUtils.createDirectory(Paths.get("reformcloud/database/signs"));
 
-        if (!Files.exists(Paths.get("reformcloud/signs/" + path))) {
+        if (!Files.exists(Paths.get("reformcloud/addons/signs/" + path))) {
             new Configuration().addProperty("config", new SignLayoutConfiguration(
                     new SignLayout.GroupLayout(
                             new SignLayout(new String[]{"§8§m---------§r", "&c§lmaintenance", " ", "§8§m---------"}, "SAND", 0),
@@ -75,10 +75,10 @@ public class SignConfiguration {
                             new SignLayout(new String[]{"§0§m-------------", "  Server", " ", "§0§m-------------"}),
                             new SignLayout(new String[]{"§0§m-------------", "  Server", " ", "§0§m-------------"})
                     })
-            )).write(Paths.get("reformcloud/signs/" + path));
+            )).write(Paths.get("reformcloud/addons/signs/" + path));
         }
 
-        this.signLayoutConfiguration = Configuration.parse(Paths.get("reformcloud/signs/" + path)).getValue("config", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
+        this.signLayoutConfiguration = Configuration.parse(Paths.get("reformcloud/addons/signs/" + path)).getValue("config", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
         this.loadSigns();
     }
 

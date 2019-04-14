@@ -21,7 +21,7 @@ public final class PacketInCreateSign implements NetworkInboundHandler {
     public void handle(Configuration configuration) {
         SignSelector.getInstance().getSignConfiguration().addSign(configuration.getValue("sign", new TypeToken<Sign>() {
         }.getType()));
-        ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutCreateSign(configuration.getValue("sign", new TypeToken<Sign>() {
+        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutCreateSign(configuration.getValue("sign", new TypeToken<Sign>() {
         }.getType())));
     }
 }

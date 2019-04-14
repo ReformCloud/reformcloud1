@@ -117,6 +117,11 @@ public class NettyHandler {
         return this;
     }
 
+    public NettyHandler unregisterQueryHandler(String type) {
+        this.networkQueryInboundHandlerMap.remove(type);
+        return this;
+    }
+
     /**
      * Get all names of all registered {@link NetworkInboundHandler}
      *

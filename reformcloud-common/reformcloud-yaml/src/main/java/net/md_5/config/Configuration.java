@@ -340,6 +340,6 @@ public final class Configuration {
 
     public List<?> getList(String path, List<?> def) {
         Object val = get(path, def);
-        return (val instanceof List<?>) ? (List<?>) val : def;
+        return (val != null) ? (List<?>) val : def;
     }
 }

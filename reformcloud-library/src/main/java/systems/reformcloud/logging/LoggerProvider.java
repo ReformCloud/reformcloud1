@@ -20,6 +20,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
@@ -33,6 +34,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.logging.*;
 
 /**
@@ -40,13 +43,16 @@ import java.util.logging.*;
  */
 
 @Getter
-public class LoggerProvider extends Logger implements Serializable, AutoCloseable, Reload, Shutdown {
+public class LoggerProvider extends AbstractLoggerProvider implements Serializable, AutoCloseable, Reload, Shutdown {
     private static final long serialVersionUID = 3076534030843453815L;
+
+    public static Optional<LoggerProvider> instance;
 
     private ConsoleReader consoleReader;
     private final DateFormat dateFormat = DateProvider.getDateFormat("MM/dd/yyyy HH:mm:ss");
 
     protected final File debugLogFile = new File("reformcloud/logs/debug-" + System.currentTimeMillis() + ".log");
+    protected final LoggerHandler loggerHandler = new LoggerHandler();
 
     @Setter
     private long controllerTime = System.currentTimeMillis();
@@ -62,12 +68,9 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      * @throws IOException
      */
     public LoggerProvider() throws IOException {
-        super("ReformLogger", null);
-
+        instance = Optional.of(this);
+        AbstractLoggerProvider.globalInstance.set(this);
         System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
-
-        setLevel(Level.ALL);
-        setUseParentHandlers(false);
 
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
 
@@ -92,7 +95,15 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         fileHandler.setLevel(Level.ALL);
         fileHandler.setFormatter(simpleFormatter);
 
-        addHandler(fileHandler);
+        loggerHandler.addHandler(fileHandler);
+    }
+
+    public static AbstractLoggerProvider newSaveLogger() {
+        try {
+            return new LoggerProvider();
+        } catch (final IOException ex) {
+            return null;
+        }
     }
 
     /**
@@ -100,8 +111,9 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      *
      * @param message
      */
+    @Override
     public void info(String message) {
-        super.log(Level.INFO, AnsiColourHandler.stripColor(message));
+        loggerHandler.log(Level.INFO, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_INFO.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
@@ -118,8 +130,9 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      *
      * @param message
      */
+    @Override
     public void warn(String message) {
-        super.log(Level.WARNING, AnsiColourHandler.stripColor(message));
+        loggerHandler.log(Level.WARNING, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
@@ -136,8 +149,9 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      *
      * @param message
      */
+    @Override
     public void serve(String message) {
-        super.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
+        loggerHandler.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_ERR.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
@@ -149,8 +163,9 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         }
     }
 
+    @Override
     public void coloured(String message) {
-        super.log(Level.INFO, AnsiColourHandler.stripColor(message));
+        loggerHandler.log(Level.INFO, AnsiColourHandler.stripColor(message));
         try {
             this.consoleReader.println(Ansi.ansi().eraseLine(
                     Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(message) + Ansi.ansi().reset().toString());
@@ -162,6 +177,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         }
     }
 
+    @Override
     public void exception(Throwable cause) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(cause.getMessage()).append("\n");
@@ -176,10 +192,12 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      *
      * @param message
      */
-    private void handleAll(String message) {
+    @Override
+    public void handleAll(String message) {
         this.iConsoleInputHandlers.forEach(iConsoleInputHandler -> iConsoleInputHandler.handle(message));
     }
 
+    @Override
     public String readLine() {
         try {
             return this.consoleReader.readLine();
@@ -193,6 +211,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     /**
      * Clears the screen with the {@link ConsoleReader}
      */
+    @Override
     public void clearScreen() {
         try {
             this.consoleReader.clearScreen();
@@ -207,6 +226,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      *
      * @return this
      */
+    @Override
     public LoggerProvider emptyLine() {
         try {
             this.consoleReader.println(" ");
@@ -220,6 +240,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         return this;
     }
 
+    @Override
     public void write(String text) {
         try {
             text = AnsiColourHandler.toColouredString(text);
@@ -231,6 +252,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         }
     }
 
+    @Override
     public void debug(String msg) {
         try {
             if (this.debug) {
@@ -258,6 +280,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     /**
      * Flush the {@link ConsoleReader}
      */
+    @Override
     public void flush() {
         try {
             this.consoleReader.flush();
@@ -271,6 +294,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      * <p>
      * {@link ConsoleReader}
      */
+    @Override
     public void complete() {
         try {
             this.consoleReader.drawLine();
@@ -280,9 +304,19 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         }
     }
 
+    @Override
+    public void finish() {
+        try {
+            instance = Optional.empty();
+            this.finalize();
+        } catch (final Throwable ignored) {
+        }
+    }
+
     /**
      * Closes the {@link ConsoleReader} and closes all {@link Handler}
      */
+    @Override
     public void shutdownAll() {
         this.close();
     }
@@ -293,7 +327,7 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
     @Deprecated
     @Override
     public void reloadAll() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     /**
@@ -301,11 +335,14 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
      */
     @Override
     public void close() {
+        instance = Optional.empty();
+        AbstractLoggerProvider.globalInstance.set(null);
+
         try {
             this.consoleReader.drawLine();
             this.consoleReader.flush();
 
-            for (Handler handler : this.getHandlers())
+            for (Handler handler : loggerHandler.getHandlers())
                 handler.close();
 
             this.consoleReader.killLine();
@@ -316,10 +353,12 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         }
     }
 
+    @Override
     public void registerLoggerHandler(final IConsoleInputHandler iConsoleInputHandler) {
         this.iConsoleInputHandlers.add(iConsoleInputHandler);
     }
 
+    @Override
     public String uploadLog(String input) {
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost httpPost = new HttpPost("https://paste.reformcloud.systems/documents");
@@ -337,5 +376,43 @@ public class LoggerProvider extends Logger implements Serializable, AutoCloseabl
         }
 
         return "Could not post log on \"paste.reformcloud.de\"!";
+    }
+
+    @Override
+    public Consumer<String> info() {
+        return this::info;
+    }
+
+    @Override
+    public Consumer<String> warn() {
+        return this::warn;
+    }
+
+    @Override
+    public Consumer<String> serve() {
+        return this::serve;
+    }
+
+    @Override
+    public Consumer<String> coloured() {
+        return this::coloured;
+    }
+
+    @Override
+    public Consumer<Throwable> exception() {
+        return this::exception;
+    }
+
+    private final class LoggerHandler extends Logger {
+        private LoggerHandler() {
+            super("ReformCloudLogger", null);
+            setLevel(Level.ALL);
+            setUseParentHandlers(false);
+        }
+
+        private void addHandler(FileHandler fileHandler) {
+            Require.requireNotNull(fileHandler, "FileHandler must be non-null");
+            super.addHandler(fileHandler);
+        }
     }
 }

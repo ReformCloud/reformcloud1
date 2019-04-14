@@ -20,7 +20,7 @@ public final class PacketInRequestSigns implements NetworkQueryInboundHandler {
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         ReformCloudController.getInstance().getChannelHandler()
-                .sendPacketSynchronized(configuration.getStringValue("from"),
+                .sendDirectPacket(configuration.getStringValue("from"),
                         new PacketOutSendSigns(SignSelector.getInstance().getSignConfiguration()
                                 .getSignLayoutConfiguration(), SignSelector.getInstance().getSignConfiguration().getSignMap(), resultID));
     }

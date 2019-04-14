@@ -28,8 +28,8 @@ public final class ProxyAddonConfiguration implements Serializable {
     private List<ProxySettings> proxySettings;
 
     public ProxyAddonConfiguration() {
-        if (!Files.exists(Paths.get("reformcloud/proxy/configs.json"))) {
-            FileUtils.createDirectory(Paths.get("reformcloud/proxy"));
+        if (!Files.exists(Paths.get("reformcloud/addons/proxy/config.json"))) {
+            FileUtils.createDirectory(Paths.get("reformcloud/addons/proxy"));
             new Configuration().addProperty("config", Collections.singletonList(
                     new ProxySettings(
                             ReformCloudController.getInstance().getAllProxyGroups().parallelStream().findFirst().get().getName(),
@@ -54,10 +54,10 @@ public final class ProxyAddonConfiguration implements Serializable {
                                     "§7Discord §8» https://discord.gg/uskXdVZ §8● §7Twitter §8» §a@ReformCloud"
                             ))
                     )
-            )).write(Paths.get("reformcloud/proxy/configs.json"));
+            )).write(Paths.get("reformcloud/addons/proxy/config.json"));
         }
 
-        this.proxySettings = Configuration.parse(Paths.get("reformcloud/proxy/configs.json"))
+        this.proxySettings = Configuration.parse(Paths.get("reformcloud/addons/proxy/config.json"))
                 .getValue("config", new TypeToken<List<ProxySettings>>() {
                 }.getType());
 
@@ -99,7 +99,7 @@ public final class ProxyAddonConfiguration implements Serializable {
         );
         this.proxySettings.add(proxySetting);
         new Configuration().addProperty("config", proxySettings)
-                .write(Paths.get("reformcloud/proxy/configs.json"));
+                .write(Paths.get("reformcloud/addons/proxy/config.json"));
         this.reload();
         return true;
     }
@@ -111,13 +111,13 @@ public final class ProxyAddonConfiguration implements Serializable {
         ProxySettings proxySetting = this.getForProxy(name).get();
         this.proxySettings.remove(proxySetting);
         new Configuration().addProperty("config", proxySettings)
-                .write(Paths.get("reformcloud/proxy/configs.json"));
+                .write(Paths.get("reformcloud/addons/proxy/config.json"));
         this.reload();
         return true;
     }
 
     public void reload() {
-        this.proxySettings = Configuration.parse(Paths.get("reformcloud/proxy/configs.json"))
+        this.proxySettings = Configuration.parse(Paths.get("reformcloud/addons/proxy/config.json"))
                 .getValue("config", new TypeToken<List<ProxySettings>>() {
                 }.getType());
 

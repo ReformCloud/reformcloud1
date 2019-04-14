@@ -9,9 +9,8 @@ import systems.reformcloud.utility.map.maps.Double;
 import systems.reformcloud.utility.map.maps.Trio;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author _Klaro | Pasqual K. / created on 31.03.2019
@@ -60,5 +59,15 @@ public final class MapUtility implements Serializable {
         Map<Trio<F, S, T>, Double<V, X>> map = new HashMap<>();
         map.put(inTrio, inDouble);
         return Optional.of(map);
+    }
+
+    @NonNull
+    public static <F> List<F> copyOf(List<F> in) {
+        return new ArrayList<>(in);
+    }
+
+    @NonNull
+    public static <F, S> Map<F, S> copyOf(Map<F, S> in) {
+        return new ConcurrentHashMap<>(in);
     }
 }

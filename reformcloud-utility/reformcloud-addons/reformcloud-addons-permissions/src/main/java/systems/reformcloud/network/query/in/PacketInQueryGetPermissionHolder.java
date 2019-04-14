@@ -23,7 +23,7 @@ public final class PacketInQueryGetPermissionHolder implements Serializable, Net
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-        ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(configuration.getStringValue("from"),
+        ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(configuration.getStringValue("from"),
                 new PacketOutQueryGetPermissionHolder(
                         PermissionsAddon.getInstance().getPermissionDatabase().getPermissionHolder(permissionHolder), resultID
                 )

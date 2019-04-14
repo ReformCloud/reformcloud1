@@ -312,6 +312,10 @@ public class ChannelHandler {
         this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket(packet, consumer)));
     }
 
+    public void sendToAllDirect(Packet packet) {
+        this.channelHandlerContextMap.forEach((key, value) -> this.sendDirectPacket(key, packet));
+    }
+
     /**
      * Sends synchronised more than one {@link Packet} to all registered Handlers
      *

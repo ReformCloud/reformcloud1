@@ -19,7 +19,7 @@ import java.util.UUID;
 public final class PacketInQueryGetPermissionCache implements Serializable, NetworkQueryInboundHandler {
     @Override
     public void handle(Configuration configuration, UUID resultID) {
-        ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(configuration.getStringValue("from"),
+        ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(configuration.getStringValue("from"),
                 new PacketOutQueryGetPermissionCache(resultID));
     }
 }
