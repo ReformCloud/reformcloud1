@@ -5,10 +5,7 @@
 package systems.reformcloud.api.deployment.outgoing;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.*;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
@@ -28,7 +25,7 @@ import java.util.Arrays;
 public final class RestAPIDownloadService implements Serializable, WebHandler {
     @Override
     public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
-        FullHttpResponse fullHttpResponse = RestAPIUtility.createFullHttpResponse(httpRequest.protocolVersion());
+        FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.UNAUTHORIZED);
         Configuration answer = RestAPIUtility.createDefaultAnswer();
         HttpHeaders httpHeaders = httpRequest.headers();
 
@@ -50,6 +47,7 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
                 && Files.exists(Paths.get("reformcloud/files/" +
                 configuration.getStringValue("group") + "/" +
                 configuration.getStringValue("template") + ".zip"))) {
+            fullHttpResponse.headers().set("Content-Type", "application/octet-stream");
             byte[] out = Files.readAllBytes(Paths.get("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
                     configuration.getStringValue("template") + ".zip"
