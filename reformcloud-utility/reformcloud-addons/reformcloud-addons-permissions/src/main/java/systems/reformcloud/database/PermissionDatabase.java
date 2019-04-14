@@ -20,6 +20,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -36,7 +37,7 @@ public final class PermissionDatabase implements Serializable {
     private Map<UUID, PermissionHolder> cachedPermissionHolders = new HashMap<>();
 
     public PermissionDatabase() {
-        if (!playerDir.exists()) {
+        if (!playerDir.exists() || !Files.exists(Paths.get("reformcloud/addons/permissions/config.json"))) {
             playerDir.mkdirs();
             new File("reformcloud/addons/permissions").mkdirs();
 
