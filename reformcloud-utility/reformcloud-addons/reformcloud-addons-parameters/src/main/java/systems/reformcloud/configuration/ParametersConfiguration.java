@@ -12,6 +12,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.in.PacketInRequestParameters;
 import systems.reformcloud.parameters.ParameterGroup;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.Serializable;
@@ -31,6 +32,7 @@ public final class ParametersConfiguration implements Serializable {
 
     public ParametersConfiguration() {
         if (!Files.exists(Paths.get("reformcloud/addons/parameters/config.json"))) {
+            FileUtils.createDirectory(Paths.get("reformcloud/addons/parameters"));
             ServerGroup serverGroup = ReformCloudController.getInstance().getAllServerGroups().stream().findFirst().orElse(null);
             Configuration configuration = new Configuration();
 
