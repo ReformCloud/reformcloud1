@@ -13,9 +13,11 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.web.utils.WebHandler;
 import systems.reformcloud.web.utils.WebHandlerAdapter;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 
 /**
@@ -33,7 +35,12 @@ public class WebServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!(msg instanceof HttpRequest)) return;
+        InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Receiving message in channel " +
+                inetSocketAddress.getAddress().getHostAddress());
+
+        if (!(msg instanceof HttpRequest))
+            return;
         HttpRequest httpRequest = (HttpRequest) msg;
 
         String requestUri = new URI(httpRequest.uri()).getRawPath();
@@ -43,9 +50,16 @@ public class WebServerHandler extends ChannelInboundHandlerAdapter {
 
         final WebHandler webHandler = this.webHandlerAdapter.getHandler(requestUri);
 
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug(webHandler == null ?
+                "No web handler found, sending default response" : "Handler found, handling");
+
         FullHttpResponse fullHttpResponse = null;
         if (webHandler != null)
             fullHttpResponse = webHandler.handleRequest(ctx, httpRequest);
+
+        if (webHandler != null && fullHttpResponse == null)
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Web handler got request, " +
+                    "but returned nothing (sending default response)");
 
         if (fullHttpResponse == null)
             fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer("404 Page is not available!".getBytes()));
