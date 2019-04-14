@@ -31,7 +31,7 @@ public final class ParametersConfiguration implements Serializable {
 
     public ParametersConfiguration() {
         if (!Files.exists(Paths.get("reformcloud/addons/parameters/config.json"))) {
-            ServerGroup serverGroup = ReformCloudController.getInstance().getAPISave().get().getAllServerGroups().get().stream().findFirst().orElse(null);
+            ServerGroup serverGroup = ReformCloudController.getInstance().getAllServerGroups().stream().findFirst().orElse(null);
             Configuration configuration = new Configuration();
 
             configuration.addProperty("config", serverGroup == null ? Collections.EMPTY_LIST : Collections.singletonList(new ParameterGroup(
