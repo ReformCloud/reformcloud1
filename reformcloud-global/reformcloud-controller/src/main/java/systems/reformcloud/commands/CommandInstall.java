@@ -43,9 +43,14 @@ public final class CommandInstall extends Command implements Serializable {
                 commandSender.sendMessage("Download was completed successfully");
                 ReformCloudController.getInstance().reloadAllSave();
                 return;
+            } else if (args[0].equalsIgnoreCase("parameters")) {
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudParameters.jar", "reformcloud/addons/ReformCloudParameters.jar");
+                commandSender.sendMessage("Download was completed successfully");
+                ReformCloudController.getInstance().reloadAllSave();
+                return;
             }
         }
 
-        commandSender.sendMessage("install <signs, discord, permissions, proxy>");
+        commandSender.sendMessage("install <signs, discord, permissions, proxy, parameters>");
     }
 }
