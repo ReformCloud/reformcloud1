@@ -367,6 +367,7 @@ public class CloudServerStartupHandler {
                 };
 
         String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(serverInfo.getGroup(), cmd, after);
+        ReformCloudClient.getInstance().getLoggerProvider().info(command);
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));
