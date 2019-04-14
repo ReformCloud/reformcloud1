@@ -161,7 +161,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         );
 
         this.taskScheduler
-                .schedule(SynchronizationHandler.class, TimeUnit.SECONDS, 30)
+                .schedule(SynchronizationHandler.class, TimeUnit.SECONDS, 5)
                 .schedule(ShutdownWorker.class, TimeUnit.SECONDS, 10);
 
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessScreenService);
