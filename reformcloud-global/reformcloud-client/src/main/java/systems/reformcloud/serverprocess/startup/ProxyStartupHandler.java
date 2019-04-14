@@ -271,7 +271,7 @@ public class ProxyStartupHandler {
         String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getGroup(), cmd, after);
 
         try {
-            this.process = Runtime.getRuntime().exec(cmd, null, new File(path.toString()));
+            this.process = Runtime.getRuntime().exec(command, null, new File(path.toString()));
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while starting proxy process", ex);
             return false;
