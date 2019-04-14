@@ -54,8 +54,6 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
             ));
 
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
-            fullHttpResponse.headers().set("content-response", configuration.getStringValue("group")
-                    + "-" + configuration.getStringValue("template"));
             fullHttpResponse.content().writeBytes(out);
 
             FileUtils.deleteFullDirectory("reformcloud/files/" +

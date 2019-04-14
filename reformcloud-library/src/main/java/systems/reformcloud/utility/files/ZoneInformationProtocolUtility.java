@@ -51,6 +51,7 @@ public class ZoneInformationProtocolUtility {
                 fos.close();
             }
 
+            zipInputStream.closeEntry();
             zipEntry = zipInputStream.getNextEntry();
         }
         zipInputStream.closeEntry();
