@@ -141,28 +141,14 @@ public class CloudConfiguration {
 
         new Configuration().addProperty("group", new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in))).write(Paths.get("reformcloud/groups/proxies/Proxy.json"));
 
-        loggerProvider.info("Do you want to load the sign addon [\"yes\", \"no\"]");
-        String signs = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
-        if (signs.equalsIgnoreCase("yes")) {
+        loggerProvider.info("Do you want to load the default addons (You can download them later, too) [\"yes\", \"no\"]");
+        String addons = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
+        if (addons.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
-        }
-
-        loggerProvider.info("Do you want to load the discord addon [\"yes\", \"no\"]");
-        String discordbot = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
-        if (discordbot.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/DiscordBot.jar");
-        }
-
-        loggerProvider.info("Do you want to load the permission addon [\"yes\", \"no\"]");
-        String permissions = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
-        if (permissions.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
-        }
-
-        loggerProvider.info("Do you want to load the proxy addon [\"yes\", \"no\"]");
-        String proxy = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
-        if (proxy.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProxy.jar", "reformcloud/addons/ReformCloudProxy.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudParameters.jar", "reformcloud/addons/ReformCloudParameters.jar");
         }
 
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
