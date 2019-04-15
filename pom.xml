@@ -21,7 +21,7 @@
             <id>klaro</id>
             <name>Pasqual K. | _Klaro</name>
             <organization>ReformCloud</organization>
-            <url>https://gitlab.com/_Klaro</url>
+            <url>https://github.com/KlaroYT</url>
             <organizationUrl>https://reformcloud.systems</organizationUrl>
             <email>info@reformcloud.systems</email>
             <timezone>Europe/Berlin</timezone>
@@ -47,6 +47,8 @@
         <plugin.jar.version>3.1.1</plugin.jar.version>
         <plugin.antrun.version>1.8</plugin.antrun.version>
         <plugin.maven-source.version>3.0.1</plugin.maven-source.version>
+
+        <dependency.test.junit.version>4.12</dependency.test.junit.version>
 
         <dependency.apache-http.version>4.5.8</dependency.apache-http.version>
         <dependency.jline.version>2.14.6</dependency.jline.version>

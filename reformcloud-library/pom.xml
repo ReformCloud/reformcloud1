@@ -9,8 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.4</version>
-
     <artifactId>reformcloud-library</artifactId>
 
     <dependencies>
@@ -67,6 +65,13 @@
             <artifactId>quartz</artifactId>
             <version>${dependency.quartz.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${dependency.test.junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

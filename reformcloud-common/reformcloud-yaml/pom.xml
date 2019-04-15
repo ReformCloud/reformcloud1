@@ -11,8 +11,6 @@
 
     <artifactId>reformcloud-yaml</artifactId>
 
-    <version>1.4</version>
-
     <dependencies>
         <dependency>
             <groupId>org.yaml</groupId>
