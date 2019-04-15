@@ -10,7 +10,6 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.web.InternalWebUser;
-import systems.reformcloud.network.out.PacketOutTemplateDeployReady;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.web.utils.WebHandler;
 
@@ -51,18 +50,18 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
         if (configuration.contains("template") && configuration.contains("group") && configuration.contains("client")) {
             File file = new File("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
-                    configuration.getStringValue("template")
+                    configuration.getStringValue("template") + ".zip"
             );
             file.getParentFile().mkdirs();
             ZoneInformationProtocolUtility.toZip(
                     fullHttpRequest.content().readBytes(fullHttpRequest.content().readableBytes()).array(),
-                    file + ".zip"
+                    file
             );
-
-            ZoneInformationProtocolUtility.unZip(new File(file + ".zip"), file.toString());
 
             ReformCloudController.getInstance().getLoggerProvider().info("Downloaded template " +
                     configuration.getStringValue("template") + " of group " + configuration.getStringValue("group"));
+
+            /*
 
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                     configuration.getStringValue("client"),
@@ -72,6 +71,8 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
                             configuration.getBooleanValue("proxy")
                     )
             );
+
+             */
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             fullHttpResponse.content().writeBytes(answer.addProperty("success", true).getJsonString().getBytes());
             return fullHttpResponse;
