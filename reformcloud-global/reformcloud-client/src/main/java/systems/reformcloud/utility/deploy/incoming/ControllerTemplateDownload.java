@@ -60,6 +60,7 @@ public final class ControllerTemplateDownload implements Serializable {
                         "Error while unzipping downloaded template",
                         ex
                 );
+                return;
             }
 
             FileUtils.deleteFileIfExists(Paths.get(path + ".zip"));

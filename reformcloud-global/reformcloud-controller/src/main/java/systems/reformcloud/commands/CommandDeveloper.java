@@ -83,17 +83,10 @@ public final class CommandDeveloper extends Command implements Serializable {
                         break;
                     }
 
-                    case "controller": {
-                        ReformCloudController.getInstance().getLoggerProvider().setDebug(args[1].equalsIgnoreCase("enable"));
-                        commandSender.sendMessage(
-                                (args[1].equalsIgnoreCase("enable") ? "§aEnabled" : "§cDisabled") + "§r debug in controller"
-                        );
-                        break;
-                    }
-
                     default: {
                         commandSender.sendMessage("dev debug <enable, disable> <server, proxy, client, controller> <name>");
                         commandSender.sendMessage("dev debug <enable, disable> --all");
+                        break;
                     }
                 }
                 return;
@@ -104,6 +97,14 @@ public final class CommandDeveloper extends Command implements Serializable {
                 ReformCloudController.getInstance().getLoggerProvider().setDebug(enable);
                 ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutEnableDebug(enable));
                 commandSender.sendMessage("Trying to enable debug everywhere...");
+                return;
+            }
+
+            if (args[2].toLowerCase().equalsIgnoreCase("controller")) {
+                ReformCloudController.getInstance().getLoggerProvider().setDebug(args[1].equalsIgnoreCase("enable"));
+                commandSender.sendMessage(
+                        (args[1].equalsIgnoreCase("enable") ? "§aEnabled" : "§cDisabled") + "§r debug in controller"
+                );
                 return;
             }
         } else if (args.length == 3 && args[0].equalsIgnoreCase("standby")) {
@@ -127,6 +128,7 @@ public final class CommandDeveloper extends Command implements Serializable {
             commandSender.sendMessage(
                     (args[1].equalsIgnoreCase("enable") ? "§aEnabling" : "§cDisabling") + "§r standby mode on client " + client.getName()
             );
+            return;
         }
 
         commandSender.sendMessage("dev debug <enable, disable> <server, proxy, client, controller> <name>");
