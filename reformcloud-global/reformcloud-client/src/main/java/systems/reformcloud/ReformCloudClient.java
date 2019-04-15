@@ -97,7 +97,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     private final ChannelHandler channelHandler;
     private final NettySocketClient nettySocketClient = new NettySocketClient();
 
-    private final SynchronizationHandler synchronizationHandler = new SynchronizationHandler();
+    private final SynchronizationHandler synchronizationHandler;
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
 
@@ -158,6 +158,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 ReformCloudLibraryService.usedMemorySystem(),
                 ReformCloudLibraryService.usedMemorySystem()
         );
+
+        this.synchronizationHandler = new SynchronizationHandler();
 
         this.taskScheduler
                 .schedule(ShutdownWorker.class, TimeUnit.SECONDS, 10);
@@ -220,6 +222,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 .registerCommand(new CommandHelp())
                 .registerCommand(new CommandVersion())
                 .registerCommand(new CommandAddons())
+                .registerCommand(new CommandClear())
                 .registerCommand(new CommandReload());
     }
 
