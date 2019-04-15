@@ -4,6 +4,7 @@
 
 package systems.reformcloud.utility.deploy.incoming;
 
+import org.apache.commons.io.IOUtils;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.utility.StringUtil;
@@ -14,10 +15,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -47,11 +46,12 @@ public final class ControllerTemplateDownload implements Serializable {
 
             FileUtils.deleteFullDirectory(path + "/" + template);
             FileUtils.createDirectory(Paths.get(path + "/" + template));
-            Files.copy(httpURLConnection.getInputStream(), Paths.get(path + ".zip"), StandardCopyOption.REPLACE_EXISTING);
+
+            byte[] in = IOUtils.toByteArray(httpURLConnection.getInputStream());
 
             try {
                 ZoneInformationProtocolUtility.unZip(
-                        Paths.get(path + ".zip").toFile(),
+                        in,
                         "reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group + "/" + template
                 );
             } catch (final Exception ex) {

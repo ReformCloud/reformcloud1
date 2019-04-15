@@ -54,7 +54,7 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
                     configuration.getStringValue("template") + ".zip"
             ));
 
-            ZoneInformationProtocolUtility.unZip(out, new File("reformcloud"));
+            ZoneInformationProtocolUtility.toZip(out, new File("reformcloud"));
 
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             fullHttpResponse.content().writeBytes(out);
