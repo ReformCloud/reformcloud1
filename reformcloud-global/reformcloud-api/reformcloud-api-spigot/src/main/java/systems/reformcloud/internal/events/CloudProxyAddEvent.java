@@ -10,13 +10,15 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import systems.reformcloud.meta.info.ProxyInfo;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
 @AllArgsConstructor
 @Getter
-public class CloudProxyAddEvent extends Event {
+public final class CloudProxyAddEvent extends Event implements Serializable {
     private static final HandlerList handlerList = new HandlerList();
 
     private ProxyInfo proxyInfo;

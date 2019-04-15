@@ -24,9 +24,17 @@ import java.nio.file.Paths;
 public final class LanguageManager implements Serializable {
     private static final long serialVersionUID = 6566354787998684748L;
 
+    /**
+     * The currently loaded language
+     */
     @Getter
-    public Language loaded;
+    public final Language loaded;
 
+    /**
+     * Loads the language
+     *
+     * @param lang The name of the language which should be loaded
+     */
     public LanguageManager(final String lang) {
         if (lang == null || lang.equals(StringUtil.NULL)) {
             this.loaded = new English();
@@ -36,11 +44,11 @@ public final class LanguageManager implements Serializable {
         new File("reformcloud/language").mkdirs();
 
         if (!Files.exists(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json"))) {
-            if (lang.equalsIgnoreCase("german")) {
+            if (lang.equalsIgnoreCase("german"))
                 new Configuration().addProperty("lang", new German()).write(Paths.get("reformcloud/language/german.json"));
-            } else if (lang.equalsIgnoreCase("english")) {
+            else if (lang.equalsIgnoreCase("english"))
                 new Configuration().addProperty("lang", new English()).write(Paths.get("reformcloud/language/english.json"));
-            } else {
+            else {
                 this.loaded = new English();
                 return;
             }

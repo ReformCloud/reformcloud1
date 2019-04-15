@@ -10,13 +10,15 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import systems.reformcloud.meta.info.ServerInfo;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018
  */
 
 @AllArgsConstructor
 @Getter
-public class CloudServerAddEvent extends Event {
+public final class CloudServerAddEvent extends Event implements Serializable {
     private static final HandlerList handlerList = new HandlerList();
 
     private ServerInfo serverInfo;

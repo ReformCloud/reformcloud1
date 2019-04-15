@@ -19,11 +19,13 @@ import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 01.11.2018
  */
 
-public class NettySocketClient implements AutoCloseable {
+public final class NettySocketClient implements AutoCloseable, Serializable {
     private SslContext sslContext;
     private final EventLoopGroup eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
 

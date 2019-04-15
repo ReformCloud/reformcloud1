@@ -13,11 +13,13 @@ import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-public class PacketInProcessRemove implements NetworkInboundHandler {
+public final class PacketInProcessRemove implements NetworkInboundHandler, Serializable {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {

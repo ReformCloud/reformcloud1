@@ -14,6 +14,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -41,6 +42,17 @@ public class Packet implements Serializable {
     public Packet(@NonNull final String type, @NonNull Configuration configuration, @NonNull UUID resultID) {
         this.type = type;
         this.configuration = configuration;
+        this.result = resultID;
+    }
+
+    public Packet(@NonNull final String type, @NonNull Map<? extends String, ?> configuration) {
+        this.type = type;
+        this.configuration = Configuration.fromMap(configuration);
+    }
+
+    public Packet(@NonNull final String type, @NonNull Map<? extends String, ?> configuration, @NonNull UUID resultID) {
+        this.type = type;
+        this.configuration = Configuration.fromMap(configuration);
         this.result = resultID;
     }
 

@@ -19,7 +19,7 @@ import java.util.Set;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public class NettyHandler {
+public final class NettyHandler {
     private Map<String, NetworkInboundHandler> networkInboundHandlerMap = ReformCloudLibraryService.concurrentHashMap();
     private Map<String, NetworkQueryInboundHandler> networkQueryInboundHandlerMap = ReformCloudLibraryService.concurrentHashMap();
 

@@ -17,6 +17,6 @@ import systems.reformcloud.meta.info.ProxyInfo;
 
 @AllArgsConstructor
 @Getter
-public class CloudProxyRemoveEvent {
+public final class CloudProxyRemoveEvent {
     private ProxyInfo proxyInfo;
 }

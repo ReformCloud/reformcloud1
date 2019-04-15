@@ -115,7 +115,7 @@ public final class CommandCreate extends Command implements Serializable {
                     return;
                 }
 
-                final WebUser webUser = new WebUser(args[1], StringEncrypt.encrypt(args[2]), new HashMap<>());
+                final WebUser webUser = new WebUser(args[1], StringEncrypt.encryptSHA512(args[2]), new HashMap<>());
                 ReformCloudController.getInstance().getCloudConfiguration().createWebUser(webUser);
                 commandSender.sendMessage("WebUser \"" + webUser.getUser() + "\" was created successfully with password \"" + args[2] + "\"");
                 break;

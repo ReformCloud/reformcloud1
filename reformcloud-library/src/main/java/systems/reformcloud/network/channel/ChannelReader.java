@@ -19,6 +19,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 
 /**
@@ -26,7 +27,7 @@ import java.net.InetSocketAddress;
  */
 
 @AllArgsConstructor
-public class ChannelReader extends SimpleChannelInboundHandler {
+public final class ChannelReader extends SimpleChannelInboundHandler implements Serializable {
     private ChannelHandler channelHandler;
 
     @Override

@@ -37,10 +37,7 @@ import systems.reformcloud.network.packets.out.PacketOutUpdateOfflinePlayer;
 import systems.reformcloud.network.packets.out.PacketOutUpdateOnlinePlayer;
 import systems.reformcloud.network.packets.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.packets.query.out.PacketOutQueryGetPlayer;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncControllerTime;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncScreenDisable;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncScreenJoin;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncUpdateClient;
+import systems.reformcloud.network.packets.sync.in.*;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncClientDisconnects;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncClientUpdateSuccess;
 import systems.reformcloud.player.implementations.OfflinePlayer;
@@ -54,7 +51,6 @@ import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
-import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
 import systems.reformcloud.utility.parameters.ParameterManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
@@ -62,6 +58,7 @@ import systems.reformcloud.utility.threading.TaskScheduler;
 import systems.reformcloud.versioneering.VersionController;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +74,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ReformCloudClient implements Shutdown, Reload, IAPIService {
+public final class ReformCloudClient implements Serializable, Shutdown, Reload, IAPIService {
     public static volatile boolean RUNNING = false;
 
     @Getter
@@ -99,6 +96,8 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     private final TaskScheduler taskScheduler;
     private final ChannelHandler channelHandler;
     private final NettySocketClient nettySocketClient = new NettySocketClient();
+
+    private final SynchronizationHandler synchronizationHandler = new SynchronizationHandler();
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
 
@@ -110,13 +109,13 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     private long internalTime = System.currentTimeMillis();
 
     /**
-     * Creates a new Instance of the {ReformCloudClient}
+     * Creates a new Instance of the ReformCloudClient
      *
-     * @param loggerProvider
-     * @param commandManager
-     * @param ssl
-     * @param time
-     * @throws Throwable
+     * @param loggerProvider        The default logger provider of the cloud system
+     * @param commandManager        The command manger which should be used in the cloud system
+     * @param ssl                   If ssl should be enabled or not
+     * @param time                  The startup time of the client
+     * @throws Throwable            If any exception occurs it will be catch and printed
      */
     public ReformCloudClient(LoggerProvider loggerProvider, CommandManager commandManager, boolean ssl, final long time) throws Throwable {
         if (instance == null)
@@ -161,11 +160,11 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         );
 
         this.taskScheduler
-                .schedule(SynchronizationHandler.class, TimeUnit.SECONDS, 5)
                 .schedule(ShutdownWorker.class, TimeUnit.SECONDS, 10);
 
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessScreenService);
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessStartupHandler);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.synchronizationHandler);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "ShutdownHook"));
 
@@ -204,8 +203,10 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand())
                 .registerHandler("DeployServer", new PacketInDeployServer())
                 .registerHandler("TemplateDeployReady", new PacketInTemplateDeployReady())
+                .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
                 .registerHandler("ParametersUpdate", new PacketInParameterUpdate())
+                .registerHandler("SyncStandby", new PacketInSyncStandby())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
                 .registerHandler("GetControllerTemplateResult", new PacketInGetControllerTemplateResult())
@@ -286,10 +287,8 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     /**
      * Get used memory of ReformCloudClient
      *
-     * @return {@link Integer} of used memory by adding the maximal memory of the ProxyProcesses
+     * @return of used memory by adding the maximal memory of the ProxyProcesses
      * to the maximal memory of the ServerProcesses
-     * @see ServerProcessManager#getUsedProxyMemory()
-     * @see ServerProcessManager#getUsedServerMemory()
      */
     public int getMemory() {
         int used = 0;
@@ -317,9 +316,9 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     }
 
     /**
-     * Connects to the Controller by using {@link Boolean}
+     * Connects to the Controller
      *
-     * @param ssl
+     * @param ssl       If ssl is enabled or not
      */
     public void connect(final boolean ssl) {
         this.nettySocketClient.setConnections(1);

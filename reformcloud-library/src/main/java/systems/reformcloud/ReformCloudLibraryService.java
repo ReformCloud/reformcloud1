@@ -26,6 +26,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import systems.reformcloud.cache.Cache;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
@@ -34,6 +35,7 @@ import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.utility.checkable.Checkable;
 
 import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -44,6 +46,7 @@ import java.util.concurrent.*;
 public final class ReformCloudLibraryService {
     static {
         Thread.currentThread().setName("ReformCloud-Main");
+        Thread.setDefaultUncaughtExceptionHandler((t, cause) -> AbstractLoggerProvider.defaultLogger().exception(cause));
 
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("io.netty.noPreferDirect", "true");
@@ -55,19 +58,41 @@ public final class ReformCloudLibraryService {
         System.setProperty("io.netty.allocator.type", "UNPOOLED");
     }
 
+    /**
+     * The cloud created gson instance
+     */
     public static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
+
+    /**
+     * The cloud creates json parser instance
+     */
     public static final JsonParser PARSER = new JsonParser();
 
+    /**
+     * Netty booleans
+     */
     public static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
 
+    /**
+     * The current thread local random instance
+     */
     public static final ThreadLocalRandom THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
 
+    /**
+     * The executor service used by the cloud
+     */
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
+    /**
+     * Creates a new ConcurrentHashMap
+     */
     public static <K, V> ConcurrentHashMap<K, V> concurrentHashMap() {
         return new ConcurrentHashMap<>(0);
     }
 
+    /**
+     * Sends the cloud header
+     */
     public static void sendHeader() {
         System.out.println(" ");
         System.out.println(
@@ -82,7 +107,17 @@ public final class ReformCloudLibraryService {
     }
 
 
+    /**
+     * Sends the cloud header colored
+     *
+     * @param loggerProvider The logger provider which should be used to print the header coloured
+     */
     public static void sendHeader(final LoggerProvider loggerProvider) {
+        if (loggerProvider == null) {
+            sendHeader();
+            return;
+        }
+
         System.out.println(" ");
         loggerProvider.coloured(
                 "§3" +
@@ -96,6 +131,11 @@ public final class ReformCloudLibraryService {
         );
     }
 
+    /**
+     * Creates a new controller key
+     *
+     * @return The created controller key as string
+     */
     public static String newKey() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < 100; i++) {
@@ -112,9 +152,6 @@ public final class ReformCloudLibraryService {
      * @param channel        The given channel where all Handlers should be added
      * @param channelHandler The pre-initialized ChannelHandler where all channels are
      *                       registered and handled
-     * @see Channel#pipeline()
-     * @see LengthFieldBasedFrameDecoder
-     * @see LengthFieldPrepender
      */
     public static Channel prepareChannel(Channel channel, ChannelHandler channelHandler) {
         channel.pipeline().addLast(
@@ -130,9 +167,8 @@ public final class ReformCloudLibraryService {
     /**
      * New EventLoopGroup
      *
-     * @return new EpollEventLoopGroup if EPOLLis available or a new NioEventLoopGroup
-     * @see EpollEventLoopGroup
-     * @see NioEventLoopGroup
+     * @return new EpollEventLoopGroup if EPOLL is available,
+     *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup
      */
     public static EventLoopGroup eventLoopGroup() {
         return EPOLL ? new EpollEventLoopGroup() : KQUEUE ? new KQueueEventLoopGroup() : new NioEventLoopGroup();
@@ -141,9 +177,8 @@ public final class ReformCloudLibraryService {
     /**
      * New EventLoopGroup
      *
-     * @return new EpollEventLoopGroup with the given threads if EPOLL is available or a new NioEventLoopGroup with the given threads
-     * @see EpollEventLoopGroup
-     * @see NioEventLoopGroup
+     * @return new EpollEventLoopGroup if EPOLL is available,
+     *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup with the given threads
      */
     public static EventLoopGroup eventLoopGroup(int threads) {
         return EPOLL ? new EpollEventLoopGroup(threads) : KQUEUE ? new KQueueEventLoopGroup(threads) : new NioEventLoopGroup(threads);
@@ -153,7 +188,6 @@ public final class ReformCloudLibraryService {
      * New ServerSocketChannel
      *
      * @return EpollServerSocketChannel-Class if EPOLL is available or a new NioServerSocketChannel-Class
-     * @see ServerSocketChannel
      */
     public static Class<? extends ServerSocketChannel> serverSocketChannel() {
         return EPOLL ? EpollServerSocketChannel.class : KQUEUE ? KQueueServerSocketChannel.class : NioServerSocketChannel.class;
@@ -163,7 +197,6 @@ public final class ReformCloudLibraryService {
      * New SocketChannel
      *
      * @return EpollSocketChannel-Class if EPOLL is available or a new NioSocketChannel-Class
-     * @see SocketChannel
      */
     public static Class<? extends SocketChannel> clientSocketChannel() {
         return EPOLL ? EpollSocketChannel.class : KQUEUE ? KQueueSocketChannel.class : NioSocketChannel.class;
@@ -172,7 +205,7 @@ public final class ReformCloudLibraryService {
     /**
      * Let the main-thread sleep the given time
      *
-     * @param time
+     * @param time      The time which should be slept
      */
     public static void sleep(long time) {
         try {
@@ -184,8 +217,8 @@ public final class ReformCloudLibraryService {
     /**
      * Let the given thread sleep the given time
      *
-     * @param thread
-     * @param time
+     * @param thread        The thread on which the cloud should sleep
+     * @param time          The time which should be sleep
      */
     public static void sleep(Thread thread, long time) {
         try {
@@ -194,6 +227,12 @@ public final class ReformCloudLibraryService {
         }
     }
 
+    /**
+     * Let the main-thread sleep the given time
+     *
+     * @param timeUnit      The TimeUnit in which the thread should sleep
+     * @param time          The time which should be sleep
+     */
     public static void sleep(TimeUnit timeUnit, long time) {
         try {
             timeUnit.sleep(time);
@@ -202,12 +241,10 @@ public final class ReformCloudLibraryService {
     }
 
     /**
-     * Check if the given String is a {@link Integer}
+     * Check if the given String is an integer
      *
-     * @param key
-     * @return {@code true} if the {@link String} is a {@link Integer}
-     * or {@code false} if the {@link String} is not a {@link Integer}
-     * @see Integer#parseInt(String)
+     * @param key       The incoming string which should be checked
+     * @return If the string is an int or not
      */
     public static boolean checkIsInteger(String key) {
         try {
@@ -218,6 +255,12 @@ public final class ReformCloudLibraryService {
         }
     }
 
+    /**
+     * Checks if the given string is a boolean or nor
+     *
+     * @param key       The incoming string which should be checked
+     * @return If the string is an boolean or not
+     */
     public static boolean checkIsValidBoolean(String key) {
         return key.equalsIgnoreCase("true") || key.equalsIgnoreCase("false");
     }
@@ -240,22 +283,89 @@ public final class ReformCloudLibraryService {
         return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad() * 100;
     }
 
+    /**
+     * Gets the used system memory
+     *
+     * @return the memory usage of the system
+     */
     public static long usedMemorySystem() {
         return maxMemorySystem() - ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreePhysicalMemorySize();
     }
 
+    /**
+     * Gets the max memory of the system
+     *
+     * @return The max memory of the system
+     */
     public static long maxMemorySystem() {
         return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize();
     }
 
+    /**
+     * Gets the runtime mx bean of the current jvm
+     *
+     * @return The runtime mx bean of the current jvm
+     */
+    public static RuntimeMXBean getRuntimeMXBean() {
+        return ManagementFactory.getRuntimeMXBean();
+    }
+
+    /**
+     * Gets the start time of the current jvm
+     *
+     * @return The start time of the jvm
+     */
+    public static long systemStartTime() {
+        return getRuntimeMXBean().getStartTime();
+    }
+
+    /**
+     * Get the uptime of the current jvm
+     *
+     * @return The uptime of the jvm
+     */
+    public static long systemUpTime() {
+        return getRuntimeMXBean().getUptime();
+    }
+
+    /**
+     * Gets the max memory of the runtime
+     *
+     * @return The max memory of the runtime
+     */
+    public static long maxMemoryRuntime() {
+        return Runtime.getRuntime().maxMemory();
+    }
+
+    /**
+     * Converts a long into a byte
+     *
+     * @param b The incoming long which should be converted
+     * @return The converted long in byte
+     */
     public static long bytesToMB(final long b) {
         return b / 1024 / 1024;
     }
 
+    /**
+     * Checks if the object equals the parameters of the checkable
+     *
+     * @param checkable     The checkable with the check parameters
+     * @param toCheck       The object which should be checked
+     * @return If the parameters of the checkable are true or not
+     */
     public static boolean check(Checkable<Object> checkable, final Object toCheck) {
         return toCheck != null && checkable != null && checkable.isChecked(toCheck);
     }
 
+    /**
+     * Creates a new cache
+     *
+     * @param maxSize       The maximum size of the cache
+     * @param <K>           The key value of the cache
+     * @param <V>           The values of the cache
+     * @return The created cache using the given parameters
+     */
     public static <K, V> Cache<K, V> newCache(long maxSize) {
         return new Cache<>(maxSize);
     }

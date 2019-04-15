@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import systems.reformcloud.meta.info.ProxyInfo;
 
+import java.io.Serializable;
+
 /**
  * This class represents the ProxyStartup as event
  *
@@ -17,6 +19,6 @@ import systems.reformcloud.meta.info.ProxyInfo;
 
 @AllArgsConstructor
 @Getter
-public class CloudProxyAddEvent {
+public final class CloudProxyAddEvent implements Serializable {
     private ProxyInfo proxyInfo;
 }

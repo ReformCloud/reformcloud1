@@ -11,11 +11,13 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 25.11.2018
  */
 
-public class PacketInUpdateAll implements NetworkInboundHandler {
+public final class PacketInUpdateAll implements NetworkInboundHandler, Serializable {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));

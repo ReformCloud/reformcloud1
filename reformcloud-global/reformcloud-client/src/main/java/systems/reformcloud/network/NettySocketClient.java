@@ -23,12 +23,14 @@ import systems.reformcloud.network.handler.ControllerDisconnectHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 24.10.2018
  */
 
 @Getter
-public class NettySocketClient implements AutoCloseable {
+public final class NettySocketClient implements AutoCloseable, Serializable {
     @Setter
     private int connections = 1;
 

@@ -21,79 +21,81 @@ import java.util.zip.ZipOutputStream;
  * @author _Klaro | Pasqual K. / created on 06.12.2018
  */
 
-public class ZoneInformationProtocolUtility {
+public final class ZoneInformationProtocolUtility implements Serializable {
     public static void unZip(File zippedPath, String destinationPath) throws Exception {
         File destDir = new File(destinationPath);
         if (!destDir.exists())
             destDir.mkdir();
 
-        byte[] buffer = new byte[1024];
+        if (destDir.isDirectory())
+            FileUtils.deleteFullDirectory(destDir);
+        else
+            FileUtils.deleteFileIfExists(destDir);
+
+        byte[] buffer = new byte[0x1FFF];
         ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zippedPath));
         ZipEntry zipEntry = zipInputStream.getNextEntry();
         while (zipEntry != null) {
-            String fileName = zipEntry.getName();
-            File newFile = new File(destinationPath + "/" + fileName);
-            if (!newFile.exists()) {
-                if (zipEntry.isDirectory()) {
-                    newFile.mkdirs();
-                } else {
-                    newFile.getParentFile().mkdirs();
-                    newFile.createNewFile();
+            File newFile = new File(destinationPath + "/" + zipEntry.getName());
+            if (zipEntry.isDirectory())
+                newFile.mkdirs();
+            else {
+                newFile.getParentFile().mkdirs();
+                newFile.createNewFile();
+
+                try (OutputStream outputStream = Files.newOutputStream(newFile.toPath())) {
+                    int length;
+                    while ((length = zipInputStream.read(buffer)) != -1)
+                        outputStream.write(buffer, 0, length);
                 }
-            }
-
-            if (!newFile.isDirectory()) {
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zipInputStream.read(buffer)) > 0)
-                    fos.write(buffer, 0, len);
-
-                fos.close();
             }
 
             zipInputStream.closeEntry();
             zipEntry = zipInputStream.getNextEntry();
         }
+
         zipInputStream.closeEntry();
         zipInputStream.close();
     }
 
     public static Collection<File> unZip(byte[] zippedBytes, File destDir) throws Exception {
         String destinationPath = destDir.toString();
-        if (!destDir.exists()) {
+        if (!destDir.exists())
             destDir.mkdir();
-        }
 
         Collection<File> unzipped = new LinkedList<>();
 
-        byte[] buffer = new byte[1024];
-        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zippedBytes));
-        ZipEntry zipEntry = zis.getNextEntry();
+        byte[] buffer = new byte[0x1FFF];
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(zippedBytes));
+
+        ZipEntry zipEntry = zipInputStream.getNextEntry();
         while (zipEntry != null) {
-            String fileName = zipEntry.getName();
-            File newFile = new File(destinationPath + "/" + fileName);
+            File newFile = new File(destinationPath + "/" + zipEntry.getName());
             if (!unzipped.contains(newFile))
                 unzipped.add(newFile);
+
             if (newFile.exists())
                 newFile.delete();
-            if (zipEntry.isDirectory()) {
+
+            if (zipEntry.isDirectory())
                 newFile.mkdirs();
-            } else {
+            else {
                 newFile.getParentFile().mkdirs();
                 newFile.createNewFile();
-            }
-            if (!newFile.isDirectory()) {
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
+
+                try (OutputStream outputStream = Files.newOutputStream(newFile.toPath())) {
+                    int length;
+                    while ((length = zipInputStream.read(buffer)) != -1)
+                        outputStream.write(buffer, 0, length);
                 }
-                fos.close();
             }
-            zipEntry = zis.getNextEntry();
+
+            zipInputStream.closeEntry();
+            zipEntry = zipInputStream.getNextEntry();
         }
-        zis.closeEntry();
-        zis.close();
+
+        zipInputStream.closeEntry();
+        zipInputStream.close();
 
         return unzipped;
     }
@@ -110,17 +112,21 @@ public class ZoneInformationProtocolUtility {
         }
     }
 
+    public static Collection<File> unZip(byte[] zippedBytes, String destinationPath) throws Exception {
+        File destDir = new File(destinationPath);
+        return unZip(zippedBytes, destDir);
+    }
+
+    public static Collection<File> unZip(byte[] zippedBytes, Path destinationPath) throws Exception {
+        return unZip(zippedBytes, destinationPath.toFile());
+    }
+
     public static void toZip(byte[] zip, File to) {
         toZip(zip, to.toPath());
     }
 
     public static void toZip(byte[] zip, String to) {
         toZip(zip, Paths.get(to));
-    }
-
-    public static Collection<File> unZip(byte[] zippedBytes, String destinationPath) throws Exception {
-        File destDir = new File(destinationPath);
-        return unZip(zippedBytes, destDir);
     }
 
     public static byte[] zipDirectoryToBytes(File file) {
@@ -132,6 +138,7 @@ public class ZoneInformationProtocolUtility {
             ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
             for (File child : file.listFiles())
                 zipFile(child, child.getName(), zipOut);
+
             zipOut.close();
             byte[] bytes = byteArrayOutputStream.toByteArray();
             byteArrayOutputStream.close();
@@ -144,6 +151,10 @@ public class ZoneInformationProtocolUtility {
 
     public static byte[] zipDirectoryToBytes(Path path) {
         return zipDirectoryToBytes(path.toFile());
+    }
+
+    public static byte[] zipDirectoryToBytes(String path) {
+        return zipDirectoryToBytes(new File(path));
     }
 
     public static void zipDirectoryToFile(File path, String destinationPath) {
@@ -160,17 +171,11 @@ public class ZoneInformationProtocolUtility {
     }
 
     public static void zipDirectoryToFile(Path path, String destinationPath) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(destinationPath);
-            ZipOutputStream zipOut = new ZipOutputStream(fileOutputStream);
-            File fileToZip = path.toFile();
-            zipFile(fileToZip, fileToZip.getName(), zipOut);
-            zipOut.close();
-            fileOutputStream.flush();
-            fileOutputStream.close();
-        } catch (IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while zipping dir", ex);
-        }
+        zipDirectoryToFile(path.toFile(), destinationPath);
+    }
+
+    public static void zipDirectoryToFile(String path, String destinationPath) {
+        zipDirectoryToFile(new File(path), destinationPath);
     }
 
     private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {

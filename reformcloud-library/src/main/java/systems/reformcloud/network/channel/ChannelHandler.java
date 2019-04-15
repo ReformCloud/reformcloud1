@@ -17,6 +17,7 @@ import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
@@ -25,7 +26,7 @@ import java.util.concurrent.ExecutorService;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public class ChannelHandler {
+public final class ChannelHandler implements Serializable {
     private Map<String, ChannelHandlerContext> channelHandlerContextMap = ReformCloudLibraryService.concurrentHashMap();
 
     @Getter

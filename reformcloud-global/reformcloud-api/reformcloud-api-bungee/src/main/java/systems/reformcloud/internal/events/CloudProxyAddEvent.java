@@ -18,6 +18,6 @@ import systems.reformcloud.meta.info.ProxyInfo;
 
 @AllArgsConstructor
 @Getter
-public class CloudProxyAddEvent extends Event {
+public final class CloudProxyAddEvent extends Event {
     private ProxyInfo proxyInfo;
 }

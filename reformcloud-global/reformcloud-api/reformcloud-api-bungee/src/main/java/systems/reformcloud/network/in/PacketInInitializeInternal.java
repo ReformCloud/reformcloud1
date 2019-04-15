@@ -19,6 +19,7 @@ import systems.reformcloud.network.packets.PacketOutGetProxySettings;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ import java.util.Optional;
  * @author _Klaro | Pasqual K. / created on 02.11.2018
  */
 
-public class PacketInInitializeInternal implements NetworkInboundHandler {
+public final class PacketInInitializeInternal implements NetworkInboundHandler, Serializable {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));

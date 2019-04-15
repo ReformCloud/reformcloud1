@@ -22,6 +22,7 @@ import systems.reformcloud.listener.CloudProxyPingListener;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Arrays;
  */
 
 @Getter
-public class BungeecordBootstrap extends Plugin {
+public final class BungeecordBootstrap extends Plugin implements Serializable {
     @Getter
     public static BungeecordBootstrap instance;
 

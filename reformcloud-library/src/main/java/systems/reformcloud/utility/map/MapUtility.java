@@ -70,4 +70,9 @@ public final class MapUtility implements Serializable {
     public static <F, S> Map<F, S> copyOf(Map<F, S> in) {
         return new ConcurrentHashMap<>(in);
     }
+
+    @NonNull
+    public static <F, S> Set<Map.Entry<F, S>> copyOf(Set<Map.Entry<F, S>> in) {
+        return new HashSet<>(in);
+    }
 }

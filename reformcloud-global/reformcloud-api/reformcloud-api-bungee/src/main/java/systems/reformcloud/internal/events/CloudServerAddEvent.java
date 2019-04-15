@@ -19,6 +19,6 @@ import systems.reformcloud.meta.info.ServerInfo;
 
 @AllArgsConstructor
 @Getter
-public class CloudServerAddEvent extends Event {
+public final class CloudServerAddEvent extends Event {
     private ServerInfo serverInfo;
 }

@@ -69,6 +69,7 @@ import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,7 +81,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ReformCloudController implements Shutdown, Reload, IAPIService {
+public final class ReformCloudController implements Serializable, Shutdown, Reload, IAPIService {
     public static volatile boolean RUNNING = false;
 
     @Getter
@@ -114,15 +115,13 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     /**
      * Creates a new instance of the ReformCloudController and prepares all needed handlers
      *
-     * @param loggerProvider Main Cloud logger, will be used everywhere
-     * @param commandManager Main CommandManager to manage all available commands
-     * @param ssl            If this is {@code true} the cloud will use a self-
-     *                       signed certificate
-     * @param time           Startup time for start time
-     * @throws Throwable If an error occurs while starting CloudSystem
-     *                   the error will be thrown here
-     * @see LoggerProvider
-     * @see CommandManager
+     * @param loggerProvider    Main Cloud logger, will be used everywhere
+     * @param commandManager    Main CommandManager to manage all available commands
+     * @param ssl               If this is {@code true} the cloud will use a self-
+     *                          signed certificate
+     * @param time              Startup time for start time
+     * @throws Throwable        If an error occurs while starting CloudSystem
+     *                          the error will be thrown here
      */
     public ReformCloudController(LoggerProvider loggerProvider, CommandManager commandManager, boolean ssl, long time) throws Throwable {
         if (instance == null)
@@ -332,6 +331,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerCommand(new CommandScreen())
                 .registerCommand(new CommandVersion())
                 .registerCommand(new CommandListGroups())
+                .registerCommand(new CommandDeveloper())
                 .registerCommand(new CommandUpload())
                 .registerCommand(new CommandAssignment())
                 .registerCommand(new CommandInstall())

@@ -24,6 +24,7 @@ import systems.reformcloud.permissions.permissible.Permissible;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import java.util.HashMap;
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public class PlayerConnectListener implements Listener {
+public final class PlayerConnectListener implements Listener, Serializable {
     private boolean started = false;
 
     @EventHandler(priority = EventPriority.LOW)

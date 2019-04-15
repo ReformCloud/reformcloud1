@@ -15,11 +15,13 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018
  */
 
-public class PacketInProcessAdd implements NetworkInboundHandler {
+public final class PacketInProcessAdd implements NetworkInboundHandler, Serializable {
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {

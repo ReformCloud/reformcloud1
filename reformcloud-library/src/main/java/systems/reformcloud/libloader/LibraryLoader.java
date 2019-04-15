@@ -13,6 +13,7 @@ import systems.reformcloud.utility.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -30,9 +31,15 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 23.01.2019
  */
 
-public final class LibraryLoader {
+public final class LibraryLoader implements Serializable {
+    /**
+     * The list of all dependencies which should be loaded
+     */
     private List<Dependency> libraries = new ArrayList<>();
 
+    /**
+     * Creates the default instance of the loader
+     */
     public LibraryLoader() {
         if (Float.parseFloat(System.getProperty("java.class.version")) != 52.0D) {
             System.out.println("This application currently needs Java 8.");
@@ -48,6 +55,9 @@ public final class LibraryLoader {
                 new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents()));
     }
 
+    /**
+     * Loads all dependencies
+     */
     public void loadJarFileAndInjectLibraries() {
         List<URL> urls = new ArrayList<>();
         final File dir = new File("libraries");
@@ -93,6 +103,11 @@ public final class LibraryLoader {
         Thread.currentThread().setContextClassLoader(urlClassLoader);
     }
 
+    /**
+     * Downloads a specific library
+     *
+     * @param dependency The missing dependency with all informations
+     */
     private void downloadLib(final Dependency dependency) {
         try {
             System.out.println("Downloading dependency " + dependency.getName() + " from \"" + this.format(dependency) + "\"...");
@@ -114,6 +129,12 @@ public final class LibraryLoader {
         System.out.println("Dependency " + dependency.getName() + " was downloaded successfully");
     }
 
+    /**
+     * Formats a dependency to a url
+     *
+     * @param dependency The dependency which is needed
+     * @return A string usable as download url for the lib
+     */
     private String format(final Dependency dependency) {
         return dependency.download_url + dependency.getGroupID().replace(".", "/") + "/" + dependency.getName() + "/" + dependency.getVersion() + "/" + dependency.getName() + "-" + dependency.getVersion() + ".jar";
     }

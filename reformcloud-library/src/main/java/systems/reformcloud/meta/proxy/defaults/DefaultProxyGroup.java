@@ -56,7 +56,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 -1,
                 512,
                 128,
-                ProxyVersions.BUNGEECORD
+                proxyVersions
         );
     }
 }

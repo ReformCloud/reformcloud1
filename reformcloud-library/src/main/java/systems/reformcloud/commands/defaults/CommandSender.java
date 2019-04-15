@@ -10,9 +10,6 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-/**
- * Default CommandSender instance for all Console Commands
- */
 public class CommandSender implements systems.reformcloud.commands.interfaces.CommandSender {
     @Override
     public void sendMessage(String message) {

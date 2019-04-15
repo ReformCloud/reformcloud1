@@ -15,10 +15,7 @@ import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -28,7 +25,7 @@ import java.util.Properties;
  */
 
 @Data
-public class CloudConfiguration {
+public final class CloudConfiguration implements Serializable {
     private String controllerKey, controllerIP, clientName, startIP;
     private int memory, controllerPort, controllerWebPort, logSize;
     private double cpu;

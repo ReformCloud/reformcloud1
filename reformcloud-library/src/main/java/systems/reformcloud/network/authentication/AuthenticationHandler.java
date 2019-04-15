@@ -17,7 +17,7 @@ import systems.reformcloud.network.packet.Packet;
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-public class AuthenticationHandler implements AuthenticationManager {
+public final class AuthenticationHandler implements AuthenticationManager {
 
     @Override
     public void handleAuth(AuthenticationType authenticationType, Packet packet, ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler) {

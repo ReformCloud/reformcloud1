@@ -26,6 +26,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 public interface ISaveAPIService {
+    /**
+     * The atomic reference to get the default instance of the api service
+     */
     AtomicReference<ISaveAPIService> instance = new AtomicReference<>();
 
     /**

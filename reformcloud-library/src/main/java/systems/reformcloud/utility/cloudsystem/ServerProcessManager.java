@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
  * @author _Klaro | Pasqual K. / created on 29.10.2018
  */
 
-public class ServerProcessManager {
+public final class ServerProcessManager implements Serializable {
     private Map<UUID, ServerInfo> serverProcessUIDMap = ReformCloudLibraryService.concurrentHashMap();
     private Map<UUID, ProxyInfo> proxyProcessUIDMap = ReformCloudLibraryService.concurrentHashMap();
 

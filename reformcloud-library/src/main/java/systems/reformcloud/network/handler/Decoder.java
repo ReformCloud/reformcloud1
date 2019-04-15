@@ -15,7 +15,7 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public class Decoder extends ByteToMessageDecoder {
+public final class Decoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) {
         try {

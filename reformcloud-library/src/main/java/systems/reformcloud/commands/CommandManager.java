@@ -11,29 +11,35 @@ import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.utility.StringUtil;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
+ * @since RSC1.0
  */
 
-/**
- * CommandManager handles all {@link Command}
- */
-public class CommandManager {
+public final class CommandManager extends AbstractCommandManager implements Serializable {
+    /**
+     * The default cloud command sender
+     */
     private final CommandSender commandSender = new CommandSender();
 
+    /**
+     * The command list, where all commands are located in
+     */
     @Getter
     private List<Command> commands = new ArrayList<>();
 
     /**
-     * Dispatch method, to dispatch command
+     * Dispatches a specific command with the given command sender for security reasons
      *
-     * @param commandSender
-     * @param command
+     * @param commandSender     The commandSender who send the command
+     * @param command           The command as string which was send
      * @return if the command is registered or not
      */
-    private boolean dispatchCommand(systems.reformcloud.commands.interfaces.CommandSender commandSender, String command) {
+    @Override
+    public boolean dispatchCommand(systems.reformcloud.commands.interfaces.CommandSender commandSender, String command) {
         String[] strings = command.split(" ");
 
         if (strings.length <= 0)
@@ -67,12 +73,13 @@ public class CommandManager {
 
 
     /**
-     * Register a command with aliases
+     * Registers a specific command
      *
-     * @param command
-     * @return this
+     * @param command       The command which should be registered
+     * @return The class instance
      */
-    public CommandManager registerCommand(Command command) {
+    @Override
+    public AbstractCommandManager registerCommand(Command command) {
         this.commands.add(command);
         return this;
     }
@@ -80,6 +87,7 @@ public class CommandManager {
     /**
      * Unregisters all commands
      */
+    @Override
     public void clearCommands() {
         this.commands.clear();
     }
@@ -87,18 +95,20 @@ public class CommandManager {
     /**
      * Unregisters an specific command
      *
-     * @param name
+     * @param name      The name of the command which should be unregistered
      */
+    @Override
     public void unregisterCommand(final String name) {
         this.commands.remove(name);
     }
 
     /**
-     * Check if an command is registered
+     * Checks if a command is registered
      *
-     * @param command
+     * @param command       The command as string which should be checked
      * @return if the command is registered
      */
+    @Override
     public boolean isCommandRegistered(final String command) {
         return this.commands.stream().anyMatch(e -> e.getName().equalsIgnoreCase(command) || Arrays.asList(e.getAliases()).contains(command));
     }
@@ -106,8 +116,9 @@ public class CommandManager {
     /**
      * Gets all registered Commands
      *
-     * @return a Set with all commands as String
+     * @return a list with all registered commands as string
      */
+    @Override
     public List<String> getCommandsAsString() {
         List<String> commands = new ArrayList<>();
         this.commands.forEach(e -> commands.add(e.getName()));
@@ -119,9 +130,10 @@ public class CommandManager {
     /**
      * Dispatch a command with the default {@link CommandSender}
      *
-     * @param command
+     * @param command       The command as string
      * @return if the command is registered
      */
+    @Override
     public boolean dispatchCommand(String command) {
         return this.dispatchCommand(this.commandSender, command);
     }
@@ -129,8 +141,8 @@ public class CommandManager {
     /**
      * Creates a new {@link DefaultUserCommandSender}
      *
-     * @param permissions
-     * @return new {@link DefaultUserCommandSender} with given permissions
+     * @param permissions       The permissions of the command sender
+     * @return a new command sender
      */
     public systems.reformcloud.commands.interfaces.CommandSender newCommandSender(final Map<String, Boolean> permissions) {
         return new DefaultUserCommandSender(permissions);

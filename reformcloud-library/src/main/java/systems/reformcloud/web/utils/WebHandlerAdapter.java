@@ -6,6 +6,7 @@ package systems.reformcloud.web.utils;
 
 import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.utility.Require;
 
 import java.util.Map;
 
@@ -14,17 +15,22 @@ import java.util.Map;
  */
 
 public class WebHandlerAdapter {
+    /**
+     * The map of all web handler
+     */
     @Getter
     private Map<String, WebHandler> webHandlerMap = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * Registers a web Handler
      *
-     * @param path
-     * @param webHandler
-     * @return this
+     * @param path          The path where the web handler should be called from
+     * @param webHandler    The web handler which should handle the requests
+     * @return The current class instance
      */
     public WebHandlerAdapter registerHandler(final String path, final WebHandler webHandler) {
+        Require.requireNotNull(path);
+        Require.requireNotNull(webHandler);
         this.webHandlerMap.put(path, webHandler);
         return this;
     }
@@ -32,10 +38,11 @@ public class WebHandlerAdapter {
     /**
      * Unregisters a web Handler
      *
-     * @param path
-     * @return this
+     * @param path      The path where the web handler is called from
+     * @return The current class instance
      */
     public WebHandlerAdapter unregisterHandler(final String path) {
+        Require.requireNotNull(path);
         this.webHandlerMap.remove(path);
         return this;
     }
@@ -43,7 +50,7 @@ public class WebHandlerAdapter {
     /**
      * Deletes all handler
      *
-     * @return this
+     * @return The current class instance
      */
     public WebHandlerAdapter clearHandlers() {
         this.webHandlerMap.clear();
@@ -53,20 +60,22 @@ public class WebHandlerAdapter {
     /**
      * Checks if a handler is registered
      *
-     * @param path
+     * @param path          The path where the web handler should be called from
      * @return if a handler id registered
      */
     public boolean isHandlerRegistered(final String path) {
+        Require.requireNotNull(path);
         return this.webHandlerMap.containsKey(path);
     }
 
     /**
      * Gets a specific web Handler by the given name
      *
-     * @param path
+     * @param path          The path where the web handler should be called from
      * @return a specific web Handler by the given name
      */
     public WebHandler getHandler(final String path) {
+        Require.requireNotNull(path);
         return this.webHandlerMap.getOrDefault(path, null);
     }
 }

@@ -54,6 +54,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +67,7 @@ import java.util.stream.Collectors;
 
 @Setter
 @Getter
-public class ReformCloudAPIBungee implements IAPIService {
+public final class ReformCloudAPIBungee implements IAPIService, Serializable {
     @Getter
     public static ReformCloudAPIBungee instance;
 
@@ -126,6 +127,7 @@ public class ReformCloudAPIBungee implements IAPIService {
                 .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache())
                 .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
                 .registerHandler("KickPlayer", new PacketInKickPlayer())
+                .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("SendPlayerMessage", new PacketInSendPlayerMessage())
                 .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())

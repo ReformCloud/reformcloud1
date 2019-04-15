@@ -141,7 +141,7 @@ public class CloudConfiguration {
 
         new Configuration().addProperty("group", new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in))).write(Paths.get("reformcloud/groups/proxies/Proxy.json"));
 
-        loggerProvider.info("Do you want to load the default addons (You can download them later, too) [\"yes\", \"no\"]");
+        loggerProvider.info("Do you want to load the default addons (You can download them later, too) [\"yes\" (recommended), \"no\"]");
         String addons = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (addons.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
@@ -159,7 +159,7 @@ public class CloudConfiguration {
                 + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE);
 
         new Configuration().addProperty("users",
-                Collections.singletonList(new WebUser("administrator", StringEncrypt.encrypt(web),
+                Collections.singletonList(new WebUser("administrator", StringEncrypt.encryptSHA512(web),
                         Collections.singletonMap("*", true)))).write(Paths.get("reformcloud/users.json"));
 
         loggerProvider.info("New default WebUser \"administrator\" was created with password \"" + web + "\"");
@@ -481,7 +481,9 @@ public class CloudConfiguration {
 
     public String readString(final LoggerProvider loggerProvider, Checkable<String> checkable) {
         String readLine = loggerProvider.readLine();
-        while (readLine == null || !checkable.isChecked(readLine) || readLine.trim().isEmpty()) {
+        while (readLine == null
+                || !checkable.isChecked(readLine)
+                || readLine.trim().isEmpty()) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
         }
@@ -491,7 +493,10 @@ public class CloudConfiguration {
 
     private Integer readInt(final LoggerProvider loggerProvider, Checkable<Integer> checkable) {
         String readLine = loggerProvider.readLine();
-        while (readLine == null || readLine.trim().isEmpty() || !ReformCloudLibraryService.checkIsInteger(readLine) || !checkable.isChecked(Integer.parseInt(readLine))) {
+        while (readLine == null
+                || readLine.trim().isEmpty()
+                || !ReformCloudLibraryService.checkIsInteger(readLine)
+                || !checkable.isChecked(Integer.parseInt(readLine))) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
         }

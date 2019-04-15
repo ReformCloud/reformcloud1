@@ -24,14 +24,14 @@ import java.util.Map;
  */
 
 @Data
-public class InternalCloudNetwork implements Serializable {
+public final class InternalCloudNetwork implements Serializable {
     private static final long serialVersionUID = 4564917986901138765L;
 
     private int webPort = 4790;
 
     private InternalWebUser internalWebUser = new InternalWebUser(
             ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + "-internal",
-            StringEncrypt.encrypt(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
+            StringEncrypt.encryptSHA512(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
                     + StringUtil.EMPTY + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE))
     );
 

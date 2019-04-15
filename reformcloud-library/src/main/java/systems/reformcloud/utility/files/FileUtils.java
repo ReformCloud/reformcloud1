@@ -7,10 +7,7 @@ package systems.reformcloud.utility.files;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -22,7 +19,7 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public class FileUtils {
+public final class FileUtils implements Serializable {
     /**
      * Deletes a directory
      *
@@ -209,6 +206,14 @@ public class FileUtils {
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not delete file", ex);
         }
+    }
+
+    public static void deleteFileIfExists(File path) {
+        deleteFileIfExists(path.toPath());
+    }
+
+    public static void deleteFileIfExists(String path) {
+        deleteFileIfExists(Paths.get(path));
     }
 
     /**

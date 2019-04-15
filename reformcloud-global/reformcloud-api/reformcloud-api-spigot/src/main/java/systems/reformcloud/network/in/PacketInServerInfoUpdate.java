@@ -14,11 +14,13 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 12.12.2018
  */
 
-public class PacketInServerInfoUpdate implements NetworkInboundHandler {
+public final class PacketInServerInfoUpdate implements NetworkInboundHandler, Serializable {
     @Override
     public void handle(Configuration configuration) {
         final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());

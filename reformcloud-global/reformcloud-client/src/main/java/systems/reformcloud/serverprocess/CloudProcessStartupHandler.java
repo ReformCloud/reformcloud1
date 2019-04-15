@@ -14,6 +14,7 @@ import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
 import systems.reformcloud.utility.files.FileUtils;
 
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Queue;
@@ -24,7 +25,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 
 @Getter
-public class CloudProcessStartupHandler implements Runnable {
+public final class CloudProcessStartupHandler implements Runnable, Serializable {
     private final Queue<ServerStartupInfo> serverStartupInfo = new ConcurrentLinkedDeque<>();
     private final Queue<ProxyStartupInfo> proxyStartupInfo = new ConcurrentLinkedDeque<>();
 

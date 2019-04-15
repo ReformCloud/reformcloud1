@@ -10,6 +10,7 @@ import systems.reformcloud.addons.JavaAddon;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.event.Listener;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -19,7 +20,7 @@ import java.util.Arrays;
 /**
  * Class for Controller Addons
  */
-public class ControllerAddonImpl extends JavaAddon<ReformCloudController> {
+public class ControllerAddonImpl extends JavaAddon<ReformCloudController> implements Serializable {
     @Override
     public ReformCloudController getInternalReformCloudSystem() {
         return ReformCloudController.getInstance();

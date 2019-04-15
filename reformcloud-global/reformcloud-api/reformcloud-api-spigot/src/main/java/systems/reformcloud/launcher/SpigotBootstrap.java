@@ -17,6 +17,7 @@ import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 import systems.reformcloud.permissions.ReflectionUtil;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.UUID;
  */
 
 @Getter
-public class SpigotBootstrap extends JavaPlugin {
+public final class SpigotBootstrap extends JavaPlugin implements Serializable {
     @Getter
     public static SpigotBootstrap instance;
 

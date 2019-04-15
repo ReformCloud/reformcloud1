@@ -15,6 +15,7 @@ import systems.reformcloud.network.out.PacketOutStartGameServer;
 import systems.reformcloud.network.out.PacketOutStartProxy;
 import systems.reformcloud.utility.map.maps.Trio;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public class CloudProcessOfferService implements Runnable {
+public final class CloudProcessOfferService implements Runnable, Serializable {
     @Getter
     private Map<String, String> waiting = ReformCloudLibraryService.concurrentHashMap();
 

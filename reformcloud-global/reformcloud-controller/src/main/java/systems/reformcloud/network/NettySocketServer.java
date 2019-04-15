@@ -18,6 +18,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 
 @Getter
-public class NettySocketServer extends ChannelInitializer<Channel> implements AutoCloseable {
+public final class NettySocketServer extends ChannelInitializer<Channel> implements AutoCloseable, Serializable {
     private SslContext sslContext;
     private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup(), bossGroup = ReformCloudLibraryService.eventLoopGroup();
 

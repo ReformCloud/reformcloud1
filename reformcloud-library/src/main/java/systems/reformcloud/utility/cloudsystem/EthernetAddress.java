@@ -7,13 +7,15 @@ package systems.reformcloud.utility.cloudsystem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
 @AllArgsConstructor
 @Getter
-public class EthernetAddress {
+public class EthernetAddress implements Serializable {
     private String host;
     private int port;
 }
