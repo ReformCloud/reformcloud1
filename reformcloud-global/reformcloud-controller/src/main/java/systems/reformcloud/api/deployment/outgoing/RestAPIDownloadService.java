@@ -46,7 +46,7 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
         if (configuration.contains("template") && configuration.contains("group")
                 && Files.exists(Paths.get("reformcloud/files/" +
                 configuration.getStringValue("group") + "/" +
-                configuration.getStringValue("template") + ".zip"))) {
+                configuration.getStringValue("template")))) {
             fullHttpResponse.headers().set("Content-Type", "application/octet-stream");
             byte[] out = ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
