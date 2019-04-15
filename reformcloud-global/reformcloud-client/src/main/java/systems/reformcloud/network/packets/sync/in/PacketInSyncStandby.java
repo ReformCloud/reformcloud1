@@ -5,11 +5,13 @@
 package systems.reformcloud.network.packets.sync.in;
 
 import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncUpdateClientInfo;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 15.04.2019
@@ -25,6 +27,8 @@ public final class PacketInSyncStandby implements Serializable, NetworkInboundHa
             ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket(
                     "ReformCloudController", new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo())
             );
+
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
 
             ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerProcesses().forEach(e -> e.shutdown(true));
             ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredProxyProcesses().forEach(e -> e.shutdown(null, true));
