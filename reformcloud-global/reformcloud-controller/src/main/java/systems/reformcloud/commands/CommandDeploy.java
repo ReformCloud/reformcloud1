@@ -54,6 +54,11 @@ public final class CommandDeploy extends Command implements Serializable {
                     return;
                 }
 
+                if (args[3].equalsIgnoreCase(args[4])) {
+                    commandSender.sendMessage("You cannot deploy a template to the same client");
+                    return;
+                }
+
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                         args[3], new PacketOutDeployServer(args[1], args[2], true, args[4])
                 );
@@ -80,6 +85,11 @@ public final class CommandDeploy extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getConnectedClient(args[3]) == null
                         || ReformCloudController.getInstance().getConnectedClient(args[4]) == null) {
                     commandSender.sendMessage("Both clients have to be started");
+                    return;
+                }
+
+                if (args[3].equalsIgnoreCase(args[4])) {
+                    commandSender.sendMessage("You cannot deploy a template to the same client");
                     return;
                 }
 

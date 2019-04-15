@@ -51,10 +51,10 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
         if (configuration.contains("template") && configuration.contains("group") && configuration.contains("client")) {
             File file = new File("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
-                    configuration.getStringValue("template") + ".zip"
+                    configuration.getStringValue("template")
             );
             file.getParentFile().mkdirs();
-            ZoneInformationProtocolUtility.toZip(
+            ZoneInformationProtocolUtility.unZip(
                     fullHttpRequest.content().readBytes(fullHttpRequest.content().readableBytes()).array(),
                     file
             );

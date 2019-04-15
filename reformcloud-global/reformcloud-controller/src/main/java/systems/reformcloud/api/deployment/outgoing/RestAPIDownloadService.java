@@ -13,7 +13,6 @@ import systems.reformcloud.meta.web.InternalWebUser;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.web.utils.WebHandler;
 
-import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -49,12 +48,10 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
                 configuration.getStringValue("group") + "/" +
                 configuration.getStringValue("template") + ".zip"))) {
             fullHttpResponse.headers().set("Content-Type", "application/octet-stream");
-            byte[] out = ZoneInformationProtocolUtility.zipToBytes(Paths.get("reformcloud/files/" +
+            byte[] out = ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
-                    configuration.getStringValue("template") + ".zip"
+                    configuration.getStringValue("template")
             ));
-
-            ZoneInformationProtocolUtility.toZip(out, new File("reformcloud/default.zip"));
 
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             fullHttpResponse.content().writeBytes(out);
