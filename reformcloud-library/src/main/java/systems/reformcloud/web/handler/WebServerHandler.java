@@ -43,6 +43,8 @@ public class WebServerHandler extends ChannelInboundHandlerAdapter {
             return;
         HttpRequest httpRequest = (HttpRequest) msg;
 
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug(httpRequest.headers().entries() + "");
+
         String requestUri = new URI(httpRequest.uri()).getRawPath();
 
         if (requestUri == null)
