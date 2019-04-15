@@ -157,6 +157,27 @@ public final class ZoneInformationProtocolUtility implements Serializable {
         return zipDirectoryToBytes(new File(path));
     }
 
+    public static byte[] zipToBytes(Path path) {
+        File file = path.toFile();
+        try {
+            if (!file.exists())
+                return new byte[1024];
+
+            FileInputStream fileInputStream = new FileInputStream(file);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = fileInputStream.read(buffer)) != -1)
+                byteArrayOutputStream.write(buffer, 0, read);
+
+            return byteArrayOutputStream.toByteArray();
+        } catch (final IOException ex) {
+            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while zipping dir", ex);
+            return null;
+        }
+    }
+
     public static void zipDirectoryToFile(File path, String destinationPath) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(destinationPath);
