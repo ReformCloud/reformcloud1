@@ -54,7 +54,6 @@ public final class NettySocketServer extends ChannelInitializer<Channel> impleme
      * @param ethernetAddress Main address where the cloud tries to bind
      *                        the socket server to. Please make sure that
      *                        the port is not in use, yet
-     * @since 2.0
      */
     public NettySocketServer(boolean ssl, EthernetAddress ethernetAddress, File cert, File key) {
         try {

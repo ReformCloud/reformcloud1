@@ -20,8 +20,8 @@ public interface WebHandler {
      *                              connects to the controller
      * @param httpRequest           The http request sent by the requester containing all
      *                              needed information
-     * @return The creates full http response to send back to the requester
-     * @throws Exception If any exception occurs it will be handled here
+     * @return                      The creates full http response to send back to the requester
+     * @throws Exception            If any exception occurs it will be handled here
      */
     FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception;
 }

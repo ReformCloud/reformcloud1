@@ -8,11 +8,13 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.StringUtil;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class PacketExample extends Packet { //Class can be final
+public final class PacketExample extends Packet implements Serializable { //Class can be final
     public PacketExample() {
         super(
                 "Example", //Type of the packet, packet will be handled by this name

@@ -26,8 +26,7 @@ import systems.reformcloud.database.DatabaseSaver;
 import systems.reformcloud.database.player.PlayerDatabase;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.LoadSuccessEvent;
+import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.language.LanguageManager;
@@ -212,7 +211,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
         loggerProvider.info(this.getLoadedLanguage().getLoading_done()
                 .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
-        this.eventManager.callEvent(EventTargetType.LOAD_SUCCESS, new LoadSuccessEvent(true));
+
+        this.eventManager.callEvent(new StartedEvent());
     }
 
     /**
@@ -359,7 +359,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.internalCloudNetwork.getClients().clear();
 
         this.addonParallelLoader.disableAddons();
-        this.eventManager.unregisterAllListener();
+        this.eventManager.unregisterAll();
 
         Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
         this.shutdownHook = null;

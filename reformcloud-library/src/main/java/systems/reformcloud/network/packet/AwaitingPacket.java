@@ -17,6 +17,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 public final class AwaitingPacket implements Serializable {
+    /**
+     * The channel where the packet should be sent through
+     */
     private ChannelHandlerContext channelHandlerContext;
+
+    /**
+     * The packet which should be sent
+     */
     private Packet packet;
 }

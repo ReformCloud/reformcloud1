@@ -371,7 +371,7 @@ public final class CloudServerStartupHandler implements Serializable {
                 .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
                 .replace("%name%", serverStartupInfo.getName())
                 .replace("%group%", serverStartupInfo.getServerGroup().getName())
-                .replace("%template%", serverStartupInfo.getTemplate());
+                .replace("%template%", this.loaded.getName());
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));

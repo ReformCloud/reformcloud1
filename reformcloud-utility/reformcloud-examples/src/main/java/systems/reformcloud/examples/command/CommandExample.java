@@ -7,11 +7,13 @@ package systems.reformcloud.examples.command;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class CommandExample extends Command {
+public final class CommandExample extends Command implements Serializable {
     /**
      * The main constructor, must be in every command you create
      *

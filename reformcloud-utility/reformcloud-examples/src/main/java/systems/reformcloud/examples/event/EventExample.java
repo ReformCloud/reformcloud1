@@ -4,106 +4,55 @@
 
 package systems.reformcloud.examples.event;
 
-import systems.reformcloud.event.Listener;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.*;
-import systems.reformcloud.network.channel.ChannelHandler;
-import systems.reformcloud.network.channel.ChannelReader;
-import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import lombok.Getter;
+import systems.reformcloud.event.utility.Cancellable;
+import systems.reformcloud.event.utility.Event;
+
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class EventExample extends Listener {
-
+public final class EventExample extends Event implements Serializable, Cancellable {
     /**
-     * Creates a new Event Class
-     * Name is not used, use any string
+     * The current cancel status
      */
-    public EventExample(String name, EventTargetType eventTargetType) {
-        super(name, eventTargetType);
-    }
+    private boolean cancelled;
 
     /**
-     * Returns the eventTargetType, use the given above or use your own
-     * EventTargetType#NOT_DEFINED will throw an illegal access exception
-     * You don't have to implement this method
+     * Sets the cancel status
      *
-     * @see Listener#getEventTargetType ()
-     * or let the super call
+     * @param cancelled     The new cancel status
      */
     @Override
-    public EventTargetType getEventTargetType() {
-        return super.getEventTargetType();
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     /**
-     * Returns the Listener name
-     * Use any String you want
-     */
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    /*
-     * There are a lot of self-explaining events, check it out yourself
+     * Get if the event is currently cancelled
      *
-     * Creating own events is not possible that easy, sorry
-     */
-
-    /**
-     * Event get called when Instance of Controller or Client is ready
-     * !! Not usable in Spigot/Bukkit API !!
+     * @return If the event is cancelled
      */
     @Override
-    public void handle(LoadSuccessEvent event) {
-        super.handle(event);
+    public boolean isCancelled() {
+        return this.cancelled;
     }
 
     /**
-     * Get called when a packet comes
-     * !! Get called all the time not only when the packet is handled by a {@link NetworkInboundHandler} ;
-     * But only when it is a packet random objects won't work !!
+     * Creates the new event
+     *
+     * @param event     The event which is needed for that event (If you call this event why did you created it?
+     *                  - Our event should handle if an event is called so we have the called event in the constructor)
      */
-    @Override
-    public void handle(IncomingPacketEvent event) {
-        super.handle(event);
+    public EventExample(Event event) {
+        this.event = event;
     }
 
     /**
-     * Get always called when the {@link ChannelHandler} sends a packet
+     * Gets if the event is currently cancelled
      */
-    @Override
-    public void handle(OutGoingPacketEvent event) {
-        super.handle(event);
-    }
-
-    /**
-     * Get called when a process was registered in the cloud and the register packet comes
-     * !! NOTE: If you cancel this event, you can't join this server because it will not be registered in the BungeeCord !!
-     */
-    @Override
-    public void handle(ProcessRegisterEvent event) {
-        super.handle(event);
-    }
-
-    /**
-     * Get called when a process was unregistered and the packet comes
-     * !! NOTE: Not cancelable ; Method is @deprecated, too !!
-     */
-    @Override
-    public void handle(ProcessUnregistersEvent event) {
-        super.handle(event);
-    }
-
-    /**
-     * Get called when the {@link ChannelReader} could find a valid {@link NetworkInboundHandler}
-     * !! NOTE: Not cancelable ; Method is @deprecated, too !!
-     */
-    @Override
-    public void handle(PacketHandleSuccessEvent event) {
-        super.handle(event);
-    }
+    @Getter
+    private Event event;
 }

@@ -19,6 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 @AllArgsConstructor
 public final class QueueWorker implements Serializable, Runnable {
+    /**
+     * The instance of the channel handler to send the packets in the correct channels
+     */
     private final ChannelHandler instance = ReformCloudLibraryServiceProvider.getInstance().getChannelHandler();
 
     @Override
@@ -31,7 +34,7 @@ public final class QueueWorker implements Serializable, Runnable {
                     continue;
                 }
 
-                instance.sendPacket(awaitingPacket);
+                instance.sendPacket1(awaitingPacket);
                 ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, instance.getPacketQueue().isEmpty() ? 4 : 2);
             }
 

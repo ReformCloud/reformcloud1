@@ -5,11 +5,10 @@
 package systems.reformcloud.event.utility;
 
 /**
+ * Just an interface which all listeners have to implement
+ *
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public abstract class Cancelable {
-    public abstract void setCancelled(boolean cancelled);
-
-    public abstract boolean isCancelled();
+public interface Listener {
 }

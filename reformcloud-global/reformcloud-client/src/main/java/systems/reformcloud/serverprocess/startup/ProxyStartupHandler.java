@@ -274,7 +274,7 @@ public final class ProxyStartupHandler implements Serializable {
                 .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
                 .replace("%name%", proxyStartupInfo.getName())
                 .replace("%group%", proxyStartupInfo.getProxyGroup().getName())
-                .replace("%template%", proxyStartupInfo.getTemplate());
+                .replace("%template%", this.template.getName());
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path.toString()));

@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter
-public class EthernetAddress implements Serializable {
+public final class EthernetAddress implements Serializable {
     /**
      * The host of the address
      */

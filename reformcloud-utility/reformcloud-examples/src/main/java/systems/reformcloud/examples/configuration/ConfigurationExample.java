@@ -7,13 +7,14 @@ package systems.reformcloud.examples.configuration;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.configurations.Configuration;
 
+import java.io.Serializable;
 import java.nio.file.Paths;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class ConfigurationExample {
+public final class ConfigurationExample implements Serializable {
     public ConfigurationExample() {
         {
             Configuration configuration = new Configuration(); //Returns a new, empty configuration

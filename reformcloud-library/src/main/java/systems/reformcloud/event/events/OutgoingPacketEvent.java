@@ -4,21 +4,20 @@
 
 package systems.reformcloud.event.events;
 
-import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import systems.reformcloud.event.utility.Cancellable;
 import systems.reformcloud.event.utility.Event;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.AwaitingPacket;
 
 import java.io.Serializable;
 
 /**
- * This event will be called if the cloud handles a packet
+ * The event will be called when the cloud sends a packet
  *
  * @author _Klaro | Pasqual K. / created on 16.04.2019
  */
 
-public final class IncomingPacketEvent extends Event implements Serializable, Cancellable {
+public final class OutgoingPacketEvent extends Event implements Serializable, Cancellable {
     /**
      * The current cancel status
      */
@@ -45,25 +44,18 @@ public final class IncomingPacketEvent extends Event implements Serializable, Ca
     }
 
     /**
-     * Creates a new event
+     * Creates a new packet event
      *
-     * @param in                        The incoming packet
-     * @param channelHandlerContext     The channel handler context of the channel the packet come from
+     * @param awaitingPacket        The packet which should be sent
      */
-    public IncomingPacketEvent(Packet in, ChannelHandlerContext channelHandlerContext) {
-        this.in = in;
-        this.channelHandlerContext = channelHandlerContext;
+    public OutgoingPacketEvent(AwaitingPacket awaitingPacket) {
+        this.awaitingPacket = awaitingPacket;
     }
 
-    /**
-     * The packet which was handled
-     */
-    @Getter
-    private Packet in;
 
     /**
-     * The channel handler context of the channel the packet come from
+     * The packet which should be sent
      */
     @Getter
-    private ChannelHandlerContext channelHandlerContext;
+    private AwaitingPacket awaitingPacket;
 }

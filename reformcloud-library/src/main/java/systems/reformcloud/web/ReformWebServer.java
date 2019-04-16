@@ -57,8 +57,7 @@ public class ReformWebServer {
     private final WebHandlerAdapter webHandlerAdapter = new WebHandlerAdapter();
 
     /**
-     * Creates a new WebServer instance and binds it to the given Port and IP, provided
-     * by the {@link EthernetAddress}.
+     * Will create a new web server instance and bind it to the given host and port
      *
      * @param ethernetAddress           Ip and Port where the WebServer will be bound to
      * @param ssl                       If ssl should be enabled or not

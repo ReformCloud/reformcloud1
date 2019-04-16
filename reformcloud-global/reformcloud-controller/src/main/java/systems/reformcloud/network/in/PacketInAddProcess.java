@@ -6,8 +6,8 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.ProcessRegisterEvent;
+import systems.reformcloud.event.events.ProxyStartedEvent;
+import systems.reformcloud.event.events.ServerStartedEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -27,11 +27,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
             if (serverInfo == null)
                 return;
 
-            ProcessRegisterEvent processRegisterEvent = new ProcessRegisterEvent(false, true, false, serverInfo.getCloudProcess().getName());
-            ReformCloudController.getInstance().getEventManager().callEvent(EventTargetType.PROCESS_REGISTERED, processRegisterEvent);
-
-            if (processRegisterEvent.isCancelled())
-                return;
+            ReformCloudController.getInstance().getEventManager().callEvent(new ServerStartedEvent(serverInfo));
 
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
                     .replace("%name%", serverInfo.getCloudProcess().getName())
@@ -42,13 +38,10 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessAdd(serverInfo));
         } else {
             final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-
-            ProcessRegisterEvent processRegisterEvent = new ProcessRegisterEvent(false, true, false, proxyInfo.getCloudProcess().getName());
-            ReformCloudController.getInstance().getEventManager().callEvent(EventTargetType.PROCESS_REGISTERED, processRegisterEvent);
-
-            if (processRegisterEvent.isCancelled())
+            if (proxyInfo == null)
                 return;
 
+            ReformCloudController.getInstance().getEventManager().callEvent(new ProxyStartedEvent(proxyInfo));
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
                     .replace("%name%", proxyInfo.getCloudProcess().getName())
                     .replace("%uid%", proxyInfo.getCloudProcess().getProcessUID() + "")

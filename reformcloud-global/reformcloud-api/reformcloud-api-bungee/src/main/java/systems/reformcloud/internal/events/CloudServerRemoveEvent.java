@@ -16,7 +16,6 @@ import java.io.Serializable;
  * in the whole cloud
  *
  * @author _Klaro | Pasqual K. / created on 11.11.2018
- * @since RCS1.0
  */
 
 @AllArgsConstructor

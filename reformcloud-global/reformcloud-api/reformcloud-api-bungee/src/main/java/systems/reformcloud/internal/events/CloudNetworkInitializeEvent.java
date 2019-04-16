@@ -15,7 +15,6 @@ import java.io.Serializable;
  * This class represents the Initialize Event if the CloudSystem
  *
  * @author _Klaro | Pasqual K. / created on 17.02.2019
- * @since RCS1.0
  */
 
 @AllArgsConstructor

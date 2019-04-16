@@ -9,5 +9,11 @@ package systems.reformcloud.utility.checkable;
  */
 
 public interface Checkable<E> {
+    /**
+     * Checks a value by the given parameters
+     *
+     * @param e     The value which should be checked
+     * @return      If all parameters are passed
+     */
     boolean isChecked(E e);
 }

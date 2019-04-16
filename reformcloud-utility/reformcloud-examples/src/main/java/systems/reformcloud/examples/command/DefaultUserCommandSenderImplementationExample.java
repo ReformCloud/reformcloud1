@@ -7,13 +7,14 @@ package systems.reformcloud.examples.command;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.interfaces.CommandSender;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class DefaultUserCommandSenderImplementationExample extends DefaultUserCommandSender {
+public final class DefaultUserCommandSenderImplementationExample extends DefaultUserCommandSender implements Serializable {
     /**
      * Creates a new {@link CommandSender} with the given permissions
      * The map because a permission can be given or revoked

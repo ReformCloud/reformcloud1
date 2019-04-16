@@ -7,12 +7,13 @@ package systems.reformcloud.examples.logging;
 import systems.reformcloud.logging.LoggerProvider;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class LoggingExample {
+public final class LoggingExample implements Serializable {
     public LoggingExample() throws IOException {
         final LoggerProvider loggerProvider = new LoggerProvider();
 

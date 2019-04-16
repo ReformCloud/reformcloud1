@@ -16,7 +16,6 @@ import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
- * @since RSC1.0
  */
 
 public final class CommandManager extends AbstractCommandManager implements Serializable {

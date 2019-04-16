@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.meta.info.ServerInfo;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -17,10 +18,20 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-public class Sign {
+public final class Sign implements Serializable {
+    /**
+     * The uuid of the sign
+     */
     private UUID uuid;
+
+    /**
+     * The position of the sign
+     */
     private SignPosition signPosition;
 
+    /**
+     * The server info of the sign
+     */
     @Setter
     private ServerInfo serverInfo;
 }

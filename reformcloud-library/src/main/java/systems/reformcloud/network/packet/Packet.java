@@ -26,9 +26,19 @@ import java.util.UUID;
 public class Packet implements Serializable {
     private static final long serialVersionUID = -30847898951064299L;
 
+    /**
+     * The configuration of the packet
+     */
     private Configuration configuration;
+
+    /**
+     * The type of the packet
+     */
     private String type;
 
+    /**
+     * The result uid of the packet
+     */
     private UUID result;
 
     public Packet() {
@@ -56,6 +66,11 @@ public class Packet implements Serializable {
         this.result = resultID;
     }
 
+    /**
+     * Reads a packet from the given byte buf
+     *
+     * @param byteBuf       The byte buf containing the packet information
+     */
     public void read(@NonNull ByteBuf byteBuf) {
         if (byteBuf.readableBytes() != 0) {
             final Packet packet = ReformCloudLibraryService.GSON.fromJson(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8), TypeTokenAdaptor.getPACKET_TYPE());
@@ -65,6 +80,11 @@ public class Packet implements Serializable {
         }
     }
 
+    /**
+     * Writes a packet to the byte buf
+     *
+     * @param byteBuf   The byte buf where the packet should be written to
+     */
     public void write(@NonNull ByteBuf byteBuf) {
         byte[] bytes = ReformCloudLibraryService.GSON.toJson(this).getBytes(StandardCharsets.UTF_8);
         this.writeLongs(bytes.length, byteBuf).writeBytes(bytes);

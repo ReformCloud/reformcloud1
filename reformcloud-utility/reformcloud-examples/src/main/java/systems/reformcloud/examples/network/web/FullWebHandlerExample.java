@@ -11,13 +11,14 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import systems.reformcloud.web.utils.WebHandler;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class FullWebHandlerExample implements WebHandler {
+public final class FullWebHandlerExample implements WebHandler, Serializable {
     //For more Information about the Response, pleas visit the official Netty-Documentation
     @Override
     public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {

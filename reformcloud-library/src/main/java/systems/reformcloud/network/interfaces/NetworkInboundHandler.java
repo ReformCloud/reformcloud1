@@ -11,5 +11,10 @@ import systems.reformcloud.configurations.Configuration;
  */
 
 public interface NetworkInboundHandler {
+    /**
+     * Handles an incoming packet
+     *
+     * @param configuration     The configuration of the packet
+     */
     void handle(Configuration configuration);
 }

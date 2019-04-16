@@ -13,8 +13,7 @@ import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.LoadSuccessEvent;
+import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.logging.LoggerProvider;
@@ -179,7 +178,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         loggerProvider.info(this.getInternalCloudNetwork().getLoaded().getLoading_done()
                 .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
-        this.eventManager.callEvent(EventTargetType.LOAD_SUCCESS, new LoadSuccessEvent(true));
+        this.eventManager.callEvent(new StartedEvent());
     }
 
     private void registerNetworkHandlers() {
@@ -235,7 +234,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         this.getNettyHandler().clearHandlers();
         this.commandManager.clearCommands();
         this.addonParallelLoader.disableAddons();
-        this.eventManager.unregisterAllListener();
+        this.eventManager.unregisterAll();
 
         this.cloudConfiguration = new CloudConfiguration(true);
         this.cloudConfiguration.setClientName(oldName);

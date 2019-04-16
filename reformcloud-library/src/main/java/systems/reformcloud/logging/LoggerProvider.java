@@ -46,26 +46,52 @@ import java.util.logging.*;
 public class LoggerProvider extends AbstractLoggerProvider implements Serializable, AutoCloseable, Reload, Shutdown {
     private static final long serialVersionUID = 3076534030843453815L;
 
+    /**
+     * The current instance of the logger provider
+     */
     public static Optional<LoggerProvider> instance;
 
+    /**
+     * The current console reader
+     */
     private ConsoleReader consoleReader;
+
+    /**
+     * The log date format
+     */
     private final DateFormat dateFormat = DateProvider.getDateFormat("MM/dd/yyyy HH:mm:ss");
 
+    /**
+     * The debug log file
+     */
     protected final File debugLogFile = new File("reformcloud/logs/debug-" + System.currentTimeMillis() + ".log");
+
+    /**
+     * The logger handler of the cloud
+     */
     protected final LoggerHandler loggerHandler = new LoggerHandler();
 
+    /**
+     * The current controller time
+     */
     @Setter
     private long controllerTime = System.currentTimeMillis();
 
+    /**
+     * The current debug status
+     */
     @Setter
     private boolean debug = false;
 
+    /**
+     * The registered logger handlers
+     */
     private List<IConsoleInputHandler> iConsoleInputHandlers = new ArrayList<>();
 
     /**
-     * Creates a new instance of the {@link LoggerProvider}
+     * Creates a new instance of the cloud logger
      *
-     * @throws IOException
+     * @throws IOException      If an exception occurs while creating the console reader
      */
     public LoggerProvider() throws IOException {
         instance = Optional.of(this);
@@ -106,11 +132,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         }
     }
 
-    /**
-     * Print an info message to the console
-     *
-     * @param message
-     */
     @Override
     public void info(String message) {
         loggerHandler.log(Level.INFO, AnsiColourHandler.stripColor(message));
@@ -125,11 +146,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         }
     }
 
-    /**
-     * Prints a warning to the console
-     *
-     * @param message
-     */
     @Override
     public void warn(String message) {
         loggerHandler.log(Level.WARNING, AnsiColourHandler.stripColor(message));
@@ -144,11 +160,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         }
     }
 
-    /**
-     * Prints an error to the console
-     *
-     * @param message
-     */
     @Override
     public void serve(String message) {
         loggerHandler.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
@@ -187,11 +198,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         this.handleAll(stringBuilder.substring(0));
     }
 
-    /**
-     * Handel all registered {@link IConsoleInputHandler}
-     *
-     * @param message
-     */
     @Override
     public void handleAll(String message) {
         this.iConsoleInputHandlers.forEach(iConsoleInputHandler -> iConsoleInputHandler.handle(message));
@@ -208,9 +214,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         return "";
     }
 
-    /**
-     * Clears the screen with the {@link ConsoleReader}
-     */
     @Override
     public void clearScreen() {
         try {
@@ -221,11 +224,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         }
     }
 
-    /**
-     * Prints an empty line to the console
-     *
-     * @return this
-     */
     @Override
     public LoggerProvider emptyLine() {
         try {
@@ -277,9 +275,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         }
     }
 
-    /**
-     * Flush the {@link ConsoleReader}
-     */
     @Override
     public void flush() {
         try {
@@ -289,11 +284,6 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         }
     }
 
-    /**
-     * Complete the print line
-     * <p>
-     * {@link ConsoleReader}
-     */
     @Override
     public void complete() {
         try {
@@ -313,26 +303,17 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         }
     }
 
-    /**
-     * Closes the {@link ConsoleReader} and closes all {@link Handler}
-     */
     @Override
     public void shutdownAll() {
         this.close();
     }
 
-    /**
-     * Not implemented yet
-     */
     @Deprecated
     @Override
     public void reloadAll() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    /**
-     * @see LoggerProvider#shutdownAll()
-     */
     @Override
     public void close() {
         instance = Optional.empty();

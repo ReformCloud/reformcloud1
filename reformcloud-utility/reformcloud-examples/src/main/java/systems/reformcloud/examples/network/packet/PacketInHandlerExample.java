@@ -8,13 +8,14 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class PacketInHandlerExample implements NetworkInboundHandler, NetworkQueryInboundHandler {
+public final class PacketInHandlerExample implements NetworkInboundHandler, NetworkQueryInboundHandler, Serializable {
     /**
      * Method get called, when the handler gets triggered
      * Contains sent configuration, with all added stuff like String and Integers

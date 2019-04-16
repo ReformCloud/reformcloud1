@@ -8,14 +8,15 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.interfaces.CommandSender;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class CommandSenderExample implements CommandSender {
+public final class CommandSenderExample implements CommandSender, Serializable {
     /**
      * How do you want to send a message to this sender
-     * Dont use {@link System#out}
      */
     @Override
     public void sendMessage(String message) {
@@ -28,9 +29,6 @@ public class CommandSenderExample implements CommandSender {
     /**
      * Returns if a sender has a specific permission
      * You can use for example a list with the permissions
-     * For more Information
-     *
-     * @see DefaultUserCommandSender
      */
     @Override
     public boolean hasPermission(String permission) {

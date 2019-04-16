@@ -5,9 +5,10 @@
 package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.ProcessUnregistersEvent;
+import systems.reformcloud.event.events.ProxyStoppedEvent;
+import systems.reformcloud.event.events.ServerStartedEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -29,12 +30,12 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                 return;
 
             ReformCloudController.getInstance().getCloudProcessOfferService().unregisterID(serverInfo);
+            ReformCloudController.getInstance().getEventManager().callEvent(new ServerStartedEvent(serverInfo));
 
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_stopped()
                     .replace("%name%", serverInfo.getCloudProcess().getName())
                     .replace("%uid%", serverInfo.getCloudProcess().getProcessUID() + "")
                     .replace("%client%", serverInfo.getCloudProcess().getClient()));
-            ReformCloudController.getInstance().getEventManager().callEvent(EventTargetType.PROCESS_UNREGISTERED, new ProcessUnregistersEvent(serverInfo.getCloudProcess().getName()));
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessRemove(serverInfo));
 
             final ScreenSessionProvider screenSessionProvider = ReformCloudController.getInstance().getScreenSessionProvider();
@@ -51,12 +52,12 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                 return;
 
             ReformCloudController.getInstance().getCloudProcessOfferService().unregisterProxyID(proxyInfo);
+            ReformCloudController.getInstance().getEventManager().callEvent(new ProxyStoppedEvent(proxyInfo));
 
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_stopped()
                     .replace("%name%", proxyInfo.getCloudProcess().getName())
                     .replace("%uid%", proxyInfo.getCloudProcess().getProcessUID() + "")
                     .replace("%client%", proxyInfo.getCloudProcess().getClient()));
-            ReformCloudController.getInstance().getEventManager().callEvent(EventTargetType.PROCESS_UNREGISTERED, new ProcessUnregistersEvent(proxyInfo.getCloudProcess().getName()));
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessRemove(proxyInfo));
 
             final ScreenSessionProvider screenSessionProvider = ReformCloudController.getInstance().getScreenSessionProvider();
