@@ -456,6 +456,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 .stream()
                 .filter(e -> this.channelHandler.isChannelRegistered(e.getName())
                         && e.getClientInfo() != null
+                        && e.getClientInfo().isReady()
                         && clients.contains(e.getName()))
                 .collect(Collectors.toList());
 

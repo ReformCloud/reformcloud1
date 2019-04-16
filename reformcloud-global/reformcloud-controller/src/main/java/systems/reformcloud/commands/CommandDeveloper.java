@@ -97,7 +97,7 @@ public final class CommandDeveloper extends Command implements Serializable {
                 boolean enable = args[1].equalsIgnoreCase("enable");
                 ReformCloudController.getInstance().getLoggerProvider().setDebug(enable);
                 ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutEnableDebug(enable));
-                commandSender.sendMessage("Trying to enable debug everywhere...");
+                commandSender.sendMessage("Trying to " + (enable ? "§aenable§r" : "§cdisable§r") + " debug everywhere...");
                 return;
             }
 
@@ -126,6 +126,7 @@ public final class CommandDeveloper extends Command implements Serializable {
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                     client.getName(), new PacketOutSyncStandby(args[1].equalsIgnoreCase("enable"))
             );
+            client.getClientInfo().setReady(args[1].equalsIgnoreCase("enable"));
             commandSender.sendMessage(
                     (args[1].equalsIgnoreCase("enable") ? "§aEnabling" : "§cDisabling") + "§r standby mode on client " + client.getName()
             );
