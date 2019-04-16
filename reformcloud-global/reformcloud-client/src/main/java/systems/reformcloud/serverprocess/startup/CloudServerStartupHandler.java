@@ -42,7 +42,7 @@ import java.util.Properties;
  */
 
 @Getter
-public class CloudServerStartupHandler {
+public final class CloudServerStartupHandler implements Serializable {
     private Path path;
     private ServerStartupInfo serverStartupInfo;
     private Process process;
@@ -366,7 +366,12 @@ public class CloudServerStartupHandler {
                         "nogui"
                 };
 
-        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(serverInfo.getGroup(), cmd, after);
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(serverInfo.getGroup(), cmd, after)
+                .replace("%port%", Integer.toString(port))
+                .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
+                .replace("%name%", serverStartupInfo.getName())
+                .replace("%group%", serverStartupInfo.getServerGroup().getName())
+                .replace("%template%", serverStartupInfo.getTemplate());
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));

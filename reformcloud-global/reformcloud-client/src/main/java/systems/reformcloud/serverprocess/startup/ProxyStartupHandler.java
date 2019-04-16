@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,7 +42,7 @@ import java.util.Arrays;
  */
 
 @Getter
-public class ProxyStartupHandler {
+public final class ProxyStartupHandler implements Serializable {
     private ProxyStartupInfo proxyStartupInfo;
     private Path path;
     private Process process;
@@ -268,7 +269,12 @@ public class ProxyStartupHandler {
                         "BungeeCord.jar"
                 };
 
-        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getGroup(), cmd, after);
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getGroup(), cmd, after)
+                .replace("%port%", Integer.toString(port))
+                .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
+                .replace("%name%", proxyStartupInfo.getName())
+                .replace("%group%", proxyStartupInfo.getProxyGroup().getName())
+                .replace("%template%", proxyStartupInfo.getTemplate());
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path.toString()));
