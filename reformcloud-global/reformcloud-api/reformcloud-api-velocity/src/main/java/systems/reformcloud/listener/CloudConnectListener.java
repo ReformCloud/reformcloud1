@@ -199,7 +199,7 @@ public final class CloudConnectListener {
 
     public static void initTab(final Player proxiedPlayer) {
         ProxySettings proxySettings = ReformCloudAPIVelocity.getInstance().getProxySettings();
-        if (proxySettings == null || !proxySettings.isTabEnabled())
+        if (proxySettings == null || !proxySettings.isTabEnabled() || !proxiedPlayer.getCurrentServer().isPresent())
             return;
 
         proxiedPlayer.getTabList().clearHeaderAndFooter();
