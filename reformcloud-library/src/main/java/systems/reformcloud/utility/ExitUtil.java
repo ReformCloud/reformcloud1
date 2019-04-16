@@ -11,6 +11,9 @@ import java.io.Serializable;
  */
 
 public final class ExitUtil implements Serializable {
+    /**
+     * All exit statuses of the cloud system
+     */
     public static final int
             STARTED_AS_ROOT = 0,
             STOPPED_SUCESS = 1,

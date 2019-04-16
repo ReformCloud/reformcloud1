@@ -11,6 +11,7 @@ import systems.reformcloud.utility.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +20,12 @@ import java.nio.charset.StandardCharsets;
  * @author _Klaro | Pasqual K. / created on 08.01.2019
  */
 
-final class VersionLoader {
+final class VersionLoader implements Serializable {
+    /**
+     * Gets the newest version of the cloud system
+     *
+     * @return The newest version of the cloud system as string
+     */
     static String getNewestVersion() {
         try {
             URLConnection urlConnection = new URL("https://internal.reformcloud.systems/update/version.json").openConnection();

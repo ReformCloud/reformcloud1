@@ -11,6 +11,9 @@ import systems.reformcloud.logging.LoggerProvider;
  */
 
 public final class StringUtil {
+    /**
+     * Some strings which are used in the cloud system
+     */
     public static final String JAVA = "java",
             JAVA_JAR = "-jar",
             EMPTY = "",
@@ -32,12 +35,22 @@ public final class StringUtil {
             LOGGER_WARN = "[§e%date%§r] ",
             LOGGER_ERR = "[§c%date%§r] ";
 
+    /**
+     * The error comment displayed when an exception occurs
+     */
     private static final String[] unusedErrorComment = new String[]{
             "Who set up this error?", "Oh that was the idea", "This should happen?", "Yes", "I feel sad now :(", "It was my fault :(", "I\'m sorry _Klaro",
             "I will bring you a poster", "Thank you :)", "Surprise!, Haha just a tiny joke", "What?", "I\'m crashaholic", "Oof", "He. Stop!", "Ouch that hurts",
             "No problem my friend", "That was my present for you", "I\'m gonna fix this error", "Ok bro, do that"
     };
 
+    /**
+     * Prints an exception to the console
+     *
+     * @param loggerProvider The logger provider to log the exception
+     * @param whoIAm         Where the exception occur
+     * @param cause          The throwable why the error occur
+     */
     public static void printError(final LoggerProvider loggerProvider, final String whoIAm, final Throwable cause) {
         try {
             for (String s : StringUtil.unusedErrorComment)

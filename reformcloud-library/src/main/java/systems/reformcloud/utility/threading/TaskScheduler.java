@@ -16,8 +16,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class TaskScheduler implements Serializable {
+    /**
+     * The scheduler which is used
+     */
     private Scheduler scheduler;
 
+    /**
+     * Creates a new scheduler instance
+     */
     public TaskScheduler() {
         try {
             this.scheduler = new StdSchedulerFactory().getScheduler();
@@ -27,6 +33,14 @@ public final class TaskScheduler implements Serializable {
         }
     }
 
+    /**
+     * Schedules a job
+     *
+     * @param clazz    The class of the job which should be scheduled
+     * @param timeUnit The time unit in which the job should be executed
+     * @param repeat   The repeat time in the given time unit
+     * @return The current instance of this class
+     */
     public TaskScheduler schedule(Class<? extends Job> clazz, TimeUnit timeUnit, long repeat) {
         try {
             if (scheduler.isInStandbyMode())
@@ -51,6 +65,13 @@ public final class TaskScheduler implements Serializable {
         return this;
     }
 
+    /**
+     * Schedules a job
+     *
+     * @param clazz         The class of the job which should be scheduled
+     * @param repeat        The repeat time in milliseconds
+     * @return The current instance of this class
+     */
     public TaskScheduler schedule(Class<? extends Job> clazz, long repeat) {
         try {
             if (scheduler.isInStandbyMode())

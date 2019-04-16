@@ -1,17 +1,24 @@
+/*
+  Copyright © 2019 Pasqual K. | All rights reserved
+ */
+
 package systems.reformcloud.utility.uuid;
 
 import com.google.gson.stream.JsonReader;
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.cache.Cache;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
+/**
+ * @author _Klaro | Pasqual K. / created on 01.01.2019
+ */
 
 public final class UUIDConverter implements Serializable {
     private static final long serialVersionUID = 5547714493710676047L;
@@ -22,10 +29,10 @@ public final class UUIDConverter implements Serializable {
     private static final Pattern PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
     /**
-     * convert a uuid string without dashes to a uuid object
+     * Converts a uuid string without dashes to a uuid object
      *
-     * @param rawUuid the raw uuid without dashes
-     * @return the final uuid
+     * @param rawUuid       The raw uuid without dashes
+     * @return The final uuid
      */
     public static UUID toUUID(String rawUuid) {
         if (rawUuid.length() != 32)
@@ -33,11 +40,20 @@ public final class UUIDConverter implements Serializable {
         return UUID.fromString(UUIDConverter.PATTERN.matcher(rawUuid).replaceAll("$1-$2-$3-$4-$5"));
     }
 
-    private static Map<String, UUID> uuids = new ConcurrentHashMap<>();
+    /**
+     * The cache in which all uuid are cached
+     */
+    static Cache<String, UUID> uuids = ReformCloudLibraryService.newCache(300);
 
+    /**
+     * Gets a uuid from the given name
+     *
+     * @param name The name of the player
+     * @return The uuid of the player
+     */
     public static UUID getUUIDFromName(final String name) {
-        if (uuids.containsKey(name)) {
-            return uuids.get(name);
+        if (uuids.contains(name)) {
+            return uuids.getSave(name).get();
         }
 
         try {
@@ -60,7 +76,7 @@ public final class UUIDConverter implements Serializable {
             }
 
             UUID uuid = UUID.fromString(stringBuilder.substring(0));
-            uuids.put(name, uuid);
+            uuids.add(name, uuid);
 
             return uuid;
         } catch (final IOException ignored) {

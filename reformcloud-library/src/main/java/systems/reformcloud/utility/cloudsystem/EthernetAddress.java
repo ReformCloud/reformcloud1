@@ -16,6 +16,13 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 public class EthernetAddress implements Serializable {
+    /**
+     * The host of the address
+     */
     private String host;
+
+    /**
+     * The port of the address
+     */
     private int port;
 }

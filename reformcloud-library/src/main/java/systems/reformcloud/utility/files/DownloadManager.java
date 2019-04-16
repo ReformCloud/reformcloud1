@@ -5,6 +5,7 @@
 package systems.reformcloud.utility.files;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.map.maps.Double;
 
@@ -23,17 +24,26 @@ import java.nio.file.StandardCopyOption;
  */
 
 public final class DownloadManager implements Serializable {
+    /**
+     * The used request property of the cloud system
+     */
     public static final Double<String, String> REQUEST_PROPERTY = new Double<>("User-Agent",
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
 
     /**
-     * Downloads the given file by the {@param url} to the final position ({@param to})
+     * Downloads a specific file from the given url and copies it to the correct place
      *
-     * @param input
-     * @param url
-     * @param to
+     * @param input         The name of the file which should be downloaded, for information only
+     * @param url           The url of the file which should be downloaded
+     * @param to            The path where the file should be copied to
      */
     public static void download(final String input, final String url, final String to) {
+        Require.requiresNotNull(url, to);
+        if (input == null) {
+            downloadSilent(url, to);
+            return;
+        }
+
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info("Trying to download " + input + "...");
         try {
             URLConnection urlConnection = new URL(url).openConnection();
@@ -53,12 +63,13 @@ public final class DownloadManager implements Serializable {
     }
 
     /**
-     * Downloads the given file by the {@param url} to the final position ({@param to}) without console message
+     * Downloads a specific file from the given url and copies it to the correct place
      *
-     * @param url
-     * @param to
+     * @param url           The url of the file which should be downloaded
+     * @param to            The path where the file should be copied to
      */
     public static void downloadSilent(final String url, final String to) {
+        Require.requiresNotNull(url, to);
         try {
             URLConnection urlConnection = new URL(url).openConnection();
             urlConnection.setRequestProperty(REQUEST_PROPERTY.getFirst(), REQUEST_PROPERTY.getSecond());
@@ -75,12 +86,19 @@ public final class DownloadManager implements Serializable {
     }
 
     /**
-     * Downloads the given file by the {@param url} to the final position ({@param to}) and disconnects at the end as {@link HttpURLConnection}
+     * Downloads a specific file from the given url and copies it to the correct place and disconnects the connection
      *
-     * @param url
-     * @param to
+     * @param input         The name of the file which should be downloaded, for information only
+     * @param url           The url of the file which should be downloaded
+     * @param to            The path where the file should be copied to
      */
     public static void downloadAndDisconnect(final String input, final String url, final String to) {
+        Require.requiresNotNull(url, to);
+        if (input == null) {
+            downloadSilentAndDisconnect(url, to);
+            return;
+        }
+
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info("Trying to download " + input + "...");
         try {
             URLConnection urlConnection = new URL(url).openConnection();
@@ -102,13 +120,13 @@ public final class DownloadManager implements Serializable {
     }
 
     /**
-     * Downloads the given file by the {@param url} to the final position ({@param to}) without console message
-     * and disconnects at the end as {@link HttpURLConnection}
+     * Downloads a specific file from the given url and copies it to the correct place and disconnects the connection
      *
-     * @param url
-     * @param to
+     * @param url           The url of the file which should be downloaded
+     * @param to            The path where the file should be copied to
      */
     public static void downloadSilentAndDisconnect(final String url, final String to) {
+        Require.requiresNotNull(url, to);
         try {
             URLConnection urlConnection = new URL(url).openConnection();
             urlConnection.setRequestProperty(REQUEST_PROPERTY.getFirst(), REQUEST_PROPERTY.getSecond());

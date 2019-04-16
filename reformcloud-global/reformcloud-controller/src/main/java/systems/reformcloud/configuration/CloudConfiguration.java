@@ -29,10 +29,7 @@ import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,7 +39,7 @@ import java.util.*;
  */
 
 @Getter
-public class CloudConfiguration {
+public final class CloudConfiguration implements Serializable {
     private EthernetAddress nettyAddress;
     private EthernetAddress webAddress;
     private String controllerKey, host, splitter, certFile, keyFile, loadedLang;
