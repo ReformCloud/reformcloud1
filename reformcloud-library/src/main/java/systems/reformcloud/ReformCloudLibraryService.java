@@ -325,7 +325,7 @@ public final class ReformCloudLibraryService {
      * @return The uptime of the jvm
      */
     public static long systemUpTime() {
-        return getRuntimeMXBean().getUptime();
+        return System.currentTimeMillis() - getRuntimeMXBean().getUptime();
     }
 
     /**
