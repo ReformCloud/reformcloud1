@@ -8,11 +8,11 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -58,46 +58,43 @@ public final class ZoneInformationProtocolUtility implements Serializable {
         zipInputStream.close();
     }
 
-    public static Collection<File> unZip(byte[] zippedBytes, File destDir) throws Exception {
+    public static void unZip(byte[] zippedBytes, File destDir) throws Exception {
         String destinationPath = destDir.toString();
         if (!destDir.exists())
             destDir.mkdir();
 
-        Collection<File> unzipped = new LinkedList<>();
-
         byte[] buffer = new byte[0x1FFF];
-        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(zippedBytes));
+        try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(zippedBytes), StandardCharsets.UTF_8)) {
+            ZipEntry zipEntry;
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                File newFile = new File(destinationPath + "/" + zipEntry.getName());
 
-        ZipEntry zipEntry = zipInputStream.getNextEntry();
-        while (zipEntry != null) {
-            File newFile = new File(destinationPath + "/" + zipEntry.getName());
-            if (!unzipped.contains(newFile))
-                unzipped.add(newFile);
+                if (newFile.exists())
+                    Files.deleteIfExists(newFile.toPath());
 
-            if (newFile.exists())
-                newFile.delete();
+                if (zipEntry.isDirectory())
+                    Files.createDirectories(newFile.toPath());
+                else {
+                    File parent = newFile.getParentFile();
+                    if (!Files.exists(parent.toPath()))
+                        Files.createDirectories(parent.toPath());
 
-            if (zipEntry.isDirectory())
-                newFile.mkdirs();
-            else {
-                newFile.getParentFile().mkdirs();
-                newFile.createNewFile();
+                    Files.createFile(newFile.toPath());
 
-                try (OutputStream outputStream = Files.newOutputStream(newFile.toPath())) {
-                    int length;
-                    while ((length = zipInputStream.read(buffer)) != -1)
-                        outputStream.write(buffer, 0, length);
+                    try (OutputStream outputStream = Files.newOutputStream(newFile.toPath())) {
+                        int length;
+                        while ((length = zipInputStream.read(buffer)) != -1)
+                            outputStream.write(buffer, 0, length);
+
+                        outputStream.flush();
+                    }
                 }
+
+                zipInputStream.closeEntry();
             }
 
             zipInputStream.closeEntry();
-            zipEntry = zipInputStream.getNextEntry();
         }
-
-        zipInputStream.closeEntry();
-        zipInputStream.close();
-
-        return unzipped;
     }
 
     public static void toZip(byte[] zip, Path to) {
@@ -112,13 +109,13 @@ public final class ZoneInformationProtocolUtility implements Serializable {
         }
     }
 
-    public static Collection<File> unZip(byte[] zippedBytes, String destinationPath) throws Exception {
+    public static void unZip(byte[] zippedBytes, String destinationPath) throws Exception {
         File destDir = new File(destinationPath);
-        return unZip(zippedBytes, destDir);
+        unZip(zippedBytes, destDir);
     }
 
-    public static Collection<File> unZip(byte[] zippedBytes, Path destinationPath) throws Exception {
-        return unZip(zippedBytes, destinationPath.toFile());
+    public static void unZip(byte[] zippedBytes, Path destinationPath) throws Exception {
+        unZip(zippedBytes, destinationPath.toFile());
     }
 
     public static void toZip(byte[] zip, File to) {
@@ -135,10 +132,30 @@ public final class ZoneInformationProtocolUtility implements Serializable {
                 file.mkdirs();
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
-            for (File child : file.listFiles())
-                zipFile(child, child.getName(), zipOut);
+            ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream, StandardCharsets.UTF_8);
 
+            Files.walkFileTree(
+                    file.toPath(),
+                    EnumSet.noneOf(FileVisitOption.class),
+                    Integer.MAX_VALUE,
+                    new SimpleFileVisitor<Path>() {
+                        @Override
+                        public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+                            try {
+                                zipOut.putNextEntry(new ZipEntry(file.toPath().relativize(path).toString()));
+                                Files.copy(path, zipOut);
+                                zipOut.closeEntry();
+                            } catch (final Throwable throwable) {
+                                zipOut.closeEntry();
+                            }
+
+                            return FileVisitResult.CONTINUE;
+                        }
+                    }
+            );
+
+            zipOut.flush();
+            zipOut.finish();
             zipOut.close();
             byte[] bytes = byteArrayOutputStream.toByteArray();
             byteArrayOutputStream.close();
@@ -147,6 +164,42 @@ public final class ZoneInformationProtocolUtility implements Serializable {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while zipping dir", ex);
             return null;
         }
+    }
+
+    public static byte[] zipDirectoryToBytes(File file, List<String> excluded) {
+        try {
+            if (!file.exists())
+                file.mkdirs();
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream);
+            for (File child : file.listFiles()) {
+                if (excluded.contains(child.getName()))
+                    continue;
+
+                zipFile(child, child.getName(), zipOut);
+            }
+
+            zipOut.flush();
+            zipOut.finish();
+            zipOut.close();
+            byteArrayOutputStream.flush();
+
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            byteArrayOutputStream.close();
+            return bytes;
+        } catch (final IOException ex) {
+            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while zipping dir", ex);
+            return null;
+        }
+    }
+
+    public static byte[] zipDirectoryToBytes(Path path, List<String> excluded) {
+        return zipDirectoryToBytes(path.toFile(), excluded);
+    }
+
+    public static byte[] zipDirectoryToBytes(String path, List<String> excluded) {
+        return zipDirectoryToBytes(new File(path), excluded);
     }
 
     public static byte[] zipDirectoryToBytes(Path path) {

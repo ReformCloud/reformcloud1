@@ -79,7 +79,11 @@ public class ReformWebServer {
                         if (sslContext != null && ssl)
                             channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
 
-                        channel.pipeline().addLast(new HttpServerCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), new WebServerHandler(webHandlerAdapter));
+                        channel.pipeline().addLast(
+                                new HttpServerCodec(),
+                                new HttpObjectAggregator(Integer.MAX_VALUE),
+                                new WebServerHandler(webHandlerAdapter)
+                        );
                     }
                 });
         serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel().closeFuture();

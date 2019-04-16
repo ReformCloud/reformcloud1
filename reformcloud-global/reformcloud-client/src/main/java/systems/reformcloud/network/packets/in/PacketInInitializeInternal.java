@@ -39,7 +39,9 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
                 new PacketOutRequestParameters(),
                 (configuration1, resultID) -> ReformCloudClient.getInstance().getParameterManager().update(
                         configuration1.getValue("parameters", new TypeToken<List<ParameterGroup>>() {
-                        }.getType()))
+                        }.getType())),
+                (configuration2, resultId) -> {
+                }
         );
     }
 }

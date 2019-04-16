@@ -10,7 +10,6 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.utility.RestAPIUtility;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.web.InternalWebUser;
-import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
@@ -46,22 +45,18 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
         if (configuration.contains("template") && configuration.contains("group")
                 && Files.exists(Paths.get("reformcloud/files/" +
                 configuration.getStringValue("group") + "/" +
-                configuration.getStringValue("template")))) {
+                configuration.getStringValue("template") + ".zip"))) {
             fullHttpResponse.headers().set("Content-Type", "application/octet-stream");
-            byte[] out = ZoneInformationProtocolUtility.zipDirectoryToBytes(Paths.get("reformcloud/files/" +
+            fullHttpResponse.headers().set("content-disposition", "attachment; filename = "
+                    + configuration.getStringValue("template") + ".zip");
+
+            byte[] out = Files.readAllBytes(Paths.get("reformcloud/files/" +
                     configuration.getStringValue("group") + "/" +
-                    configuration.getStringValue("template")
+                    configuration.getStringValue("template") + ".zip"
             ));
 
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             fullHttpResponse.content().writeBytes(out);
-
-            /*
-            FileUtils.deleteFullDirectory("reformcloud/files/" +
-                    configuration.getStringValue("group") + "/" +
-                    configuration.getStringValue("template") + ".zip");
-
-             */
         }
 
         return fullHttpResponse;

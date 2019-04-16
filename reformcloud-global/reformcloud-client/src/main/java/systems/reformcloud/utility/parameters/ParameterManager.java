@@ -6,7 +6,6 @@ package systems.reformcloud.utility.parameters;
 
 import lombok.AllArgsConstructor;
 import systems.reformcloud.parameters.ParameterGroup;
-import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -53,7 +52,9 @@ public final class ParameterManager implements Serializable {
     }
 
     public void update(List<ParameterGroup> parameterGroups) {
-        Require.requireNotNull(parameterGroups);
+        if (parameterGroups == null)
+            return;
+
         this.parameterGroups = parameterGroups;
     }
 }

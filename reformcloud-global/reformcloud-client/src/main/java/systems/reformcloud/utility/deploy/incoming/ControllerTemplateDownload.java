@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 
@@ -31,6 +32,9 @@ public final class ControllerTemplateDownload implements Serializable {
                             ReformCloudClient.getInstance().getCloudConfiguration().getControllerWebPort() +
                             "/api/download"
             ).openConnection();
+
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond());
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
             httpURLConnection.setRequestProperty("-XConfig", new Configuration()

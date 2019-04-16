@@ -64,10 +64,11 @@ public class WebServerHandler extends ChannelInboundHandlerAdapter {
                     "but returned nothing (sending default response)");
 
         if (fullHttpResponse == null)
-            fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer("404 Page is not available!".getBytes()));
+            fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(),
+                    HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer("404 Page is not available!".getBytes()));
 
         fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
-        ctx.channel().writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE).channel().close().syncUninterruptibly();
+        ctx.channel().writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
