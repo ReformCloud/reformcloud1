@@ -84,8 +84,9 @@ public final class CommandDeveloper extends Command implements Serializable {
                     }
 
                     default: {
-                        commandSender.sendMessage("dev debug <enable, disable> <server, proxy, client, controller> <name>");
-                        commandSender.sendMessage("dev debug <enable, disable> --all");
+                        commandSender.sendMessage("dev debug <enable, disable> <server, proxy, client> <name>");
+                        commandSender.sendMessage("dev debug <enable, disable> <controller, --all>");
+                        commandSender.sendMessage("dev standby <enable, disable> client");
                         break;
                     }
                 }
@@ -131,8 +132,8 @@ public final class CommandDeveloper extends Command implements Serializable {
             return;
         }
 
-        commandSender.sendMessage("dev debug <enable, disable> <server, proxy, client, controller> <name>");
-        commandSender.sendMessage("dev debug <enable, disable> --all");
-        commandSender.sendMessage("dev standby <enable, disable> name");
+        commandSender.sendMessage("dev debug <enable, disable> <server, proxy, client> <name>");
+        commandSender.sendMessage("dev debug <enable, disable> <controller, --all>");
+        commandSender.sendMessage("dev standby <enable, disable> client");
     }
 }
