@@ -46,6 +46,7 @@ public final class CloudConnectListener implements Listener {
             if (serverInfo == null)
                 event.setCancelled(true);
 
+            event.getPlayer().setReconnectServer(BungeecordBootstrap.getInstance().getProxy().getServerInfo(serverInfo.getCloudProcess().getName()));
             ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync(
                     "ReformCloudController",
                     proxyInfo.getCloudProcess().getName(),
@@ -135,7 +136,8 @@ public final class CloudConnectListener implements Listener {
         else
             proxyInfo.setFull(false);
 
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLoginPlayer(event.getConnection().getUniqueId()));
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
+                new PacketOutLoginPlayer(event.getConnection().getUniqueId()));
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
                 new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getConnection().getName() + "/UUID="

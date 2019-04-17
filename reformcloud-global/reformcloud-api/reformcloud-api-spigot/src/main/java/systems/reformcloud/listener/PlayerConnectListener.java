@@ -12,10 +12,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import systems.reformcloud.ReformCloudAPISpigot;
-import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packets.PacketOutCheckPlayer;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
@@ -28,6 +26,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -43,15 +42,12 @@ public final class PlayerConnectListener implements Listener, Serializable {
             return;
         }
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacket1(
-                new AwaitingPacket(
-                        ReformCloudAPISpigot.getInstance().getChannelHandler().getChannel(
-                                "ReformCloudController"
-                        ), new PacketOutCheckPlayer(event.getUniqueId())
-                )
-        );
-        ReformCloudLibraryService.sleep(45);
-        if (!SpigotBootstrap.getInstance().getAcceptedPlayers().contains(event.getUniqueId())) {
+        boolean ok = ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync(
+                "ReformCloudController",
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
+                new PacketOutCheckPlayer(event.getUniqueId())
+        ).syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration().getBooleanValue("checked");
+        if (!ok) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));
             return;
         }

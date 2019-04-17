@@ -34,8 +34,6 @@ public final class CloudConfiguration implements Serializable {
 
     /**
      * Creates or/and loads the Client Configuration
-     *
-     * @throws Throwable
      */
     public CloudConfiguration(final boolean reload) {
         if (!Files.exists(Paths.get("configuration.properties")) && !Files.exists(Paths.get("ControllerKEY"))) {
@@ -80,9 +78,6 @@ public final class CloudConfiguration implements Serializable {
     /**
      * Creates default Configuration or
      * returns if the Configuration already exists
-     *
-     * @return
-     * @throws Throwable
      */
     private boolean defaultInit() {
         if (Files.exists(Paths.get("configuration.properties")))

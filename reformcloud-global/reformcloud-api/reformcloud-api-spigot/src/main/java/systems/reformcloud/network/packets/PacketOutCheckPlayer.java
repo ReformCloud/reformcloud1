@@ -4,7 +4,6 @@
 
 package systems.reformcloud.network.packets;
 
-import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.packet.Packet;
 
@@ -16,8 +15,7 @@ import java.util.UUID;
 
 public final class PacketOutCheckPlayer extends Packet {
     public PacketOutCheckPlayer(final UUID uuid) {
-        super("PlayerAccepted", new Configuration()
-                .addStringProperty("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
+        super("QueryCheckPlayer", new Configuration()
                 .addProperty("uuid", uuid));
     }
 }

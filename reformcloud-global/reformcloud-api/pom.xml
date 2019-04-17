@@ -56,6 +56,9 @@
                 <version>${plugin.shade.version}</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <generateUniqueDependencyReducedPom>false</generateUniqueDependencyReducedPom>
+                        </configuration>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>

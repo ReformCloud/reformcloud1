@@ -51,6 +51,7 @@ import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.query.in.PacketInQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.in.PacketInQueryGetPlayer;
+import systems.reformcloud.network.query.in.PacketInQueryPlayerAccepted;
 import systems.reformcloud.network.sync.in.*;
 import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.player.implementations.OfflinePlayer;
@@ -276,6 +277,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
                 //Player Query Handlers
                 .registerQueryHandler("QueryGetPlayer", new PacketInQueryGetPlayer())
+                .registerQueryHandler("QueryCheckPlayer", new PacketInQueryPlayerAccepted())
                 .registerQueryHandler("QueryGetOnlinePlayer", new PacketInQueryGetOnlinePlayer());
 
         if (this.reformWebServer != null) {
