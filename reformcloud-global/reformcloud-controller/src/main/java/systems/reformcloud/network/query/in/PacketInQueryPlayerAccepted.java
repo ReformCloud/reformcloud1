@@ -23,7 +23,7 @@ public final class PacketInQueryPlayerAccepted implements Serializable, NetworkQ
         if (ReformCloudController.getInstance().getUuid().contains(configuration.getValue("uuid", UUID.class)))
             ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                     configuration.getStringValue("from"),
-                    new Packet(StringUtil.NULL, new Configuration().addBooleanProperty("checked", true))
+                    new Packet(StringUtil.NULL, new Configuration().addBooleanProperty("checked", true), resultID)
             );
     }
 }
