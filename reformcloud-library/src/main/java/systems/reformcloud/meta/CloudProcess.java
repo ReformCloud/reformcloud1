@@ -21,9 +21,28 @@ import java.util.UUID;
 public class CloudProcess implements Serializable {
     private static final long serialVersionUID = -532002825303576279L;
 
+    /**
+     * The name of the process
+     */
     private String name;
+
+    /**
+     * The uid of the process
+     */
     private UUID processUID;
+
+    /**
+     * The client where the process was started
+     */
     private String client;
+
+    /**
+     * The template which was loaded
+     */
     private Template loadedTemplate;
+
+    /**
+     * The process id of the process
+     */
     private int processID;
 }

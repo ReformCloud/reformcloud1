@@ -8,13 +8,14 @@ import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.utility.Require;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * @author _Klaro | Pasqual K. / created on 24.11.2018
  */
 
-public class WebHandlerAdapter {
+public final class WebHandlerAdapter implements Serializable {
     /**
      * The map of all web handler
      */

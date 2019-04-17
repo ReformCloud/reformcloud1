@@ -19,6 +19,7 @@ import systems.reformcloud.web.utils.WebHandler;
 import systems.reformcloud.web.utils.WebHandlerAdapter;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +30,7 @@ import java.util.function.Consumer;
  */
 
 @RequiredArgsConstructor
-public class WebServerHandler extends ChannelInboundHandlerAdapter {
+public final class WebServerHandler extends ChannelInboundHandlerAdapter implements Serializable {
     /**
      * The web handler of the cloud system
      */

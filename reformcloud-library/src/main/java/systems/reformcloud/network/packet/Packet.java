@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
@@ -25,6 +26,11 @@ import java.util.UUID;
 @Setter
 public class Packet implements Serializable {
     private static final long serialVersionUID = -30847898951064299L;
+
+    /**
+     * Returns an empty packet which doesn't contains any data
+     */
+    public static final Packet EMPTY_PACKET = new Packet(StringUtil.NULL, new Configuration());
 
     /**
      * The configuration of the packet
@@ -116,9 +122,5 @@ public class Packet implements Serializable {
         } while ((read & 0b10000000) != 0);
 
         return result;
-    }
-
-    public static Packet emptyPacket() {
-        return new Packet("undefined", new Configuration());
     }
 }

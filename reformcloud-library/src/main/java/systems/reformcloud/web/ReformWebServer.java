@@ -23,6 +23,7 @@ import systems.reformcloud.web.utils.WebHandlerAdapter;
 
 import javax.net.ssl.SSLException;
 import java.io.File;
+import java.io.Serializable;
 import java.security.cert.CertificateException;
 
 /**
@@ -30,7 +31,7 @@ import java.security.cert.CertificateException;
  */
 
 @Getter
-public class ReformWebServer {
+public final class ReformWebServer implements Serializable {
     /**
      * The boss group of the web server
      */

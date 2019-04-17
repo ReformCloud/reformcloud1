@@ -43,7 +43,7 @@ public final class PlayerConnectListener implements Listener, Serializable {
             return;
         }
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacket(
+        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacket1(
                 new AwaitingPacket(
                         ReformCloudAPISpigot.getInstance().getChannelHandler().getChannel(
                                 "ReformCloudController"
