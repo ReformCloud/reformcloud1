@@ -28,6 +28,7 @@ import systems.reformcloud.network.packets.PacketOutCommandExecute;
 import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
+import systems.reformcloud.player.version.SpigotVersion;
 import systems.reformcloud.utility.map.maps.Double;
 
 import java.util.HashMap;
@@ -82,6 +83,8 @@ public final class CloudAddonsListener {
                         TextComponent.of(translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                 .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
                                 .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
+                                .replace("%player_host%", event.getConnection().getRemoteAddress().getHostName())
                         )
                 ).build();
             }
@@ -117,6 +120,8 @@ public final class CloudAddonsListener {
                                 translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                         .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
                                         .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                        .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
+                                        .replace("%player_host%", event.getConnection().getRemoteAddress().getHostName())
                         )
                 ).build();
             }
