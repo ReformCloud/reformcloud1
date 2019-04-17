@@ -35,18 +35,18 @@ public final class EventManager implements Serializable {
         for (Method method : listener.getClass().getDeclaredMethods()) {
             Handler handler = method.getAnnotation(Handler.class);
             if (handler != null) {
-                Class<?>[] parmeters = method.getParameterTypes();
-                if (parmeters.length != 1) {
+                Class<?>[] parameters = method.getParameterTypes();
+                if (parameters.length != 1) {
                     AbstractLoggerProvider.defaultLogger().serve().accept("An handler tried to register a listener with more than one parameter");
                     continue;
                 }
 
-                Set<Method> handling = response.get(parmeters[0]);
+                Set<Method> handling = response.get(parameters[0]);
                 if (handling == null)
                     handling = new HashSet<>();
 
                 handling.add(method);
-                response.put(parmeters[0], handling);
+                response.put(parameters[0], handling);
             }
         }
 

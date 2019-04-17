@@ -6,6 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.event.events.PlayerConnectEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
 import java.util.UUID;
@@ -19,5 +20,6 @@ public final class PacketInLoginPlayer implements NetworkInboundHandler {
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getUuid().add(configuration.getValue("uuid", UUID.class));
         ReformCloudController.getInstance().getStatisticsProvider().addLogin();
+        ReformCloudController.getInstance().getEventManager().callEvent(new PlayerConnectEvent(configuration.getValue("uuid", UUID.class)));
     }
 }

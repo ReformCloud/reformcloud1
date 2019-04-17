@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
  */
 
 public final class FullWebHandlerExample implements WebHandler, Serializable {
-    //For more Information about the Response, pleas visit the official Netty-Documentation
+    //For more Information about the Response, please visit the official Netty-Documentation
     @Override
     public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(), HttpResponseStatus.UNAUTHORIZED);

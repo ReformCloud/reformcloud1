@@ -6,6 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.event.events.PlayerDisconnectsEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
 import java.util.UUID;
@@ -19,5 +20,6 @@ public final class PacketInLogoutPlayer implements NetworkInboundHandler {
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getUuid().remove(configuration.getValue("uuid", UUID.class));
         ReformCloudController.getInstance().getPlayerDatabase().logoutPlayer(configuration.getValue("uuid", UUID.class));
+        ReformCloudController.getInstance().getEventManager().callEvent(new PlayerDisconnectsEvent(configuration.getValue("uuid", UUID.class)));
     }
 }
