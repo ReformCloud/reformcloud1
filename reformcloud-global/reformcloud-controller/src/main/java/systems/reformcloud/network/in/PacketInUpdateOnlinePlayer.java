@@ -21,9 +21,11 @@ public final class PacketInUpdateOnlinePlayer implements Serializable, NetworkIn
     @Override
     public void handle(Configuration configuration) {
         OnlinePlayer onlinePlayer = configuration.getValue("player", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
-        OnlinePlayer before = ReformCloudController.getInstance().getOnlinePlayer(onlinePlayer.getUniqueID());
-        OnlinePlayerUpdateEvent onlinePlayerUpdateEvent = new OnlinePlayerUpdateEvent(before, onlinePlayer);
+        OnlinePlayer before = null;
+        if (ReformCloudController.getInstance().getPlayerDatabase().cachedOnlinePlayers.contains(onlinePlayer.getUniqueID()))
+            before = ReformCloudController.getInstance().getOnlinePlayer(onlinePlayer.getUniqueID());
 
+        OnlinePlayerUpdateEvent onlinePlayerUpdateEvent = new OnlinePlayerUpdateEvent(before, onlinePlayer);
         ReformCloudController.getInstance().getEventManager().callEvent(onlinePlayerUpdateEvent);
         if (onlinePlayerUpdateEvent.isCancelled())
             return;

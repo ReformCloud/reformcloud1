@@ -28,7 +28,7 @@ import java.util.UUID;
 
 public final class PlayerDatabase extends DatabaseProvider implements Serializable {
     private Cache<UUID, OfflinePlayer> cachedOfflinePlayers = ReformCloudLibraryService.newCache(1000);
-    private Cache<UUID, OnlinePlayer> cachedOnlinePlayers = ReformCloudLibraryService.newCache(1000);
+    public Cache<UUID, OnlinePlayer> cachedOnlinePlayers = ReformCloudLibraryService.newCache(1000);
 
     private final File dir = new File("reformcloud/database/players");
     private final File name_to_uuid = new File("reformcloud/database/players/nametouuid");
