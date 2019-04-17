@@ -25,6 +25,7 @@ import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.player.version.SpigotVersion;
+import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.map.maps.Double;
 
 import java.util.HashMap;
@@ -122,7 +123,7 @@ public final class CloudAddonsListener implements Listener {
                                 ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                         .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                         .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
-                                        .replace("%player_name%", event.getConnection().getName())
+                                        .replace("%player_name%", event.getConnection().getName() != null ? event.getConnection().getName() : StringUtil.NULL)
                                         .replace("%player_uuid%", event.getConnection().getUniqueId().toString())
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getVersion()).name())
                                         .replace("%player_host%", event.getConnection().getAddress().getHostName())
@@ -157,7 +158,7 @@ public final class CloudAddonsListener implements Listener {
                                 ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                         .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                         .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
-                                        .replace("%player_name%", event.getConnection().getName())
+                                        .replace("%player_name%", event.getConnection().getName() != null ? event.getConnection().getName() : StringUtil.NULL)
                                         .replace("%player_uuid%", event.getConnection().getUniqueId().toString())
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getVersion()).name())
                                         .replace("%player_host%", event.getConnection().getAddress().getHostName())

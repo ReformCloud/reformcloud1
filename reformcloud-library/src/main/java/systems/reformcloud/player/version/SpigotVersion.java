@@ -60,6 +60,9 @@ public enum SpigotVersion implements Serializable {
     }
 
     public static SpigotVersion getByProtocolId(int protocolId) {
+        if (protocolId < 4)
+            return V1_13_2;
+
         return BY_PROTOCOL_ID.get(protocolId);
     }
 }

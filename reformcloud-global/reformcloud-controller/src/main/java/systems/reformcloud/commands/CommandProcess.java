@@ -21,6 +21,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -363,8 +364,57 @@ public final class CommandProcess extends Command implements Serializable {
                 }
                 break;
             }
+            case "restart": {
+                ServerInfo serverInfo = ReformCloudController.getInstance().getServerInfo(args[1]);
+                if (serverInfo != null) {
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
+                            new PacketOutStopProcess(serverInfo.getCloudProcess().getName()));
+                    commandSender.sendMessage("Trying to stop " + serverInfo.getCloudProcess().getName() + "...");
+                    ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 100);
+                    final ServerGroup serverGroup = serverInfo.getServerGroup();
+                    final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
+
+                    if (client != null) {
+                        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextServerID(serverGroup.getName()));
+                        final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                        ReformCloudController.getInstance().getCloudProcessOfferService().registerID(serverGroup.getName(), name, Integer.valueOf(id));
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                                new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
+                        );
+                        commandSender.sendMessage("Trying to startup serverProcess...");
+                        ReformCloudLibraryService.sleep(100);
+                    } else {
+                        commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                    }
+                } else if (ReformCloudController.getInstance().getProxyInfo(args[1]) != null) {
+                    ProxyInfo proxyInfo = ReformCloudController.getInstance().getProxyInfo(args[1]);
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
+                            new PacketOutStopProcess(proxyInfo.getCloudProcess().getName()));
+                    commandSender.sendMessage("Trying to stop " + proxyInfo.getCloudProcess().getName() + "...");
+                    ReformCloudLibraryService.sleep(100);
+                    final ProxyGroup proxyGroup = proxyInfo.getProxyGroup();
+                    final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
+
+                    if (client != null) {
+                        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextProxyID(proxyGroup.getName()));
+                        final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                        ReformCloudController.getInstance().getCloudProcessOfferService().registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                                new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
+                        );
+                        commandSender.sendMessage("Trying to startup proxyProcess...");
+                        ReformCloudLibraryService.sleep(100);
+                    } else {
+                        commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                    }
+                } else {
+                    commandSender.sendMessage("Process not found...");
+                }
+                break;
+            }
             default: {
                 commandSender.sendMessage("process stop <name/--all/--empty>");
+                commandSender.sendMessage("process restart <name>");
                 commandSender.sendMessage("process stopGroup <group>");
                 commandSender.sendMessage("process start <group-name> <number>");
                 commandSender.sendMessage("process list");
