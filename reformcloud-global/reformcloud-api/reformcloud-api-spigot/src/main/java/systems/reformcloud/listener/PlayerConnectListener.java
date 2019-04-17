@@ -46,7 +46,8 @@ public final class PlayerConnectListener implements Listener, Serializable {
                 "ReformCloudController",
                 ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
                 new PacketOutCheckPlayer(event.getUniqueId())
-        ).syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration().getBooleanValue("checked");
+        ).sendOnCurrentThread("ReformCloudController")
+                .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration().getBooleanValue("checked");
         if (!ok) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));
             return;

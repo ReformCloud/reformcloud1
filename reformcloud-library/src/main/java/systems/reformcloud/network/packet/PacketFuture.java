@@ -136,7 +136,18 @@ public final class PacketFuture implements Serializable {
         if (this.to == null)
             return null;
 
-        this.channelHandler.sendPacketSynchronized(this.to, sentPacket);
+        this.channelHandler.sendDirectPacket(this.to, sentPacket);
+        return this;
+    }
+
+    /**
+     * Sends the packet on the current thread
+     *
+     * @param channel The name of the network participant who should receive the packet
+     * @return The current instance of this class
+     */
+    public PacketFuture sendOnCurrentThread(String channel) {
+        this.channelHandler.sendDirectPacket(channel, sentPacket);
         return this;
     }
 
