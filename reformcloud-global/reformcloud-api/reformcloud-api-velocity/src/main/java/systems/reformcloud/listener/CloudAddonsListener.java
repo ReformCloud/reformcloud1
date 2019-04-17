@@ -84,7 +84,6 @@ public final class CloudAddonsListener {
                                 .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
                                 .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
                                 .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
-                                .replace("%player_host%", event.getConnection().getRemoteAddress().getHostName())
                         )
                 ).build();
             }
@@ -121,7 +120,6 @@ public final class CloudAddonsListener {
                                         .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
                                         .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
-                                        .replace("%player_host%", event.getConnection().getRemoteAddress().getHostName())
                         )
                 ).build();
             }

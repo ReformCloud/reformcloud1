@@ -124,9 +124,7 @@ public final class CloudAddonsListener implements Listener {
                                         .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                         .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
                                         .replace("%player_name%", event.getConnection().getName() != null ? event.getConnection().getName() : StringUtil.NULL)
-                                        .replace("%player_uuid%", event.getConnection().getUniqueId().toString())
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getVersion()).name())
-                                        .replace("%player_host%", event.getConnection().getAddress().getHostName())
                         )));
             }
 
@@ -159,9 +157,7 @@ public final class CloudAddonsListener implements Listener {
                                         .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                         .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
                                         .replace("%player_name%", event.getConnection().getName() != null ? event.getConnection().getName() : StringUtil.NULL)
-                                        .replace("%player_uuid%", event.getConnection().getUniqueId().toString())
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getVersion()).name())
-                                        .replace("%player_host%", event.getConnection().getAddress().getHostName())
                         )));
             }
 
