@@ -5,9 +5,10 @@
 package systems.reformcloud.event.utility;
 
 /**
+ * Dummy class which all events have to extend
+ *
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public abstract class Event extends Cancelable {
-    private boolean callable;
+public abstract class Event {
 }

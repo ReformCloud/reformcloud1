@@ -8,7 +8,7 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.JavaAddon;
 import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.event.Listener;
+import systems.reformcloud.event.utility.Listener;
 
 import java.util.Arrays;
 

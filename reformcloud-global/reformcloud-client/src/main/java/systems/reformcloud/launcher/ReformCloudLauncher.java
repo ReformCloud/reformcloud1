@@ -12,6 +12,7 @@ import systems.reformcloud.commands.CommandManager;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncExceptionThrown;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.time.DateProvider;
@@ -29,8 +30,8 @@ final class ReformCloudLauncher {
     /**
      * Main Method of ReformCloudClient
      *
-     * @param args          The given args by the executor
-     * @throws Throwable    Will be thrown if an error occurs
+     * @param args The given args by the executor
+     * @throws Throwable Will be thrown if an error occurs
      */
     public static synchronized void main(String[] args) throws Throwable {
         final List<String> options = Arrays.asList(args);
@@ -43,7 +44,7 @@ final class ReformCloudLauncher {
                 Thread.sleep(2000);
             } catch (final InterruptedException ignored) {
             }
-            System.exit(1);
+            System.exit(ExitUtil.STARTED_AS_ROOT);
             return;
         }
 

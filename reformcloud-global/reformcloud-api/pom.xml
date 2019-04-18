@@ -5,11 +5,9 @@
     <parent>
         <artifactId>reformcloud-global</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.3</version>
+        <version>1.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <version>1.3</version>
 
     <artifactId>reformcloud-api</artifactId>
     <packaging>pom</packaging>
@@ -58,6 +56,9 @@
                 <version>${plugin.shade.version}</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <generateUniqueDependencyReducedPom>false</generateUniqueDependencyReducedPom>
+                        </configuration>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>

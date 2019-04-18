@@ -5,11 +5,9 @@
     <parent>
         <artifactId>reformcloud-parent</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.3</version>
+        <version>1.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <version>1.3</version>
 
     <artifactId>reformcloud-library</artifactId>
 
@@ -29,6 +27,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${dependency.guava.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${dependency.apache-http.version}</version>
@@ -45,7 +49,7 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-yaml</artifactId>
-            <version>1.3</version>
+            <version>1.4</version>
             <scope>provided</scope>
         </dependency>
 
@@ -61,6 +65,13 @@
             <artifactId>quartz</artifactId>
             <version>${dependency.quartz.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${dependency.test.junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

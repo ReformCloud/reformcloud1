@@ -21,7 +21,7 @@ public final class PacketInRemoveSign implements NetworkInboundHandler {
     public void handle(Configuration configuration) {
         SignSelector.getInstance().getSignConfiguration().removeSign(configuration.getValue("sign", new TypeToken<Sign>() {
         }.getType()));
-        ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutRemoveSign(configuration.getValue("sign", new TypeToken<Sign>() {
+        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutRemoveSign(configuration.getValue("sign", new TypeToken<Sign>() {
         }.getType())));
     }
 }

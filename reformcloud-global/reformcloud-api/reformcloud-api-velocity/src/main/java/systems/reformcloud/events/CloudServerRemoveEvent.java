@@ -13,11 +13,10 @@ import systems.reformcloud.meta.info.ServerInfo;
  * in the whole cloud
  *
  * @author _Klaro | Pasqual K. / created on 11.11.2018
- * @since RCS1.0
  */
 
 @AllArgsConstructor
 @Getter
-public class CloudServerRemoveEvent {
+public final class CloudServerRemoveEvent {
     private ServerInfo serverInfo;
 }

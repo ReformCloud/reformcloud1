@@ -13,7 +13,20 @@ import java.io.Serializable;
 public abstract class DatabaseProvider implements Serializable {
     private static final long serialVersionUID = 4215067458872524204L;
 
+    /**
+     * The name of the database
+     *
+     * @return The given name of the database
+     */
     public abstract String getName();
+
+    /**
+     * Loads the database
+     */
     public abstract void load();
+
+    /**
+     * Saves the database
+     */
     public abstract void save();
 }

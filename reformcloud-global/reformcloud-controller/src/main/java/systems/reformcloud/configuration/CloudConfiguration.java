@@ -29,10 +29,7 @@ import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,7 +39,7 @@ import java.util.*;
  */
 
 @Getter
-public class CloudConfiguration {
+public final class CloudConfiguration implements Serializable {
     private EthernetAddress nettyAddress;
     private EthernetAddress webAddress;
     private String controllerKey, host, splitter, certFile, keyFile, loadedLang;
@@ -141,24 +138,16 @@ public class CloudConfiguration {
 
         new Configuration().addProperty("group", new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in))).write(Paths.get("reformcloud/groups/proxies/Proxy.json"));
 
-        loggerProvider.info("Do you want to load the sign addon [\"yes\", \"no\"]");
-        String signs = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
-        if (signs.equalsIgnoreCase("yes")) {
+        loggerProvider.info("Do you want to load the default addons (You can download them later, too) [\"yes\" (recommended), \"no\"]");
+        String addons = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
+        if (addons.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
-        }
-
-        loggerProvider.info("Do you want to load the discord addon [\"yes\", \"no\"]");
-        String discordbot = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
-        if (discordbot.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/DiscordBot.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProxy.jar", "reformcloud/addons/ReformCloudProxy.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudParameters.jar", "reformcloud/addons/ReformCloudParameters.jar");
         }
 
-        loggerProvider.info("Do you want to load the permission addon [\"yes\", \"no\"]");
-        String permissions = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
-        if (permissions.equalsIgnoreCase("yes")) {
-            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
-        }
-        
         loggerProvider.info("Please enter a language [\"german\", \"english\"]");
         String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
 
@@ -167,7 +156,7 @@ public class CloudConfiguration {
                 + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE);
 
         new Configuration().addProperty("users",
-                Collections.singletonList(new WebUser("administrator", StringEncrypt.encrypt(web),
+                Collections.singletonList(new WebUser("administrator", StringEncrypt.encryptSHA512(web),
                         Collections.singletonMap("*", true)))).write(Paths.get("reformcloud/users.json"));
 
         loggerProvider.info("New default WebUser \"administrator\" was created with password \"" + web + "\"");
@@ -275,7 +264,7 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-spigot-connect-only-proxy", "%prefix% §cOnly Proxy join allowed")
 
                     .addStringProperty("internal-api-spigot-command-signs-not-enabled", "%prefix% §7Signs aren't enabled")
-                    .addStringProperty("internal-api-spigot-command-signs-create-usage", "%prefix% §7/selectors selector signs new <group>")
+                    .addStringProperty("internal-api-spigot-command-signs-create-usage", "%prefix% §7/reformsigns <create/createitem> <group-name>")
                     .addStringProperty("internal-api-spigot-command-signs-create-success", "%prefix% §7Sign was created successfully")
                     .addStringProperty("internal-api-spigot-command-signs-create-already-exists", "%prefix% §7Sign already exits")
                     .addStringProperty("internal-api-spigot-command-signs-block-not-sign", "%prefix% §7Target block isn't a sign")
@@ -283,9 +272,9 @@ public class CloudConfiguration {
                     .addStringProperty("internal-api-spigot-command-signs-item-success", "%prefix% §7The Sign-Item was added to your Inventory")
                     .addStringProperty("internal-api-spigot-command-signs-delete-not-exists", "%prefix% §7Sign doesn't exits")
                     .addStringProperty("internal-api-spigot-command-signs-list", "%prefix% §7The Following Signs are registered:")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-1", "%prefix% §7/selectors selector <signs> new <group>")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/selectors selector <signs> remove <group-name>")
-                    .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/selectors selector <signs> list")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-1", "%prefix% §7/reformsigns <create/createitem> <group-name>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-2", "%prefix% §7/reformsigns <delete/deleteitem>")
+                    .addStringProperty("internal-api-spigot-command-signs-usage-3", "%prefix% §7/reformsigns list")
 
                     .write(Paths.get(messagePath));
         }
@@ -489,7 +478,9 @@ public class CloudConfiguration {
 
     public String readString(final LoggerProvider loggerProvider, Checkable<String> checkable) {
         String readLine = loggerProvider.readLine();
-        while (readLine == null || !checkable.isChecked(readLine) || readLine.trim().isEmpty()) {
+        while (readLine == null
+                || !checkable.isChecked(readLine)
+                || readLine.trim().isEmpty()) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
         }
@@ -499,7 +490,10 @@ public class CloudConfiguration {
 
     private Integer readInt(final LoggerProvider loggerProvider, Checkable<Integer> checkable) {
         String readLine = loggerProvider.readLine();
-        while (readLine == null || readLine.trim().isEmpty() || !ReformCloudLibraryService.checkIsInteger(readLine) || !checkable.isChecked(Integer.parseInt(readLine))) {
+        while (readLine == null
+                || readLine.trim().isEmpty()
+                || !ReformCloudLibraryService.checkIsInteger(readLine)
+                || !checkable.isChecked(Integer.parseInt(readLine))) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
         }

@@ -23,7 +23,7 @@ import systems.reformcloud.utility.cloudsystem.EthernetAddress;
  * @author _Klaro | Pasqual K. / created on 01.11.2018
  */
 
-public class NettySocketClient implements AutoCloseable {
+public final class NettySocketClient implements AutoCloseable {
     private SslContext sslContext;
     private final EventLoopGroup eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
 

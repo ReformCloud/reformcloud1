@@ -9,14 +9,14 @@ import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.OutGoingPacketEvent;
+import systems.reformcloud.event.events.OutgoingPacketEvent;
 import systems.reformcloud.network.channel.queue.QueueWorker;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
@@ -25,44 +25,64 @@ import java.util.concurrent.ExecutorService;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public class ChannelHandler {
+public final class ChannelHandler implements Serializable {
+    /**
+     * All registered channels of the cloud system
+     */
     private Map<String, ChannelHandlerContext> channelHandlerContextMap = ReformCloudLibraryService.concurrentHashMap();
 
+    /**
+     * All waiting query packet
+     */
     @Getter
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
 
+    /**
+     * The executor service to run several tasks at the same time
+     */
     @Getter
     private final ExecutorService executorService = ReformCloudLibraryService.EXECUTOR_SERVICE;
 
+    /**
+     * The queue of the waiting packets
+     */
     @Getter
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
+    /**
+     * Creates a new instance of the channel handler
+     */
     public ChannelHandler() {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new QueueWorker());
     }
 
     /**
-     * Get a specific {@link ChannelHandlerContext} by name
+     * Gets a specific channel handler context by the name of the network participant
      *
-     * @param name
-     * @return a specific {@link ChannelHandlerContext} by given name
-     * or null if the channel isn't registered
+     * @param name      The name of the network participant
+     * @return The channel handler context or {@code null} if the channel can't be found
      */
     public ChannelHandlerContext getChannel(String name) {
         return this.channelHandlerContextMap.getOrDefault(name, null);
     }
 
     /**
-     * Get if a specific channel is registered
+     * Checks if a specific channel is registered
      *
-     * @param name
-     * @return if the given ChannelName is registered
+     * @param name      The name of the network participant
+     * @return If the channel is registered in the cloud system
      */
     public boolean isChannelRegistered(final String name) {
         return this.channelHandlerContextMap.containsKey(name);
     }
 
+    /**
+     * Checks if a specific channel is registered
+     *
+     * @param channelHandlerContext     The channel handler context of the network participant
+     * @return If the channel is registered in the cloud system
+     */
     public boolean isChannelRegistered(final ChannelHandlerContext channelHandlerContext) {
         for (Map.Entry<String, ChannelHandlerContext> map : this.channelHandlerContextMap.entrySet()) {
             if (map.getValue().equals(channelHandlerContext))
@@ -73,18 +93,18 @@ public class ChannelHandler {
     }
 
     /**
-     * Get a Set of all registered channels
+     * Get a list of all channel registered in the cloud system
      *
-     * @return a set of all registered channel names as {@link String}
+     * @return A set containing all registered channels
      */
     public Set<String> getChannels() {
         return this.channelHandlerContextMap.keySet();
     }
 
     /**
-     * Get all registered {@link ChannelHandlerContext}
+     * Get a list of all registered channels handler contexts
      *
-     * @return a List of all registered channels as {@link ChannelHandlerContext}
+     * @return A list containing all registered channels handler contexts
      */
     public List<ChannelHandlerContext> getChannelList() {
         return new ArrayList<>(this.channelHandlerContextMap.values());
@@ -93,8 +113,8 @@ public class ChannelHandler {
     /**
      * Register a channel by the given name
      *
-     * @param name
-     * @param channelHandlerContext
+     * @param name                      The name of the network participant
+     * @param channelHandlerContext     The channel handler context of the network participant
      */
     public void registerChannel(final String name, ChannelHandlerContext channelHandlerContext) {
         this.channelHandlerContextMap.put(name, channelHandlerContext);
@@ -103,24 +123,24 @@ public class ChannelHandler {
     /**
      * Unregisters a channel by the given name
      *
-     * @param name
+     * @param name      The name of the network participant
      */
     public void unregisterChannel(String name) {
         this.channelHandlerContextMap.remove(name);
     }
 
     /**
-     * Removes all registered channels
+     * Unregisters all registered channels
      */
     public void clearChannels() {
         this.channelHandlerContextMap.clear();
     }
 
     /**
-     * Gets the specific Handler name by the given {@link ChannelHandlerContext}
+     * Get a specific network participant name
      *
-     * @param channelHandlerContext
-     * @return the specific Handler name by the given {@link ChannelHandlerContext}
+     * @param channelHandlerContext     The channel handler context of the network participant
+     * @return The specific network participant name
      */
     public String getChannelNameByValue(final ChannelHandlerContext channelHandlerContext) {
         for (Map.Entry<String, ChannelHandlerContext> entry : this.channelHandlerContextMap.entrySet())
@@ -130,50 +150,24 @@ public class ChannelHandler {
         return null;
     }
 
-    /**
-     * Closes a specific Channel by the name if the channel is registered
-     *
-     * @param name
-     * @return {@link ChannelHandler}
-     */
-    public ChannelHandler closeChannel(final String name) {
-        if (this.channelHandlerContextMap.containsKey(name))
-            this.channelHandlerContextMap.get(name).channel().close();
+    private void sendPacket0(Packet packet, ChannelHandlerContext channelHandlerContext) {
+        AwaitingPacket awaitingPacket = new AwaitingPacket(channelHandlerContext, packet);
+        OutgoingPacketEvent outgoingPacketEvent = new OutgoingPacketEvent(awaitingPacket);
+        if (outgoingPacketEvent.isCancelled())
+            return;
 
-        return this;
+        this.packetQueue.offer(awaitingPacket);
     }
 
     /**
-     * Sends synchronised a {@link Packet} over the given Channel name as {@link String}
+     * Sends a packet into the network participant channel
      *
-     * @param channel
-     * @param packet
-     * @return if the channel is registered, to check if the packet was send
+     * @param awaitingPacket        The packet which should be send
      */
-    public boolean sendPacketSynchronized(final String channel, final Packet packet) {
-        OutGoingPacketEvent outGoingPacketEvent = new OutGoingPacketEvent(false, packet);
-        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.OUTGOING_PACKET, outGoingPacketEvent);
-
-        if (outGoingPacketEvent.isCancelled())
-            return false;
-
-        if (this.channelHandlerContextMap.containsKey(channel))
-            this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
-
-        return this.channelHandlerContextMap.containsKey(channel);
-    }
-
-    private void sendPacket(Packet packet, ChannelHandlerContext channelHandlerContext) {
-        this.packetQueue.offer(new AwaitingPacket(channelHandlerContext, packet));
-    }
-
-    public void sendDirectPacket(String to, Packet packet) {
-        this.sendPacket(new AwaitingPacket(this.getChannel(to), packet));
-    }
-
-    public void sendPacket(AwaitingPacket awaitingPacket) {
+    public void sendPacket1(AwaitingPacket awaitingPacket) {
         if (awaitingPacket.getChannelHandlerContext().channel().eventLoop().inEventLoop()) {
-            awaitingPacket.getChannelHandlerContext().channel().writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+            awaitingPacket.getChannelHandlerContext().channel()
+                    .writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
         } else {
             awaitingPacket.getChannelHandlerContext().channel().eventLoop().execute(() -> awaitingPacket.getChannelHandlerContext().channel()
                     .writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE));
@@ -181,11 +175,39 @@ public class ChannelHandler {
     }
 
     /**
-     * Sends synchronised more than one {@link Packet} over the given Channel name as {@link String}
+     * Sends a packet into a channel
      *
-     * @param channel
-     * @param packets
-     * @return if the channel is registered, to check if the packets were send
+     * @param channel       The network participant name
+     * @param packet        The packet which should be sent
+     * @return If the cloud could send the packet into the channel
+     */
+    public boolean sendPacketSynchronized(final String channel, final Packet packet) {
+        if (this.channelHandlerContextMap.containsKey(channel))
+            this.sendPacket0(packet, this.channelHandlerContextMap.get(channel));
+
+        return this.channelHandlerContextMap.containsKey(channel);
+    }
+
+    /**
+     * Sends a direct packet to a network participant
+     *
+     * @param to        The name of the network participant
+     * @param packet    The packet which should be sent
+     */
+    @Deprecated
+    public void sendDirectPacket(String to, Packet packet) {
+        if (!this.channelHandlerContextMap.containsKey(to))
+            return;
+
+        this.sendPacket1(new AwaitingPacket(this.getChannel(to), packet));
+    }
+
+    /**
+     * Sends a packet into a channel
+     *
+     * @param channel       The network participant name
+     * @param packets       The packets which should be sent
+     * @return If the cloud could send the packet into the channel
      */
     public boolean sendPacketSynchronized(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel))
@@ -197,40 +219,44 @@ public class ChannelHandler {
     }
 
     /**
-     * Sends asynchronous a {@link Packet} over the given Channel name as {@link String}
+     * Sends a packet into a channel
      *
-     * @param channel
-     * @param packet
-     * @return if the channel is registered, to check if the packets were send
+     * @param channel       The network participant name
+     * @param packet        The packet which should be sent
+     * @return If the cloud could send the packet into the channel
      */
     public boolean sendPacketAsynchronous(final String channel, final Packet packet) {
-        OutGoingPacketEvent outGoingPacketEvent = new OutGoingPacketEvent(false, packet);
-        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.OUTGOING_PACKET, outGoingPacketEvent);
-
-        if (outGoingPacketEvent.isCancelled())
-            return false;
-
         if (this.channelHandlerContextMap.containsKey(channel))
-            this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
+            this.sendPacket0(packet, this.channelHandlerContextMap.get(channel));
 
         return this.channelHandlerContextMap.containsKey(channel);
     }
 
     /**
-     * Sends asynchronous more than one {@link Packet} over the given Channel name as {@link String}
+     * Sends a packet into a channel
      *
-     * @param channel
-     * @param packets
-     * @return if the channel is registered, to check if the packets were send
+     * @param channel       The network participant name
+     * @param packets       The packets which should be sent
+     * @return If the cloud could send the packet into the channel
      */
     public boolean sendPacketAsynchronous(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel))
             for (Packet packet : packets)
-                this.sendPacket(packet, this.channelHandlerContextMap.get(channel));
+                this.sendPacket0(packet, this.channelHandlerContextMap.get(channel));
 
         return this.channelHandlerContextMap.containsKey(channel);
     }
 
+    /**
+     * Sends a packet query
+     *
+     * @param channel       The network participant name
+     * @param from          The current handler name
+     * @param packet        The packet which should be sent
+     * @param handler       The handler which should be called if the query succeeds
+     * @param onFailure     The handler which should be called if the query fails
+     * @return If the creation of the future was successful
+     */
     public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
                                        final NetworkQueryInboundHandler handler,
                                        final NetworkQueryInboundHandler onFailure) {
@@ -249,6 +275,15 @@ public class ChannelHandler {
         return true;
     }
 
+    /**
+     * Sends a packet query
+     *
+     * @param channel       The network participant name
+     * @param from          The current handler name
+     * @param packet        The packet which should be sent
+     * @param handler       The handler which should be called if the query succeeds
+     * @return If the creation of the future was successful
+     */
     public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
                                        final NetworkQueryInboundHandler handler) {
         if (!this.channelHandlerContextMap.containsKey(channel))
@@ -266,6 +301,14 @@ public class ChannelHandler {
         return true;
     }
 
+    /**
+     * Sends a packet query
+     *
+     * @param channel       The network participant name
+     * @param from          The current handler name
+     * @param packet        The packet which should be sent
+     * @return The created packet future
+     */
     public PacketFuture sendPacketQuerySync(final String channel, final String from, final Packet packet) {
         if (!this.channelHandlerContextMap.containsKey(channel))
             return null;
@@ -280,39 +323,36 @@ public class ChannelHandler {
     }
 
     /**
-     * Sends synchronised a {@link Packet} to all registered Handlers
+     * Sends a packet to all channels
      *
-     * @param packet
+     * @param packet    The packet which should be sent
      */
     public void sendToAllSynchronized(Packet packet) {
-        OutGoingPacketEvent outGoingPacketEvent = new OutGoingPacketEvent(false, packet);
-        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.OUTGOING_PACKET, outGoingPacketEvent);
-
-        if (outGoingPacketEvent.isCancelled())
-            return;
-
-        this.channelHandlerContextMap.values().forEach(consumer -> this.sendPacket(packet, consumer));
+        this.channelHandlerContextMap.values().forEach(consumer -> this.sendPacket0(packet, consumer));
     }
 
     /**
-     * Sends asynchronous a {@link Packet} to all registered Handlers
+     * Sends a packet to all channels
      *
-     * @param packet
+     * @param packet    The packet which should be sent
      */
     public void sendToAllAsynchronous(Packet packet) {
-        OutGoingPacketEvent outGoingPacketEvent = new OutGoingPacketEvent(false, packet);
-        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.OUTGOING_PACKET, outGoingPacketEvent);
-
-        if (outGoingPacketEvent.isCancelled())
-            return;
-
-        this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket(packet, consumer)));
+        this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket0(packet, consumer)));
     }
 
     /**
-     * Sends synchronised more than one {@link Packet} to all registered Handlers
+     * Sends a packet to all channels
      *
-     * @param packets
+     * @param packet    The packet which should be sent
+     */
+    public void sendToAllDirect(Packet packet) {
+        this.channelHandlerContextMap.forEach((key, value) -> this.sendDirectPacket(key, packet));
+    }
+
+    /**
+     * Sends a packet to all channels
+     *
+     * @param packets   The packets which should be sent
      */
     public void sendToAllSynchronized(Packet... packets) {
         for (Packet packet : packets)
@@ -320,15 +360,22 @@ public class ChannelHandler {
     }
 
     /**
-     * Sends asynchronous more than one {@link Packet} to all registered Handlers
+     * Sends a packet to all channels
      *
-     * @param packets
+     * @param packets   The packets which should be sent
      */
     public void sendToAllAsynchronous(Packet... packets) {
         for (Packet packet : packets)
             this.sendToAllAsynchronous(packet);
     }
 
+    /**
+     * Converts a normal packet into a query packet
+     *
+     * @param packet        The packet which should be converted
+     * @param resultID      The result id which should be set
+     * @param component     The current component name
+     */
     public void toQueryPacket(Packet packet, UUID resultID, String component) {
         packet.setResult(resultID);
         packet.getConfiguration().addStringProperty("from", component);

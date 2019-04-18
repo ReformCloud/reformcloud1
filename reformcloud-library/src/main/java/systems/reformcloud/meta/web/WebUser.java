@@ -4,10 +4,8 @@
 
 package systems.reformcloud.meta.web;
 
-import systems.reformcloud.ReformCloudLibraryService;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -17,11 +15,10 @@ import java.util.Map;
  */
 
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class WebUser implements Serializable {
     private static final long serialVersionUID = 6104918827767931388L;
 
     private String user, password;
-    private Map<String, Boolean> permissions = ReformCloudLibraryService.concurrentHashMap();
+    private Map<String, Boolean> permissions;
 }

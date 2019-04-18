@@ -7,6 +7,7 @@ package systems.reformcloud.network.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.event.events.ServerTempStatsUpdateEvent;
 import systems.reformcloud.meta.server.stats.TempServerStats;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
@@ -22,5 +23,6 @@ public final class PacketInUpdateServerTempStats implements Serializable, Networ
         final TempServerStats tempServerStats = configuration.getValue("stats", new TypeToken<TempServerStats>() {
         }.getType());
         ReformCloudController.getInstance().getStatisticsProvider().updateServerStats(tempServerStats);
+        ReformCloudController.getInstance().getEventManager().callEvent(new ServerTempStatsUpdateEvent(tempServerStats));
     }
 }

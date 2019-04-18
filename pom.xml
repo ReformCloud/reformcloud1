@@ -6,7 +6,7 @@
 
     <groupId>systems.reformcloud</groupId>
     <artifactId>reformcloud-parent</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
 
     <modules>
         <module>reformcloud-library</module>
@@ -21,7 +21,7 @@
             <id>klaro</id>
             <name>Pasqual K. | _Klaro</name>
             <organization>ReformCloud</organization>
-            <url>https://gitlab.com/_Klaro</url>
+            <url>https://github.com/KlaroYT</url>
             <organizationUrl>https://reformcloud.systems</organizationUrl>
             <email>info@reformcloud.systems</email>
             <timezone>Europe/Berlin</timezone>
@@ -39,7 +39,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 
-        <service.version>1.3</service.version>
+        <service.version>1.4</service.version>
         <service.type>BETA</service.type>
 
         <plugin.shade.version>3.2.1</plugin.shade.version>
@@ -48,17 +48,20 @@
         <plugin.antrun.version>1.8</plugin.antrun.version>
         <plugin.maven-source.version>3.0.1</plugin.maven-source.version>
 
+        <dependency.test.junit.version>4.12</dependency.test.junit.version>
+
         <dependency.apache-http.version>4.5.8</dependency.apache-http.version>
         <dependency.jline.version>2.14.6</dependency.jline.version>
         <dependency.bungeecord.version>1.8-1.12</dependency.bungeecord.version>
         <dependency.gson.version>2.8.5</dependency.gson.version>
-        <dependency.netty.version>4.1.34.Final</dependency.netty.version>
+        <dependency.netty.version>4.1.35.Final</dependency.netty.version>
         <dependency.spigot.version>1.13</dependency.spigot.version>
         <dependency.lombok.version>1.18.6</dependency.lombok.version>
         <dependency.snakeyaml.version>1.24</dependency.snakeyaml.version>
         <dependency.commons-io.version>2.6</dependency.commons-io.version>
-        <dependency.jda.version>4.ALPHA.0_66</dependency.jda.version>
+        <dependency.jda.version>4.ALPHA.0_9</dependency.jda.version>
         <dependency.quartz.version>2.3.1</dependency.quartz.version>
+        <dependency.guava.version>27.1-jre</dependency.guava.version>
         <dependency.slf4j.version>1.7.26</dependency.slf4j.version>
     </properties>
 

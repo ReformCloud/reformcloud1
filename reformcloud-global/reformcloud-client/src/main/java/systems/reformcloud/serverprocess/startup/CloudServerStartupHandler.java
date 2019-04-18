@@ -42,7 +42,7 @@ import java.util.Properties;
  */
 
 @Getter
-public class CloudServerStartupHandler {
+public final class CloudServerStartupHandler implements Serializable {
     private Path path;
     private ServerStartupInfo serverStartupInfo;
     private Process process;
@@ -350,7 +350,6 @@ public class CloudServerStartupHandler {
         this.processStartupStage = ProcessStartupStage.START;
         final String[] cmd = new String[]
                 {
-                        StringUtil.JAVA,
                         "-XX:+UseG1GC",
                         "-XX:MaxGCPauseMillis=50",
                         "-XX:-UseAdaptiveSizePolicy",
@@ -358,13 +357,24 @@ public class CloudServerStartupHandler {
                         "-Dcom.mojang.eula.agree=true",
                         "-Djline.terminal=jline.UnsupportedTerminal",
                         "-Xmx" + this.serverStartupInfo.getServerGroup().getMemory() + "M",
+                };
+
+        final String[] after = new String[]
+                {
                         StringUtil.JAVA_JAR,
                         "spigot.jar",
                         "nogui"
                 };
 
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(serverInfo.getGroup(), cmd, after)
+                .replace("%port%", Integer.toString(port))
+                .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
+                .replace("%name%", serverStartupInfo.getName())
+                .replace("%group%", serverStartupInfo.getServerGroup().getName())
+                .replace("%template%", this.loaded.getName());
+
         try {
-            this.process = Runtime.getRuntime().exec(cmd, null, new File(path + ""));
+            this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Could not launch ServerStartup", ex);
             return false;

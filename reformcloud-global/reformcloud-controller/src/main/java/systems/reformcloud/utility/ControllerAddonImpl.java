@@ -8,18 +8,16 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.JavaAddon;
 import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.event.Listener;
+import systems.reformcloud.event.utility.Listener;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.12.2018
  */
 
-/**
- * Class for Controller Addons
- */
-public class ControllerAddonImpl extends JavaAddon<ReformCloudController> {
+public class ControllerAddonImpl extends JavaAddon<ReformCloudController> implements Serializable {
     @Override
     public ReformCloudController getInternalReformCloudSystem() {
         return ReformCloudController.getInstance();

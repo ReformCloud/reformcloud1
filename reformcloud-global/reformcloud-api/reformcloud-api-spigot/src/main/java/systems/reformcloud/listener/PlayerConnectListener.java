@@ -12,10 +12,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import systems.reformcloud.ReformCloudAPISpigot;
-import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packets.PacketOutCheckPlayer;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
@@ -24,15 +22,19 @@ import systems.reformcloud.permissions.permissible.Permissible;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public class PlayerConnectListener implements Listener {
+public final class PlayerConnectListener implements Listener, Serializable {
+    private boolean started = false;
+
     @EventHandler(priority = EventPriority.LOW)
     public void handle(final AsyncPlayerPreLoginEvent event) {
         if (!ReformCloudAPISpigot.getInstance().getServerInfo().getServerState().isJoineable()) {
@@ -40,23 +42,23 @@ public class PlayerConnectListener implements Listener {
             return;
         }
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacket(
-                new AwaitingPacket(
-                        ReformCloudAPISpigot.getInstance().getChannelHandler().getChannel(
-                                "ReformCloudController"
-                        ), new PacketOutCheckPlayer(event.getUniqueId())
-                )
-        );
-        ReformCloudLibraryService.sleep(45);
-        if (!SpigotBootstrap.getInstance().getAcceptedPlayers().contains(event.getUniqueId())) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));
+        boolean ok = ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync(
+                "ReformCloudController",
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
+                new PacketOutCheckPlayer(event.getUniqueId())
+        ).sendOnCurrentThread("ReformCloudController")
+                .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration().getBooleanValue("checked");
+        if (!ok) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
+                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));
             return;
         }
 
         if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isMaintenance()
                 && SpigotBootstrap.getInstance().getServer().getPlayer(event.getUniqueId()) != null
                 && !SpigotBootstrap.getInstance().getServer().getPlayer(event.getUniqueId()).hasPermission("reformcloud.join.server.maintenance")) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission"));
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
+                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission"));
             return;
         }
 
@@ -111,13 +113,19 @@ public class PlayerConnectListener implements Listener {
         serverInfo.getOnlinePlayers().add(event.getPlayer().getUniqueId());
         serverInfo.setOnline(serverInfo.getOnline() + 1);
 
-        if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers()) {
+        if (serverInfo.getOnline() >= serverInfo.getServerGroup().getMaxPlayers()) {
             serverInfo.setFull(true);
         } else {
             serverInfo.setFull(false);
         }
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
+        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isOne_startup_when_server_full()
+                && serverInfo.isFull()
+                && !started) {
+            started = true;
+            ReformCloudAPISpigot.getInstance().startGameServer(serverInfo.getServerGroup().getName());
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -129,7 +137,7 @@ public class PlayerConnectListener implements Listener {
 
         serverInfo.setOnline(serverInfo.getOnline() - 1);
 
-        if (serverInfo.getOnline() <= serverInfo.getServerGroup().getMaxPlayers()) {
+        if (serverInfo.getOnline() >= serverInfo.getServerGroup().getMaxPlayers()) {
             serverInfo.setFull(true);
         } else {
             serverInfo.setFull(false);

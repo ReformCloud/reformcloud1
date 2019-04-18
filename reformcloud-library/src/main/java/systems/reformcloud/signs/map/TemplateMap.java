@@ -16,7 +16,18 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 public final class TemplateMap<F, S, T> implements Serializable {
+    /**
+     * The name of the group
+     */
     private F group;
+
+    /**
+     * The name of the template
+     */
     private S template;
+
+    /**
+     * The template sign layout
+     */
     private T layout;
 }

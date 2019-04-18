@@ -29,6 +29,9 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 public interface IAPIService {
+    /**
+     * The atomic reference to get the default instance of the api service
+     */
     AtomicReference<IAPIService> instance = new AtomicReference<>();
 
     /**
@@ -52,85 +55,85 @@ public interface IAPIService {
     /**
      * Starts a game server
      *
-     * @param serverGroup   The specific ServerGroup you want to
-     *                      start a server of
+     * @param serverGroup The specific ServerGroup you want to
+     *                    start a server of
      */
     void startGameServer(ServerGroup serverGroup);
 
     /**
      * Starts a game server
      *
-     * @param serverGroup   The specific ServerGroup you want to
-     *                      start a server of
-     * @param preConfig     The preConfig which will be saved while
-     *                      starting up the process
+     * @param serverGroup The specific ServerGroup you want to
+     *                    start a server of
+     * @param preConfig   The preConfig which will be saved while
+     *                    starting up the process
      */
     void startGameServer(ServerGroup serverGroup, Configuration preConfig);
 
     /**
      * Starts a game server
      *
-     * @param serverGroup   The specific ServerGroup you want to
-     *                      start a server of
-     * @param preConfig     The preConfig which will be saved while
-     *                      starting up the process
-     * @param template      The specific template the server should
-     *                      start with
+     * @param serverGroup The specific ServerGroup you want to
+     *                    start a server of
+     * @param preConfig   The preConfig which will be saved while
+     *                    starting up the process
+     * @param template    The specific template the server should
+     *                    start with
      */
     void startGameServer(ServerGroup serverGroup, Configuration preConfig, String template);
 
     /**
      * Starts a proxy
      *
-     * @param proxyGroupName     The name of the ProxyGroup you want
-     *                           to start a proxy of
+     * @param proxyGroupName The name of the ProxyGroup you want
+     *                       to start a proxy of
      */
     void startProxy(String proxyGroupName);
 
     /**
      * Starts a proxy
      *
-     * @param proxyGroupName    The name of the ProxyGroup you want
-     *                          to start a proxy of
-     * @param preConfig         The preConfig which will be saved while
-     *                          starting up the process
+     * @param proxyGroupName The name of the ProxyGroup you want
+     *                       to start a proxy of
+     * @param preConfig      The preConfig which will be saved while
+     *                       starting up the process
      */
     void startProxy(String proxyGroupName, Configuration preConfig);
 
     /**
      * Starts a proxy
      *
-     * @param proxyGroup    The exact ProxyGroup you want
-     *                      to start a process of
+     * @param proxyGroup The exact ProxyGroup you want
+     *                   to start a process of
      */
     void startProxy(ProxyGroup proxyGroup);
 
     /**
      * Starts a proxy
      *
-     * @param proxyGroup    The exact ProxyGroup you want
-     *                      to start a process of
-     * @param preConfig     The preConfig which will be saved while
-     *                      starting up the process
+     * @param proxyGroup The exact ProxyGroup you want
+     *                   to start a process of
+     * @param preConfig  The preConfig which will be saved while
+     *                   starting up the process
      */
     void startProxy(ProxyGroup proxyGroup, Configuration preConfig);
 
     /**
      * Starts a proxy
      *
-     * @param proxyGroup    The exact ProxyGroup you want
-     *                      to start a process of
-     * @param preConfig     The preConfig which will be saved while
-     *                      starting up the process
-     * @param template      The exact template that should be loaded
-     *                      while starting up the process
+     * @param proxyGroup The exact ProxyGroup you want
+     *                   to start a process of
+     * @param preConfig  The preConfig which will be saved while
+     *                   starting up the process
+     * @param template   The exact template that should be loaded
+     *                   while starting up the process
      */
     void startProxy(ProxyGroup proxyGroup, Configuration preConfig, String template);
 
     /**
      * Get a online player of the cloudSystem
      *
-     * @param uniqueId      The exact UUID of the player
+     * @param uniqueId The exact UUID of the player
      * @return The OnlinePlayer or {@code null} if the player isn't online
      */
     OnlinePlayer getOnlinePlayer(UUID uniqueId);
@@ -138,7 +141,7 @@ public interface IAPIService {
     /**
      * Get a online player of the cloudSystem
      *
-     * @param name          The exact name of the player
+     * @param name The exact name of the player
      * @return The OnlinePlayer or {@code null} if the player isn't online
      */
     OnlinePlayer getOnlinePlayer(String name);
@@ -146,7 +149,7 @@ public interface IAPIService {
     /**
      * Get a offline player
      *
-     * @param uniqueId      The exact UUID of the player
+     * @param uniqueId The exact UUID of the player
      * @return The OfflinePlayer or {@code null} if the player isn't registered
      */
     OfflinePlayer getOfflinePlayer(UUID uniqueId);
@@ -154,7 +157,7 @@ public interface IAPIService {
     /**
      * Get a offline player
      *
-     * @param name          The exact name of the player
+     * @param name The exact name of the player
      * @return The OfflinePlayer or {@code null} if the player isn't registered
      */
     OfflinePlayer getOfflinePlayer(String name);
@@ -162,50 +165,50 @@ public interface IAPIService {
     /**
      * Updates a online player in the cloud system
      *
-     * @param onlinePlayer      The exact player that should be updated
+     * @param onlinePlayer The exact player that should be updated
      */
     void updateOnlinePlayer(OnlinePlayer onlinePlayer);
 
     /**
      * Updates a offline player in the cloud system
      *
-     * @param offlinePlayer     The exact player that should be updated
+     * @param offlinePlayer The exact player that should be updated
      */
     void updateOfflinePlayer(OfflinePlayer offlinePlayer);
 
     /**
      * Gets if the player is globally online
      *
-     * @param uniqueId      The exact UUID of the player which should be checked
-     * @return              {@code true} if the player is online or {@code false}
-     *                      if the player is offline
+     * @param uniqueId The exact UUID of the player which should be checked
+     * @return {@code true} if the player is online or {@code false}
+     * if the player is offline
      */
     boolean isOnline(UUID uniqueId);
 
     /**
      * Gets if the player is globally online
      *
-     * @param name          The exact name of the player which should be checked
-     * @return              {@code true} if the player is online or {@code false}
-     *                      if the player is offline
+     * @param name The exact name of the player which should be checked
+     * @return {@code true} if the player is online or {@code false}
+     * if the player is offline
      */
     boolean isOnline(String name);
 
     /**
      * Gets if the player is globally registered
      *
-     * @param uniqueId      The exact UUID of the player which should be checked
-     * @return              {@code true} if the player is registered or {@code false}
-     *                      if the player isn't registered
+     * @param uniqueId The exact UUID of the player which should be checked
+     * @return {@code true} if the player is registered or {@code false}
+     * if the player isn't registered
      */
     boolean isRegistered(UUID uniqueId);
 
     /**
      * Gets if the player is globally registered
      *
-     * @param name          The exact name of the player which should be checked
-     * @return              {@code true} if the player is registered or {@code false}
-     *                      if the player isn't registered
+     * @param name The exact name of the player which should be checked
+     * @return {@code true} if the player is registered or {@code false}
+     * if the player isn't registered
      */
     boolean isRegistered(String name);
 
@@ -275,7 +278,7 @@ public interface IAPIService {
     /**
      * Gets all registered servers of a specific group
      *
-     * @param groupName     The name of the group that should be filtered
+     * @param groupName The name of the group that should be filtered
      * @return a list of all registered servers of a specific group
      */
     List<ServerInfo> getAllRegisteredServers(String groupName);
@@ -283,7 +286,7 @@ public interface IAPIService {
     /**
      * Gets all registered proxies of a specific group
      *
-     * @param groupName     The name of the group that should be filtered
+     * @param groupName The name of the group that should be filtered
      * @return a list of all registered proxies of a specific group
      */
     List<ProxyInfo> getAllRegisteredProxies(String groupName);
@@ -291,8 +294,8 @@ public interface IAPIService {
     /**
      * Sends a packet through the cloud system
      *
-     * @param subChannel        The instance name of the packet receiver
-     * @param packet            The packet that should be send
+     * @param subChannel The instance name of the packet receiver
+     * @param packet     The packet that should be send
      * @return If the operation was successful
      */
     boolean sendPacket(String subChannel, Packet packet);
@@ -300,8 +303,8 @@ public interface IAPIService {
     /**
      * Sends a packet through the cloud system
      *
-     * @param subChannel        The instance name of the packet receiver
-     * @param packet            The packet that should be send
+     * @param subChannel The instance name of the packet receiver
+     * @param packet     The packet that should be send
      * @return If the operation was successful
      */
     boolean sendPacketSync(String subChannel, Packet packet);
@@ -309,41 +312,41 @@ public interface IAPIService {
     /**
      * Sends a packet to all instances
      *
-     * @param packet        The packet that should be send
+     * @param packet The packet that should be send
      */
     void sendPacketToAll(Packet packet);
 
     /**
      * Sends a packet to all instances
      *
-     * @param packet        The packet that should be send
+     * @param packet The packet that should be send
      */
     void sendPacketToAllSync(Packet packet);
 
     /**
      * Sends a packet query through the cloud system
      *
-     * @param channel       The instance name of the packet receiver
-     * @param packet        The packet that should be send
-     * @param onSuccess     The handler when the query returns another packet
+     * @param channel   The instance name of the packet receiver
+     * @param packet    The packet that should be send
+     * @param onSuccess The handler when the query returns another packet
      */
     void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess);
 
     /**
      * Sends a packet query through the cloud system
      *
-     * @param channel       The instance name of the packet receiver
-     * @param packet        The packet that should be send
-     * @param onSuccess     The handler when the query returns another packet
-     * @param onFailure     The handler when the query fails
+     * @param channel   The instance name of the packet receiver
+     * @param packet    The packet that should be send
+     * @param onSuccess The handler when the query returns another packet
+     * @param onFailure The handler when the query fails
      */
     void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess, NetworkQueryInboundHandler onFailure);
 
     /**
      * Creates a packet future
      *
-     * @param packet                The packet that should be send
-     * @param networkComponent      The instance name of the packet receiver
+     * @param packet           The packet that should be send
+     * @param networkComponent The instance name of the packet receiver
      * @return The created packet future
      */
     PacketFuture createPacketFuture(Packet packet, String networkComponent);
@@ -351,8 +354,8 @@ public interface IAPIService {
     /**
      * Creates a packet future
      *
-     * @param packet                The packet that should be send
-     * @param channel               The instance name of the packet receiver
+     * @param packet  The packet that should be send
+     * @param channel The instance name of the packet receiver
      * @return The created packet future
      */
     PacketFuture sendPacketQuery(String channel, Packet packet);
@@ -360,7 +363,7 @@ public interface IAPIService {
     /**
      * Gets a specific client
      *
-     * @param name      The name of the client
+     * @param name The name of the client
      * @return The client or {@code null} if the client doesn't exists
      */
     Client getClient(String name);
@@ -368,7 +371,7 @@ public interface IAPIService {
     /**
      * Gets a specific client
      *
-     * @param name      The name of the client
+     * @param name The name of the client
      * @return The client or {@code null} if the client isn't connected
      */
     ClientInfo getConnectedClient(String name);
@@ -376,7 +379,7 @@ public interface IAPIService {
     /**
      * Gets the server info of a specific server
      *
-     * @param uniqueID      The process UID
+     * @param uniqueID The process UID
      * @return The serverInfo or {@code null} if the server couldn't be found
      */
     ServerInfo getServerInfo(UUID uniqueID);
@@ -384,7 +387,7 @@ public interface IAPIService {
     /**
      * Gets the server info of a specific server
      *
-     * @param name          The process name
+     * @param name The process name
      * @return The serverInfo or {@code null} if the server couldn't be found
      */
     ServerInfo getServerInfo(String name);
@@ -392,7 +395,7 @@ public interface IAPIService {
     /**
      * Gets the proxy info of a specific proxy
      *
-     * @param uniqueID      The process UID
+     * @param uniqueID The process UID
      * @return The serverInfo or {@code null} if the proxy couldn't be found
      */
     ProxyInfo getProxyInfo(UUID uniqueID);
@@ -400,7 +403,7 @@ public interface IAPIService {
     /**
      * Gets the proxy info of a specific proxy
      *
-     * @param name          The process name
+     * @param name The process name
      * @return The serverInfo or {@code null} if the proxy couldn't be found
      */
     ProxyInfo getProxyInfo(String name);
@@ -408,7 +411,7 @@ public interface IAPIService {
     /**
      * Gets a specific serverGroup
      *
-     * @param name      The name of the serverGroup
+     * @param name The name of the serverGroup
      * @return The serverGroup or {@code null} if the serverGroup doesn't exists
      */
     ServerGroup getServerGroup(String name);
@@ -416,7 +419,7 @@ public interface IAPIService {
     /**
      * Gets a specific proxyGroup
      *
-     * @param name      The name of the proxyGroup
+     * @param name The name of the proxyGroup
      * @return The serverGroup or {@code null} if the proxyGroup doesn't exists
      */
     ProxyGroup getProxyGroup(String name);

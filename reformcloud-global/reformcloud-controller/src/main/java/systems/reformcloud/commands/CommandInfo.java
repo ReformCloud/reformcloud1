@@ -5,6 +5,7 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.interfaces.Command;
 import systems.reformcloud.commands.interfaces.CommandSender;
 import systems.reformcloud.database.statistics.StatisticsProvider;
@@ -19,7 +20,7 @@ import java.text.SimpleDateFormat;
 
 public final class CommandInfo extends Command implements Serializable {
     public CommandInfo() {
-        super("info", "Prints the Cloud info", null, new String[0]);
+        super("info", "Prints the Cloud info", null, new String[]{"whoami", "whoiam", "me", "about"});
     }
 
     private final SimpleDateFormat dataFormat = new SimpleDateFormat("HH:mm:ss.SSS");
@@ -38,6 +39,10 @@ public final class CommandInfo extends Command implements Serializable {
         commandSender.sendMessage("Player login: " + stats.getLogin());
         commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
         commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
+        commandSender.sendMessage("JVM start time: " +
+                ReformCloudController.getInstance().getLoggerProvider().getDateFormat().format(ReformCloudLibraryService.systemStartTime()));
+        commandSender.sendMessage("JVM uptime: " +
+                dataFormat.format(ReformCloudLibraryService.systemUpTime()));
         commandSender.sendMessage("GameServer online time: " +
                 (stats.getServerOnlineTime() == 0 ? "00:00:00.000" : this.dataFormat.format(stats.getServerOnlineTime())));
         commandSender.sendMessage("GameServer walked distance: " + stats.getWalkedDistance());

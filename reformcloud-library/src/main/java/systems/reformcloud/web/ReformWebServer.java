@@ -23,6 +23,7 @@ import systems.reformcloud.web.utils.WebHandlerAdapter;
 
 import javax.net.ssl.SSLException;
 import java.io.File;
+import java.io.Serializable;
 import java.security.cert.CertificateException;
 
 /**
@@ -30,29 +31,44 @@ import java.security.cert.CertificateException;
  */
 
 @Getter
-public class ReformWebServer {
+public final class ReformWebServer implements Serializable {
+    /**
+     * The boss group of the web server
+     */
     protected EventLoopGroup bossGroup = ReformCloudLibraryService.eventLoopGroup();
+
+    /**
+     * The worker group of the web server
+     */
     protected EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup();
+
+    /**
+     * The created server bootstrap
+     */
     private ServerBootstrap serverBootstrap;
+
+    /**
+     * The created ssl context, will be {@code null} if ssl is disabled
+     */
     private SslContext sslContext;
 
+    /**
+     * The web handler where all handlers are registered
+     */
     private final WebHandlerAdapter webHandlerAdapter = new WebHandlerAdapter();
 
     /**
-     * Creates a new WebServer instance and binds it to the given Port and IP, provided
-     * by the {@link EthernetAddress}.
+     * Will create a new web server instance and bind it to the given host and port
      *
-     * @param ethernetAddress            Ip and Port where the WebServer will be bound to
-     * @param ssl                           If ssl should be enabled or not
-     * @param certFile                      SSL-Certificate file, if this is {@code null} a
-     *                                      {@link SelfSignedCertificate} will be created
-     *                                      and used
-     * @param keyFile                       SSL-Certificate key-file if this is {@code null}
-     *                                      a {@link SelfSignedCertificate} will be created
-     *                                      and used
-     * @throws CertificateException         If the Certificate cant be created
-     * @throws SSLException                 If the Certificate cant be used
-     * @throws InterruptedException         If the Cloud cannot bind the Webservice
+     * @param ethernetAddress           Ip and Port where the WebServer will be bound to
+     * @param ssl                       If ssl should be enabled or not
+     * @param certFile                  SSL-Certificate file, if this is {@code null} a
+     *                                  the server will sign a self signed ssl certificate
+     * @param keyFile                   SSL-Certificate key-file if this is {@code null}
+     *                                  the server will sign a self signed ssl certificate
+     * @throws CertificateException     If the Certificate cant be created
+     * @throws SSLException             If the Certificate cant be used
+     * @throws InterruptedException     If the Cloud cannot bind the Webservice
      */
     public ReformWebServer(EthernetAddress ethernetAddress, boolean ssl, final File certFile, final File keyFile) throws CertificateException, SSLException, InterruptedException {
         if (ssl) {
@@ -79,7 +95,11 @@ public class ReformWebServer {
                         if (sslContext != null && ssl)
                             channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
 
-                        channel.pipeline().addLast(new HttpServerCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), new WebServerHandler(webHandlerAdapter));
+                        channel.pipeline().addLast(
+                                new HttpServerCodec(),
+                                new HttpObjectAggregator(Integer.MAX_VALUE),
+                                new WebServerHandler(webHandlerAdapter)
+                        );
                     }
                 });
         serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel().closeFuture();

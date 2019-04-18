@@ -8,20 +8,39 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 
+import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
  */
 
-public class ServerProcessManager {
+public final class ServerProcessManager implements Serializable {
+    /**
+     * All registered proxies by their process uid
+     */
     private Map<UUID, ServerInfo> serverProcessUIDMap = ReformCloudLibraryService.concurrentHashMap();
+
+    /**
+     * All registered proxies by their name
+     */
     private Map<UUID, ProxyInfo> proxyProcessUIDMap = ReformCloudLibraryService.concurrentHashMap();
 
+    /**
+     * All registered servers by their process uid
+     */
     private Map<String, ServerInfo> serverProcessNameMap = ReformCloudLibraryService.concurrentHashMap();
+
+    /**
+     * All registered servers by their process uid
+     */
     private Map<String, ProxyInfo> proxyProcessNameMap = ReformCloudLibraryService.concurrentHashMap();
 
+    /**
+     * All used ports in the cloud system
+     */
     private List<Integer> ports = new ArrayList<>();
 
     /**
@@ -38,56 +57,53 @@ public class ServerProcessManager {
     }
 
     /**
-     * Get a specific ProxyProcess by {@link UUID}
+     * Get a specific proxy info
      *
-     * @param uid
-     * @return the {@link ProxyInfo} or null if the processUID isn't registered
+     * @param uid       The uid of the proxy process
+     * @return The proxy info or {@code null} if the proxy isn't registered
      */
     public ProxyInfo getRegisteredProxyByUID(final UUID uid) {
         return this.proxyProcessUIDMap.getOrDefault(uid, null);
     }
 
     /**
-     * Get a specific ProxyProcess by {@link String}
+     * Get a specific proxy info
      *
-     * @param name
-     * @return the {@link ProxyInfo} or null if the processName isn't registered
+     * @param name      The name of the process
+     * @return The proxy info or {@code null} if the proxy isn't registered
      */
     public ProxyInfo getRegisteredProxyByName(final String name) {
         return this.proxyProcessNameMap.getOrDefault(name, null);
     }
 
     /**
-     * Get a specific ServerProcess by {@link UUID}
+     * Get a specific server info
      *
-     * @param uid
-     * @return the {@link ServerInfo} or null if the processUID isn't registered
+     * @param uid       The uid of the server process
+     * @return The server info or {@code null} if the server isn't registered
      */
     public ServerInfo getRegisteredServerByUID(final UUID uid) {
         return this.serverProcessUIDMap.getOrDefault(uid, null);
     }
 
     /**
-     * Get a specific ServerProcess by {@link String}
+     * Get a specific server info
      *
-     * @param name
-     * @return the {@link ServerInfo} or null if the processName isn't registered
+     * @param name          The name of the server process
+     * @return The server info or {@code null} if the server isn't registered
      */
     public ServerInfo getRegisteredServerByName(final String name) {
         return this.serverProcessNameMap.getOrDefault(name, null);
     }
 
     /**
-     * Registers a specific ProxyProcess, by UID {@link UUID},
-     * name {@link String},
-     * proxyInfo {@link ProxyInfo},
-     * port {@link Integer}
+     * Registers a specific proxy in the cloud system to reserve the name, uid and port
      *
-     * @param uid
-     * @param name
-     * @param proxyInfo
-     * @param port
-     * @return this;
+     * @param uid               The uid of the process which should be registered
+     * @param name              The name of the process which should be registered
+     * @param proxyInfo         The proxy info of the process
+     * @param port              The port of the process
+     * @return The current instance of this class
      */
     public ServerProcessManager registerProxyProcess(final UUID uid, final String name, ProxyInfo proxyInfo, final int port) {
         this.proxyProcessUIDMap.put(uid, proxyInfo);
@@ -97,16 +113,26 @@ public class ServerProcessManager {
     }
 
     /**
-     * Registers a specific ServerProcess, by UID {@link UUID},
-     * name {@link String},
-     * serverInfo {@link ServerInfo},
-     * port {@link Integer}
+     * Registers a specific proxy in the cloud system to reserve the name, uid and port
      *
-     * @param uid
-     * @param name
-     * @param serverInfo
-     * @param port
-     * @return this;
+     * @param proxyInfo         The proxy info congaing all needed information about the process
+     * @return The current instance of this class
+     */
+    public ServerProcessManager registerProxyProcess(final ProxyInfo proxyInfo) {
+        this.registerProxyProcess(
+                proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(), proxyInfo, proxyInfo.getPort()
+        );
+        return this;
+    }
+
+    /**
+     * Registers a specific server in the cloud system to reserve the name, uid and port
+     *
+     * @param uid               The uid of the process which should be registered
+     * @param name              The name of the process which should be registered
+     * @param serverInfo        The server info of the process
+     * @param port              The port of the process
+     * @return The current instance of this class
      */
     public ServerProcessManager registerServerProcess(final UUID uid, final String name, ServerInfo serverInfo, final int port) {
         this.serverProcessUIDMap.put(uid, serverInfo);
@@ -116,14 +142,12 @@ public class ServerProcessManager {
     }
 
     /**
-     * Unregisters a specific ProxyProcess, by UID {@link UUID},
-     * name {@link String},
-     * port {@link Integer}
+     * Unregisters a specific proxy in the cloud system
      *
-     * @param uid
-     * @param name
-     * @param port
-     * @return this
+     * @param uid               The uid of the process which should be unregistered
+     * @param name              The name of the process which should be unregistered
+     * @param port              The port of the process
+     * @return The current instance of this class
      */
     public ServerProcessManager unregisterProxyProcess(final UUID uid, final String name, final int port) {
         this.proxyProcessUIDMap.remove(uid);
@@ -133,14 +157,12 @@ public class ServerProcessManager {
     }
 
     /**
-     * Unregisters a specific ProxyProcess, by UID {@link UUID},
-     * name {@link String},
-     * port {@link Integer}
+     * Unregisters a specific server in the cloud system
      *
-     * @param uid
-     * @param name
-     * @param port
-     * @return this
+     * @param uid               The uid of the process which should be unregistered
+     * @param name              The name of the process which should be unregistered
+     * @param port              The port of the process
+     * @return The current instance of this class
      */
     public ServerProcessManager unregisterServerProcess(final UUID uid, final String name, final int port) {
         this.serverProcessUIDMap.remove(uid);
@@ -150,112 +172,108 @@ public class ServerProcessManager {
     }
 
     /**
-     * Get all registeredProxyProcesses by UID
+     * Get all proxy infos by UID
      *
-     * @return a set with UID of all registered ProxyProcesses
+     * @return A list containing all registered proxy uid
      */
     public Set<UUID> getRegisteredProxyUIDProcesses() {
         return this.proxyProcessUIDMap.keySet();
     }
 
     /**
-     * Get all registeredProxyProcesses by name
+     * Get all proxy infos by name
      *
-     * @return set with name of all registered ProxyProcesses
+     * @return A list containing all registered proxy names
      */
     public Set<String> getRegisteredProxyNameProcesses() {
         return this.proxyProcessNameMap.keySet();
     }
 
     /**
-     * Get all registeredServerProcesses by UID
+     * Get all server infos by UID
      *
-     * @return set with UID of all registered ServerProcesses
+     * @return A list containing all registered server uid
      */
     public Set<UUID> getRegisteredServerUIDProcesses() {
         return this.serverProcessUIDMap.keySet();
     }
 
     /**
-     * Get all registeredServerProcesses by name
+     * Get all server infos by name
      *
-     * @return a set with names of all registered ServerProcesses
+     * @return A list containing all registered server names
      */
     public Set<String> getRegisteredServerNameProcesses() {
         return this.serverProcessNameMap.keySet();
     }
 
     /**
-     * Get if a proxyProcess is registered by UID {@link UUID}
+     * Gets a proxy process is registered
      *
-     * @param uid
-     * @return if the proxyProcess is registered
+     * @param uid           The uid of the process
+     * @return If the proxy process is registered in the cloud system
      */
     public boolean isUIDProxyProcessRegistered(final UUID uid) {
         return this.proxyProcessUIDMap.containsKey(uid);
     }
 
     /**
-     * Get if a proxyProcess is registered by name {@link String}
+     * Gets a proxy process is registered
      *
-     * @param name
-     * @return if the proxyProcess is registered
+     * @param name          The name of the proxy process
+     * @return If the proxy process is registered in the cloud system
      */
     public boolean isNameProxyProcessRegistered(final String name) {
         return this.proxyProcessNameMap.containsKey(name);
     }
 
     /**
-     * Get if a serverProcess is registered by UID {@link UUID}
+     * Gets a server process is registered
      *
-     * @param uid
-     * @return if the serverProcess is registered
+     * @param uid           The uid of the process
+     * @return If the server process is registered in the cloud system
      */
     public boolean isUIDServerProcessRegistered(final UUID uid) {
         return this.serverProcessUIDMap.containsKey(uid);
     }
 
     /**
-     * Get if a serverProcess is registered by name {@link String}
+     * Gets a server process is registered
      *
-     * @param name
-     * @return if the serverProcess is registered
+     * @param name          The name of the server process
+     * @return If the server process is registered in the cloud system
      */
     public boolean isNameServerProcessRegistered(final String name) {
         return this.serverProcessNameMap.containsKey(name);
     }
 
     /**
-     * Get maximal memory of all registered serverProcesses
+     * Get the max memory used by the cloud system on the server site
      *
-     * @return maximal memory of all registered serverProcesses as {@link Integer}
+     * @return The max memory on the server site
      */
     public int getUsedServerMemory() {
-        int memory = 0;
-        for (ServerInfo serverInfo : this.serverProcessUIDMap.values())
-            memory = memory + serverInfo.getMaxMemory();
-
-        return memory;
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.serverProcessUIDMap.values().forEach(e -> atomicInteger.addAndGet(e.getMaxMemory()));
+        return atomicInteger.get();
     }
 
     /**
-     * Get maximal memory of all registered proxyProcesses
+     * Get the max memory used by the cloud system on the proxy site
      *
-     * @return maximal memory of all registered proxyProcesses as {@link Integer}
+     * @return The max memory on the proxy site
      */
     public int getUsedProxyMemory() {
-        int memory = 0;
-        for (ProxyInfo proxyInfo : this.proxyProcessUIDMap.values())
-            memory = memory + proxyInfo.getMaxMemory();
-
-        return memory;
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.proxyProcessUIDMap.values().forEach(e -> atomicInteger.addAndGet(e.getMaxMemory()));
+        return atomicInteger.get();
     }
 
     /**
-     * Get all online Servers
+     * Get all online servers of a specific group
      *
-     * @param name
-     * @return a list of all registered serverProcesses
+     * @param name          The name of the group
+     * @return A list containing all started servers of the given group by their name
      */
     public List<String> getOnlineServers(final String name) {
         List<String> list = new ArrayList<>();
@@ -268,10 +286,10 @@ public class ServerProcessManager {
     }
 
     /**
-     * Get all online Proxies
+     * Get all online proxies of a specific group
      *
-     * @param name
-     * @return a list of all registered proxyProcesses
+     * @param name          The name of the group
+     * @return A list containing all started proxies of the given group by their name
      */
     public List<String> getOnlineProxies(final String name) {
         List<String> list = new ArrayList<>();
@@ -284,20 +302,21 @@ public class ServerProcessManager {
     }
 
     /**
-     * Get if the given port is already registered
+     * Checks if the given port is already used anywhere in the cloud system
      *
-     * @param port
-     * @return if the given port is already registered
+     * @param port          The port which should be checked
+     * @return If the port is usable or already taken
      */
     public boolean isPortRegistered(final int port) {
         return this.ports.contains(port);
     }
 
     /**
-     * Get next free port
+     * Gets the next free port of the cloud system starting by the given start port
      *
-     * @param startPort
-     * @return next free port, starting at the given startport
+     * @param startPort         The start port from where the cloud should check
+     *                          if the port is taken and gets a better port
+     * @return The next free port after the start port
      */
     public int nextFreePort(int startPort) {
         while (this.ports.contains(startPort)) {
@@ -307,66 +326,60 @@ public class ServerProcessManager {
     }
 
     /**
-     * Get all registered ServerInfo
+     * Get all registered server processes
      *
-     * @return a list of all serverProcesses
+     * @return A list containing all registered server processes
      */
     public List<ServerInfo> getAllRegisteredServerProcesses() {
         return new ArrayList<>(this.serverProcessUIDMap.values());
     }
 
     /**
-     * Get all registered ProxyInfo
+     * Get all registered proxy processes
      *
-     * @return a List of all proxyProcesses
+     * @return A list containing all registered proxy processes
      */
     public List<ProxyInfo> getAllRegisteredProxyProcesses() {
         return new ArrayList<>(this.proxyProcessUIDMap.values());
     }
 
     /**
-     * Gets all registered ServerProcesses by GroupName
+     * Gets all registered server processes by a specific group
      *
-     * @param groupName
-     * @return all registered ServerProcesses by GroupName
+     * @param groupName         The group name of the group for which the cloud should look for
+     * @return A list containing all server infos of a specific group
      */
     public List<ServerInfo> getAllRegisteredServerGroupProcesses(final String groupName) {
         return this.serverProcessUIDMap.values().stream().filter(e -> e.getServerGroup().getName().equals(groupName)).collect(Collectors.toList());
     }
 
     /**
-     * Gets all registered ProxyProcesses by GroupName
+     * Gets all registered proxy processes by a specific group
      *
-     * @param groupName
-     * @return all registered ProxyProcesses by GroupName
+     * @param groupName         The group name of the group for which the cloud should look for
+     * @return A list containing all proxy infos of a specific group
      */
     public List<ProxyInfo> getAllRegisteredProxyGroupProcesses(final String groupName) {
         return this.proxyProcessUIDMap.values().stream().filter(e -> e.getProxyGroup().getName().equals(groupName)).collect(Collectors.toList());
     }
 
     /**
-     * Updates a specific serverInfo
+     * Updates a specific server info
      *
-     * @param serverInfo
+     * @param serverInfo        The server info which should be updated
      */
     public void updateServerInfo(final ServerInfo serverInfo) {
-        this.serverProcessNameMap.remove(serverInfo.getCloudProcess().getName());
-        this.serverProcessUIDMap.remove(serverInfo.getCloudProcess().getProcessUID());
-
-        this.serverProcessNameMap.put(serverInfo.getCloudProcess().getName(), serverInfo);
-        this.serverProcessUIDMap.put(serverInfo.getCloudProcess().getProcessUID(), serverInfo);
+        this.serverProcessNameMap.replace(serverInfo.getCloudProcess().getName(), serverInfo);
+        this.serverProcessUIDMap.replace(serverInfo.getCloudProcess().getProcessUID(), serverInfo);
     }
 
     /**
-     * Updates a specific proxyInfo
+     * Updates a specific proxy info
      *
-     * @param proxyInfo
+     * @param proxyInfo         The proxy info which should be updated
      */
     public void updateProxyInfo(final ProxyInfo proxyInfo) {
-        this.proxyProcessNameMap.remove(proxyInfo.getCloudProcess().getName());
-        this.proxyProcessUIDMap.remove(proxyInfo.getCloudProcess().getProcessUID());
-
-        this.proxyProcessNameMap.put(proxyInfo.getCloudProcess().getName(), proxyInfo);
-        this.proxyProcessUIDMap.put(proxyInfo.getCloudProcess().getProcessUID(), proxyInfo);
+        this.proxyProcessNameMap.replace(proxyInfo.getCloudProcess().getName(), proxyInfo);
+        this.proxyProcessUIDMap.replace(proxyInfo.getCloudProcess().getProcessUID(), proxyInfo);
     }
 }

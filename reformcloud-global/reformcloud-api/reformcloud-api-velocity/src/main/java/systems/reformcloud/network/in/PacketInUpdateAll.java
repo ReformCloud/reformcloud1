@@ -10,11 +10,13 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 25.11.2018
  */
 
-public class PacketInUpdateAll implements NetworkInboundHandler {
+public final class PacketInUpdateAll implements NetworkInboundHandler, Serializable {
     @Override
     public void handle(Configuration configuration) {
         ReformCloudAPIVelocity.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));

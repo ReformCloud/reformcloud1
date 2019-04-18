@@ -8,21 +8,13 @@ import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public class LoggerProviderImplementationExample extends LoggerProvider {
-    /**
-     * Creates a new instance of the {@link LoggerProvider}
-     *
-     * @param colour
-     * @throws IllegalAccessException
-     * @throws NoSuchFieldException
-     * @throws IOException
-     */
-
+public final class LoggerProviderImplementationExample extends LoggerProvider implements Serializable {
     /**
      * Creates a new ReformCloud Logger instance
      */

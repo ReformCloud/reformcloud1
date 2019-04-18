@@ -4,11 +4,11 @@
 
 package systems.reformcloud.meta.info;
 
-import systems.reformcloud.meta.CloudProcess;
-import systems.reformcloud.meta.proxy.ProxyGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.proxy.ProxyGroup;
 
 import java.io.Serializable;
 import java.util.List;

@@ -11,5 +11,11 @@ import systems.reformcloud.addons.JavaAddon;
  */
 
 public interface ModulePreLoader {
+    /**
+     * Loads the Addon main class and creates a new instance
+     *
+     * @return The loaded java addon
+     * @throws Throwable The exception will be thrown if any error occurs while loading the addon
+     */
     JavaAddon loadAddon() throws Throwable;
 }

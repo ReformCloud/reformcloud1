@@ -16,6 +16,12 @@ import java.io.File;
 @AllArgsConstructor
 @Getter
 public class AddonClassConfig {
+    /**
+     * The file of the config
+     */
     private File file;
+    /**
+     * The name, version and main class of the addon
+     */
     private String name, version, main;
 }

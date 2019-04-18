@@ -15,7 +15,6 @@ import java.io.Serializable;
  * event in the cloud system
  *
  * @author _Klaro | Pasqual K. / created on 12.03.2019
- * @since RCS1.0
  */
 
 @AllArgsConstructor

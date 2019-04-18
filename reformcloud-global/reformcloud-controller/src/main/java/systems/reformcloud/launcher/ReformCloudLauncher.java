@@ -11,10 +11,12 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.CommandManager;
 import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.time.DateProvider;
 
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -24,12 +26,12 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-final class ReformCloudLauncher {
+final class ReformCloudLauncher implements Serializable {
     /**
      * Main method of ReformCloudController
      *
-     * @param args
-     * @throws Throwable
+     * @param args          The start parameters of reformcloud
+     * @throws Throwable    Will be thrown if any exception occurs
      */
     public static synchronized void main(String[] args) throws Throwable {
         final List<String> options = Arrays.asList(args);
@@ -42,7 +44,7 @@ final class ReformCloudLauncher {
                 Thread.sleep(2000);
             } catch (final InterruptedException ignored) {
             }
-            System.exit(1);
+            System.exit(ExitUtil.STARTED_AS_ROOT);
             return;
         }
 
@@ -53,8 +55,6 @@ final class ReformCloudLauncher {
 
         if (Files.exists(Paths.get("reformcloud/logs")))
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));
-
-        System.out.println();
 
         new LibraryLoader().loadJarFileAndInjectLibraries();
 
@@ -76,7 +76,9 @@ final class ReformCloudLauncher {
                 loggerProvider.getConsoleReader().setPrompt("");
                 loggerProvider.getConsoleReader().resetPromptLine("", "", 0);
 
-                while ((line = loggerProvider.getConsoleReader().readLine(StringUtil.REFORM_VERSION + "-" + StringUtil.REFORM_SPECIFICATION + "@ReformCloudController > ")) != null && !line.trim().isEmpty() && ReformCloudController.RUNNING) {
+                while ((line = loggerProvider.getConsoleReader().readLine(StringUtil.REFORM_VERSION +
+                        "-" + StringUtil.REFORM_SPECIFICATION + "@ReformCloudController > ")) != null
+                        && !line.trim().isEmpty() && ReformCloudController.RUNNING) {
                     loggerProvider.getConsoleReader().setPrompt("");
 
                     try {
@@ -85,7 +87,8 @@ final class ReformCloudLauncher {
                         else
                             ReformCloudController.getInstance().getStatisticsProvider().addConsoleCommand();
                     } catch (final Throwable throwable) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while handling command input", throwable);
+                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                                "Error while handling command input", throwable);
                     }
                 }
             }

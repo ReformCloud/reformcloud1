@@ -109,7 +109,7 @@ public final class CommandScreen extends Command implements Serializable {
             }
         }
 
-        if (args.length >= 1 && (args[0].equalsIgnoreCase("execute") || args[0].equalsIgnoreCase("exec"))) {
+        if (args.length >= 2 && (args[0].equalsIgnoreCase("execute") || args[0].equalsIgnoreCase("exec"))) {
             if (!screenSessionProvider.isInScreen()) {
                 commandSender.sendMessage("You're not in a screen session. Type \"screen\"" +
                         " to get a command overview");

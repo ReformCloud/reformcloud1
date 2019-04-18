@@ -4,10 +4,10 @@
 
 package systems.reformcloud.meta;
 
-import systems.reformcloud.meta.enums.TemplateBackend;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import systems.reformcloud.meta.enums.TemplateBackend;
 
 import java.io.Serializable;
 

@@ -31,7 +31,7 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
     @Override
     public void onAddonLoading() {
         permissionDatabase = new PermissionDatabase();
-        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdatePermissionCache());
+        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutUpdatePermissionCache());
         this.registerCommand(new CommandPermissions());
     }
 
@@ -39,5 +39,11 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
     public void onAddonReadyToClose() {
         instance = null;
         permissionDatabase = null;
+
+        ReformCloudController.getInstance().getNettyHandler()
+                .unregisterQueryHandler("QueryGetPermissionCache")
+                .unregisterQueryHandler("QueryGetPermissionHolder")
+
+                .unregisterHandler("UpdatePermissionHolder");
     }
 }

@@ -25,13 +25,17 @@ import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 
 /**
  * @author _Klaro | Pasqual K. / created on 05.12.2018
  */
 
-public final class TypeTokenAdaptor {
+public final class TypeTokenAdaptor implements Serializable {
+        /**
+         * Some helpful type tokens for the cloud system
+         */
     @Getter
     private static final Type
             SERVER_GROUP_TYPE = new TypeToken<ServerGroup>() {

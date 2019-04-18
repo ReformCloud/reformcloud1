@@ -7,7 +7,6 @@ package systems.reformcloud.launcher;
 import io.netty.util.ResourceLeakDetector;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
@@ -18,21 +17,17 @@ import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 import systems.reformcloud.permissions.ReflectionUtil;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
 @Getter
-public class SpigotBootstrap extends JavaPlugin {
+public final class SpigotBootstrap extends JavaPlugin implements Serializable {
     @Getter
     public static SpigotBootstrap instance;
-
-    private List<UUID> acceptedPlayers = new ArrayList<>();
 
     @Deprecated
     private long start;
@@ -67,19 +62,21 @@ public class SpigotBootstrap extends JavaPlugin {
         ReformCloudLibraryService.sleep(1000000000);
     }
 
-    public void registerCommand(Command command) {
+    public CommandMap getCommandMap() {
+        CommandMap commandMap;
+
         try {
             Class<?> clazz = ReflectionUtil.reflectClazz(".CraftServer");
-            CommandMap commandMap;
 
             if (clazz != null)
                 commandMap = (CommandMap) clazz.getMethod("getCommandMap").invoke(Bukkit.getServer());
             else
                 commandMap = (CommandMap) Class.forName("net.glowstone.GlowServer").getMethod("getCommandMap").invoke(Bukkit.getServer());
-
-            commandMap.register("reformcloud", command);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
+            commandMap = null;
         }
+
+        return commandMap;
     }
 }

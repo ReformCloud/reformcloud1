@@ -10,10 +10,12 @@ import lombok.NonNull;
 import lombok.Setter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -25,9 +27,24 @@ import java.util.UUID;
 public class Packet implements Serializable {
     private static final long serialVersionUID = -30847898951064299L;
 
+    /**
+     * Returns an empty packet which doesn't contains any data
+     */
+    public static final Packet EMPTY_PACKET = new Packet(StringUtil.NULL, new Configuration());
+
+    /**
+     * The configuration of the packet
+     */
     private Configuration configuration;
+
+    /**
+     * The type of the packet
+     */
     private String type;
 
+    /**
+     * The result uid of the packet
+     */
     private UUID result;
 
     public Packet() {
@@ -44,6 +61,22 @@ public class Packet implements Serializable {
         this.result = resultID;
     }
 
+    public Packet(@NonNull final String type, @NonNull Map<? extends String, ?> configuration) {
+        this.type = type;
+        this.configuration = Configuration.fromMap(configuration);
+    }
+
+    public Packet(@NonNull final String type, @NonNull Map<? extends String, ?> configuration, @NonNull UUID resultID) {
+        this.type = type;
+        this.configuration = Configuration.fromMap(configuration);
+        this.result = resultID;
+    }
+
+    /**
+     * Reads a packet from the given byte buf
+     *
+     * @param byteBuf       The byte buf containing the packet information
+     */
     public void read(@NonNull ByteBuf byteBuf) {
         if (byteBuf.readableBytes() != 0) {
             final Packet packet = ReformCloudLibraryService.GSON.fromJson(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8), TypeTokenAdaptor.getPACKET_TYPE());
@@ -53,6 +86,11 @@ public class Packet implements Serializable {
         }
     }
 
+    /**
+     * Writes a packet to the byte buf
+     *
+     * @param byteBuf   The byte buf where the packet should be written to
+     */
     public void write(@NonNull ByteBuf byteBuf) {
         byte[] bytes = ReformCloudLibraryService.GSON.toJson(this).getBytes(StandardCharsets.UTF_8);
         this.writeLongs(bytes.length, byteBuf).writeBytes(bytes);
@@ -84,9 +122,5 @@ public class Packet implements Serializable {
         } while ((read & 0b10000000) != 0);
 
         return result;
-    }
-
-    public static Packet emptyPacket() {
-        return new Packet("undefined", new Configuration());
     }
 }

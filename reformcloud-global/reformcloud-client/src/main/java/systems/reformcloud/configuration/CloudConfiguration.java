@@ -9,15 +9,13 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -27,7 +25,7 @@ import java.util.Properties;
  */
 
 @Data
-public class CloudConfiguration {
+public final class CloudConfiguration implements Serializable {
     private String controllerKey, controllerIP, clientName, startIP;
     private int memory, controllerPort, controllerWebPort, logSize;
     private double cpu;
@@ -36,14 +34,12 @@ public class CloudConfiguration {
 
     /**
      * Creates or/and loads the Client Configuration
-     *
-     * @throws Throwable
      */
     public CloudConfiguration(final boolean reload) {
         if (!Files.exists(Paths.get("configuration.properties")) && !Files.exists(Paths.get("ControllerKEY"))) {
             ReformCloudClient.getInstance().getLoggerProvider().serve("Please copy the \"ControllerKEY\" file in the root directory of the client");
             ReformCloudLibraryService.sleep(2000);
-            System.exit(-1);
+            System.exit(ExitUtil.CONTROLLERKEY_MISSING);
             return;
         } else if (Files.exists(Paths.get("ControllerKEY"))) {
             this.createDirectories();
@@ -82,9 +78,6 @@ public class CloudConfiguration {
     /**
      * Creates default Configuration or
      * returns if the Configuration already exists
-     *
-     * @return
-     * @throws Throwable
      */
     private boolean defaultInit() {
         if (Files.exists(Paths.get("configuration.properties")))

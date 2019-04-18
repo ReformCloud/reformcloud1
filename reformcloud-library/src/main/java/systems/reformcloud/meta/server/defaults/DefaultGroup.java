@@ -34,6 +34,7 @@ public class DefaultGroup extends ServerGroup implements Serializable {
                 41000,
                 true,
                 false,
+                true,
                 serverModeType,
                 spigotVersions
         );

@@ -25,6 +25,7 @@ import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.network.NettyHandler;
@@ -68,12 +69,15 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
     private final NettySocketClient nettySocketClient;
     private final ChannelHandler channelHandler;
 
+    private ProxySettings proxySettings;
+
     private final ProxyStartupInfo proxyStartupInfo;
     private ProxyInfo proxyInfo;
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private PermissionCache permissionCache;
 
+    private Map<UUID, OnlinePlayer> onlinePlayers = new HashMap<>();
     private Map<UUID, PermissionHolder> cachedPermissionHolders = new HashMap<>();
     private List<IngameCommand> registeredIngameCommands = new ArrayList<>();
 
@@ -114,11 +118,13 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("UpdateAll", new PacketInUpdateAll())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
+                .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
                 .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache())
                 .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
                 .registerHandler("KickPlayer", new PacketInKickPlayer())
                 .registerHandler("SendPlayerMessage", new PacketInSendPlayerMessage())
+                .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
@@ -183,6 +189,9 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
 
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
+        if (this.onlinePlayers.containsKey(uniqueId))
+            return this.onlinePlayers.get(uniqueId);
+
         PacketFuture packetFuture = this.createPacketFuture(
                 new PacketOutQueryGetOnlinePlayer(uniqueId),
                 "ReformCloudController"
@@ -318,7 +327,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
 
     @Override
     public List<ServerInfo> getAllRegisteredServers(String groupName) {
-        return null;
+        return new ArrayList<>(this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerGroupProcesses(groupName));
     }
 
     @Override
@@ -728,5 +737,11 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
             return null;
 
         return this.registeredIngameCommands.stream().filter(e -> e.getName().equalsIgnoreCase(strings[0])).findFirst().orElse(null);
+    }
+
+    public int getGlobalMaxOnlineCount() {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        this.getAllProxyGroups().forEach(e -> atomicInteger.addAndGet(e.getMaxPlayers()));
+        return atomicInteger.get();
     }
 }

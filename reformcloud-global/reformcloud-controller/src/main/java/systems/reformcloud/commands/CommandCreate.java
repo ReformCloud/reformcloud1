@@ -80,7 +80,7 @@ public final class CommandCreate extends Command implements Serializable {
 
             loggerProvider.info("Please enter the name of the client");
             String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) == null);
-            loggerProvider.info("Please enter the name of the client");
+            loggerProvider.info("Please enter the ip address of the client");
             String ip = cloudConfiguration.readString(loggerProvider, s -> s.split("\\.").length == 4);
 
             commandSender.sendMessage("Trying to create new Client...");
@@ -115,7 +115,7 @@ public final class CommandCreate extends Command implements Serializable {
                     return;
                 }
 
-                final WebUser webUser = new WebUser(args[1], StringEncrypt.encrypt(args[2]), new HashMap<>());
+                final WebUser webUser = new WebUser(args[1], StringEncrypt.encryptSHA512(args[2]), new HashMap<>());
                 ReformCloudController.getInstance().getCloudConfiguration().createWebUser(webUser);
                 commandSender.sendMessage("WebUser \"" + webUser.getUser() + "\" was created successfully with password \"" + args[2] + "\"");
                 break;

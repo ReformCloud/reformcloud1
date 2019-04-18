@@ -9,5 +9,10 @@ package systems.reformcloud.utility.runtime;
  */
 
 public interface Reload {
+    /**
+     * This method get called to reload something
+     *
+     * @throws Throwable If any exception occurs will be catch here
+     */
     void reloadAll() throws Throwable;
 }

@@ -10,15 +10,14 @@ import lombok.AllArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.api.IEventHandler;
-import systems.reformcloud.event.enums.EventTargetType;
 import systems.reformcloud.event.events.IncomingPacketEvent;
-import systems.reformcloud.event.events.PacketHandleSuccessEvent;
 import systems.reformcloud.network.authentication.AuthenticationHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 
 /**
@@ -26,7 +25,10 @@ import java.net.InetSocketAddress;
  */
 
 @AllArgsConstructor
-public class ChannelReader extends SimpleChannelInboundHandler {
+public final class ChannelReader extends SimpleChannelInboundHandler implements Serializable {
+    /**
+     * The channel handler instance
+     */
     private ChannelHandler channelHandler;
 
     @Override
@@ -39,9 +41,8 @@ public class ChannelReader extends SimpleChannelInboundHandler {
         ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Handling incoming packet " +
                 "[Type=" + packet.getType() + "/Query=" + (packet.getResult() != null) + "/Message=" + packet.getConfiguration());
 
-        IncomingPacketEvent incomingPacketEvent = new IncomingPacketEvent(packet, false);
-        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.INCOMING_PACKET, incomingPacketEvent);
-
+        IncomingPacketEvent incomingPacketEvent = new IncomingPacketEvent(packet, channelHandlerContext);
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(incomingPacketEvent);
         if (incomingPacketEvent.isCancelled())
             return;
 
@@ -89,14 +90,11 @@ public class ChannelReader extends SimpleChannelInboundHandler {
         } else
             IEventHandler.instance.get().handleCustomPacket("unknown", packet.getType(), packet.getConfiguration());
 
-        if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration())) {
-            ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(true, packet));
+        if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler().handle(packet.getType(), packet.getConfiguration()))
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Successfully handled incoming packet " +
                     "with packet handler");
-        } else {
+        else
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Cannot handle incoming packet, no handler found");
-            ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(EventTargetType.PACKET_HANDLE_SUCCESS, new PacketHandleSuccessEvent(false, packet));
-        }
     }
 
     @Override

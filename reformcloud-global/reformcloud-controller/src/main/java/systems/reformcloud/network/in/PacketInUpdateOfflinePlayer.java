@@ -6,6 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.event.events.OfflinePlayerUpdateEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.utility.TypeTokenAdaptor;
@@ -20,6 +21,13 @@ public final class PacketInUpdateOfflinePlayer implements Serializable, NetworkI
     @Override
     public void handle(Configuration configuration) {
         OfflinePlayer offlinePlayer = configuration.getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
+        OfflinePlayer before = ReformCloudController.getInstance().getOfflinePlayer(offlinePlayer.getUniqueID());
+        OfflinePlayerUpdateEvent offlinePlayerUpdateEvent = new OfflinePlayerUpdateEvent(before, offlinePlayer);
+
+        ReformCloudController.getInstance().getEventManager().callEvent(offlinePlayerUpdateEvent);
+        if (offlinePlayerUpdateEvent.isCancelled())
+            return;
+
         ReformCloudController.getInstance().getPlayerDatabase().updateOfflinePlayer(offlinePlayer);
     }
 }

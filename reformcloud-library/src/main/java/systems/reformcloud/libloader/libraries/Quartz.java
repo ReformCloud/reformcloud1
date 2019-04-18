@@ -29,6 +29,6 @@ public final class Quartz extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "2.2.1";
+        return "2.3.1";
     }
 }

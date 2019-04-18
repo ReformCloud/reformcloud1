@@ -12,12 +12,11 @@ import systems.reformcloud.meta.info.ProxyInfo;
 /**
  * This class represents the ProxyStartup as event
  *
- * @since RCS1.0
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
 @AllArgsConstructor
 @Getter
-public class CloudProxyAddEvent extends Event {
+public final class CloudProxyAddEvent extends Event {
     private ProxyInfo proxyInfo;
 }

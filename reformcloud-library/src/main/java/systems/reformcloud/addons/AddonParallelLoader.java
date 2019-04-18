@@ -100,6 +100,12 @@ public class AddonParallelLoader extends AddonExtendable {
         return true;
     }
 
+    /**
+     * This methods searches for a specific addon and enables it
+     *
+     * @param name The name of the addon that should be found
+     * @return If the addon file exists and if the addon could be loaded
+     */
     public boolean enableAddon(final String name) {
         Set<AddonClassConfig> moduleConfigs = new HashSet<>();
 
@@ -158,13 +164,16 @@ public class AddonParallelLoader extends AddonExtendable {
         return true;
     }
 
+    /**
+     * Checks if a specific addon is enabled or not
+     *
+     * @param name      The name of the addon
+     * @return If the addon is enabled or not
+     */
     public boolean isAddonEnabled(final String name) {
-        JavaAddon javaAddon = this.javaAddons
-                .stream()
-                .filter(addon -> addon.getAddonName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
-        return javaAddon != null;
+       return this.javaAddons
+               .stream()
+               .anyMatch(addon -> addon.getAddonName().equalsIgnoreCase(name));
     }
 
     /**

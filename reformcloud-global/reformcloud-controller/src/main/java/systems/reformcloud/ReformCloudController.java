@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
+import systems.reformcloud.api.deployment.incoming.RestAPIDeploymentService;
+import systems.reformcloud.api.deployment.outgoing.RestAPIDownloadService;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
 import systems.reformcloud.api.ingame.command.IngameCommandMangerImpl;
 import systems.reformcloud.api.network.event.EventAdapter;
@@ -24,8 +26,7 @@ import systems.reformcloud.database.DatabaseSaver;
 import systems.reformcloud.database.player.PlayerDatabase;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.LoadSuccessEvent;
+import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.language.LanguageManager;
@@ -50,11 +51,13 @@ import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.query.in.PacketInQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.in.PacketInQueryGetPlayer;
+import systems.reformcloud.network.query.in.PacketInQueryPlayerAccepted;
 import systems.reformcloud.network.sync.in.*;
 import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.startup.CloudProcessOfferService;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.runtime.Reload;
@@ -66,6 +69,7 @@ import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -77,7 +81,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ReformCloudController implements Shutdown, Reload, IAPIService {
+public final class ReformCloudController implements Serializable, Shutdown, Reload, IAPIService {
     public static volatile boolean RUNNING = false;
 
     @Getter
@@ -111,16 +115,13 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
     /**
      * Creates a new instance of the ReformCloudController and prepares all needed handlers
      *
-     * @see LoggerProvider
-     * @see CommandManager
-     *
-     * @param loggerProvider            Main Cloud logger, will be used everywhere
-     * @param commandManager            Main CommandManager to manage all available commands
-     * @param ssl                       If this is {@code true} the cloud will use a self-
-     *                                  signed certificate
-     * @param time                      Startup time for start time
-     * @throws Throwable                If an error occurs while starting CloudSystem
-     *                                  the error will be thrown here
+     * @param loggerProvider    Main Cloud logger, will be used everywhere
+     * @param commandManager    Main CommandManager to manage all available commands
+     * @param ssl               If this is {@code true} the cloud will use a self-
+     *                          signed certificate
+     * @param time              Startup time for start time
+     * @throws Throwable        If an error occurs while starting CloudSystem
+     *                          the error will be thrown here
      */
     public ReformCloudController(LoggerProvider loggerProvider, CommandManager commandManager, boolean ssl, long time) throws Throwable {
         if (instance == null)
@@ -210,8 +211,9 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         loggerProvider.info(this.getLoadedLanguage().getLoading_done()
-                    .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
-        this.eventManager.callEvent(EventTargetType.LOAD_SUCCESS, new LoadSuccessEvent(true));
+                .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
+
+        this.eventManager.callEvent(new StartedEvent());
     }
 
     /**
@@ -266,7 +268,6 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerHandler("UpdateOfflinePlayer", new PacketInUpdateOfflinePlayer())
                 .registerHandler("LoginPlayer", new PacketInLoginPlayer())
                 .registerHandler("LogoutPlayer", new PacketInLogoutPlayer())
-                .registerHandler("PlayerAccepted", new PacketInPlayerAccepted())
 
                 //PlayerProvider Handlers
                 .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
@@ -275,6 +276,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
                 //Player Query Handlers
                 .registerQueryHandler("QueryGetPlayer", new PacketInQueryGetPlayer())
+                .registerQueryHandler("QueryCheckPlayer", new PacketInQueryPlayerAccepted())
                 .registerQueryHandler("QueryGetOnlinePlayer", new PacketInQueryGetOnlinePlayer());
 
         if (this.reformWebServer != null) {
@@ -297,6 +299,9 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                     .registerHandler("/api/start/proxy", new RestAPIStartProxy())
 
                     .registerHandler("/api/player/get", new RestAPIGetOfflinePlayer())
+
+                    .registerHandler("/api/deploy", new RestAPIDeploymentService())
+                    .registerHandler("/api/download", new RestAPIDownloadService())
 
                     .registerHandler("/api/stop/server", new RestAPIStopServer())
                     .registerHandler("/api/stop/proxy", new RestAPIStartProxy());
@@ -327,8 +332,11 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .registerCommand(new CommandScreen())
                 .registerCommand(new CommandVersion())
                 .registerCommand(new CommandListGroups())
+                .registerCommand(new CommandDeveloper())
                 .registerCommand(new CommandUpload())
                 .registerCommand(new CommandAssignment())
+                .registerCommand(new CommandInstall())
+                .registerCommand(new CommandDeploy())
                 .registerCommand(new CommandWebPermissions());
     }
 
@@ -352,7 +360,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
         this.internalCloudNetwork.getClients().clear();
 
         this.addonParallelLoader.disableAddons();
-        this.eventManager.unregisterAllListener();
+        this.eventManager.unregisterAll();
 
         Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
         this.shutdownHook = null;
@@ -416,7 +424,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
             this.loggerProvider.info(this.getLoadedLanguage().getController_servprocess_stopped()
-                        .replace("%name%", e.getCloudProcess().getName()));
+                    .replace("%name%", e.getCloudProcess().getName()));
         });
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> {
@@ -449,6 +457,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
                 .stream()
                 .filter(e -> this.channelHandler.isChannelRegistered(e.getName())
                         && e.getClientInfo() != null
+                        && e.getClientInfo().isReady()
                         && clients.contains(e.getName()))
                 .collect(Collectors.toList());
 
@@ -738,7 +747,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
     @Override
     public List<ServerInfo> getAllRegisteredServers(String groupName) {
-        return null;
+        return new ArrayList<>(this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerGroupProcesses(groupName));
     }
 
     @Override
@@ -893,7 +902,7 @@ public class ReformCloudController implements Shutdown, Reload, IAPIService {
 
     @Override
     public void removeInternalProcess() {
-        System.exit(0);
+        System.exit(ExitUtil.STOPPED_SUCESS);
     }
 
     public void reloadAllSave() {

@@ -34,6 +34,7 @@ public class LobbyGroup extends ServerGroup implements Serializable {
                 41000,
                 false,
                 false,
+                true,
                 ServerModeType.LOBBY,
                 spigotVersions
         );

@@ -13,8 +13,7 @@ import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.EventManager;
-import systems.reformcloud.event.enums.EventTargetType;
-import systems.reformcloud.event.events.LoadSuccessEvent;
+import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.logging.LoggerProvider;
@@ -37,10 +36,7 @@ import systems.reformcloud.network.packets.out.PacketOutUpdateOfflinePlayer;
 import systems.reformcloud.network.packets.out.PacketOutUpdateOnlinePlayer;
 import systems.reformcloud.network.packets.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.packets.query.out.PacketOutQueryGetPlayer;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncControllerTime;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncScreenDisable;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncScreenJoin;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncUpdateClient;
+import systems.reformcloud.network.packets.sync.in.*;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncClientDisconnects;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncClientUpdateSuccess;
 import systems.reformcloud.player.implementations.OfflinePlayer;
@@ -50,16 +46,18 @@ import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
 import systems.reformcloud.serverprocess.screen.internal.ClientScreenHandler;
 import systems.reformcloud.serverprocess.shutdown.ShutdownWorker;
 import systems.reformcloud.synchronization.SynchronizationHandler;
+import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
-import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
+import systems.reformcloud.utility.parameters.ParameterManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.threading.TaskScheduler;
 import systems.reformcloud.versioneering.VersionController;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +73,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
-public class ReformCloudClient implements Shutdown, Reload, IAPIService {
+public final class ReformCloudClient implements Serializable, Shutdown, Reload, IAPIService {
     public static volatile boolean RUNNING = false;
 
     @Getter
@@ -91,11 +89,14 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     private final EventManager eventManager = new EventManager();
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
 
+    private final ParameterManager parameterManager = new ParameterManager(new ArrayList<>());
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private final TaskScheduler taskScheduler;
     private final ChannelHandler channelHandler;
     private final NettySocketClient nettySocketClient = new NettySocketClient();
+
+    private final SynchronizationHandler synchronizationHandler;
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
 
@@ -107,13 +108,13 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     private long internalTime = System.currentTimeMillis();
 
     /**
-     * Creates a new Instance of the {ReformCloudClient}
+     * Creates a new Instance of the ReformCloudClient
      *
-     * @param loggerProvider
-     * @param commandManager
-     * @param ssl
-     * @param time
-     * @throws Throwable
+     * @param loggerProvider        The default logger provider of the cloud system
+     * @param commandManager        The command manger which should be used in the cloud system
+     * @param ssl                   If ssl should be enabled or not
+     * @param time                  The startup time of the client
+     * @throws Throwable            If any exception occurs it will be catch and printed
      */
     public ReformCloudClient(LoggerProvider loggerProvider, CommandManager commandManager, boolean ssl, final long time) throws Throwable {
         if (instance == null)
@@ -157,12 +158,14 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 ReformCloudLibraryService.usedMemorySystem()
         );
 
+        this.synchronizationHandler = new SynchronizationHandler();
+
         this.taskScheduler
-                .schedule(SynchronizationHandler.class, TimeUnit.SECONDS, 30)
                 .schedule(ShutdownWorker.class, TimeUnit.SECONDS, 10);
 
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessScreenService);
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessStartupHandler);
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.synchronizationHandler);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "ShutdownHook"));
 
@@ -175,7 +178,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
         loggerProvider.info(this.getInternalCloudNetwork().getLoaded().getLoading_done()
                 .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
-        this.eventManager.callEvent(EventTargetType.LOAD_SUCCESS, new LoadSuccessEvent(true));
+        this.eventManager.callEvent(new StartedEvent());
     }
 
     private void registerNetworkHandlers() {
@@ -199,7 +202,12 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 .registerHandler("ScreenDisable", new PacketInSyncScreenDisable())
                 .registerHandler("ReloadClient", new PacketInSyncUpdateClient())
                 .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand())
+                .registerHandler("DeployServer", new PacketInDeployServer())
+                .registerHandler("TemplateDeployReady", new PacketInTemplateDeployReady())
+                .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
+                .registerHandler("ParametersUpdate", new PacketInParameterUpdate())
+                .registerHandler("SyncStandby", new PacketInSyncStandby())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
                 .registerHandler("GetControllerTemplateResult", new PacketInGetControllerTemplateResult())
@@ -213,6 +221,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
                 .registerCommand(new CommandHelp())
                 .registerCommand(new CommandVersion())
                 .registerCommand(new CommandAddons())
+                .registerCommand(new CommandClear())
                 .registerCommand(new CommandReload());
     }
 
@@ -225,7 +234,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         this.getNettyHandler().clearHandlers();
         this.commandManager.clearCommands();
         this.addonParallelLoader.disableAddons();
-        this.eventManager.unregisterAllListener();
+        this.eventManager.unregisterAll();
 
         this.cloudConfiguration = new CloudConfiguration(true);
         this.cloudConfiguration.setClientName(oldName);
@@ -255,10 +264,9 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
         shutdown = true;
         RUNNING = false;
 
-        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientDisconnects());
+        this.channelHandler.sendDirectPacket("ReformCloudController", new PacketOutSyncClientDisconnects());
 
         ReformCloudLibraryService.sleep(500);
-        this.nettySocketClient.close();
 
         this.cloudProcessScreenService.getRegisteredProxyProcesses().forEach(proxyProcess -> {
             proxyProcess.shutdown(null, false);
@@ -273,6 +281,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
             ReformCloudLibraryService.sleep(1000);
         });
 
+        this.nettySocketClient.close();
         this.addonParallelLoader.disableAddons();
         ReformCloudLibraryService.sleep(1000);
     }
@@ -280,10 +289,8 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     /**
      * Get used memory of ReformCloudClient
      *
-     * @return {@link Integer} of used memory by adding the maximal memory of the ProxyProcesses
+     * @return of used memory by adding the maximal memory of the ProxyProcesses
      * to the maximal memory of the ServerProcesses
-     * @see ServerProcessManager#getUsedProxyMemory()
-     * @see ServerProcessManager#getUsedServerMemory()
      */
     public int getMemory() {
         int used = 0;
@@ -311,16 +318,16 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
     }
 
     /**
-     * Connects to the Controller by using {@link Boolean}
+     * Connects to the Controller
      *
-     * @param ssl
+     * @param ssl       If ssl is enabled or not
      */
     public void connect(final boolean ssl) {
         this.nettySocketClient.setConnections(1);
 
         while (this.nettySocketClient.getConnections() != -1 && !shutdown) {
             if (this.nettySocketClient.getConnections() == 8)
-                System.exit(1);
+                System.exit(ExitUtil.CONTROLLER_NOT_REACHABLE);
 
             this.nettySocketClient.connect(cloudConfiguration.getEthernetAddress(), this.channelHandler, ssl);
 
@@ -560,7 +567,7 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
     @Override
     public List<ServerInfo> getAllRegisteredServers(String groupName) {
-        return null;
+        return new ArrayList<>(this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerGroupProcesses(groupName));
     }
 
     @Override
@@ -715,6 +722,6 @@ public class ReformCloudClient implements Shutdown, Reload, IAPIService {
 
     @Override
     public void removeInternalProcess() {
-        System.exit(0);
+        System.exit(ExitUtil.STOPPED_SUCESS);
     }
 }

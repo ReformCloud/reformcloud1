@@ -18,6 +18,9 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
 public final class CloudProxyPingListener {
     @Subscribe(order = PostOrder.LATE)
     public void handle(final ProxyPingEvent event) {
+        if (ReformCloudAPIVelocity.getInstance().getProxySettings() != null)
+            return;
+
         final ProxyGroup proxyGroup = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getProxyGroups().get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());
         if (proxyGroup == null)
             return;

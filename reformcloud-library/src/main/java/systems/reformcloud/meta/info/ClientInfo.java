@@ -23,7 +23,9 @@ public final class ClientInfo implements Serializable {
     @Setter
     public int maxMemory, cpuCoresSystem;
 
+    @Setter
     private boolean ready;
+
     private List<String> startedServers;
     private List<String> startedProxies;
 

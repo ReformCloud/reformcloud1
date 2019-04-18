@@ -4,18 +4,18 @@
 
 package systems.reformcloud.listener;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.event.LoginEvent;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerKickEvent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.packets.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
@@ -34,7 +34,7 @@ import java.util.Map;
  */
 
 public final class CloudConnectListener implements Listener {
-    @EventHandler(priority = - 127)
+    @EventHandler(priority = -127)
     public void handle(final ServerConnectEvent event) {
         if (event.getPlayer().getServer() == null) {
             ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
@@ -46,6 +46,7 @@ public final class CloudConnectListener implements Listener {
             if (serverInfo == null)
                 event.setCancelled(true);
 
+            event.getPlayer().setReconnectServer(BungeecordBootstrap.getInstance().getProxy().getServerInfo(serverInfo.getCloudProcess().getName()));
             ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync(
                     "ReformCloudController",
                     proxyInfo.getCloudProcess().getName(),
@@ -65,6 +66,7 @@ public final class CloudConnectListener implements Listener {
 
                         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
                                 new PacketOutUpdateOnlinePlayer(onlinePlayer));
+                        ReformCloudAPIBungee.getInstance().getOnlinePlayers().put(event.getPlayer().getUniqueId(), onlinePlayer);
 
                         if (ReformCloudAPIBungee.getInstance().getPermissionCache() != null) {
                             ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
@@ -106,7 +108,7 @@ public final class CloudConnectListener implements Listener {
         }
     }
 
-    @EventHandler(priority = - 128)
+    @EventHandler(priority = -128)
     public void handle(final LoginEvent event) {
         ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
 
@@ -117,7 +119,7 @@ public final class CloudConnectListener implements Listener {
             event.setCancelled(true);
             return;
         } else if (proxyInfo.getProxyGroup().isMaintenance()
-                && ! ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                && !ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
                 .getProxyGroups().get(proxyInfo.getProxyGroup().getName()).getWhitelist()
                 .contains(event.getConnection().getUniqueId())) {
             event.setCancelReason(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-maintenance-join-no-permission")));
@@ -134,7 +136,8 @@ public final class CloudConnectListener implements Listener {
         else
             proxyInfo.setFull(false);
 
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLoginPlayer(event.getConnection().getUniqueId()));
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
+                new PacketOutLoginPlayer(event.getConnection().getUniqueId()));
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
                 new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getConnection().getName() + "/UUID="
@@ -142,8 +145,18 @@ public final class CloudConnectListener implements Listener {
                         + event.getConnection().getAddress().getAddress().getHostAddress() + "] is now connected"));
     }
 
-    @EventHandler(priority = - 128)
+    @EventHandler(priority = -127)
+    public void handle(final ServerSwitchEvent event) {
+        OnlinePlayer onlinePlayer = ReformCloudAPIBungee.getInstance().getOnlinePlayer(event.getPlayer().getUniqueId());
+        onlinePlayer.setCurrentServer(event.getPlayer().getServer().getInfo().getName());
+        ReformCloudAPIBungee.getInstance().updateOnlinePlayer(onlinePlayer);
+
+        initTab(event.getPlayer());
+    }
+
+    @EventHandler(priority = -128)
     public void handle(final PlayerDisconnectEvent event) {
+        ReformCloudAPIBungee.getInstance().getOnlinePlayers().remove(event.getPlayer().getUniqueId());
         ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
         ProxyInfo proxyInfo = ReformCloudAPIBungee.getInstance().getProxyInfo();
 
@@ -161,9 +174,10 @@ public final class CloudConnectListener implements Listener {
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getName() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));
+        BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> initTab(e));
     }
 
-    @EventHandler(priority = - 127)
+    @EventHandler(priority = -127)
     public void handle(final ServerKickEvent event) {
         if (event.getCancelServer() != null) {
             final ServerInfo serverInfo = ReformCloudAPIBungee.getInstance().nextFreeLobby(
@@ -181,5 +195,37 @@ public final class CloudConnectListener implements Listener {
                 event.setKickReasonComponent(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server")));
             }
         }
+    }
+
+    public static void initTab(final ProxiedPlayer proxiedPlayer) {
+        ProxySettings proxySettings = ReformCloudAPIBungee.getInstance().getProxySettings();
+        if (proxySettings == null || !proxySettings.isTabEnabled() || proxiedPlayer.getServer() == null || proxiedPlayer.getServer().getInfo() == null)
+            return;
+
+        proxiedPlayer.resetTabHeader();
+        proxiedPlayer.setTabHeader(TextComponent.fromLegacyText(
+                ChatColor.translateAlternateColorCodes('&',
+                        proxySettings.getTabHeader()
+                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
+                                .replace("%current_server%", proxiedPlayer.getServer().getInfo().getName())
+                                .replace("%online_players_current%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
+                                .replace("%online_players%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalOnlineCount()))
+                                .replace("%max_players_current%", Integer.toString(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))
+                )), TextComponent.fromLegacyText(
+                ChatColor.translateAlternateColorCodes('&',
+                        proxySettings.getTabFooter()
+                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
+                                .replace("%current_server%", proxiedPlayer.getServer().getInfo().getName())
+                                .replace("%online_players_current%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
+                                .replace("%online_players%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalOnlineCount()))
+                                .replace("%max_players_current%", Integer.toString(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getMaxPlayers()))
+                                .replace("%max_players_global%", Integer.toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))
+                ))
+        );
     }
 }

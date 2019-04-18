@@ -25,7 +25,7 @@ public final class CommandWhitelist extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-            commandSender.sendMessage("ReformCloud Whitelisted players: ");
+            commandSender.sendMessage("ReformCloud whitelisted players: ");
             ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values().forEach(e ->
                     e.getWhitelist().forEach(player -> commandSender.sendMessage("- " + player))
             );
@@ -59,7 +59,7 @@ public final class CommandWhitelist extends Command implements Serializable {
             } else if (args[0].equalsIgnoreCase("remove")) {
                 UUID uuidInput = getUuidFromString(args[2]);
                 if (uuidInput == null) {
-                    commandSender.sendMessage("This is not a UUID.\n");
+                    commandSender.sendMessage("Cannot find the uuid of the user. (Is the uuid or the name correct?)");
                     return;
                 }
                 if (args[1].equalsIgnoreCase("--all")) {
@@ -91,8 +91,11 @@ public final class CommandWhitelist extends Command implements Serializable {
     private UUID getUuidFromString(String in) {
         try {
             UUID uuidInput;
-            if (in.contains("-")) uuidInput = UUID.fromString(in);
-            else uuidInput = UUIDConverter.toUUID(in);
+            if (in.contains("-"))
+                uuidInput = UUID.fromString(in);
+            else
+                uuidInput = UUIDConverter.toUUID(in);
+
             return uuidInput;
         } catch (final IllegalArgumentException ignored) {
             return UUIDConverter.getUUIDFromName(in);

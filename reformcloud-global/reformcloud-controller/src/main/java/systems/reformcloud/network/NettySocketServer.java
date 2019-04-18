@@ -18,6 +18,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 
 @Getter
-public class NettySocketServer extends ChannelInitializer<Channel> implements AutoCloseable {
+public final class NettySocketServer extends ChannelInitializer<Channel> implements AutoCloseable, Serializable {
     private SslContext sslContext;
     private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup(), bossGroup = ReformCloudLibraryService.eventLoopGroup();
 
@@ -46,15 +47,13 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
      * If an exceptions occurs it will be catch by {@link Throwable} below and
      * printed in the console. If an error occurs, you can contact the support.
      *
-     * @since 2.0
-     *
-     * @param ssl                   If this is {@code true} the ssl context
-     *                              will be enabled and a self-signed certificate
-     *                              will be added to every channel, which tries to
-     *                              connect to the ReformCloudController
-     * @param ethernetAddress    Main address where the cloud tries to bind
-     *                              the socket server to. Please make sure that
-     *                              the port is not in use, yet
+     * @param ssl             If this is {@code true} the ssl context
+     *                        will be enabled and a self-signed certificate
+     *                        will be added to every channel, which tries to
+     *                        connect to the ReformCloudController
+     * @param ethernetAddress Main address where the cloud tries to bind
+     *                        the socket server to. Please make sure that
+     *                        the port is not in use, yet
      */
     public NettySocketServer(boolean ssl, EthernetAddress ethernetAddress, File cert, File key) {
         try {
@@ -120,8 +119,11 @@ public class NettySocketServer extends ChannelInitializer<Channel> implements Au
 
     @Override
     public void close() {
-        workerGroup.shutdownGracefully();
-        bossGroup.shutdownGracefully();
+        if (workerGroup != null)
+            workerGroup.shutdownGracefully();
+
+        if (bossGroup != null)
+            bossGroup.shutdownGracefully();
     }
 
     private boolean isIpAllowed(String ip) {

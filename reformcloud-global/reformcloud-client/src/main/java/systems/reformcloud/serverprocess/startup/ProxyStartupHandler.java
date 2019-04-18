@@ -29,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,7 +42,7 @@ import java.util.Arrays;
  */
 
 @Getter
-public class ProxyStartupHandler {
+public final class ProxyStartupHandler implements Serializable {
     private ProxyStartupInfo proxyStartupInfo;
     private Path path;
     private Process process;
@@ -235,7 +236,7 @@ public class ProxyStartupHandler {
                 new CloudProcess(proxyStartupInfo.getName(), proxyStartupInfo.getUid(), ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
                         template, proxyStartupInfo.getId()),
                 proxyStartupInfo.getProxyGroup(), proxyStartupInfo.getProxyGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
-                this.port, 0, proxyStartupInfo.getProxyGroup().getMemory(),false, new ArrayList<>()
+                this.port, 0, proxyStartupInfo.getProxyGroup().getMemory(), false, new ArrayList<>()
         );
 
         new Configuration()
@@ -253,7 +254,6 @@ public class ProxyStartupHandler {
         this.processStartupStage = ProcessStartupStage.START;
         final String[] cmd = new String[]
                 {
-                        StringUtil.JAVA,
                         "-XX:+UseG1GC",
                         "-XX:MaxGCPauseMillis=50",
                         "-XX:-UseAdaptiveSizePolicy",
@@ -261,12 +261,23 @@ public class ProxyStartupHandler {
                         "-Djline.terminal=jline.UnsupportedTerminal",
                         "-DIReallyKnowWhatIAmDoingISwear=true",
                         "-Xmx" + this.proxyStartupInfo.getProxyGroup().getMemory() + "M",
+                };
+
+        final String[] after = new String[]
+                {
                         StringUtil.JAVA_JAR,
                         "BungeeCord.jar"
                 };
 
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getGroup(), cmd, after)
+                .replace("%port%", Integer.toString(port))
+                .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
+                .replace("%name%", proxyStartupInfo.getName())
+                .replace("%group%", proxyStartupInfo.getProxyGroup().getName())
+                .replace("%template%", this.template.getName());
+
         try {
-            this.process = Runtime.getRuntime().exec(cmd, null, new File(path.toString()));
+            this.process = Runtime.getRuntime().exec(command, null, new File(path.toString()));
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while starting proxy process", ex);
             return false;
@@ -427,7 +438,8 @@ public class ProxyStartupHandler {
                 || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.HEXACORD)) {
             Files.readAllLines(Paths.get(this.path + "/proxy.log.0"), StandardCharsets.UTF_8).forEach(e -> stringBuilder.append(e).append("\n"));
         } else if (this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.TRAVERTINE)
-                || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.WATERFALL)) {
+                || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.WATERFALL)
+                || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)) {
             Files.readAllLines(Paths.get(this.path + "/logs/latest.log"), StandardCharsets.UTF_8).forEach(e -> stringBuilder.append(e).append("\n"));
         }
 

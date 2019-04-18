@@ -4,10 +4,10 @@
 
 package systems.reformcloud.meta.startup;
 
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.meta.proxy.ProxyGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.proxy.ProxyGroup;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 public class ProxyStartupInfo implements Serializable {
-    private static final long serialVersionUID = - 295123813122792999L;
+    private static final long serialVersionUID = -295123813122792999L;
 
     private UUID uid;
     private String name, template;

@@ -14,6 +14,7 @@ import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
 import systems.reformcloud.utility.files.FileUtils;
 
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Queue;
@@ -24,7 +25,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 
 @Getter
-public class CloudProcessStartupHandler implements Runnable {
+public final class CloudProcessStartupHandler implements Runnable, Serializable {
     private final Queue<ServerStartupInfo> serverStartupInfo = new ConcurrentLinkedDeque<>();
     private final Queue<ProxyStartupInfo> proxyStartupInfo = new ConcurrentLinkedDeque<>();
 
@@ -51,7 +52,7 @@ public class CloudProcessStartupHandler implements Runnable {
         while (!Thread.currentThread().isInterrupted()) {
             while (ReformCloudClient.RUNNING) {
 
-                while (!this.serverStartupInfo.isEmpty()) {
+                if (!this.serverStartupInfo.isEmpty()) {
                     final ServerStartupInfo serverStartupInfo = this.serverStartupInfo.poll();
 
                     boolean firstStart = false;
@@ -77,7 +78,7 @@ public class CloudProcessStartupHandler implements Runnable {
                         this.serverStartupInfo.add(serverStartupInfo);
                 }
 
-                while (!this.proxyStartupInfo.isEmpty()) {
+                if (!proxyStartupInfo.isEmpty()) {
                     final ProxyStartupInfo proxyStartupInfo = this.proxyStartupInfo.poll();
 
                     if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/default")))
@@ -100,7 +101,7 @@ public class CloudProcessStartupHandler implements Runnable {
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (final InterruptedException ignored) {
                 }
             }

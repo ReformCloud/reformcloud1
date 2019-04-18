@@ -45,6 +45,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -56,7 +57,7 @@ import java.util.stream.Collectors;
  */
 
 @Data
-public class ReformCloudAPISpigot implements Listener, IAPIService {
+public final class ReformCloudAPISpigot implements Listener, IAPIService, Serializable {
     @Getter
     @Setter
     public static ReformCloudAPISpigot instance;
@@ -114,12 +115,12 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
                 .registerHandler("ProcessAdd", new PacketInProcessAdd())
                 .registerHandler("ProcessRemove", new PacketInProcessRemove())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
+                .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
-                .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache())
-                .registerHandler("PlayerAccepted", new PacketInPlayerAccepted());
+                .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache());
 
         this.nettySocketClient = new NettySocketClient();
         this.nettySocketClient.connect(
@@ -333,7 +334,7 @@ public class ReformCloudAPISpigot implements Listener, IAPIService {
 
     @Override
     public List<ServerInfo> getAllRegisteredServers(String groupName) {
-        return null;
+        return new ArrayList<>(this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerGroupProcesses(groupName));
     }
 
     @Override
