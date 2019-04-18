@@ -19,9 +19,6 @@ import systems.reformcloud.permissions.ReflectionUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -31,8 +28,6 @@ import java.util.UUID;
 public final class SpigotBootstrap extends JavaPlugin implements Serializable {
     @Getter
     public static SpigotBootstrap instance;
-
-    private List<UUID> acceptedPlayers = new ArrayList<>();
 
     @Deprecated
     private long start;

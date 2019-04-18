@@ -120,8 +120,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
-                .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache())
-                .registerHandler("PlayerAccepted", new PacketInPlayerAccepted());
+                .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache());
 
         this.nettySocketClient = new NettySocketClient();
         this.nettySocketClient.connect(

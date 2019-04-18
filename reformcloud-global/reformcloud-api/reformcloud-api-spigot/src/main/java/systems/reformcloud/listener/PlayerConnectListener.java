@@ -48,7 +48,6 @@ public final class PlayerConnectListener implements Listener, Serializable {
                 new PacketOutCheckPlayer(event.getUniqueId())
         ).sendOnCurrentThread("ReformCloudController")
                 .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration().getBooleanValue("checked");
-        System.out.println("MR DOUBLE TIME IST COOL: " + ok);
         if (!ok) {
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                     ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));

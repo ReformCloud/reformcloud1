@@ -268,7 +268,6 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 .registerHandler("UpdateOfflinePlayer", new PacketInUpdateOfflinePlayer())
                 .registerHandler("LoginPlayer", new PacketInLoginPlayer())
                 .registerHandler("LogoutPlayer", new PacketInLogoutPlayer())
-                .registerHandler("PlayerAccepted", new PacketInPlayerAccepted())
 
                 //PlayerProvider Handlers
                 .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
