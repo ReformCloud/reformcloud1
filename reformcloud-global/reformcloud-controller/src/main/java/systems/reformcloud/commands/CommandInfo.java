@@ -42,7 +42,7 @@ public final class CommandInfo extends Command implements Serializable {
         commandSender.sendMessage("JVM start time: " +
                 ReformCloudController.getInstance().getLoggerProvider().getDateFormat().format(ReformCloudLibraryService.systemStartTime()));
         commandSender.sendMessage("JVM uptime: " +
-                ReformCloudController.getInstance().getLoggerProvider().getDateFormat().format(ReformCloudLibraryService.systemUpTime()));
+                dataFormat.format(ReformCloudLibraryService.systemUpTime()));
         commandSender.sendMessage("GameServer online time: " +
                 (stats.getServerOnlineTime() == 0 ? "00:00:00.000" : this.dataFormat.format(stats.getServerOnlineTime())));
         commandSender.sendMessage("GameServer walked distance: " + stats.getWalkedDistance());

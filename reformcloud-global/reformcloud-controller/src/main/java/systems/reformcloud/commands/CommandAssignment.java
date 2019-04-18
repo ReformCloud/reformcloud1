@@ -641,7 +641,7 @@ public final class CommandAssignment extends Command implements Serializable {
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                         client.getName(), new PacketOutUpdateClientSetting(ClientSettings.MAX_CPU_USAGE, args[3])
                 );
-                commandSender.sendMessage("Trying to update the memory...");
+                commandSender.sendMessage("Trying to update the max cpu usage...");
                 return;
             }
 
