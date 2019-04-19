@@ -49,7 +49,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            PermissionGroup permissionGroup = new PermissionGroup(args[0], "", "", "", 1, new HashMap<>());
+            PermissionGroup permissionGroup = new PermissionGroup(args[0], "", "", "", "7", 1, new HashMap<>());
             PermissionsAddon.getInstance().getPermissionDatabase().createPermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
 
@@ -67,7 +67,7 @@ public final class CommandPermissions extends Command implements Serializable {
                     .getName().equals(permissionGroup.getName())) {
                 PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().setDefaultGroup(
                         new PermissionGroup("default" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong()
-                                , "", "", "", 1, new HashMap<>())
+                                , "", "", "", "7", 1, new HashMap<>())
                 );
             }
 
