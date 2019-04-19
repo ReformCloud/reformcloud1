@@ -27,7 +27,9 @@ import java.io.Serializable;
 public final class CloudAddonsListener implements Serializable, Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void handle(final AsyncPlayerChatEvent event) {
-        if (!event.isCancelled() && ReformCloudAPISpigot.getInstance().getPermissionCache() != null) {
+        if (!event.isCancelled()
+                && ReformCloudAPISpigot.getInstance().getPermissionCache() != null
+                && ReformCloudAPISpigot.getInstance().getPermissionCache().isChatEnabled()) {
             PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(event.getPlayer().getUniqueId());
             if (permissionHolder == null)
                 return;
@@ -56,7 +58,8 @@ public final class CloudAddonsListener implements Serializable, Listener {
 
     @EventHandler
     public void handle(final PlayerJoinEvent event) {
-        if (ReformCloudAPISpigot.getInstance().getPermissionCache() == null)
+        if (ReformCloudAPISpigot.getInstance().getPermissionCache() == null
+                || !ReformCloudAPISpigot.getInstance().getPermissionCache().isTabEnabled())
             return;
 
         Bukkit.getScheduler().runTaskLater(SpigotBootstrap.getInstance(), () -> {
