@@ -51,13 +51,13 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
         final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT)
                 .setAudioEnabled(false)
                 .setAutoReconnect(true)
-                .setToken(this.discordConfig.getDiscordInformations().getToken())
+                .setToken(this.discordConfig.getDiscordInformation().getToken())
                 .addEventListeners(new ConsoleInputHandler())
-                .setActivity(Activity.playing(this.discordConfig.getDiscordInformations().getGame()));
+                .setActivity(Activity.playing(this.discordConfig.getDiscordInformation().getGame()));
 
         try {
             this.jda = jdaBuilder.build().awaitReady();
-            this.textChannel = jda.getTextChannelById(this.discordConfig.getDiscordInformations().getChannelID());
+            this.textChannel = jda.getTextChannelById(this.discordConfig.getDiscordInformation().getChannelID());
         } catch (final InterruptedException | LoginException ex) {
             StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(), "Error while startup of addon DiscordBot", ex);
         }
@@ -68,9 +68,6 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
         if (jda != null) {
             this.jda.shutdownNow();
             this.jda = null;
-
-            if (!consoleWriter.getThread().isInterrupted())
-                this.consoleWriter.getThread().interrupt();
         }
     }
 }

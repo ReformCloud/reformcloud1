@@ -15,6 +15,6 @@ import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter
-public final class DiscordInformations implements Serializable {
+public final class DiscordInformation implements Serializable {
     private String token, channelID, game;
 }

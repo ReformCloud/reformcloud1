@@ -127,9 +127,9 @@ public final class NettySocketServer extends ChannelInitializer<Channel> impleme
     }
 
     private boolean isIpAllowed(String ip) {
-        List<String> ips = new ArrayList<>();
-
+        List<String> ips = new ArrayList<>(ReformCloudController.getInstance().getCloudConfiguration().getIpWhitelist());
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values().forEach(client -> ips.add(client.getIp()));
+
         for (String string : ips)
             if (ReformCloudLibraryService.check(s -> s.equals(string), ip))
                 return true;

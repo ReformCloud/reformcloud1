@@ -208,10 +208,7 @@ public final class ReformCloudLibraryService {
      * @param time      The time which should be slept
      */
     public static void sleep(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (final InterruptedException ignored) {
-        }
+        sleep(TimeUnit.MILLISECONDS, time);
     }
 
     /**

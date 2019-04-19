@@ -49,6 +49,7 @@ public final class CloudConfiguration implements Serializable {
     private List<ServerGroup> serverGroups = new ArrayList<>();
     private List<ProxyGroup> proxyGroups = new ArrayList<>();
     private List<WebUser> webUsers = new ArrayList<>();
+    private List<String> ipWhitelist = new ArrayList<>();
 
     /**
      * Prepares and loads ReformCloudController Configuration

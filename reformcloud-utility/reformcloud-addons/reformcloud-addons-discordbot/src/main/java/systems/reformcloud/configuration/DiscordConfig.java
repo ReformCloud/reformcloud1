@@ -19,21 +19,21 @@ import java.nio.file.Paths;
 
 @Getter
 public final class DiscordConfig implements Serializable {
-    private DiscordInformations discordInformations;
+    private DiscordInformation discordInformation;
 
     public DiscordConfig() {
         if (!Files.exists(Paths.get("reformcloud/addons/discord/config.json"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/discord"));
             new Configuration()
-                    .addProperty("config", new DiscordInformations(
+                    .addProperty("config", new DiscordInformation(
                             "NTQ0MTIyMTMwMzEzMjQ4NzY5.D0Ggvg.eMhB10edmYVmYo1-zg_u2nUNsD0",
                             "535909711178891279",
                             "ReformCloud - The official CloudSystem"
                     )).write(Paths.get("reformcloud/addons/discord/config.json"));
         }
 
-        this.discordInformations = Configuration.parse(Paths.get("reformcloud/addons/discord/config.json"))
-                .getValue("config", new TypeToken<DiscordInformations>() {
+        this.discordInformation = Configuration.parse(Paths.get("reformcloud/addons/discord/config.json"))
+                .getValue("config", new TypeToken<DiscordInformation>() {
                 }.getType());
     }
 }
