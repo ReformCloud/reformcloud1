@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.libloader.LibraryLoader;
+import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.PlayerConnectListener;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
@@ -44,6 +45,7 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
     @Override
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(new PlayerConnectListener(), this);
+        this.getServer().getPluginManager().registerEvents(new CloudAddonsListener(), this);
 
         try {
             new ReformCloudAPISpigot();

@@ -41,11 +41,12 @@ public final class PermissionDatabase implements Serializable {
             playerDir.mkdirs();
             new File("reformcloud/addons/permissions").mkdirs();
 
-            new Configuration().addProperty("permissionConfig", new PermissionCache(
+            new Configuration().addProperty("permissionConfig", new PermissionCache(false, false,
+                    "%display% %player% &7|&r %message%",
                     Collections.singletonList(new PermissionGroup(
-                            "admin", null, null, null, 999, Collections.singletonMap("*", true)
+                            "admin", null, null, null, "c", 999, Collections.singletonMap("*", true)
                     )),
-                    new PermissionGroup("default", null, null, null, 100, new HashMap<>())
+                    new PermissionGroup("default", null, null, null, "7", 100, new HashMap<>())
             )).write(Paths.get("reformcloud/addons/permissions/config.json"));
         }
 

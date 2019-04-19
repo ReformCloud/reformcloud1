@@ -2,33 +2,64 @@
   Copyright © 2019 Pasqual K. | All rights reserved
  */
 
-package systems.reformcloud.listeners;
+package systems.reformcloud.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Team;
 import systems.reformcloud.ReformCloudAPISpigot;
-import systems.reformcloud.TablistPlugin;
+import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 
 import java.io.Serializable;
 
 /**
- * @author _Klaro | Pasqual K. / created on 25.03.2019
+ * @author _Klaro | Pasqual K. / created on 19.04.2019
  */
 
-public final class JoinListener implements Serializable, Listener {
+public final class CloudAddonsListener implements Serializable, Listener {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void handle(final AsyncPlayerChatEvent event) {
+        if (!event.isCancelled() && ReformCloudAPISpigot.getInstance().getPermissionCache() != null) {
+            PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(event.getPlayer().getUniqueId());
+            if (permissionHolder == null)
+                return;
+
+            PermissionGroup permissionGroup = permissionHolder.getHighestPlayerGroup(ReformCloudAPISpigot.getInstance().getPermissionCache()).orElse(null);
+            if (permissionGroup == null)
+                return;
+
+            event.setFormat(
+                    ChatColor.translateAlternateColorCodes('&',
+                            ReformCloudAPISpigot.getInstance().getPermissionCache().getChatFormat()
+                                    .replace("%group%", permissionGroup.getName())
+                                    .replace("%player%", event.getPlayer().getName())
+                                    .replace("%prefix%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()))
+                                    .replace("%suffix%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()))
+                                    .replace("%display%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()))
+                                    .replace("%id%", Integer.toString(permissionGroup.getGroupID()))
+                                    .replace("%message%", event.getPlayer().hasPermission("chat.color") ?
+                                            ChatColor.translateAlternateColorCodes('&', event.getMessage().replace("%", "%%"))
+                                            :
+                                            ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', event.getMessage().replace("%", "%%"))))
+                    )
+            );
+        }
+    }
+
     @EventHandler
     public void handle(final PlayerJoinEvent event) {
         if (ReformCloudAPISpigot.getInstance().getPermissionCache() == null)
             return;
 
-        Bukkit.getScheduler().runTaskLater(TablistPlugin.instance, () -> {
+        Bukkit.getScheduler().runTaskLater(SpigotBootstrap.getInstance(), () -> {
             PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(event.getPlayer().getUniqueId());
             if (permissionHolder == null)
                 return;
@@ -56,6 +87,8 @@ public final class JoinListener implements Serializable, Listener {
                 team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
                 team.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
                 team.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()));
+                if (permissionGroup.getTabColorCode() != null && permissionGroup.getTabColorCode().trim().length() == 1)
+                    team.setColor(ChatColor.getByChar(permissionGroup.getTabColorCode()));
 
                 PermissionHolder onlinePermsHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(online.getUniqueId());
                 if (onlinePermsHolder == null)

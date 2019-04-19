@@ -21,7 +21,7 @@ public final class PermissionGroup implements Serializable {
     /**
      * General info about the group
      */
-    private String name, prefix, suffix, display;
+    private String name, prefix, suffix, display, tabColorCode;
 
     /**
      * The group id

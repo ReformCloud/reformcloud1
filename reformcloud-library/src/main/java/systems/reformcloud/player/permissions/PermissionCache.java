@@ -19,6 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public final class PermissionCache implements Serializable {
+    private boolean chatEnabled, tabEnabled;
+    private String chatFormat;
+
     private List<PermissionGroup> allRegisteredGroups;
 
     @Setter
