@@ -8,6 +8,9 @@ import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.IEventHandler;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.event.events.ChannelConnectedEvent;
+import systems.reformcloud.event.events.ChannelDisconnectedEvent;
+import systems.reformcloud.event.events.ChannelExceptionCaughtEvent;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.StringUtil;
 
@@ -42,13 +45,16 @@ public final class EventAdapter implements Serializable, IEventHandler {
 
     @Override
     public void channelConnected(ChannelHandlerContext channelHandlerContext) {
+        ReformCloudController.getInstance().getEventManager().fire(new ChannelConnectedEvent(channelHandlerContext));
     }
 
     @Override
     public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
+        ReformCloudController.getInstance().getEventManager().fire(new ChannelDisconnectedEvent(channelHandlerContext));
     }
 
     @Override
     public void channelExceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
+        ReformCloudController.getInstance().getEventManager().fire(new ChannelExceptionCaughtEvent(channelHandlerContext, cause));
     }
 }

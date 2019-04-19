@@ -6,8 +6,8 @@ package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.utility.StringUtil;
 
@@ -39,10 +39,11 @@ public final class CommandDelete extends Command implements Serializable {
                     try {
                         ReformCloudController.getInstance().getCloudConfiguration().deleteServerGroup(ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]));
                     } catch (final IOException ex) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not upload log", ex);
+                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not delete servergroup", ex);
                     }
                 } else {
-                    commandSender.sendMessage("The ServerGroup isn't registered");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The server group doesn't exists"));
                 }
                 break;
             }
@@ -52,10 +53,11 @@ public final class CommandDelete extends Command implements Serializable {
                     try {
                         ReformCloudController.getInstance().getCloudConfiguration().deleteProxyGroup(ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]));
                     } catch (final IOException ex) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not upload log", ex);
+                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not delete proxygroup", ex);
                     }
                 } else {
-                    commandSender.sendMessage("The ProxyGroup isn't registered");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The proxy group doesn't exists"));
                 }
                 break;
             }
@@ -64,7 +66,8 @@ public final class CommandDelete extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getInternalCloudNetwork().getClients().containsKey(args[1])) {
                     ReformCloudController.getInstance().getCloudConfiguration().deleteClient(ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[1]));
                 } else {
-                    commandSender.sendMessage("The Client isn't registered");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The client doesn't exists"));
                 }
                 break;
             }
@@ -78,7 +81,8 @@ public final class CommandDelete extends Command implements Serializable {
                         .findFirst()
                         .orElse(null);
                 if (webUser == null) {
-                    commandSender.sendMessage("WebUser not found");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The web user doesn't exists"));
                     return;
                 }
 

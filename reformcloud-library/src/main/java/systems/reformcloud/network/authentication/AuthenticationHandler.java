@@ -55,7 +55,8 @@ public final class AuthenticationHandler implements AuthenticationManager {
                 break;
             }
             case INTERNAL: {
-                if (ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()), packet.getConfiguration().getStringValue("key"))) {
+                if (ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()),
+                        packet.getConfiguration().getStringValue("key"))) {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(

@@ -5,8 +5,8 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
@@ -41,7 +41,8 @@ public final class CommandUpload extends Command implements Serializable {
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("controller")) {
                 if (!this.isURLValid(args[1])) {
-                    commandSender.sendMessage("The given url is not valid");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
@@ -50,13 +51,15 @@ public final class CommandUpload extends Command implements Serializable {
                 return;
             } else if (args[0].equalsIgnoreCase("clients")) {
                 if (!this.isURLValid(args[1])) {
-                    commandSender.sendMessage("The given url is not valid");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values().forEach(client -> {
                     if (client.getClientInfo() == null) {
-                        commandSender.sendMessage("Cannot update Client " + client.getName() + ". Reason: Client isn't connected");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
@@ -77,7 +80,8 @@ public final class CommandUpload extends Command implements Serializable {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("controlleraddon")) {
                 if (!this.isURLValid(args[2])) {
-                    commandSender.sendMessage("The given url is not valid");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
@@ -94,7 +98,8 @@ public final class CommandUpload extends Command implements Serializable {
 
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values().forEach(client -> {
                     if (client.getClientInfo() == null) {
-                        commandSender.sendMessage("Cannot update ClientAddon on " + client.getName() + ". Reason: Client isn't connected");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
@@ -116,7 +121,8 @@ public final class CommandUpload extends Command implements Serializable {
         if (args.length == 4 && args[0].equalsIgnoreCase("plugin")) {
             if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]) != null) {
                 if (!this.isURLValid(args[3])) {
-                    commandSender.sendMessage("The given url is not valid");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
@@ -124,7 +130,8 @@ public final class CommandUpload extends Command implements Serializable {
                 serverGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage("Cannot update plugin on " + client + ". Reason: Client wasn't found or isn't connected");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
@@ -136,7 +143,8 @@ public final class CommandUpload extends Command implements Serializable {
                 });
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]) != null) {
                 if (!this.isURLValid(args[3])) {
-                    commandSender.sendMessage("The given url is not valid");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
@@ -144,7 +152,8 @@ public final class CommandUpload extends Command implements Serializable {
                 proxyGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage("Cannot update plugin on " + client + ". Reason: Client wasn't found or isn't connected");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
@@ -167,21 +176,24 @@ public final class CommandUpload extends Command implements Serializable {
         if (args.length == 5 && args[0].equalsIgnoreCase("plugin")) {
             if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]) != null) {
                 if (!this.isURLValid(args[4])) {
-                    commandSender.sendMessage("The given url is not valid");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
                 ServerGroup serverGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]);
 
                 if (serverGroup.getTemplate(args[2]) == null) {
-                    commandSender.sendMessage("Template doesn't exists");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "Template doesn't exists"));
                     return;
                 }
 
                 serverGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage("Cannot update plugin on client " + client + ". Reason: Client wasn't found or isn't connected");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
@@ -193,20 +205,23 @@ public final class CommandUpload extends Command implements Serializable {
                 });
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]) != null) {
                 if (!this.isURLValid(args[4])) {
-                    commandSender.sendMessage("The given url is not valid");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
                 ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
                 if (proxyGroup.getTemplate(args[2]) == null) {
-                    commandSender.sendMessage("Template doesn't exists");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "Template doesn't exists"));
                     return;
                 }
 
                 proxyGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage("Cannot update plugin on client " + client + ". Reason: Client wasn't found or isn't connected");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "Client isn't connected"));
                         return;
                     }
 

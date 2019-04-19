@@ -24,7 +24,7 @@ public final class PacketInUpdateOfflinePlayer implements Serializable, NetworkI
         OfflinePlayer before = ReformCloudController.getInstance().getOfflinePlayer(offlinePlayer.getUniqueID());
         OfflinePlayerUpdateEvent offlinePlayerUpdateEvent = new OfflinePlayerUpdateEvent(before, offlinePlayer);
 
-        ReformCloudController.getInstance().getEventManager().callEvent(offlinePlayerUpdateEvent);
+        ReformCloudController.getInstance().getEventManager().fire(offlinePlayerUpdateEvent);
         if (offlinePlayerUpdateEvent.isCancelled())
             return;
 

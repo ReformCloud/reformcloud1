@@ -117,6 +117,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
+                .registerHandler("SignUpdate", new PacketInSignUpdate())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())

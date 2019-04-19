@@ -6,9 +6,10 @@ package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -29,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 public final class CommandProcess extends Command implements Serializable {
     private final DecimalFormat decimalFormat = new DecimalFormat("##.###");
+
+    private final Language language = ReformCloudController.getInstance().getLoadedLanguage();
 
     public CommandProcess() {
         super("process", "Main command for all processes", "reformcloud.command.process", new String[0]);
@@ -52,12 +55,13 @@ public final class CommandProcess extends Command implements Serializable {
         if (args.length == 3 && args[0].equalsIgnoreCase("queue") && args[2].equalsIgnoreCase("list")) {
             Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[1]);
             if (client == null || client.getClientInfo() == null) {
-                commandSender.sendMessage("Client isn't registered in CloudController");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "The client isn't registered"));
                 return;
             }
 
             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(), new PacketOutGetClientProcessQueue());
-            commandSender.sendMessage("The queue was requested successfully");
+            commandSender.sendMessage(language.getCommand_process_queue_requested());
             return;
         } else if (args.length == 5
                 && args[0].equalsIgnoreCase("queue")
@@ -74,7 +78,7 @@ public final class CommandProcess extends Command implements Serializable {
                             client.getName(), new PacketOutRemoveProxyQueueProcess(args[4])
                     );
                     ReformCloudController.getInstance().getCloudProcessOfferService().removeWaitingProcess(args[4]);
-                    commandSender.sendMessage("Trying to §cremove§r queue entry §e" + args[4]);
+                    commandSender.sendMessage(language.getCommand_process_remove_queue_entry().replace("%name%", args[4]));
                     break;
                 }
 
@@ -83,7 +87,7 @@ public final class CommandProcess extends Command implements Serializable {
                             client.getName(), new PacketOutRemoveServerQueueProcess(args[4])
                     );
                     ReformCloudController.getInstance().getCloudProcessOfferService().removeWaitingProcess(args[4]);
-                    commandSender.sendMessage("Trying to §cremove§r queue entry §e" + args[4]);
+                    commandSender.sendMessage(language.getCommand_process_remove_queue_entry().replace("%name%", args[4]));
                     break;
                 }
 
@@ -118,9 +122,9 @@ public final class CommandProcess extends Command implements Serializable {
                         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(client.getName(),
                                 new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                         );
-                        commandSender.sendMessage("Trying to startup serverProcess...");
+                        commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
-                        commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                        commandSender.sendMessage(language.getNo_available_client_for_startup());
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
@@ -136,14 +140,15 @@ public final class CommandProcess extends Command implements Serializable {
                         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(client.getName(),
                                 new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                         );
-                        commandSender.sendMessage("Trying to startup proxyProcess...");
+                        commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
-                        commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                        commandSender.sendMessage(language.getNo_available_client_for_startup());
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
             } else {
-                commandSender.sendMessage("ServerGroup or ProxyGroup doesn't exists");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "ServerGroup or ProxyGroup doesn't exists"));
             }
             return;
         }
@@ -161,7 +166,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .getChannelHandler()
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
-                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", info.getCloudProcess().getName()));
                                     ReformCloudLibraryService.sleep(100);
                                 });
                         ReformCloudController.getInstance()
@@ -173,7 +178,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .getChannelHandler()
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
-                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", info.getCloudProcess().getName()));
                                     ReformCloudLibraryService.sleep(100);
                                 });
                         return;
@@ -191,7 +196,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .getChannelHandler()
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
-                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", info.getCloudProcess().getName()));
                                     ReformCloudLibraryService.sleep(100);
                                 });
                         ReformCloudController.getInstance()
@@ -205,7 +210,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             .getChannelHandler()
                                             .sendPacketAsynchronous(info.getCloudProcess().getClient(),
                                                     new PacketOutStopProcess(info.getCloudProcess().getName()));
-                                    commandSender.sendMessage("Trying to stop " + info.getCloudProcess().getName() + "...");
+                                    commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", info.getCloudProcess().getName()));
                                     ReformCloudLibraryService.sleep(100);
                                 });
                         return;
@@ -214,13 +219,14 @@ public final class CommandProcess extends Command implements Serializable {
                     if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[1]) != null) {
                         final ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[1]);
                         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutStopProcess(proxyInfo.getCloudProcess().getName()));
-                        commandSender.sendMessage("Trying to stop " + proxyInfo.getCloudProcess().getName() + "...");
+                        commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", proxyInfo.getCloudProcess().getName()));
                     } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[1]) != null) {
                         final ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[1]);
                         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutStopProcess(serverInfo.getCloudProcess().getName()));
-                        commandSender.sendMessage("Trying to stop " + serverInfo.getCloudProcess().getName() + "...");
+                        commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", serverInfo.getCloudProcess().getName()));
                     } else
-                        commandSender.sendMessage("This Server or Proxy is not connected to controller");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "This Server or Proxy is not connected to controller"));
                     break;
                 } else {
                     commandSender.sendMessage("process stop <name>");
@@ -241,7 +247,7 @@ public final class CommandProcess extends Command implements Serializable {
                                             e.getCloudProcess().getClient(),
                                             new PacketOutStopProcess(e.getCloudProcess().getName())
                                     );
-                                    commandSender.sendMessage("Trying to stop " + e.getCloudProcess().getName() + "...");
+                                    commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", e.getCloudProcess().getName()));
                                     ReformCloudLibraryService.sleep(100);
                                 });
                         break;
@@ -257,12 +263,13 @@ public final class CommandProcess extends Command implements Serializable {
                                             e.getCloudProcess().getClient(),
                                             new PacketOutStopProcess(e.getCloudProcess().getName())
                                     );
-                                    commandSender.sendMessage("Trying to stop " + e.getCloudProcess().getName() + "...");
+                                    commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", e.getCloudProcess().getName()));
                                     ReformCloudLibraryService.sleep(100);
                                 });
                         break;
                     } else
-                        commandSender.sendMessage("ServerGroup or ProxyGroup isn't registered");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "This Server or Proxy is not connected to controller"));
                 } else
                     commandSender.sendMessage("process stopGroup <group>");
 
@@ -340,10 +347,10 @@ public final class CommandProcess extends Command implements Serializable {
                             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
-                            commandSender.sendMessage("Trying to startup serverProcess...");
+                            commandSender.sendMessage(language.getCommand_process_trying_startup());
                             ReformCloudLibraryService.sleep(100);
                         } else {
-                            commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                            commandSender.sendMessage(language.getNo_available_client_for_startup());
                         }
                     } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
                         final ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
@@ -356,13 +363,14 @@ public final class CommandProcess extends Command implements Serializable {
                             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
-                            commandSender.sendMessage("Trying to startup proxyProcess...");
+                            commandSender.sendMessage(language.getCommand_process_trying_startup());
                             ReformCloudLibraryService.sleep(100);
                         } else {
-                            commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                            commandSender.sendMessage(language.getNo_available_client_for_startup());
                         }
                     } else {
-                        commandSender.sendMessage("ServerGroup or ProxyGroup doesn't exists");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "This Server or Proxy is not connected to controller"));
                     }
                 } else {
                     commandSender.sendMessage("process start <groupName>");
@@ -375,7 +383,7 @@ public final class CommandProcess extends Command implements Serializable {
                     if (serverInfo != null) {
                         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
                                 new PacketOutStopProcess(serverInfo.getCloudProcess().getName()));
-                        commandSender.sendMessage("Trying to stop " + serverInfo.getCloudProcess().getName() + "...");
+                        commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", serverInfo.getCloudProcess().getName()));
                         ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 100);
                         final ServerGroup serverGroup = serverInfo.getServerGroup();
                         final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
@@ -387,16 +395,16 @@ public final class CommandProcess extends Command implements Serializable {
                             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
-                            commandSender.sendMessage("Trying to startup serverProcess...");
+                            commandSender.sendMessage(language.getCommand_process_trying_startup());
                             ReformCloudLibraryService.sleep(100);
                         } else {
-                            commandSender.sendMessage("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                            commandSender.sendMessage(language.getNo_available_client_for_startup());
                         }
                     } else if (ReformCloudController.getInstance().getProxyInfo(args[1]) != null) {
                         ProxyInfo proxyInfo = ReformCloudController.getInstance().getProxyInfo(args[1]);
                         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
                                 new PacketOutStopProcess(proxyInfo.getCloudProcess().getName()));
-                        commandSender.sendMessage("Trying to stop " + proxyInfo.getCloudProcess().getName() + "...");
+                        commandSender.sendMessage(language.getCommand_process_try_stop().replace("%name%", serverInfo.getCloudProcess().getName()));
                         ReformCloudLibraryService.sleep(100);
                         final ProxyGroup proxyGroup = proxyInfo.getProxyGroup();
                         final Client client = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
@@ -408,13 +416,14 @@ public final class CommandProcess extends Command implements Serializable {
                             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                                     new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
                             );
-                            commandSender.sendMessage("Trying to startup proxyProcess...");
+                            commandSender.sendMessage(language.getCommand_process_trying_startup());
                             ReformCloudLibraryService.sleep(100);
                         } else {
-                            commandSender.sendMessage("The Client of the ProxyGroup isn't connected to ReformCloudController or Client is not available to startup processes");
+                            commandSender.sendMessage(language.getNo_available_client_for_startup());
                         }
                     } else {
-                        commandSender.sendMessage("This Server or Proxy is not connected to controller");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "This Server or Proxy is not connected to controller"));
                     }
                 } else {
                     commandSender.sendMessage("process restart <name>");

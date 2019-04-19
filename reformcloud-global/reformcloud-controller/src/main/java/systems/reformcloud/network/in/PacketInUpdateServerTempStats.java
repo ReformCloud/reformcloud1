@@ -23,6 +23,6 @@ public final class PacketInUpdateServerTempStats implements Serializable, Networ
         final TempServerStats tempServerStats = configuration.getValue("stats", new TypeToken<TempServerStats>() {
         }.getType());
         ReformCloudController.getInstance().getStatisticsProvider().updateServerStats(tempServerStats);
-        ReformCloudController.getInstance().getEventManager().callEvent(new ServerTempStatsUpdateEvent(tempServerStats));
+        ReformCloudController.getInstance().getEventManager().fire(new ServerTempStatsUpdateEvent(tempServerStats));
     }
 }

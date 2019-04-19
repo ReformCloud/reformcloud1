@@ -167,7 +167,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessStartupHandler);
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.synchronizationHandler);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "ShutdownHook"));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownAll, "Shutdown-Hook"));
 
         this.connect(ssl);
 
@@ -178,7 +178,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         loggerProvider.info(this.getInternalCloudNetwork().getLoaded().getLoading_done()
                 .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
-        this.eventManager.callEvent(new StartedEvent());
+        this.eventManager.fire(new StartedEvent());
     }
 
     private void registerNetworkHandlers() {
@@ -325,7 +325,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     public void connect(final boolean ssl) {
         this.nettySocketClient.setConnections(1);
 
-        while (this.nettySocketClient.getConnections() != -1 && !shutdown) {
+        while (this.nettySocketClient.getConnections() != -1 && !shutdown && RUNNING) {
             if (this.nettySocketClient.getConnections() == 8)
                 System.exit(ExitUtil.CONTROLLER_NOT_REACHABLE);
 

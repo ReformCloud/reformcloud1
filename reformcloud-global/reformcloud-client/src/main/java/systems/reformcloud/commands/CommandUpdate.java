@@ -5,8 +5,8 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.versioneering.VersionUpdater;

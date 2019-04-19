@@ -9,8 +9,8 @@ import lombok.Getter;
 import org.junit.Test;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.annotation.Handler;
-import systems.reformcloud.event.utility.Listener;
 import systems.reformcloud.event.utility.Event;
+import systems.reformcloud.event.utility.Listener;
 
 import java.io.Serializable;
 
@@ -23,7 +23,7 @@ public final class ListenerTest implements Serializable {
     public void listenerTest() {
         EventManager eventManager = new EventManager();
         eventManager.registerListener(new ListenerTest0());
-        eventManager.callEvent(new TestEvent(false));
+        eventManager.fire(new TestEvent(false));
     }
 
     @AllArgsConstructor

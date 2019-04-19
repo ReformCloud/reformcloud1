@@ -42,7 +42,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
                 "[Type=" + packet.getType() + "/Query=" + (packet.getResult() != null) + "/Message=" + packet.getConfiguration());
 
         IncomingPacketEvent incomingPacketEvent = new IncomingPacketEvent(packet, channelHandlerContext);
-        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(incomingPacketEvent);
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(incomingPacketEvent);
         if (incomingPacketEvent.isCancelled())
             return;
 

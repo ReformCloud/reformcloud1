@@ -18,7 +18,7 @@ import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.api.save.SaveAPIImpl;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.ingame.IngameCommandManger;
-import systems.reformcloud.commands.interfaces.Command;
+import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.database.DatabaseProvider;
@@ -213,7 +213,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         loggerProvider.info(this.getLoadedLanguage().getLoading_done()
                 .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
 
-        this.eventManager.callEvent(new StartedEvent());
+        this.eventManager.fire(new StartedEvent());
     }
 
     /**

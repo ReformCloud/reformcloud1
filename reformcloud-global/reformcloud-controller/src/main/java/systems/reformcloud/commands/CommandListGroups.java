@@ -5,8 +5,8 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 
 import java.io.Serializable;
 
@@ -21,12 +21,14 @@ public final class CommandListGroups extends Command implements Serializable {
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        commandSender.sendMessage("The following ProxyGroups are registered: ");
+        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_listgroup_list()
+                .replace("%type%", "proxy"));
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values().forEach(e ->
                 commandSender.sendMessage("    - " + e.getName() + " | Ram: " + e.getMemory() + " | MinOnline: " + e.getMinOnline() + " | MaxOnline: " + e.getMaxOnline() + " | MaxPlayers: " + e.getMaxPlayers() + " | Version: " + e.getProxyVersions().getName() + " | Clients: " + e.getClients())
         );
         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
-        commandSender.sendMessage("The following ServerGroups are registered: ");
+        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_listgroup_list()
+                .replace("%type%", "server"));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().values().forEach(e ->
                 commandSender.sendMessage("    - " + e.getName() + " | Ram: " + e.getMemory() + " | MinOnline: " + e.getMinOnline() + " | MaxOnline: " + e.getMaxOnline() + " | MaxPlayers: " + e.getMaxPlayers() + " | Version: " + e.getSpigotVersions().getName() + " | Clients: " + e.getClients())
         );

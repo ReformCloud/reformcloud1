@@ -35,14 +35,6 @@ public final class SignAddon extends ControllerAddonImpl implements Serializable
             signSelector.shutdownAll();
         }
 
-        /*
-                ReformCloudController.getInstance().getNettyHandler()
-                .registerHandler("CreateSign", new PacketInCreateSign())
-                .registerHandler("RemoveSign", new PacketInRemoveSign())
-
-                .registerQueryHandler("QueryGetSigns", new PacketInRequestSigns());
-         */
-
         ReformCloudController.getInstance().getNettyHandler()
                 .unregisterQueryHandler("QueryGetSigns")
 

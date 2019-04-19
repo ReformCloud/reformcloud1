@@ -6,8 +6,9 @@ package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
+import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.client.settings.ClientSettings;
@@ -35,12 +36,14 @@ public final class CommandAssignment extends Command implements Serializable {
         );
     }
 
+    private final Language language = ReformCloudController.getInstance().getLoadedLanguage();
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if ((args.length == 5 || args.length == 4) && args[0].equalsIgnoreCase("servergroup")) {
             ServerGroup serverGroup = ReformCloudController.getInstance().getServerGroup(args[1]);
             if (serverGroup == null) {
-                commandSender.sendMessage("The specified servergroup doesn't exists");
+                commandSender.sendMessage(language.getServergroup_not_found());
                 return;
             }
 
@@ -51,7 +54,10 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("You set the join permission for the servergroup §e" + serverGroup.getName() + "§r to §e" + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", "JoinPermission")
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
@@ -61,7 +67,8 @@ public final class CommandAssignment extends Command implements Serializable {
                     args[3] = args[3].replaceFirst("-", "");
 
                     if (!serverGroup.getClients().contains(args[3])) {
-                        commandSender.sendMessage("The client isn't available for the servergroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The client isn't available for the servergroup"));
                         return;
                     }
 
@@ -71,10 +78,13 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("You §asuccessfully §rremoved the client §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_removed()
+                            .replace("%value%", args[3])
+                            .replace("%group%", serverGroup.getName()));
                 } else {
                     if (serverGroup.getClients().contains(args[3])) {
-                        commandSender.sendMessage("The client cannot added to the servergroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The client is already added to the servergroup"));
                         return;
                     }
 
@@ -84,7 +94,9 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("You §asuccessfully §radded the client §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_added()
+                            .replace("%value%", args[3])
+                            .replace("%group%", serverGroup.getName()));
                 }
 
                 return;
@@ -96,7 +108,8 @@ public final class CommandAssignment extends Command implements Serializable {
                     args[3] = args[3].replaceFirst("-", "");
 
                     if (serverGroup.getTemplateOrElseNull(args[3]) == null) {
-                        commandSender.sendMessage("Cannot remove template from servergroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The template doesn't exists"));
                         return;
                     }
 
@@ -106,10 +119,13 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("§aSuccessfully §rdeleted template §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_removed()
+                            .replace("%value%", args[3])
+                            .replace("%group%", serverGroup.getName()));
                 } else {
                     if (serverGroup.getTemplateOrElseNull(args[3]) != null) {
-                        commandSender.sendMessage("Cannot add template to the servergroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The template already exists"));
                         return;
                     }
 
@@ -119,7 +135,9 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("§aSuccessfully §rcreated template §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_added()
+                            .replace("%value%", args[3])
+                            .replace("%group%", serverGroup.getName()));
                 }
 
                 return;
@@ -127,13 +145,15 @@ public final class CommandAssignment extends Command implements Serializable {
 
             if (args[2].equalsIgnoreCase("memory")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 50) {
-                    commandSender.sendMessage("Please provide a number bigger than 50");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 50"));
                     return;
                 }
 
@@ -143,19 +163,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the memory to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("minonline")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 0) {
-                    commandSender.sendMessage("Please provide a number bigger than 0");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 0"));
                     return;
                 }
 
@@ -165,19 +190,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the minonline count to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("maxonline")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < -1) {
-                    commandSender.sendMessage("Please provide a number bigger than -2");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than -2"));
                     return;
                 }
 
@@ -187,19 +217,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the maxonline count to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("maxplayers")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 0) {
-                    commandSender.sendMessage("Please provide a number bigger than 0");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 0"));
                     return;
                 }
 
@@ -209,19 +244,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the maxplayer count to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("startport")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 1000) {
-                    commandSender.sendMessage("Please provide a number bigger than 1000");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 1000"));
                     return;
                 }
 
@@ -231,13 +271,17 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the startport to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("maintenance")) {
                 if (!ReformCloudLibraryService.checkIsValidBoolean(args[3])) {
-                    commandSender.sendMessage("Please provide a boolean as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a boolean as argument"));
                     return;
                 }
 
@@ -248,13 +292,17 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the maintenance mode");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("savelogs")) {
                 if (!ReformCloudLibraryService.checkIsValidBoolean(args[3])) {
-                    commandSender.sendMessage("Please provide a boolean as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a boolean as argument"));
                     return;
                 }
 
@@ -265,7 +313,10 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the save logs mode");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
@@ -273,7 +324,8 @@ public final class CommandAssignment extends Command implements Serializable {
                 if (!args[3].equalsIgnoreCase("lobby")
                         && !args[3].equalsIgnoreCase("static")
                         && !args[3].equalsIgnoreCase("dynamic")) {
-                    commandSender.sendMessage("Please provide a valid reset type");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a valid reset type"));
                     return;
                 }
 
@@ -283,13 +335,17 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the servergroup mode");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("version")) {
                 if (SpigotVersions.getByName(args[3]) == null) {
-                    commandSender.sendMessage("Please provide a valid serverVersion");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a valid serer version"));
                     return;
                 }
 
@@ -299,7 +355,10 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the server version");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", serverGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
@@ -307,7 +366,7 @@ public final class CommandAssignment extends Command implements Serializable {
         } else if ((args.length == 5 || args.length == 4) && args[0].equalsIgnoreCase("proxygroup")) {
             ProxyGroup proxyGroup = ReformCloudController.getInstance().getProxyGroup(args[1]);
             if (proxyGroup == null) {
-                commandSender.sendMessage("The specified proxygroup doesn't exists");
+                commandSender.sendMessage(language.getProxygroup_not_found());
                 return;
             }
 
@@ -317,7 +376,8 @@ public final class CommandAssignment extends Command implements Serializable {
                     args[3] = args[3].replaceFirst("-", "");
 
                     if (!proxyGroup.getClients().contains(args[3])) {
-                        commandSender.sendMessage("The client isn't available for the proxyGroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The client isn't added to the proxy group"));
                         return;
                     }
 
@@ -327,10 +387,13 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("You §asuccessfully §rremoved the client §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_removed()
+                            .replace("%value%", args[3])
+                            .replace("%group%", proxyGroup.getName()));
                 } else {
                     if (proxyGroup.getClients().contains(args[3])) {
-                        commandSender.sendMessage("The client cannot added to the proxyGroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The client is already added to the proxy group"));
                         return;
                     }
 
@@ -340,7 +403,9 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("You §asuccessfully §radded the client §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_added()
+                            .replace("%value%", args[3])
+                            .replace("%group%", proxyGroup.getName()));
                 }
 
                 return;
@@ -352,7 +417,8 @@ public final class CommandAssignment extends Command implements Serializable {
                     args[3] = args[3].replaceFirst("-", "");
 
                     if (!proxyGroup.getDisabledServerGroups().contains(args[3])) {
-                        commandSender.sendMessage("The servergroup isn't ignored");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The server group isn't ignored"));
                         return;
                     }
 
@@ -362,10 +428,13 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("You §asuccessfully §rremoved the group §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_removed()
+                            .replace("%value%", args[3])
+                            .replace("%group%", proxyGroup.getName()));
                 } else {
                     if (proxyGroup.getDisabledServerGroups().contains(args[3])) {
-                        commandSender.sendMessage("The servergroup cannot be ignored");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The server group is already ignored"));
                         return;
                     }
 
@@ -375,7 +444,9 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("You §asuccessfully §radded the group §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_added()
+                            .replace("%value%", args[3])
+                            .replace("%group%", proxyGroup.getName()));
                 }
 
                 return;
@@ -387,7 +458,8 @@ public final class CommandAssignment extends Command implements Serializable {
                     args[3] = args[3].replaceFirst("-", "");
 
                     if (proxyGroup.getTemplateOrElseNull(args[3]) == null) {
-                        commandSender.sendMessage("Cannot remove template from proxygroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The template doesn't exists"));
                         return;
                     }
 
@@ -397,10 +469,13 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("§aSuccessfully §rdeleted template §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_removed()
+                            .replace("%value%", args[3])
+                            .replace("%group%", proxyGroup.getName()));
                 } else {
                     if (proxyGroup.getTemplateOrElseNull(args[3]) != null) {
-                        commandSender.sendMessage("Cannot add template to the proxygroup");
+                        commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                                .replace("%reason%", "The template already exists"));
                         return;
                     }
 
@@ -410,7 +485,9 @@ public final class CommandAssignment extends Command implements Serializable {
                         ReformCloudController.getInstance().reloadAllSave();
                     }
 
-                    commandSender.sendMessage("§aSuccessfully §rcreated template §e" + args[3]);
+                    commandSender.sendMessage(language.getCommand_assignment_value_added()
+                            .replace("%value%", args[3])
+                            .replace("%group%", proxyGroup.getName()));
                 }
 
                 return;
@@ -418,7 +495,8 @@ public final class CommandAssignment extends Command implements Serializable {
 
             if (args[2].equalsIgnoreCase("maintenance")) {
                 if (!ReformCloudLibraryService.checkIsValidBoolean(args[3])) {
-                    commandSender.sendMessage("Please provide a boolean as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a boolean as argument"));
                     return;
                 }
 
@@ -429,13 +507,17 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the maintenance mode");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("savelogs")) {
                 if (!ReformCloudLibraryService.checkIsValidBoolean(args[3])) {
-                    commandSender.sendMessage("Please provide a boolean as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a boolean as argument"));
                     return;
                 }
 
@@ -446,13 +528,17 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the save logs mode");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("commandlogging")) {
                 if (!ReformCloudLibraryService.checkIsValidBoolean(args[3])) {
-                    commandSender.sendMessage("Please provide a boolean as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a boolean as argument"));
                     return;
                 }
 
@@ -463,19 +549,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the controller logging mode");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("memory")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 50) {
-                    commandSender.sendMessage("Please provide a number bigger than 50");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 50"));
                     return;
                 }
 
@@ -485,19 +576,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the memory to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("minonline")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 0) {
-                    commandSender.sendMessage("Please provide a number bigger than 0");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 0"));
                     return;
                 }
 
@@ -507,19 +603,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the minonline count to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("maxonline")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < -1) {
-                    commandSender.sendMessage("Please provide a number bigger than -2");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than -2"));
                     return;
                 }
 
@@ -529,19 +630,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the maxonline count to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("maxplayers")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 0) {
-                    commandSender.sendMessage("Please provide a number bigger than 0");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 0"));
                     return;
                 }
 
@@ -551,19 +657,24 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the maxplayer count to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("startport")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3])) {
-                    commandSender.sendMessage("Please provide a number as value");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number as argument"));
                     return;
                 }
 
                 int integer = Integer.parseInt(args[3]);
                 if (integer < 1000) {
-                    commandSender.sendMessage("Please provide a number bigger than 1000");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 1000"));
                     return;
                 }
 
@@ -573,13 +684,17 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rset the the startport to " + args[3]);
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("version")) {
                 if (ProxyVersions.getByName(args[3]) == null) {
-                    commandSender.sendMessage("Please provide a valid serverVersion");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a valid version"));
                     return;
                 }
 
@@ -589,7 +704,10 @@ public final class CommandAssignment extends Command implements Serializable {
                     ReformCloudController.getInstance().reloadAllSave();
                 }
 
-                commandSender.sendMessage("§aSuccessfully §rupdated the server version");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
@@ -597,64 +715,80 @@ public final class CommandAssignment extends Command implements Serializable {
         } else if (args.length == 4 && args[0].equalsIgnoreCase("client")) {
             Client client = ReformCloudController.getInstance().getClient(args[1]);
             if (client == null) {
-                commandSender.sendMessage("The client isn't registered");
+                commandSender.sendMessage(language.getClient_not_found());
                 return;
             }
 
             if (!ReformCloudController.getInstance().getChannelHandler().isChannelRegistered(client.getName())) {
-                commandSender.sendMessage("The client isn't connected");
+                commandSender.sendMessage(language.getClient_not_connected());
                 return;
             }
 
             if (args[2].equalsIgnoreCase("starthost")) {
                 if (args[3].split("\\.").length != 4) {
-                    commandSender.sendMessage("Please provide a valid ip address");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a valid ip address"));
                     return;
                 }
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                         client.getName(), new PacketOutUpdateClientSetting(ClientSettings.START_HOST, args[3])
                 );
-                commandSender.sendMessage("Trying to update the start host...");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", client.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("memory")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3]) || Integer.valueOf(args[3]) < 100) {
-                    commandSender.sendMessage("Please provide a valid number which is bigger than 100");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 100"));
                     return;
                 }
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                         client.getName(), new PacketOutUpdateClientSetting(ClientSettings.MEMORY, args[3])
                 );
-                commandSender.sendMessage("Trying to update the memory...");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", client.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("maxcpu")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3]) || Integer.valueOf(args[3]) < 10) {
-                    commandSender.sendMessage("Please provide a valid number which is bigger than 10");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 10"));
                     return;
                 }
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                         client.getName(), new PacketOutUpdateClientSetting(ClientSettings.MAX_CPU_USAGE, args[3])
                 );
-                commandSender.sendMessage("Trying to update the max cpu usage...");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", client.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 
             if (args[2].equalsIgnoreCase("maxlogsize")) {
                 if (!ReformCloudLibraryService.checkIsInteger(args[3]) || Integer.valueOf(args[3]) < 5) {
-                    commandSender.sendMessage("Please provide a valid number which is bigger than 5");
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a number bigger than 5"));
                     return;
                 }
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                         client.getName(), new PacketOutUpdateClientSetting(ClientSettings.MAX_LOG_SIZE, args[3])
                 );
-                commandSender.sendMessage("Trying to update the max log size...");
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", client.getName())
+                        .replace("%value%", args[3]));
                 return;
             }
 

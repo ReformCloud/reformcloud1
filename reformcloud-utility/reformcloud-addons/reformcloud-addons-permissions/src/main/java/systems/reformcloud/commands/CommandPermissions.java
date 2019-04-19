@@ -7,8 +7,8 @@ package systems.reformcloud.commands;
 import systems.reformcloud.PermissionsAddon;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 

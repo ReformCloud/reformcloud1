@@ -16,6 +16,7 @@ import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.signs.map.TemplateMap;
 import systems.reformcloud.signs.netty.packets.PacketOutCreateSign;
 import systems.reformcloud.signs.netty.packets.PacketOutRemoveSign;
+import systems.reformcloud.signs.netty.packets.PacketOutSignUpdate;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.files.FileUtils;
@@ -80,6 +81,7 @@ public class SignConfiguration {
 
         this.signLayoutConfiguration = Configuration.parse(Paths.get("reformcloud/addons/signs/" + path)).getValue("config", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
         this.loadSigns();
+        this.update();
     }
 
     /**
@@ -130,5 +132,12 @@ public class SignConfiguration {
         }
 
         signs.forEach(e -> this.signMap.put(e.getUuid(), e));
+    }
+
+    private void update() {
+        ReformCloudController.getInstance().getAllRegisteredServers().forEach(serverInfo -> ReformCloudController.getInstance()
+                .getChannelHandler().sendPacketSynchronized(serverInfo.getCloudProcess().getName(),
+                        new PacketOutSignUpdate(this.signLayoutConfiguration, this.signMap)
+                ));
     }
 }

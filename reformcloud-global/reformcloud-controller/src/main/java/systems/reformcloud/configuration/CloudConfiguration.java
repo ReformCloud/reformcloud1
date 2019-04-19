@@ -11,6 +11,8 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.language.LanguageManager;
+import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -109,36 +111,41 @@ public final class CloudConfiguration implements Serializable {
 
         final LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
 
-        loggerProvider.info("Please provide the controllerIP");
+        loggerProvider.info("Please enter a language [\"german\", \"english\"]");
+        String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
+
+        Language language = new LanguageManager(lang).getLoaded();
+
+        loggerProvider.info(language.getSetup_controller_ip());
         String controllerIP = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
 
-        loggerProvider.info("Please provide the first Client name");
+        loggerProvider.info(language.getSetup_name_of_first_client());
         String clientName = this.readString(loggerProvider, s -> true);
-        loggerProvider.info("Please provide the ip of the client");
+        loggerProvider.info(language.getSetup_ip_of_new_client());
         String ip = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
 
         new Configuration().addProperty("client", Collections.singletonList(new Client(clientName, ip, null))).write(Paths.get("reformcloud/clients.json"));
 
-        loggerProvider.info("How many mb ram should the default Lobby-Group have?");
+        loggerProvider.info(language.getSetup_ram_of_default_group());
         int lobbyMemory = this.readInt(loggerProvider, integer -> integer >= 50);
-        loggerProvider.info("Please choose a minecraft version");
+        loggerProvider.info(language.getSetup_choose_minecraft_version());
         SpigotVersions.AVAILABLE_VERSIONS.forEach(e -> loggerProvider.info(e));
         String version = this.readString(loggerProvider, s -> SpigotVersions.AVAILABLE_VERSIONS.contains(s));
-        loggerProvider.info("Which Spigot-Version should be used?");
+        loggerProvider.info(language.getSetup_choose_spigot_version());
         SpigotVersions.sortedByVersion(version).values().forEach(e -> loggerProvider.info("   " + e.name()));
         String provider = this.readString(loggerProvider, s -> SpigotVersions.getByName(s) != null);
 
         new Configuration().addProperty("group", new LobbyGroup(SpigotVersions.getByName(provider), lobbyMemory, clientName)).write(Paths.get("reformcloud/groups/servers/Lobby.json"));
 
-        loggerProvider.info("How many mb ram should the default Proxy-Group have?");
+        loggerProvider.info(language.getSetup_ram_of_default_proxy_group());
         int memory = this.readInt(loggerProvider, integer -> integer >= 50);
-        loggerProvider.info("Which Proxy-Version should be used?");
+        loggerProvider.info(language.getSetup_choose_proxy_version());
         ProxyVersions.sorted().values().forEach(e -> loggerProvider.info("   " + e.name()));
         String in = this.readString(loggerProvider, s -> ProxyVersions.getByName(s) != null);
 
         new Configuration().addProperty("group", new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in))).write(Paths.get("reformcloud/groups/proxies/Proxy.json"));
 
-        loggerProvider.info("Do you want to load the default addons (You can download them later, too) [\"yes\" (recommended), \"no\"]");
+        loggerProvider.info(language.getSetup_load_default_addons());
         String addons = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (addons.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
@@ -148,9 +155,6 @@ public final class CloudConfiguration implements Serializable {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudParameters.jar", "reformcloud/addons/ReformCloudParameters.jar");
         }
 
-        loggerProvider.info("Please enter a language [\"german\", \"english\"]");
-        String lang = this.readString(loggerProvider, s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
-
         final String web = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
                 + StringUtil.EMPTY
                 + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE);
@@ -159,7 +163,7 @@ public final class CloudConfiguration implements Serializable {
                 Collections.singletonList(new WebUser("administrator", StringEncrypt.encryptSHA512(web),
                         Collections.singletonMap("*", true)))).write(Paths.get("reformcloud/users.json"));
 
-        loggerProvider.info("New default WebUser \"administrator\" was created with password \"" + web + "\"");
+        loggerProvider.info(language.getSetup_default_user_created().replace("%password%", web));
         this.init(controllerIP, lang);
 
         return true;
@@ -301,7 +305,9 @@ public final class CloudConfiguration implements Serializable {
 
     public void createServerGroup(final ServerGroup serverGroup) {
         new Configuration().addProperty("group", serverGroup).write(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
-        ReformCloudController.getInstance().getLoggerProvider().info("Loading ServerGroup [Name=" + serverGroup.getName() + "/Clients=" + serverGroup.getClients() + "]...");
+        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_loading_server()
+                .replace("%name%", serverGroup.getName())
+                .replace("%clients%", serverGroup.getClients() + StringUtil.EMPTY));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().put(serverGroup.getName(), serverGroup);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
@@ -313,7 +319,9 @@ public final class CloudConfiguration implements Serializable {
 
     public void createProxyGroup(final ProxyGroup proxyGroup) {
         new Configuration().addProperty("group", proxyGroup).write(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
-        ReformCloudController.getInstance().getLoggerProvider().info("Loading ProxyGroup [Name=" + proxyGroup.getName() + "/Clients=" + proxyGroup.getClients() + "]...");
+        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_loading_proxy()
+                .replace("%name%", proxyGroup.getName())
+                .replace("%clients%", proxyGroup.getClients() + StringUtil.EMPTY));
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().put(proxyGroup.getName(), proxyGroup);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
@@ -331,7 +339,9 @@ public final class CloudConfiguration implements Serializable {
         clients.add(client);
         configuration.addProperty("client", clients).write(Paths.get("reformcloud/clients.json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info("Loading Client [Name=" + client.getName() + "/Address=" + client.getIp() + "]...");
+        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_loading_client()
+                .replace("%name%", client.getName())
+                .replace("%ip%", client.getIp()));
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients().put(client.getName(), client);
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
@@ -400,7 +410,9 @@ public final class CloudConfiguration implements Serializable {
     public void deleteServerGroup(final ServerGroup serverGroup) throws IOException {
         Files.delete(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info("Deleting ServerGroup [Name=" + serverGroup.getName() + "/Clients=" + serverGroup.getClients() + "]...");
+        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_deleting_servergroup()
+                .replace("%name%", serverGroup.getName())
+                .replace("%clients%", serverGroup.getClients() + StringUtil.EMPTY));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().remove(serverGroup.getName());
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
@@ -422,7 +434,9 @@ public final class CloudConfiguration implements Serializable {
     public void deleteProxyGroup(final ProxyGroup proxyGroup) throws IOException {
         Files.delete(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info("Deleting ProxyGroup [Name=" + proxyGroup.getName() + "/Clients=" + proxyGroup.getClients() + "]...");
+        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_deleting_servergroup()
+                .replace("%name%", proxyGroup.getName())
+                .replace("%clients%", proxyGroup.getClients() + StringUtil.EMPTY));
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().remove(proxyGroup.getName());
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
@@ -449,7 +463,9 @@ public final class CloudConfiguration implements Serializable {
         clients.remove(client);
         configuration.addProperty("client", clients).write(Paths.get("reformcloud/clients.json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info("Deleting Client [Name=" + client.getName() + "/Address=" + client.getIp() + "]...");
+        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_delete_client()
+                .replace("%name%", client.getName())
+                .replace("%clients%", client.getIp()));
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients().remove(client.getName());
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 

@@ -5,8 +5,9 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
+import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -23,6 +24,8 @@ import java.util.Arrays;
 public final class CommandScreen extends Command implements Serializable {
     private static final long serialVersionUID = -1318658988288270472L;
 
+    private final Language language = ReformCloudController.getInstance().getLoadedLanguage();
+
     public CommandScreen() {
         super("screen", "Opens the screen of a server, client or proxy", "reformcloud.command.screen", new String[]{"srn"});
     }
@@ -33,9 +36,10 @@ public final class CommandScreen extends Command implements Serializable {
 
         if (args.length == 1 && args[0].toLowerCase().equalsIgnoreCase("leave")) {
             if (screenSessionProvider.leaveScreen()) {
-                commandSender.sendMessage("You §asuccessfully§r left the §escreen§r session");
+                commandSender.sendMessage(language.getCommand_screen_successfully_left());
             } else {
-                commandSender.sendMessage("You're not in a screen session");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "You're not in a screen session"));
             }
 
             return;
@@ -43,7 +47,8 @@ public final class CommandScreen extends Command implements Serializable {
 
         if (args.length == 3 && args[0].equalsIgnoreCase("switch")) {
             if (!screenSessionProvider.isInScreen()) {
-                commandSender.sendMessage("You have to be in a screen session, before you can switch between them");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "You have to be in a screen session, before you can switch between them"));
                 return;
             }
 
@@ -56,7 +61,8 @@ public final class CommandScreen extends Command implements Serializable {
                             .getServerProcessManager()
                             .getRegisteredServerByName(args[2]);
                     if (serverInfo == null) {
-                        commandSender.sendMessage("The server §e[\"" + args[2] + "\"]§r is not §cconnected§r to the controller");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "The server is not started, yet"));
                         return;
                     }
 
@@ -73,7 +79,8 @@ public final class CommandScreen extends Command implements Serializable {
                             .getServerProcessManager()
                             .getRegisteredProxyByName(args[2]);
                     if (proxyInfo == null) {
-                        commandSender.sendMessage("The proxy §e[\"" + args[2] + "\"]§r is not §cconnected§r to the controller");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "The proxy is not started, yet"));
                         return;
                     }
 
@@ -87,7 +94,8 @@ public final class CommandScreen extends Command implements Serializable {
                 case "client": {
                     final Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[2]);
                     if (client == null || client.getClientInfo() == null) {
-                        commandSender.sendMessage("Client is not registered");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "The client is not registered"));
                         return;
                     }
 
@@ -111,8 +119,9 @@ public final class CommandScreen extends Command implements Serializable {
 
         if (args.length >= 2 && (args[0].equalsIgnoreCase("execute") || args[0].equalsIgnoreCase("exec"))) {
             if (!screenSessionProvider.isInScreen()) {
-                commandSender.sendMessage("You're not in a screen session. Type \"screen\"" +
-                        " to get a command overview");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "You're not in a screen session. Type \"screen\"" +
+                                " to get a command overview"));
                 return;
             }
 
@@ -134,8 +143,9 @@ public final class CommandScreen extends Command implements Serializable {
         }
 
         if (screenSessionProvider.isInScreen()) {
-            commandSender.sendMessage("You're already in a screen session. Type \"screen leave\"" +
-                    " or \"screen switch <server/proxy> <name>\" to leave the current screen session or switch to another");
+            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    .replace("%message%", "You're already in a screen session. Type \"screen leave\"" +
+                            " or \"screen switch <server/proxy> <name>\" to leave the current screen session or switch to another"));
             return;
         }
 
@@ -146,7 +156,8 @@ public final class CommandScreen extends Command implements Serializable {
                         .getServerProcessManager()
                         .getRegisteredServerByName(args[1]);
                 if (serverInfo == null) {
-                    commandSender.sendMessage("The server §e[\"" + args[1] + "\"]§r is not §cconnected§r to the controller");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The server is not started, yet"));
                     return;
                 }
 
@@ -163,7 +174,8 @@ public final class CommandScreen extends Command implements Serializable {
                         .getServerProcessManager()
                         .getRegisteredProxyByName(args[1]);
                 if (proxyInfo == null) {
-                    commandSender.sendMessage("The proxy §e[\"" + args[1] + "\"]§r is not §cconnected§r to the controller");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The proxy is not started, yet"));
                     return;
                 }
 
@@ -177,7 +189,8 @@ public final class CommandScreen extends Command implements Serializable {
             case "client": {
                 final Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[1]);
                 if (client == null || client.getClientInfo() == null) {
-                    commandSender.sendMessage("Client is not registered");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The client is not registered"));
                     return;
                 }
 

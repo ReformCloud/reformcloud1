@@ -2,7 +2,7 @@
   Copyright © 2018 Pasqual K. | All rights reserved
  */
 
-package systems.reformcloud.commands.interfaces;
+package systems.reformcloud.commands.utility;
 
 import systems.reformcloud.logging.AbstractLoggerProvider;
 

@@ -6,8 +6,8 @@ package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -43,7 +43,9 @@ public final class CommandLog extends Command implements Serializable {
             }
 
             final String url = ReformCloudController.getInstance().getLoggerProvider().uploadLog(stringBuilder.substring(0));
-            commandSender.sendMessage("The log for the Controller was uploaded: " + url);
+            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_log_success()
+                    .replace("%type%", "Controller")
+                    .replace("%url%", url));
             return;
         }
 
@@ -59,10 +61,12 @@ public final class CommandLog extends Command implements Serializable {
                 if (client != null) {
                     if (!ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                             new PacketOutUploadLog(client.getName(), "client"))) {
-                        commandSender.sendMessage("This client isn't registered");
+                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                                .replace("%message%", "The client isn't connected"));
                     }
                 } else {
-                    commandSender.sendMessage("This client doesn't exists");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The client doesn't exists"));
                 }
                 break;
             }
@@ -73,7 +77,8 @@ public final class CommandLog extends Command implements Serializable {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
                             new PacketOutUploadLog(serverInfo.getCloudProcess().getName(), "spigot"));
                 } else {
-                    commandSender.sendMessage("This server isn't registered");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The server doesn't exists"));
                 }
                 break;
             }
@@ -84,7 +89,8 @@ public final class CommandLog extends Command implements Serializable {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
                             new PacketOutUploadLog(proxyInfo.getCloudProcess().getName(), "bungee"));
                 } else {
-                    commandSender.sendMessage("This proxy isn't registered");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "The proxy doesn't exists"));
                 }
                 break;
             }

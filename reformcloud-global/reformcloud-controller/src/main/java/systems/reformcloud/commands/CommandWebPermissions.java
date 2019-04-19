@@ -5,8 +5,8 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.meta.web.WebUser;
 
 import java.io.Serializable;
@@ -26,7 +26,8 @@ public final class CommandWebPermissions extends Command implements Serializable
         if (args.length == 2 && args[0].equalsIgnoreCase("list")) {
             WebUser webUser = this.getUser(args[1]);
             if (webUser == null) {
-                commandSender.sendMessage("User not found");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "User not found"));
                 return;
             }
 
@@ -41,18 +42,20 @@ public final class CommandWebPermissions extends Command implements Serializable
         if (args.length == 3 && args[0].equalsIgnoreCase("remove")) {
             WebUser webUser = this.getUser(args[1]);
             if (webUser == null) {
-                commandSender.sendMessage("User not found");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "User not found"));
                 return;
             }
 
             if (!webUser.getPermissions().containsKey(args[2])) {
-                commandSender.sendMessage("User don't have permission \"" + args[2] + "\"");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "User don't have permission \"" + args[2] + "\""));
                 return;
             }
 
             webUser.getPermissions().remove(args[2]);
             ReformCloudController.getInstance().getCloudConfiguration().updateWebUser(webUser);
-            commandSender.sendMessage("Permission was removed successfully");
+            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_webpermission_remove_success());
             return;
         }
 
@@ -66,26 +69,25 @@ public final class CommandWebPermissions extends Command implements Serializable
         if (args[0].equalsIgnoreCase("add")) {
             WebUser webUser = this.getUser(args[1]);
             if (webUser == null) {
-                commandSender.sendMessage("User not found");
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "User not found"));
                 return;
             }
 
             if (webUser.getPermissions().containsKey(args[2])) {
                 if (webUser.getPermissions().get(args[2]) == Boolean.valueOf(args[3])) {
-                    commandSender.sendMessage("Permission already set");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "Permission already set"));
                     return;
-                } else {
+                } else
                     webUser.getPermissions().remove(args[2]);
-                    webUser.getPermissions().put(args[2], Boolean.valueOf(args[3]));
-                    ReformCloudController.getInstance().getCloudConfiguration().updateWebUser(webUser);
-                    commandSender.sendMessage(Boolean.valueOf(args[3]) ? "Permission successfully §aactivated" : "Permission successfully §cdeactivated");
-                    return;
-                }
             }
 
             webUser.getPermissions().put(args[2], Boolean.valueOf(args[3]));
             ReformCloudController.getInstance().getCloudConfiguration().updateWebUser(webUser);
-            commandSender.sendMessage("Permission \"" + args[2] + "\" was added with value \"" + Boolean.valueOf(args[3]) + "\"");
+            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_webpermission_add_success()
+                    .replace("%perm%", args[2])
+                    .replace("%key%", Boolean.toString(Boolean.valueOf(args[3]))));
         }
     }
 

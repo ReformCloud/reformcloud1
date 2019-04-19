@@ -5,8 +5,7 @@
 package systems.reformcloud.commands.defaults;
 
 import lombok.AllArgsConstructor;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 
 import java.util.Map;
