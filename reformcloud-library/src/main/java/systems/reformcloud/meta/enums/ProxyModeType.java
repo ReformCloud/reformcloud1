@@ -14,6 +14,12 @@ public enum ProxyModeType implements Serializable {
     DYNAMIC,
     STATIC;
 
+    /**
+     * Gets a proxy mode type by the given name
+     *
+     * @param name The name of the type which should be found
+     * @return The proxy mode type by the name
+     */
     public static ProxyModeType of(String name) {
         return valueOf(name.toUpperCase());
     }

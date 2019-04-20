@@ -13,6 +13,12 @@ public enum ServerModeType {
     STATIC,
     DYNAMIC;
 
+    /**
+     * Gets a server mode type by the given name
+     *
+     * @param name The name of the type which should be found
+     * @return The server mode type by the name
+     */
     public static ServerModeType of(String name) {
         return valueOf(name.toUpperCase());
     }

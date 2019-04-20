@@ -296,7 +296,7 @@ public final class CommandProcess extends Command implements Serializable {
                         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                         commandSender.sendMessage("The following cloud-servers are started on \"" + e.getName() + "\": ");
                         ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().stream().filter(serverInfo -> serverInfo.getCloudProcess().getClient().equals(e.getName())).forEach(info -> {
-                            commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | Player=" + info.getOnline() + "/" + info.getServerGroup().getMaxPlayers());
+                            commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | State=" + info.getServerState() + " | Player=" + info.getOnline() + "/" + info.getServerGroup().getMaxPlayers());
                         });
                         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                     });

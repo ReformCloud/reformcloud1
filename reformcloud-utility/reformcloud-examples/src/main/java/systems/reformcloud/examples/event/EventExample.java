@@ -51,7 +51,7 @@ public final class EventExample extends Event implements Serializable, Cancellab
     }
 
     /**
-     * Gets if the event is currently cancelled
+     * Get the event content
      */
     @Getter
     private Event event;
