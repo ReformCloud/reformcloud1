@@ -51,7 +51,7 @@ public final class SynchronizationHandler implements Serializable, Runnable {
                 );
             }
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 5);
+            ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 700);
         }
     }
 }
