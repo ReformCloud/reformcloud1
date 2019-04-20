@@ -8,8 +8,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.network.packets.sync.out.PacketOutSyncClientDisconnects;
 
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -23,6 +25,8 @@ public final class ControllerDisconnectHandler extends ChannelInboundHandlerAdap
         if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable()
                 && ReformCloudClient.getInstance().getNettySocketClient().getConnections() == -1
                 && ReformCloudClient.RUNNING) {
+            ctx.writeAndFlush(new PacketOutSyncClientDisconnects());
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
             ReformCloudClient.getInstance().getNettySocketClient().close();
             ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredProxyProcesses().forEach(proxyProcess -> {
                 proxyProcess.shutdown(null, false);
