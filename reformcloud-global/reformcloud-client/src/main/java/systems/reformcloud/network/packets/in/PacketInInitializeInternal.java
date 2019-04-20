@@ -6,6 +6,7 @@ package systems.reformcloud.network.packets.in;
 
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
@@ -32,6 +33,10 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
                 "AuthSuccess",
                 new Configuration().addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
         ));
+
+        ReformCloudLibraryServiceProvider.getInstance().setLoaded(
+                ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
+        );
 
         ReformCloudClient.getInstance().getChannelHandler().sendPacketQuerySync(
                 "ReformCloudController",
