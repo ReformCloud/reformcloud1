@@ -28,7 +28,8 @@ final class VersionLoader implements Serializable {
      */
     static String getNewestVersion() {
         try {
-            URLConnection urlConnection = new URL("https://internal.reformcloud.systems/update/version.json").openConnection();
+            //TODO: fix dis
+            URLConnection urlConnection = new URL("https://qehfvggwqevfwqevfghvwqefgvweg.reformcloud.systems/update/version.json").openConnection();
             urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             urlConnection.setUseCaches(false);
             urlConnection.connect();

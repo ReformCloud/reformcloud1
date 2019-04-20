@@ -32,7 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -191,10 +190,12 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     @Override
     public void exception(Throwable cause) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(cause.getMessage()).append("\n");
-        Arrays.stream(cause.getStackTrace()).forEach(e -> stringBuilder.append("    " + e).append("\n"));
-        this.serve(stringBuilder.substring(0));
 
+        stringBuilder.append(cause).append("\n");
+        for (StackTraceElement stackTraceElement : cause.getStackTrace())
+            stringBuilder.append("at ").append(stackTraceElement).append("\n");
+
+        this.serve(stringBuilder.substring(0));
         this.handleAll(stringBuilder.substring(0));
     }
 
