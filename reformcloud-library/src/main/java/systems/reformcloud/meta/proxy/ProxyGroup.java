@@ -7,6 +7,7 @@ package systems.reformcloud.meta.proxy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 
@@ -27,6 +28,8 @@ public class ProxyGroup implements Serializable {
     protected List<String> clients, disabledServerGroups;
     protected List<Template> templates;
     protected Collection<UUID> whitelist;
+
+    protected ProxyModeType proxyModeType;
 
     protected boolean controllerCommandLogging, maintenance, save_logs;
 
@@ -53,5 +56,9 @@ public class ProxyGroup implements Serializable {
     public void deleteTemplate(String name) {
         List<Template> copyOf = new ArrayList<>(this.templates);
         copyOf.stream().filter(template -> template.getName().equals(name)).findFirst().ifPresent(template -> this.templates.remove(template));
+    }
+
+    public boolean isStatic() {
+        return this.proxyModeType.equals(ProxyModeType.STATIC);
     }
 }

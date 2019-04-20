@@ -6,6 +6,7 @@ package systems.reformcloud.meta.proxy.defaults;
 
 import lombok.ToString;
 import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
@@ -29,6 +30,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 new ArrayList<>(),
                 Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
+                ProxyModeType.DYNAMIC,
                 true,
                 true,
                 false,
@@ -48,6 +50,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 new ArrayList<>(),
                 Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
+                ProxyModeType.DYNAMIC,
                 true,
                 true,
                 false,

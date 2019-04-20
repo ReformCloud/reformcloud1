@@ -11,5 +11,9 @@ package systems.reformcloud.meta.enums;
 public enum ServerModeType {
     LOBBY,
     STATIC,
-    DYNAMIC
+    DYNAMIC;
+
+    public static ServerModeType of(String name) {
+        return valueOf(name.toUpperCase());
+    }
 }
