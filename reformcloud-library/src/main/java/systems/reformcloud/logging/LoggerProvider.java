@@ -193,7 +193,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
         stringBuilder.append(cause).append("\n");
         for (StackTraceElement stackTraceElement : cause.getStackTrace())
-            stringBuilder.append("at ").append(stackTraceElement).append("\n");
+            stringBuilder.append("    at ").append(stackTraceElement).append("\n");
 
         this.serve(stringBuilder.substring(0));
         this.handleAll(stringBuilder.substring(0));
