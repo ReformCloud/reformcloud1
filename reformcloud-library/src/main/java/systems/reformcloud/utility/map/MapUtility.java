@@ -7,6 +7,7 @@ package systems.reformcloud.utility.map;
 import lombok.NonNull;
 import systems.reformcloud.utility.map.maps.Double;
 import systems.reformcloud.utility.map.maps.Trio;
+import systems.reformcloud.utility.map.pool.Callback;
 
 import java.io.Serializable;
 import java.util.*;
@@ -175,5 +176,30 @@ public final class MapUtility implements Serializable {
     @NonNull
     public static <F, S> Set<Map.Entry<F, S>> copyOf(Set<Map.Entry<F, S>> in) {
         return new HashSet<>(in);
+    }
+
+    /**
+     * Runs over a list
+     *
+     * @param list The list which should be work through
+     * @param run  The callback which should be called
+     * @param <T>  The type of the list parameters
+     */
+    public static <T> void iterator(T[] list, Callback<T> run) {
+        for (T t : list)
+            run.onCall(t);
+    }
+
+    /**
+     * Runs over a list
+     *
+     * @param list The list which should be work through
+     * @param run  The callbacks which should be called
+     * @param <T>  The type of the list parameters
+     */
+    public static <T> void iterator(T[] list, Callback<T>... run) {
+        for (T t : list)
+            for (Callback callback : run)
+                callback.onCall(t);
     }
 }
