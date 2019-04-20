@@ -59,7 +59,7 @@ public final class CommandCreate extends Command implements Serializable {
             String resetType = cloudConfiguration.readString(loggerProvider, s -> s.equalsIgnoreCase("dynamic") || s.equalsIgnoreCase("static") || s.equalsIgnoreCase("lobby"));
 
             commandSender.sendMessage(language.getSetup_trying_to_create().replace("%group%", name));
-            ReformCloudController.getInstance().getCloudConfiguration().createServerGroup(new DefaultGroup(name, client, SpigotVersions.getByName(provider), ServerModeType.valueOf(resetType)));
+            ReformCloudController.getInstance().getCloudConfiguration().createServerGroup(new DefaultGroup(name, client, SpigotVersions.getByName(provider), ServerModeType.of(resetType)));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("proxygroup")) {
             LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
