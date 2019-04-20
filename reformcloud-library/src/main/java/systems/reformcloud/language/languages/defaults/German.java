@@ -77,6 +77,7 @@ public final class German extends Language implements Serializable {
                 "Bitte wähle eine Minecraft Server Version",
                 "Welche Spigot Version soll genutzt werden?",
                 "Bitte wähle einen Reset Typ [\"LOBBY\", \"DYNAMIC\", \"STATIC\"]",
+                "Bitte wähle einen Reset Typ [\"DYNAMIC\", \"STATIC\"]",
                 "Versuche %group% zu erstellen...",
                 "Welche BungeeCord Version soll genutzt werden?",
                 "Bitte gib den Namen des neuen Clients an",

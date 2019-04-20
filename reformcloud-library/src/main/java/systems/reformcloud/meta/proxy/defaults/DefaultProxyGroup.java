@@ -62,4 +62,24 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 proxyVersions
         );
     }
+
+    public DefaultProxyGroup(final String name, final String client, ProxyVersions proxyVersions, ProxyModeType proxyModeType) {
+        super(
+                name,
+                Collections.singletonList(client),
+                new ArrayList<>(),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
+                new ArrayList<>(),
+                proxyModeType,
+                true,
+                true,
+                false,
+                25565,
+                1,
+                -1,
+                512,
+                128,
+                proxyVersions
+        );
+    }
 }

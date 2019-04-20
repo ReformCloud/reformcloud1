@@ -79,6 +79,7 @@ public final class English extends Language implements Serializable {
                 "Please choose a minecraft version",
                 "Which Spigot-Version should be used?",
                 "Please choose a reset type [\"LOBBY\", \"DYNAMIC\", \"STATIC\"]",
+                "Please choose a proxy reset type [\"DYNAMIC\", \"STATIC\"]",
                 "Trying to create %group%...",
                 "Which Bungeecord-Version should be used?",
                 "Please enter the name of the client",

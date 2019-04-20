@@ -13,6 +13,7 @@ import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -74,8 +75,11 @@ public final class CommandCreate extends Command implements Serializable {
             ProxyVersions.sorted().values().forEach(e -> loggerProvider.info("   " + e.name()));
             String in = cloudConfiguration.readString(loggerProvider, s -> ProxyVersions.getByName(s) != null);
 
+            loggerProvider.info(language.getSetup_choose_proxy_reset_type());
+            String resetType = cloudConfiguration.readString(loggerProvider, s -> s.equalsIgnoreCase("dynamic") || s.equalsIgnoreCase("static"));
+
             commandSender.sendMessage(language.getSetup_trying_to_create().replace("%group%", name));
-            ReformCloudController.getInstance().getCloudConfiguration().createProxyGroup(new DefaultProxyGroup(name, client, ProxyVersions.getByName(in)));
+            ReformCloudController.getInstance().getCloudConfiguration().createProxyGroup(new DefaultProxyGroup(name, client, ProxyVersions.getByName(in), ProxyModeType.of(resetType)));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("client")) {
             LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
