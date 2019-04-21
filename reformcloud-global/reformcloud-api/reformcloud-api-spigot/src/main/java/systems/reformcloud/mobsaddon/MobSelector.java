@@ -287,7 +287,6 @@ public final class MobSelector implements Serializable {
 
     public void handleCreateMob(SelectorMob selectorMob) {
         Mob mob = new Mob(selectorMob);
-        this.spawnedMobs.put(mob.entity.getUniqueId(), mob);
     }
 
     public void handleDeleteMob(SelectorMob selectorMob) {
@@ -370,6 +369,8 @@ public final class MobSelector implements Serializable {
                 ReflectionUtil.setNoAI(this.entity);
                 if (!spawnedMobs.containsKey(this.entity.getUniqueId()))
                     spawnedMobs.put(this.entity.getUniqueId(), this);
+
+                MobSelector.this.spawnedMobs.put(entity.getUniqueId(), this);
             });
         }
     }
