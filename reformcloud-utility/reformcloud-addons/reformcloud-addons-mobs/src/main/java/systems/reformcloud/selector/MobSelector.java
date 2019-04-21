@@ -63,7 +63,7 @@ public final class MobSelector implements Serializable {
     }
 
     public void reload() {
-        if (!Files.exists(Paths.get(directory + "/config.json")))
+        if (!Files.exists(Paths.get(directory + "/config.json"))) {
             new Configuration().addProperty("config", new SelectorMobConfig(
                     new SelectorMobInventory(
                             "§7» §a%group_name%",
@@ -83,10 +83,11 @@ public final class MobSelector implements Serializable {
                     ), new SelectorsMobServerItem("§a%server_name%", "CAKE", Collections.singletonList("§7%online_players%§8/§7%max_players%"), (short) 0)
             )).write(Paths.get(directory + "/config.json"));
 
-        if (!Files.exists(Paths.get(databaseDir + "/database.json")))
-            new Configuration()
-                    .addProperty("database", new HashMap<>())
-                    .write(databaseDir + "/database.json");
+            if (!Files.exists(Paths.get(databaseDir + "/database.json")))
+                new Configuration()
+                        .addProperty("database", new HashMap<>())
+                        .write(databaseDir + "/database.json");
+        }
 
         this.mobs = Configuration.parse(databaseDir + "/database.json").getValue("database", new TypeToken<Map<UUID, SelectorMob>>() {
         }.getType());

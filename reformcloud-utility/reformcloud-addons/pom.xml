@@ -18,6 +18,7 @@
         <module>reformcloud-addons-proxy</module>
         <module>reformcloud-addons-parameters</module>
         <module>reformcloud-addons-mobs</module>
+        <module>reformcloud-addons-properties</module>
     </modules>
 
     <dependencies>
