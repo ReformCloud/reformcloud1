@@ -86,32 +86,29 @@ public final class MobSelector implements Serializable {
                 "ReformCloudController",
                 ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
                 new PacketOutRequestAll(),
-                ((configuration, resultID) -> {
+                (configuration, resultID) -> {
                     this.mobs = configuration.getValue("mobs", new TypeToken<Map<UUID, SelectorMob>>() {
                     }.getType());
                     this.selectorMobConfig = configuration.getValue("config", new TypeToken<SelectorMobConfig>() {
                     }.getType());
-                }), (configuration, resultID) -> {
+
+                    PluginCommand pluginCommand = SpigotBootstrap.getInstance().getCommand("mobs");
+                    pluginCommand.setExecutor(new CommandReformMobs());
+                    pluginCommand.setPermission("reformcloud.commands.mobs");
+
+                    ReformCloudAPISpigot.getInstance().getNettyHandler().registerHandler("DisableMobs", new PacketInDisableMobs());
+
+                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new BukkitListenerImpl(), SpigotBootstrap.getInstance());
+                    SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new CloudListenerImpl(), SpigotBootstrap.getInstance());
+
+                    this.mobs.values().forEach(this::handleCreateMob);
+                }, (configuration, resultID) -> {
                     instance = null;
                     ReformCloudAPISpigot.getInstance().getNettyHandler().unregisterHandler("CreateMob");
                     ReformCloudAPISpigot.getInstance().getNettyHandler().unregisterHandler("DeleteMob");
                     ReformCloudAPISpigot.getInstance().getNettyHandler().unregisterHandler("UpdateMobs");
                 }
         );
-
-        if (instance == null)
-            return;
-
-        PluginCommand pluginCommand = SpigotBootstrap.getInstance().getCommand("mobs");
-        pluginCommand.setExecutor(new CommandReformMobs());
-        pluginCommand.setPermission("reformcloud.commands.mobs");
-
-        ReformCloudAPISpigot.getInstance().getNettyHandler().registerHandler("DisableMobs", new PacketInDisableMobs());
-
-        SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new BukkitListenerImpl(), SpigotBootstrap.getInstance());
-        SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new CloudListenerImpl(), SpigotBootstrap.getInstance());
-
-        this.mobs.values().forEach(this::handleCreateMob);
     }
 
     public Location toLocation(SelectorMobPosition selectorMobPosition) {
