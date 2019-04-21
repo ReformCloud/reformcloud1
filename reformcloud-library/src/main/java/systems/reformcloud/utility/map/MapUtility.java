@@ -5,6 +5,8 @@
 package systems.reformcloud.utility.map;
 
 import lombok.NonNull;
+import systems.reformcloud.utility.checkable.Checkable;
+import systems.reformcloud.utility.converter.Converter;
 import systems.reformcloud.utility.map.maps.Double;
 import systems.reformcloud.utility.map.maps.Trio;
 import systems.reformcloud.utility.map.pool.Callback;
@@ -201,5 +203,51 @@ public final class MapUtility implements Serializable {
         for (T t : list)
             for (Callback callback : run)
                 callback.onCall(t);
+    }
+
+    public static <T> T filter(Collection<T> collection, Checkable<T> checkable) {
+        for (T t : collection)
+            if (checkable.isChecked(t))
+                return t;
+
+        return null;
+    }
+
+    public static <T> Collection<T> filterAll(Collection<T> collection, Checkable<T> checkable) {
+        Collection<T> out = new LinkedList<>();
+        for (T t : collection)
+            if (checkable.isChecked(t))
+                out.add(t);
+
+        return out;
+    }
+
+    public static <T> Collection<T> connect(Collection<T>... collections) {
+        Collection<T> out = new LinkedList<>();
+        for (Collection<T> collection : collections)
+            out.addAll(collection);
+
+        return out;
+    }
+
+    public static <T, V> Collection<T> transform(Collection<V> collection, Converter<V, T> converter) {
+        Collection<T> out = new LinkedList<>();
+        for (V v : collection) {
+            T t = converter.convert(v);
+            if (t != null)
+                out.add(t);
+        }
+
+        return out;
+    }
+
+    public static <T> void removeAll(Collection<T> list, Checkable<T> checkable) {
+        Collection<T> remove = new LinkedList<>();
+        for (T t : list)
+            if (checkable.isChecked(t))
+                remove.add(t);
+
+        if (!remove.isEmpty())
+            list.removeAll(remove);
     }
 }
