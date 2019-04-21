@@ -359,16 +359,18 @@ public final class MobSelector implements Serializable {
             if (this.entity != null)
                 this.despawn();
 
-            this.entity = this.location.getWorld().spawnEntity(this.location, this.entityType);
-            this.entity.setCustomName(this.selectorMob.getDisplayName());
-            this.entity.setCustomNameVisible(true);
-            this.entity.setGravity(false);
-            if (this.entity instanceof LivingEntity)
-                ((LivingEntity) this.entity).setCollidable(false);
+            SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
+                this.entity = this.location.getWorld().spawnEntity(this.location, this.entityType);
+                this.entity.setCustomName(this.selectorMob.getDisplayName());
+                this.entity.setCustomNameVisible(true);
+                this.entity.setGravity(false);
+                if (this.entity instanceof LivingEntity)
+                    ((LivingEntity) this.entity).setCollidable(false);
 
-            ReflectionUtil.setNoAI(this.entity);
-            if (!spawnedMobs.containsKey(this.entity.getUniqueId()))
-                spawnedMobs.put(this.entity.getUniqueId(), this);
+                ReflectionUtil.setNoAI(this.entity);
+                if (!spawnedMobs.containsKey(this.entity.getUniqueId()))
+                    spawnedMobs.put(this.entity.getUniqueId(), this);
+            });
         }
     }
 
