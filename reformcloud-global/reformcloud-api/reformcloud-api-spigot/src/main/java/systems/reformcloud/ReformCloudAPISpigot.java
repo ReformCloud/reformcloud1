@@ -44,6 +44,7 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.defaults.DefaultCloudService;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
@@ -93,6 +94,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
 
         ISaveAPIService.instance.set(new SaveAPImpl());
         IAPIService.instance.set(this);
+        new DefaultCloudService(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(this, SpigotBootstrap.getInstance());
@@ -118,6 +120,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
                 .registerHandler("SignUpdate", new PacketInSignUpdate())
+                .registerHandler("EnableMobs", new PacketInEnableMobs())
                 .registerHandler("RemoveSign", new PacketInRemoveSign())
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())

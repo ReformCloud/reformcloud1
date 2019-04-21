@@ -17,6 +17,7 @@
         <module>reformcloud-addons-permissions</module>
         <module>reformcloud-addons-proxy</module>
         <module>reformcloud-addons-parameters</module>
+        <module>reformcloud-addons-mobs</module>
     </modules>
 
     <dependencies>

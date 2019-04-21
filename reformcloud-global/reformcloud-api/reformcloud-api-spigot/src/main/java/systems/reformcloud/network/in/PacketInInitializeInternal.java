@@ -7,6 +7,7 @@ package systems.reformcloud.network.in;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.enums.ServerState;
+import systems.reformcloud.mobsaddon.MobSelector;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
@@ -33,6 +34,8 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+
+        new MobSelector();
 
         ReformCloudAPISpigot.getInstance().getServerInfo().setServerState(ServerState.READY);
         ReformCloudAPISpigot.getInstance().sendPacketSync("ReformCloudController", new PacketOutServerInfoUpdate(

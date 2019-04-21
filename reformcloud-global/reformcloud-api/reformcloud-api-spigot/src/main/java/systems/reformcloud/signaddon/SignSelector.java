@@ -79,7 +79,6 @@ public final class SignSelector {
                     this.signMap = configuration.getValue("signMap", new TypeToken<Map<UUID, Sign>>() {
                     }.getType());
 
-                    SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
                     SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
 
                     CommandReformSigns commandReformSigns = new CommandReformSigns();

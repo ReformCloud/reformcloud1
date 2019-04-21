@@ -2,7 +2,7 @@
   Copyright © 2019 Pasqual K. | All rights reserved
  */
 
-package systems.reformcloud.test.event;
+package systems.reformcloud.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -47,6 +47,8 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
         this.getServer().getPluginManager().registerEvents(new PlayerConnectListener(), this);
         this.getServer().getPluginManager().registerEvents(new CloudAddonsListener(), this);
 
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         try {
             new ReformCloudAPISpigot();
         } catch (final Throwable throwable) {

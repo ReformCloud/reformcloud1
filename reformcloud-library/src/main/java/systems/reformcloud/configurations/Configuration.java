@@ -6,6 +6,7 @@ package systems.reformcloud.configurations;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import lombok.Data;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -211,6 +212,17 @@ public final class Configuration {
      */
     public <T> T getValue(String key, Type type) {
         return jsonObject.has(key) ? ReformCloudLibraryService.GSON.fromJson(jsonObject.get(key), type) : null;
+    }
+
+    /**
+     * Gets a object value out of the config
+     *
+     * @param key       The key of the config value
+     * @param typeToken The defining type token of the containing object
+     * @return The config class instance
+     */
+    public <T> T getValue(String key, TypeToken<T> typeToken) {
+        return getValue(key, typeToken.getType());
     }
 
     /**

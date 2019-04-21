@@ -16,10 +16,9 @@ public final class Require implements Serializable {
      *
      * @param t   The given parameter which should be checked
      * @param <T> The type of the given parameter
-     * @return The parameter or throws an exception when the parameter is null
      */
-    public static <T> T requireNotNull(T t) {
-        return requireNotNullOrThrow(t, new IllegalStateException("Object requires to be not null"));
+    public static <T> void requireNotNull(T t) {
+        requireNotNullOrThrow(t, new IllegalStateException("Object requires to be not null"));
     }
 
     /**

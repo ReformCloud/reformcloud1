@@ -60,6 +60,7 @@ import systems.reformcloud.startup.CloudProcessOfferService;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.defaults.DefaultCloudService;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
@@ -208,6 +209,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
         ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
+        new DefaultCloudService(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         loggerProvider.info(this.getLoadedLanguage().getLoading_done()

@@ -50,6 +50,7 @@ import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.defaults.DefaultCloudService;
 import systems.reformcloud.utility.parameters.ParameterManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
@@ -128,6 +129,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
+        new DefaultCloudService(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         this.cloudConfiguration = new CloudConfiguration(false);

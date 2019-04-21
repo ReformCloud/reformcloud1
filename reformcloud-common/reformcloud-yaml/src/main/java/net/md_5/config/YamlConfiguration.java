@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.representer.Represent;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
@@ -17,26 +15,18 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class YamlConfiguration extends ConfigurationProvider {
 
-    private final ThreadLocal<Yaml> yaml = new ThreadLocal<Yaml>() {
-        @Override
-        protected Yaml initialValue() {
-            Representer representer = new Representer() {
-                {
-                    representers.put(Configuration.class, new Represent() {
-                        @Override
-                        public Node representData(Object data) {
-                            return represent(((Configuration) data).self);
-                        }
-                    });
-                }
-            };
+    private final ThreadLocal<Yaml> yaml = ThreadLocal.withInitial(() -> {
+        Representer representer = new Representer() {
+            {
+                representers.put(Configuration.class, data -> represent(((Configuration) data).self));
+            }
+        };
 
-            DumperOptions options = new DumperOptions();
-            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 
-            return new Yaml(new Constructor(), representer, options);
-        }
-    };
+        return new Yaml(new Constructor(), representer, options);
+    });
 
     @Override
     public void save(Configuration config, File file) throws IOException {

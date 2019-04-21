@@ -17,6 +17,10 @@ import java.util.concurrent.TimeUnit;
 
 public final class TaskScheduler implements Serializable {
     /**
+     * The default scheduler initialized by the cloud system
+     */
+    public static final TaskScheduler TASK_SCHEDULER = new TaskScheduler();
+    /**
      * The scheduler which is used
      */
     private Scheduler scheduler;

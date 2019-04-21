@@ -195,8 +195,41 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         for (StackTraceElement stackTraceElement : cause.getStackTrace())
             stringBuilder.append("    at ").append(stackTraceElement).append("\n");
 
-        this.serve(stringBuilder.substring(0));
-        this.handleAll(stringBuilder.substring(0));
+        for (Throwable suppressed : cause.getSuppressed())
+            this.suppressedException(suppressed, cause.getStackTrace(), "Suppressed: ", "\t", stringBuilder);
+
+        String exception = stringBuilder.substring(0, stringBuilder.length() - 2);
+
+        this.serve(exception);
+        this.handleAll(exception);
+    }
+
+    private void suppressedException(Throwable cause,
+                                     StackTraceElement[] enclosing,
+                                     String caption,
+                                     String prefix,
+                                     StringBuilder stringBuilder) {
+        StackTraceElement[] trace = cause.getStackTrace();
+        int m = trace.length - 1;
+        int n = enclosing.length - 1;
+        while (m >= 0 && n >= 0 && trace[m].equals(enclosing[n]))
+            m--;
+        n--;
+
+        int framesInCommon = trace.length - 1 - m;
+
+        stringBuilder.append(prefix + caption + cause);
+        for (int i = 0; i <= m; i++)
+            stringBuilder.append(prefix + "\tat " + trace[i]);
+        if (framesInCommon != 0)
+            stringBuilder.append(prefix + "\t... " + framesInCommon + " more");
+
+        for (Throwable se : cause.getSuppressed())
+            suppressedException(se, cause.getStackTrace(), "", "\t", stringBuilder);
+
+        Throwable ourCause = cause.getCause();
+        if (ourCause != null)
+            suppressedException(ourCause, trace, "Caused by: ", "", stringBuilder);
     }
 
     @Override

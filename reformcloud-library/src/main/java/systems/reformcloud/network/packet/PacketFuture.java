@@ -122,7 +122,7 @@ public final class PacketFuture implements Serializable {
             Packet packet = this.syncUninterruptedly();
             if (packet.getResult() == null && this.onFailure != null)
                 this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-            else if (this.onSuccess != null)
+            else if (packet.getResult() != null && this.onSuccess != null)
                 this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
         });
     }

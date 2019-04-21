@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
@@ -23,6 +24,11 @@ public final class EventManager implements Serializable {
      * The map contains all registered listeners and their handlers
      */
     protected Map<Class<?>, EventClass[]> handlers = ReformCloudLibraryService.concurrentHashMap();
+
+    /**
+     * Consumer handel all fired events
+     */
+    private Consumer<Object> fireAndForget = this::callEvent;
 
     /**
      * Get the handling events of the class
@@ -98,7 +104,7 @@ public final class EventManager implements Serializable {
      * @param <T>       The event which should be called, extending the event class
      */
     public <T extends Event> void fire(T event) {
-        this.callEvent(event);
+        this.fireAndForget.accept(event);
     }
 
     /**

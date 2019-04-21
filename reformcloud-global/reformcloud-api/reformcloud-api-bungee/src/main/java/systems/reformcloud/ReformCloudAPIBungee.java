@@ -53,6 +53,7 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.defaults.DefaultCloudService;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
@@ -103,6 +104,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
 
         ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
+        new DefaultCloudService(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
