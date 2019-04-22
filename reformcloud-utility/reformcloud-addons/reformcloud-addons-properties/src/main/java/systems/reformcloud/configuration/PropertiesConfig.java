@@ -42,7 +42,7 @@ public final class PropertiesConfig implements Serializable {
                     .addProperty("config", new systems.reformcloud.properties.PropertiesConfig(
                             Collections.singletonList(new PropertiesGroup(
                                     "Lobby",
-                                    new Properties()
+                                    this.defaults()
                             ))
                     )).write(Paths.get("reformcloud/addons/properties/config.json"));
         }
@@ -55,5 +55,13 @@ public final class PropertiesConfig implements Serializable {
 
     private void registerNetworkHandlers() {
         ReformCloudController.getInstance().getNettyHandler().registerQueryHandler("RequestProperties", new PacketInRequestProperties());
+    }
+
+    public Properties defaults() {
+        Properties properties = new Properties();
+        properties.setProperty("force-gamemode", "false");
+        properties.setProperty("pvp", "true");
+
+        return properties;
     }
 }
