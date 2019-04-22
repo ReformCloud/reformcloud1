@@ -270,8 +270,9 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         RUNNING = false;
         this.synchronizationHandler.delete();
 
-        this.channelHandler.getChannel("ReformCloudController").writeAndFlush(new PacketOutSyncClientDisconnects())
-                .addListener(ChannelFutureListener.CLOSE);
+        if (this.channelHandler.getChannel("ReformCloudController") != null)
+            this.channelHandler.getChannel("ReformCloudController").writeAndFlush(new PacketOutSyncClientDisconnects())
+                    .addListener(ChannelFutureListener.CLOSE);
 
         ReformCloudLibraryService.sleep(500);
 

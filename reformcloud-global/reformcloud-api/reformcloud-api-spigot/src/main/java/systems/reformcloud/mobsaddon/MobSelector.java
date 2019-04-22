@@ -224,9 +224,7 @@ public final class MobSelector implements Serializable {
 
         ChatColor.translateAlternateColorCodes('&', input);
 
-        return input
-                .replace("%group_name%", group)
-                .replace("%group_online%", Integer.toString(ReformCloudAPISpigot.getInstance().getAllRegisteredServers(group).size()));
+        return input.replace("%group_name%", group);
     }
 
     private List<String> format(List<String> input, ServerInfo serverInfo) {
@@ -377,6 +375,7 @@ public final class MobSelector implements Serializable {
                 i++;
             }
 
+            this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
             infos.put(serverInfo.getCloudProcess().getName(), i);
         }
 
@@ -421,6 +420,7 @@ public final class MobSelector implements Serializable {
             servers.clear();
             infos.clear();
 
+            this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
             serverInfos.forEach(this::addServer);
         }
 
