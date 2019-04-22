@@ -7,6 +7,7 @@ package systems.reformcloud.selector;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.mobs.SelectorMob;
@@ -17,10 +18,7 @@ import systems.reformcloud.mobs.inventory.item.SelectorsMobServerItem;
 import systems.reformcloud.packets.in.PacketInCreateMob;
 import systems.reformcloud.packets.in.PacketInDeleteMob;
 import systems.reformcloud.packets.in.PacketInQueryGetAll;
-import systems.reformcloud.packets.out.PacketOutCreateMob;
-import systems.reformcloud.packets.out.PacketOutDeleteMob;
-import systems.reformcloud.packets.out.PacketOutDisableMobs;
-import systems.reformcloud.packets.out.PacketOutUpdateMobs;
+import systems.reformcloud.packets.out.*;
 import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.files.FileUtils;
 
@@ -94,6 +92,11 @@ public final class MobSelector implements Serializable {
         this.selectorMobConfig = Configuration.parse(directory + "/config.json").getValue("config", new TypeToken<SelectorMobConfig>() {
         }.getType());
 
+        ReformCloudController.getInstance().getChannelHandler().sendToAllLobbiesDirect(
+                ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager(),
+                new PacketOutEnableMobs()
+        );
+        ReformCloudLibraryService.sleep(500);
         ReformCloudController.getInstance().getChannelHandler().sendToAllLobbiesDirect(
                 ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager(),
                 new PacketOutUpdateMobs(this.mobs, this.selectorMobConfig)
