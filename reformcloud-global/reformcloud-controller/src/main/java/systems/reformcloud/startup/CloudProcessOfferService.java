@@ -27,6 +27,9 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
     @Getter
     private Map<String, String> waiting = ReformCloudLibraryService.concurrentHashMap();
 
+    @Getter
+    private Map<String, String> waitingPerClient = ReformCloudLibraryService.concurrentHashMap();
+
     private List<Trio<String, String, Integer>> servers = new ArrayList<>();
     private List<Trio<String, String, Integer>> proxies = new ArrayList<>();
 
@@ -47,6 +50,7 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
 
             if (waitingAndOnline < serverGroup.getMinOnline() && (serverGroup.getMaxOnline() > waitingAndOnline || serverGroup.getMaxOnline() == -1)) {
                 this.waiting.put(name, serverGroup.getName());
+                this.waitingPerClient.put(name, client.getName());
                 this.registerID(serverGroup.getName(), name, Integer.valueOf(id));
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                         new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
@@ -72,6 +76,7 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
 
             if (waitingAndOnline < proxyGroup.getMinOnline() && (proxyGroup.getMaxOnline() > waitingAndOnline || proxyGroup.getMaxOnline() == -1)) {
                 this.waiting.put(name, proxyGroup.getName());
+                this.waitingPerClient.put(name, startup.getName());
                 this.registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(startup.getName(),
                         new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
@@ -137,9 +142,7 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
     }
 
     public void removeWaitingProcess(String name) {
-        for (Map.Entry<String, String> map : this.waiting.entrySet())
-            if (map.getValue().equals(name))
-                this.waiting.remove(map.getKey());
+        this.waiting.remove(name);
 
         List<Trio<String, String, Integer>> clone = new ArrayList<>(this.proxies);
         clone.forEach(e -> {

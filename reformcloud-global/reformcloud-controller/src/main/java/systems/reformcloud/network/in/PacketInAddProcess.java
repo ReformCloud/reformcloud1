@@ -35,6 +35,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
                     .replace("%client%", serverInfo.getCloudProcess().getClient()));
 
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting().remove(serverInfo.getCloudProcess().getName());
+            ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient().remove(serverInfo.getCloudProcess().getName());
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessAdd(serverInfo));
         } else {
             final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
@@ -48,6 +49,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
                     .replace("%client%", proxyInfo.getCloudProcess().getClient()));
 
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting().remove(proxyInfo.getCloudProcess().getName());
+            ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient().remove(proxyInfo.getCloudProcess().getName());
             ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessAdd(proxyInfo));
         }
     }

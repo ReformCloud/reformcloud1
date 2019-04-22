@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import io.netty.channel.ChannelFutureListener;
 import lombok.Getter;
 import lombok.Setter;
 import systems.reformcloud.addons.AddonParallelLoader;
@@ -265,8 +266,10 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         shutdown = true;
         RUNNING = false;
+        this.synchronizationHandler.delete();
 
-        this.channelHandler.sendDirectPacket("ReformCloudController", new PacketOutSyncClientDisconnects());
+        this.channelHandler.getChannel("ReformCloudController").writeAndFlush(new PacketOutSyncClientDisconnects())
+                .addListener(ChannelFutureListener.CLOSE);
 
         ReformCloudLibraryService.sleep(500);
 

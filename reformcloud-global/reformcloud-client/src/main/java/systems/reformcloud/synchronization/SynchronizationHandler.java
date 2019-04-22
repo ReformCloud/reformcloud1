@@ -20,12 +20,14 @@ import java.util.concurrent.TimeUnit;
 public final class SynchronizationHandler implements Serializable, Runnable {
     private static final long serialVersionUID = -7527313886584796220L;
 
+    private boolean deleted = false;
+
     @Setter
     private ClientInfo lastInfo = ReformCloudClient.getInstance().getClientInfo();
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted() && !deleted) {
             ClientInfo current = ReformCloudClient.getInstance().getClientInfo();
 
             double cpuUsage = ReformCloudLibraryService.cpuUsage();
@@ -53,5 +55,9 @@ public final class SynchronizationHandler implements Serializable, Runnable {
 
             ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 3);
         }
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }

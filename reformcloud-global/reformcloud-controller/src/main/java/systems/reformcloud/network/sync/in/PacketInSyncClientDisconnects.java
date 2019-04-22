@@ -10,6 +10,8 @@ import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -23,6 +25,18 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
         Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(configuration.getStringValue("name"));
         if (client != null) {
             client.setClientInfo(null);
+            Collection<String> waitingOnClient = new LinkedList<>();
+            ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient()
+                    .forEach((k, v) -> {
+                        if (v.equals(client.getName()))
+                            waitingOnClient.add(k);
+                    });
+
+            waitingOnClient.forEach(e -> {
+                ReformCloudController.getInstance().getCloudProcessOfferService().removeWaitingProcess(e);
+                ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient().remove(e);
+            });
+
             ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
                 if (e.getCloudProcess().getClient().equals(client.getName())) {
                     ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(

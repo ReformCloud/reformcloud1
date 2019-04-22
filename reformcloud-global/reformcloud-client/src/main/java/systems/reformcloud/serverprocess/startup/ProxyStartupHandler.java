@@ -384,8 +384,9 @@ public final class ProxyStartupHandler implements Serializable {
         final ProxyInfo proxyInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
                 .getServerProcessManager().getRegisteredProxyByUID(this.proxyStartupInfo.getUid());
 
-        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                new PacketOutRemoveProcess(proxyInfo));
+        if (update)
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                    new PacketOutRemoveProcess(proxyInfo));
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterProxyProcess(this.proxyStartupInfo.getName());
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterProxyProcess(
