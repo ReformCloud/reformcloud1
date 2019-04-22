@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.PluginCommand;
@@ -157,8 +158,7 @@ public final class MobSelector implements Serializable {
                 mobInventory.getSize() % 9 != 0
                         ? 54
                         : mobInventory.getSize(),
-                mobInventory.getName()
-                        .replace("%group_name%", selectorMob.getSelectorMobPosition().getTargetGroup())
+                this.formatInventoryName(mobInventory.getName(), selectorMob.getSelectorMobPosition().getTargetGroup())
         );
         for (SelectorMobInventoryItem item : mobInventory.getItems()) {
             ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, item.getMaterialName()).isPresent()
@@ -191,6 +191,8 @@ public final class MobSelector implements Serializable {
         if (input == null || serverInfo == null)
             return input;
 
+        ChatColor.translateAlternateColorCodes('&', input);
+
         return input
                 .replace("%server_name%", serverInfo.getCloudProcess().getName())
                 .replace("%server_uid%", serverInfo.getCloudProcess().getProcessUID().toString())
@@ -203,6 +205,28 @@ public final class MobSelector implements Serializable {
                 .replace("%server_host%", serverInfo.getHost())
                 .replace("%server_port%", Integer.toString(serverInfo.getPort()))
                 .replace("%server_max_players%", Integer.toString(serverInfo.getServerGroup().getMaxPlayers()));
+    }
+
+    private String formatDisplayName(String input, String group) {
+        if (input == null || group == null)
+            return input;
+
+        ChatColor.translateAlternateColorCodes('&', input);
+
+        return input
+                .replace("%group_name%", group)
+                .replace("%group_online%", Integer.toString(ReformCloudAPISpigot.getInstance().getAllRegisteredServers(group).size()));
+    }
+
+    private String formatInventoryName(String input, String group) {
+        if (input == null || group == null)
+            return input;
+
+        ChatColor.translateAlternateColorCodes('&', input);
+
+        return input
+                .replace("%group_name%", group)
+                .replace("%group_online%", Integer.toString(ReformCloudAPISpigot.getInstance().getAllRegisteredServers(group).size()));
     }
 
     private List<String> format(List<String> input, ServerInfo serverInfo) {
@@ -412,7 +436,7 @@ public final class MobSelector implements Serializable {
 
             SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
                 this.entity = this.location.getWorld().spawnEntity(this.location, this.entityType);
-                this.entity.setCustomName(this.selectorMob.getDisplayName());
+                this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
                 this.entity.setCustomNameVisible(true);
                 this.entity.setFireTicks(0);
                 this.entity.setOp(false);
