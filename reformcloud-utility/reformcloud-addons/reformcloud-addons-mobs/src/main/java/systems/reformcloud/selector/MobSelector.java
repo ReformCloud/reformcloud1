@@ -80,12 +80,12 @@ public final class MobSelector implements Serializable {
                     ), new SelectorsMobServerItem("§a%server_name%", "CAKE",
                     Collections.singletonList("§7%server_online_players%§8/§7%server_max_players%"), (short) 0)
             )).write(Paths.get(directory + "/config.json"));
-
-            if (!Files.exists(Paths.get(databaseDir + "/database.json")))
-                new Configuration()
-                        .addProperty("database", new HashMap<>())
-                        .write(databaseDir + "/database.json");
         }
+
+        if (!Files.exists(Paths.get(databaseDir + "/database.json")))
+            new Configuration()
+                    .addProperty("database", new HashMap<>())
+                    .write(databaseDir + "/database.json");
 
         this.mobs = Configuration.parse(databaseDir + "/database.json").getValue("database", new TypeToken<Map<UUID, SelectorMob>>() {
         }.getType());
