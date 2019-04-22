@@ -444,8 +444,10 @@ public final class MobSelector implements Serializable {
 
             MobSelector.this.clearInventory(this.inventory);
 
-            if (entity != null)
-                this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
+            Bukkit.getScheduler().runTaskLater(SpigotBootstrap.getInstance(), () -> {
+                if (entity != null)
+                    this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
+            }, 20);
 
             serverInfos.forEach(this::addServer);
         }
