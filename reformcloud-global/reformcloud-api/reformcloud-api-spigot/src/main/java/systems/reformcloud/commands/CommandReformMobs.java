@@ -55,7 +55,7 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
                         MobSelector.getInstance().toPosition(strings[3], player.getLocation())
                 );
                 MobSelector.getInstance().createMob(selectorMob);
-                commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + "The mob was creates successfully");
+                commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + "The mob was created successfully");
                 return true;
             } catch (final Throwable throwable) {
                 commandSender.sendMessage("The mob doesn't exists");

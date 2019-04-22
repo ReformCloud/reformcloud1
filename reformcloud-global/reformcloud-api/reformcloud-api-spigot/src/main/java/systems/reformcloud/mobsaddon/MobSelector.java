@@ -23,15 +23,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldSaveEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.commands.CommandReformMobs;
-import systems.reformcloud.event.events.ServerInfoUpdateEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.internal.events.CloudServerAddEvent;
+import systems.reformcloud.internal.events.CloudServerInfoUpdateEvent;
 import systems.reformcloud.internal.events.CloudServerRemoveEvent;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.enums.ServerState;
@@ -50,6 +52,7 @@ import systems.reformcloud.mobsaddon.packet.out.PacketOutCreateMob;
 import systems.reformcloud.mobsaddon.packet.out.PacketOutDeleteMob;
 import systems.reformcloud.mobsaddon.packet.out.PacketOutRequestAll;
 import systems.reformcloud.permissions.ReflectionUtil;
+import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.Serializable;
 import java.util.*;
@@ -101,7 +104,11 @@ public final class MobSelector implements Serializable {
                     SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new BukkitListenerImpl(), SpigotBootstrap.getInstance());
                     SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new CloudListenerImpl(), SpigotBootstrap.getInstance());
 
-                    this.mobs.values().forEach(this::handleCreateMob);
+                    this.mobs
+                            .values()
+                            .stream()
+                            .filter(e -> Bukkit.getWorld(e.getSelectorMobPosition().getWorld()) != null)
+                            .forEach(Mob::new);
                 }, (configuration, resultID) -> {
                     instance = null;
                     ReformCloudAPISpigot.getInstance().getNettyHandler().unregisterHandler("CreateMob");
@@ -151,7 +158,7 @@ public final class MobSelector implements Serializable {
                         ? 54
                         : mobInventory.getSize(),
                 mobInventory.getName()
-                        .replace("%group%", selectorMob.getSelectorMobPosition().getTargetGroup())
+                        .replace("%group_name%", selectorMob.getSelectorMobPosition().getTargetGroup())
         );
         for (SelectorMobInventoryItem item : mobInventory.getItems()) {
             ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, item.getMaterialName()).isPresent()
@@ -226,12 +233,7 @@ public final class MobSelector implements Serializable {
     }
 
     public Mob findSelectorMob(SelectorMob selectorMob) {
-        return this.spawnedMobs
-                .values()
-                .stream()
-                .filter(e -> e.selectorMob.equals(selectorMob))
-                .findFirst()
-                .orElse(null);
+        return MapUtility.filter(this.spawnedMobs.values(), e -> e.selectorMob.equals(selectorMob));
     }
 
     public void createMob(SelectorMob selectorMob) {
@@ -261,11 +263,7 @@ public final class MobSelector implements Serializable {
 
     public int deleteAllMobs(String group) {
         int deleted = 0;
-        Collection<SelectorMob> groupMobs = this.mobs
-                .values()
-                .stream()
-                .filter(e -> e.getSelectorMobPosition().getTargetGroup().equals(group))
-                .collect(Collectors.toList());
+        Collection<SelectorMob> groupMobs = MapUtility.filterAll(this.mobs.values(), e -> e.getSelectorMobPosition().getTargetGroup().equals(group));
         for (SelectorMob selectorMob : groupMobs) {
             ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket(
                     "ReformCloudController",
@@ -285,8 +283,12 @@ public final class MobSelector implements Serializable {
         mobs.forEach(e -> e.removeServer(serverInfo));
     }
 
+    public void handleServerInfoUpdate(Collection<Mob> mobs, ServerInfo serverInfo) {
+        mobs.forEach(e -> e.updateServerInfo(serverInfo));
+    }
+
     public void handleCreateMob(SelectorMob selectorMob) {
-        Mob mob = new Mob(selectorMob);
+        new Mob(selectorMob);
     }
 
     public void handleDeleteMob(SelectorMob selectorMob) {
@@ -315,11 +317,18 @@ public final class MobSelector implements Serializable {
         }
 
         private SelectorMob selectorMob;
+
         private Location location;
+
         private Entity entity;
+
         private EntityType entityType;
+
         private Inventory inventory;
+
         private Map<String, Integer> infos = new HashMap<>();
+
+        private Map<String, Integer> servers = new HashMap<>();
 
         private void addServer(ServerInfo serverInfo) {
             if (infos.containsKey(serverInfo.getCloudProcess().getName()))
@@ -328,7 +337,17 @@ public final class MobSelector implements Serializable {
             int i = 0;
             for (ItemStack itemStack : inventory.getContents()) {
                 if (itemStack == null || itemStack.getType() == null || itemStack.getType() == Material.AIR) {
-                    inventory.setItem(i, itemForServer(serverInfo));
+                    ItemStack itemStack1 = itemForServer(serverInfo);
+                    inventory.setItem(i, itemStack1);
+                    servers.put(serverInfo.getCloudProcess().getName(), i);
+
+                    Bukkit.getOnlinePlayers().forEach(e -> {
+                        if (e.getOpenInventory() != null
+                                && e.getOpenInventory().getTopInventory() != null
+                                && e.getOpenInventory().getTopInventory().equals(inventory)) {
+                            e.updateInventory();
+                        }
+                    });
                     break;
                 }
                 i++;
@@ -337,12 +356,43 @@ public final class MobSelector implements Serializable {
             infos.put(serverInfo.getCloudProcess().getName(), i);
         }
 
+        private void updateServerInfo(ServerInfo serverInfo) {
+            if (!infos.containsKey(serverInfo.getCloudProcess().getName())) {
+                addServer(serverInfo);
+                return;
+            }
+
+            for (ItemStack itemStack : inventory.getContents()) {
+                if (itemStack != null
+                        && itemStack.getType() != null
+                        && !itemStack.getType().equals(Material.AIR)
+                        && itemStack.hasItemMeta()) {
+                    if (servers.containsKey(serverInfo.getCloudProcess().getName())) {
+                        ItemStack itemStack1 = itemForServer(serverInfo);
+                        inventory.setItem(servers.get(serverInfo.getCloudProcess().getName()), itemStack1);
+
+                        Bukkit.getOnlinePlayers().forEach(e -> {
+                            if (e.getOpenInventory() != null
+                                    && e.getOpenInventory().getTopInventory() != null
+                                    && e.getOpenInventory().getTopInventory().equals(inventory)) {
+                                e.updateInventory();
+                            }
+                        });
+                    } else {
+                        addServer(serverInfo);
+                        break;
+                    }
+                }
+            }
+        }
+
         private void removeServer(ServerInfo serverInfo) {
             if (!infos.containsKey(serverInfo.getCloudProcess().getName()))
                 return;
 
             int slot = infos.remove(serverInfo.getCloudProcess().getName());
             inventory.setItem(slot, null);
+            servers.remove(serverInfo.getCloudProcess().getName());
             for (int current : infos.values())
                 if (current > slot)
                     inventory.setItem(current - 1, inventory.getItem(current));
@@ -362,6 +412,8 @@ public final class MobSelector implements Serializable {
                 this.entity = this.location.getWorld().spawnEntity(this.location, this.entityType);
                 this.entity.setCustomName(this.selectorMob.getDisplayName());
                 this.entity.setCustomNameVisible(true);
+                this.entity.setFireTicks(0);
+                this.entity.setOp(false);
                 this.entity.setGravity(false);
                 if (this.entity instanceof LivingEntity)
                     ((LivingEntity) this.entity).setCollidable(false);
@@ -369,8 +421,6 @@ public final class MobSelector implements Serializable {
                 ReflectionUtil.setNoAI(this.entity);
                 if (!spawnedMobs.containsKey(this.entity.getUniqueId()))
                     spawnedMobs.put(this.entity.getUniqueId(), this);
-
-                MobSelector.this.spawnedMobs.put(entity.getUniqueId(), this);
             });
         }
     }
@@ -429,12 +479,36 @@ public final class MobSelector implements Serializable {
         }
 
         @EventHandler
-        public void handle(final WorldSaveEvent event) {
-            Collection<Mob> inWorld = MobSelector.this.spawnedMobs
-                    .values()
+        public void handle(final WorldLoadEvent event) {
+            if (mobs == null)
+                return;
+
+            Collection<SelectorMob> worldMobs = MapUtility.filterAll(MobSelector.this.mobs.values(),
+                    e -> e.getSelectorMobPosition().getWorld().equals(event.getWorld().getName()));
+            if (worldMobs.isEmpty())
+                return;
+
+            worldMobs.forEach(Mob::new);
+        }
+
+        @EventHandler
+        public void handle(final WorldUnloadEvent event) {
+            if (spawnedMobs == null)
+                return;
+
+            event.getWorld().getEntities()
                     .stream()
-                    .filter(e -> e.entity.getWorld().getName().equals(event.getWorld().getName()))
-                    .collect(Collectors.toList());
+                    .filter(e -> MobSelector.this.spawnedMobs.containsKey(e.getUniqueId()))
+                    .forEach(e -> MobSelector.this.spawnedMobs.get(e.getUniqueId()).despawn());
+        }
+
+        @EventHandler
+        public void handle(final WorldSaveEvent event) {
+            Collection<Mob> inWorld = MapUtility.filterAll(spawnedMobs.values(),
+                    e -> e.entity.getWorld().getName().equals(event.getWorld().getName()));
+            if (inWorld.isEmpty())
+                return;
+
             inWorld.forEach(Mob::despawn);
             SpigotBootstrap.getInstance().getServer().getScheduler().runTaskLater(SpigotBootstrap.getInstance(), () -> {
                 inWorld.forEach(Mob::spawn);
@@ -455,13 +529,13 @@ public final class MobSelector implements Serializable {
         }
 
         @EventHandler
-        public void handle(final ServerInfoUpdateEvent event) {
+        public void handle(final CloudServerInfoUpdateEvent event) {
             Collection<Mob> mobs = findMobsByGroup(event.getServerInfo().getGroup());
             if (mobs.isEmpty())
                 return;
 
             if (event.getServerInfo().getServerState().equals(ServerState.READY))
-                handleServerAdd(mobs, event.getServerInfo());
+                handleServerInfoUpdate(mobs, event.getServerInfo());
             else
                 handleServerDelete(mobs, event.getServerInfo());
         }
@@ -485,6 +559,7 @@ public final class MobSelector implements Serializable {
 
         SpigotBootstrap.getInstance().getCommand("mobs").setExecutor(null);
 
-        this.spawnedMobs.values().forEach(Mob::despawn);
+        Collection<Mob> spawnedCopy = new ArrayList<>(this.spawnedMobs.values());
+        spawnedCopy.forEach(Mob::despawn);
     }
 }

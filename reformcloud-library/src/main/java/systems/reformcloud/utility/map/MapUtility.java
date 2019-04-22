@@ -250,4 +250,13 @@ public final class MapUtility implements Serializable {
         if (!remove.isEmpty())
             list.removeAll(remove);
     }
+
+    public static <T> Collection<T> findAll(Collection<T> collection, Collection<T> check) {
+        Collection<T> out = new LinkedList<>();
+        for (T t : collection)
+            if (check.contains(t))
+                out.add(t);
+
+        return out;
+    }
 }

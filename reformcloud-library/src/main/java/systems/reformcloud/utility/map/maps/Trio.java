@@ -5,7 +5,7 @@
 package systems.reformcloud.utility.map.maps;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
-@Getter
+@Data
 @AllArgsConstructor
 public final class Trio<F, S, T> implements Serializable {
     /**

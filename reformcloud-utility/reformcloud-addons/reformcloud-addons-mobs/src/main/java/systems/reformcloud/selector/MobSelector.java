@@ -77,10 +77,10 @@ public final class MobSelector implements Serializable {
                                     new SelectorMobInventoryItem(" ", "GLASS_PANE", 5, (short) 0),
                                     new SelectorMobInventoryItem(" ", "GLASS_PANE", 6, (short) 0),
                                     new SelectorMobInventoryItem(" ", "GLASS_PANE", 7, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 8, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 9, (short) 0)
+                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 8, (short) 0)
                             )
-                    ), new SelectorsMobServerItem("§a%server_name%", "CAKE", Collections.singletonList("§7%online_players%§8/§7%max_players%"), (short) 0)
+                    ), new SelectorsMobServerItem("§a%server_name%", "CAKE",
+                    Collections.singletonList("§7%server_online_players%§8/§7%server_max_players%"), (short) 0)
             )).write(Paths.get(directory + "/config.json"));
 
             if (!Files.exists(Paths.get(databaseDir + "/database.json")))
