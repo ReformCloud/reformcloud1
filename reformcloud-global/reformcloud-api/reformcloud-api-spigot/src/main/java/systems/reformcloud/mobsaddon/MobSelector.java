@@ -390,12 +390,14 @@ public final class MobSelector implements Serializable {
             if (!infos.containsKey(serverInfo.getCloudProcess().getName()))
                 return;
 
-            int slot = infos.remove(serverInfo.getCloudProcess().getName());
-            inventory.setItem(slot, null);
             servers.remove(serverInfo.getCloudProcess().getName());
-            for (int current : infos.values())
-                if (current > slot)
-                    inventory.setItem(current - 1, inventory.getItem(current));
+            Collection<ServerInfo> serverInfos = MapUtility.filterAll(
+                    ReformCloudAPISpigot.getInstance().getAllRegisteredServers(), e -> servers.containsKey(e.getCloudProcess().getName())
+            );
+            servers.clear();
+            infos.clear();
+
+            serverInfos.forEach(this::addServer);
         }
 
         private void despawn() {
