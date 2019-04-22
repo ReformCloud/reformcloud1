@@ -305,11 +305,11 @@ public final class MobSelector implements Serializable {
 
     public int deleteAllMobs(String group) {
         int deleted = 0;
-        Collection<SelectorMob> groupMobs = MapUtility.filterAll(this.mobs.values(), e -> e.getSelectorMobPosition().getTargetGroup().equals(group));
-        for (SelectorMob selectorMob : groupMobs) {
+        Collection<Mob> groupMobs = MapUtility.filterAll(this.spawnedMobs.values(), e -> e.selectorMob.getSelectorMobPosition().getTargetGroup().equals(group));
+        for (Mob mob : groupMobs) {
             ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket(
                     "ReformCloudController",
-                    new PacketOutDeleteMob(selectorMob.getUniqueID())
+                    new PacketOutDeleteMob(mob.selectorMob.getUniqueID())
             );
             deleted++;
         }
@@ -358,7 +358,7 @@ public final class MobSelector implements Serializable {
             this.spawn();
         }
 
-        private SelectorMob selectorMob;
+        public SelectorMob selectorMob;
 
         private Location location;
 

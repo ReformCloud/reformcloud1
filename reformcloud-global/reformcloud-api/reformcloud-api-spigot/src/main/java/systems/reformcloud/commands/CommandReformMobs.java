@@ -38,7 +38,7 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
             try {
                 strings[1] = strings[1].toUpperCase();
                 EntityType entityType = EntityType.valueOf(strings[1]);
-                if (!entityType.isSpawnable()) {
+                if (!entityType.isSpawnable() || entityType.getTypeId() == -1) {
                     commandSender.sendMessage("The mob doesn't exists");
                     return false;
                 }
@@ -80,7 +80,7 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
             return true;
         } else if (strings.length == 1 && strings[0].equalsIgnoreCase("available")) {
             for (EntityType value : EntityType.values()) {
-                if (value.isSpawnable())
+                if (value.isSpawnable() && value.getTypeId() != -1)
                     commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() +
                             "=> " + value.name());
             }
