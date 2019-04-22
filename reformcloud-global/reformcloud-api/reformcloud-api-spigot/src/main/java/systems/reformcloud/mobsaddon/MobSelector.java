@@ -379,7 +379,9 @@ public final class MobSelector implements Serializable {
                 i++;
             }
 
-            this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
+            if (entity != null)
+                this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
+
             infos.put(serverInfo.getCloudProcess().getName(), i);
         }
 
@@ -429,7 +431,9 @@ public final class MobSelector implements Serializable {
                     inventory.remove(itemStack);
             }
 
-            this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
+            if (entity != null)
+                this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
+
             serverInfos.forEach(this::addServer);
         }
 
