@@ -175,6 +175,26 @@ public final class MobSelector implements Serializable {
         return inventory;
     }
 
+    public void clearInventory(Inventory inventory) {
+        if (inventory == null)
+            return;
+
+        inventory.clear();
+
+        SelectorMobInventory mobInventory = selectorMobConfig.getSelectorMobInventory();
+        for (SelectorMobInventoryItem item : mobInventory.getItems()) {
+            ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, item.getMaterialName()).isPresent()
+                    ? Material.getMaterial(item.getMaterialName())
+                    : Material.GLASS_PANE, 1, item.getSubId());
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta != null) {
+                itemMeta.setDisplayName(item.getName());
+                itemStack.setItemMeta(itemMeta);
+            }
+            inventory.setItem(item.getSlot(), itemStack);
+        }
+    }
+
     private ItemStack itemForServer(ServerInfo serverInfo) {
         SelectorsMobServerItem serverItem = this.selectorMobConfig.getSelectorsMobServerItem();
         ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, serverItem.getItemName()).isPresent()
@@ -352,10 +372,6 @@ public final class MobSelector implements Serializable {
 
         private Map<String, Integer> servers = new HashMap<>();
 
-        private final Material invItemMaterial = Material.getMaterial(MobSelector.this.selectorMobConfig.getSelectorsMobServerItem().getItemName()) != null
-                ? Material.getMaterial(MobSelector.this.selectorMobConfig.getSelectorsMobServerItem().getItemName())
-                : Material.GLASS_PANE;
-
         private void addServer(ServerInfo serverInfo) {
             if (infos.containsKey(serverInfo.getCloudProcess().getName()))
                 return;
@@ -426,10 +442,7 @@ public final class MobSelector implements Serializable {
             servers.clear();
             infos.clear();
 
-            for (ItemStack itemStack : this.inventory.getContents()) {
-                if (itemStack.getType().equals(this.invItemMaterial))
-                    inventory.remove(itemStack);
-            }
+            MobSelector.this.clearInventory(this.inventory);
 
             if (entity != null)
                 this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
