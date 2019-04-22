@@ -352,6 +352,10 @@ public final class MobSelector implements Serializable {
 
         private Map<String, Integer> servers = new HashMap<>();
 
+        private final Material invItemMaterial = Material.getMaterial(MobSelector.this.selectorMobConfig.getSelectorsMobServerItem().getItemName()) != null
+                ? Material.getMaterial(MobSelector.this.selectorMobConfig.getSelectorsMobServerItem().getItemName())
+                : Material.GLASS_PANE;
+
         private void addServer(ServerInfo serverInfo) {
             if (infos.containsKey(serverInfo.getCloudProcess().getName()))
                 return;
@@ -419,6 +423,11 @@ public final class MobSelector implements Serializable {
             );
             servers.clear();
             infos.clear();
+
+            for (ItemStack itemStack : this.inventory.getContents()) {
+                if (itemStack.getType().equals(this.invItemMaterial))
+                    inventory.remove(itemStack);
+            }
 
             this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
             serverInfos.forEach(this::addServer);
