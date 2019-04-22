@@ -21,6 +21,7 @@ import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
 import systems.reformcloud.network.packets.out.*;
+import systems.reformcloud.properties.PropertiesManager;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
@@ -243,6 +244,9 @@ public final class CloudServerStartupHandler implements Serializable {
         }
 
         if (!this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.GLOWSTONE_1_12_2)) {
+            if (PropertiesManager.available && PropertiesManager.getInstance() != null)
+                PropertiesManager.getInstance().fill(this.serverStartupInfo.getServerGroup().getName(), properties);
+
             properties.setProperty("server-ip", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
             properties.setProperty("server-port", port + StringUtil.EMPTY);
             properties.setProperty("server-name", serverStartupInfo.getName());
