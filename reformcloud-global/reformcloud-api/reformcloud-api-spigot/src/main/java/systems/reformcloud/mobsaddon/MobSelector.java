@@ -330,10 +330,12 @@ public final class MobSelector implements Serializable {
     }
 
     public void handleCreateMob(SelectorMob selectorMob) {
+        this.mobs.put(selectorMob.getUniqueID(), selectorMob);
         new Mob(selectorMob);
     }
 
     public void handleDeleteMob(SelectorMob selectorMob) {
+        this.mobs.remove(selectorMob.getUniqueID());
         Mob mob = findMobByName(selectorMob.getName());
         if (mob == null)
             return;
