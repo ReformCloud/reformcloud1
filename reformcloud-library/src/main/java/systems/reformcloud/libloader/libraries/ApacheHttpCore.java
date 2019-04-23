@@ -31,6 +31,6 @@ public final class ApacheHttpCore extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "4.4.10";
+        return "4.4.11";
     }
 }
