@@ -23,8 +23,6 @@ import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.LoggerProvider;
@@ -32,6 +30,8 @@ import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.handler.Decoder;
 import systems.reformcloud.network.handler.Encoder;
+import systems.reformcloud.network.length.LengthDecoder;
+import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.checkable.Checkable;
 
 import java.lang.management.ManagementFactory;
@@ -155,10 +155,10 @@ public final class ReformCloudLibraryService {
      */
     public static Channel prepareChannel(Channel channel, ChannelHandler channelHandler) {
         channel.pipeline().addLast(
-                new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4),
-                new LengthFieldPrepender(4),
-                new Encoder(),
+                new LengthDecoder(),
                 new Decoder(),
+                new LengthEncoder(),
+                new Encoder(),
                 new ChannelReader(channelHandler));
 
         return channel;
