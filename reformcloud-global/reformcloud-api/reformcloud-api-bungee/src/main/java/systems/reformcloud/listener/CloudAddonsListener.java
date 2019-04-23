@@ -15,6 +15,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.autoicon.IconManager;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.internal.events.CloudProxyInfoUpdateEvent;
 import systems.reformcloud.launcher.BungeecordBootstrap;
@@ -105,10 +106,13 @@ public final class CloudAddonsListener implements Listener {
 
     @EventHandler
     public void handle(final ProxyPingEvent event) {
+        ServerPing serverPing = event.getResponse();
         if (ReformCloudAPIBungee.getInstance().getProxySettings() == null)
             return;
 
-        ServerPing serverPing = event.getResponse();
+        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null)
+            serverPing.setFavicon(IconManager.getInstance().getCurrent());
+
         ProxySettings proxySettings = ReformCloudAPIBungee.getInstance().getProxySettings();
         final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
                 .getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
@@ -183,6 +187,8 @@ public final class CloudAddonsListener implements Listener {
                 );
             }
         }
+
+        event.setResponse(event.getResponse());
     }
 
     private int online = 0;

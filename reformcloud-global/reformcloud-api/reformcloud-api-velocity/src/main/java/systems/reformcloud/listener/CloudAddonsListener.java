@@ -19,6 +19,7 @@ import net.kyori.text.TextComponent;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.autoicon.IconManager;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.events.CloudProxyInfoUpdateEvent;
@@ -66,10 +67,13 @@ public final class CloudAddonsListener {
 
     @Subscribe
     public void handle(final ProxyPingEvent event) {
+        ServerPing serverPing = event.getPing();
         if (ReformCloudAPIVelocity.getInstance().getProxySettings() == null)
             return;
 
-        ServerPing serverPing = event.getPing();
+        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null)
+            serverPing = serverPing.asBuilder().favicon(IconManager.getInstance().getCurrent()).build();
+
         ProxySettings proxySettings = ReformCloudAPIVelocity.getInstance().getProxySettings();
         final ProxyGroup proxyGroup = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
                 .getProxyGroups().get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());

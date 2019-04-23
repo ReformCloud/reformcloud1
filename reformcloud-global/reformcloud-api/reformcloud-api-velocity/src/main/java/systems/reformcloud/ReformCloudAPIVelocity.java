@@ -126,6 +126,8 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 .registerHandler("ConnectPlayer", new PacketInConnectPlayer())
                 .registerHandler("KickPlayer", new PacketInKickPlayer())
                 .registerHandler("SendPlayerMessage", new PacketInSendPlayerMessage())
+                .registerHandler("DisableIcons", new PacketInDisableIcons())
+                .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());

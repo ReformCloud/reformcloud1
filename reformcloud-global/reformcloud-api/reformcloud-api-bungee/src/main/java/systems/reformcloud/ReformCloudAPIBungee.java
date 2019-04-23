@@ -131,6 +131,8 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 .registerHandler("KickPlayer", new PacketInKickPlayer())
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("SendPlayerMessage", new PacketInSendPlayerMessage())
+                .registerHandler("DisableIcons", new PacketInDisableIcons())
+                .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
