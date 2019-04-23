@@ -20,18 +20,18 @@ public final class LengthDecoder extends ByteToMessageDecoder implements Seriali
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf incoming, List<Object> list) throws Exception {
         incoming.markReaderIndex();
-        byte[] lenghtByte = new byte[3];
+        byte[] lengthByte = new byte[3];
 
         for (int i = 0; i < 3; i++) {
             if (!incoming.isReadable()) {
                 incoming.resetReaderIndex();
-                continue;
+                return;
             }
 
-            lenghtByte[i] = incoming.readByte();
-            if (lenghtByte[i] >= 0) {
+            lengthByte[i] = incoming.readByte();
+            if (lengthByte[i] >= 0) {
                 try {
-                    int len = readVarInt(Unpooled.wrappedBuffer(lenghtByte));
+                    int len = readVarInt(Unpooled.wrappedBuffer(lengthByte));
                     if (incoming.readableBytes() < len) {
                         incoming.resetReaderIndex();
                         return;
