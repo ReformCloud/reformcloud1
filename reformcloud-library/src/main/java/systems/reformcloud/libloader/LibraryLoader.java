@@ -4,11 +4,9 @@
 
 package systems.reformcloud.libloader;
 
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.libloader.libraries.*;
 import systems.reformcloud.libloader.utility.Dependency;
 import systems.reformcloud.utility.ExitUtil;
-import systems.reformcloud.utility.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +80,7 @@ public final class LibraryLoader implements Serializable {
             try {
                 urls.add(new File("libraries/" + e.getName() + "-" + e.getVersion() + ".jar").toURI().toURL());
             } catch (final MalformedURLException ex) {
-                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not prepared dependency", ex);
+                ex.printStackTrace();
             }
         });
 
@@ -94,7 +92,7 @@ public final class LibraryLoader implements Serializable {
                 addURL.setAccessible(true);
                 addURL.invoke(urlClassLoader, url);
             } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while loading class", ex);
+                ex.printStackTrace();
             }
 
             final String[] name = url.getFile().split("/");
@@ -123,7 +121,7 @@ public final class LibraryLoader implements Serializable {
 
             httpURLConnection.disconnect();
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while downloading dependency", ex);
+            ex.printStackTrace();
         }
 
         System.out.println("Dependency " + dependency.getName() + " was downloaded successfully");
