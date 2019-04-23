@@ -33,7 +33,7 @@ public final class NetworkEventAdapter implements Serializable, IEventHandler {
     public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
         VelocityBootstrap.getInstance().getProxyServer().getAllPlayers().forEach(proxiedPlayer ->
                 proxiedPlayer.sendMessage(TextComponent.of(
-                        "Your current server lost the connection to the cloud"
+                        "Your current proxy lost the connection to the cloud"
                 )));
     }
 

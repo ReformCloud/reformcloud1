@@ -112,6 +112,8 @@ public final class CommandReformCloud implements Command {
                     .sendPacketAsynchronous("ReformCloudController",
                             new PacketOutDispatchConsoleCommand("reload"));
             commandSource.sendMessage(TextComponent.of("The command was send to the controller"));
+
+            return;
         }
 
         commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));

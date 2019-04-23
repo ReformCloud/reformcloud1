@@ -34,7 +34,7 @@ public final class NetworkEventAdapter implements Serializable, IEventHandler {
     public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
         BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(proxiedPlayer ->
                 proxiedPlayer.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(
-                        "Your current server lost the connection to the cloud"
+                        "Your current proxy lost the connection to the cloud"
                 )));
     }
 
