@@ -30,8 +30,10 @@ public final class LengthDecoder extends ByteToMessageDecoder implements Seriali
 
             lengthByte[i] = incoming.readByte();
             if (lengthByte[i] >= 0) {
+                ByteBuf byteBuf = Unpooled.wrappedBuffer(lengthByte);
+
                 try {
-                    int len = readVarInt(Unpooled.wrappedBuffer(lengthByte));
+                    int len = readVarInt(byteBuf);
                     if (incoming.readableBytes() < len) {
                         incoming.resetReaderIndex();
                         return;
@@ -39,7 +41,7 @@ public final class LengthDecoder extends ByteToMessageDecoder implements Seriali
 
                     list.add(incoming.readBytes(len));
                 } finally {
-                    incoming.release();
+                    byteBuf.release();
                 }
 
                 return;
