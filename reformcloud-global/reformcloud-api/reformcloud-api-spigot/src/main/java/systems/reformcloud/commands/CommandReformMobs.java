@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.mobs.SelectorMob;
 import systems.reformcloud.mobsaddon.MobSelector;
+import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -36,9 +37,9 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
             }
 
             try {
-                strings[1] = strings[1].toUpperCase();
-                EntityType entityType = EntityType.valueOf(strings[1]);
-                if (!entityType.isSpawnable() || entityType.getTypeId() == -1) {
+                EntityType entityType = MapUtility.filter(EntityType.values(), e -> e.getEntityClass() != null
+                        && e.getEntityClass().getSimpleName().equalsIgnoreCase(strings[1]));
+                if (entityType == null || !entityType.isSpawnable()) {
                     commandSender.sendMessage("The mob doesn't exists");
                     return false;
                 }
@@ -49,7 +50,7 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
 
                 SelectorMob selectorMob = new SelectorMob(
                         UUID.randomUUID(),
-                        entityType.getTypeId(),
+                        entityType.getEntityClass().getSimpleName(),
                         strings[2],
                         ChatColor.translateAlternateColorCodes('&', displayName.substring(0, displayName.length() - 1)),
                         MobSelector.getInstance().toPosition(strings[3], player.getLocation())
@@ -79,8 +80,9 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
 
             return true;
         } else if (strings.length == 1 && strings[0].equalsIgnoreCase("available")) {
-            for (EntityType value : EntityType.values()) {
-                if (value.isSpawnable() && value.getTypeId() != -1)
+            Collection<EntityType> entityTypes = MapUtility.filterAll(EntityType.values(), e -> e.getEntityClass() != null);
+            for (EntityType value : entityTypes) {
+                if (value.isSpawnable())
                     commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() +
                             "=> " + value.name());
             }

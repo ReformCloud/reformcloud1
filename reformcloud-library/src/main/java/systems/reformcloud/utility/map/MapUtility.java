@@ -213,6 +213,23 @@ public final class MapUtility implements Serializable {
         return null;
     }
 
+    public static <T> T filter(T[] ts, Checkable<T> checkable) {
+        for (T t : ts)
+            if (checkable.isChecked(t))
+                return t;
+
+        return null;
+    }
+
+    public static <T> Collection<T> filterAll(T[] ts, Checkable<T> checkable) {
+        Collection<T> out = new LinkedList<>();
+        for (T t : ts)
+            if (checkable.isChecked(t))
+                out.add(t);
+
+        return out;
+    }
+
     public static <T> Collection<T> filterAll(Collection<T> collection, Checkable<T> checkable) {
         Collection<T> out = new LinkedList<>();
         for (T t : collection)

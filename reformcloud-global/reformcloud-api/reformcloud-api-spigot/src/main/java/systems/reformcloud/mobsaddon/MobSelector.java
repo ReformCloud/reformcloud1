@@ -348,9 +348,12 @@ public final class MobSelector implements Serializable {
             this.selectorMob = selectorMob;
             this.location = toLocation(selectorMob.getSelectorMobPosition());
             this.inventory = MobSelector.this.newInventory(this.selectorMob);
-            this.entityType = EntityType.fromId(selectorMob.getEntityTypeID()) != null
-                    ? EntityType.fromId(selectorMob.getEntityTypeID())
-                    : EntityType.WITCH;
+            EntityType entityType = MapUtility.filter(EntityType.values(), e -> e.getEntityClass() != null
+                    && e.getEntityClass().getSimpleName().equals(selectorMob.getEntityClassName()));
+            if (entityType != null)
+                this.entityType = entityType;
+            else
+                this.entityType = EntityType.WITCH;
 
             Collection<ServerInfo> servers = ReformCloudAPISpigot.getInstance().getAllRegisteredServers(selectorMob.getSelectorMobPosition().getTargetGroup());
             for (ServerInfo serverInfo : servers)
@@ -360,7 +363,7 @@ public final class MobSelector implements Serializable {
             this.spawn();
         }
 
-        public SelectorMob selectorMob;
+        private SelectorMob selectorMob;
 
         private Location location;
 

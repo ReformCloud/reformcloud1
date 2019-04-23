@@ -18,7 +18,6 @@ import java.util.UUID;
 @Getter
 public final class SelectorMob implements Serializable {
     private UUID uniqueID;
-    private short entityTypeID;
-    private String name, displayName;
+    private String entityClassName, name, displayName;
     private SelectorMobPosition selectorMobPosition;
 }
