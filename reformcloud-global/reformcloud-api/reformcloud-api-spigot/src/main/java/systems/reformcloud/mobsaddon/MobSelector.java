@@ -15,12 +15,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -151,6 +149,32 @@ public final class MobSelector implements Serializable {
         return out;
     }
 
+    private ServerInfo findBestServer(Collection<String> servers) {
+        ServerInfo best = null;
+        for (String server : servers) {
+            ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo(server);
+            if (serverInfo == null)
+                continue;
+
+            if (serverInfo.isFull()
+                    || !serverInfo.getServerState().isJoineable()
+                    || serverInfo.getServerState().equals(ServerState.HIDDEN)
+                    || serverInfo.getCloudProcess().getName()
+                    .equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()))
+                continue;
+
+            if (best == null) {
+                best = serverInfo;
+                continue;
+            }
+
+            if (serverInfo.getOnline() > best.getOnline())
+                best = serverInfo;
+        }
+
+        return best;
+    }
+
     private Inventory newInventory(SelectorMob selectorMob) {
         SelectorMobInventory mobInventory = selectorMobConfig.getSelectorMobInventory();
         Inventory inventory = Bukkit.createInventory(
@@ -211,40 +235,40 @@ public final class MobSelector implements Serializable {
         if (input == null || serverInfo == null)
             return input;
 
-        ChatColor.translateAlternateColorCodes('&', input);
-
-        return input
-                .replace("%server_name%", serverInfo.getCloudProcess().getName())
+        input.replace("%server_name%", serverInfo.getCloudProcess().getName())
                 .replace("%server_uid%", serverInfo.getCloudProcess().getProcessUID().toString())
                 .replace("%server_group_name%", serverInfo.getGroup())
                 .replace("%server_motd%", serverInfo.getMotd())
                 .replace("%server_client%", serverInfo.getCloudProcess().getClient())
                 .replace("%server_template%", serverInfo.getCloudProcess().getLoadedTemplate().getName())
                 .replace("%server_id%", Integer.toString(serverInfo.getCloudProcess().getProcessID()))
+                .replace("%server_state%", serverInfo.getServerState().name())
                 .replace("%server_online_players%", Integer.toString(serverInfo.getOnline()))
                 .replace("%server_host%", serverInfo.getHost())
                 .replace("%server_port%", Integer.toString(serverInfo.getPort()))
                 .replace("%server_max_players%", Integer.toString(serverInfo.getServerGroup().getMaxPlayers()));
+
+        return ChatColor.translateAlternateColorCodes('&', input);
     }
 
     private String formatDisplayName(String input, String group) {
         if (input == null || group == null)
             return input;
 
-        ChatColor.translateAlternateColorCodes('&', input);
-
-        return input
+        input
                 .replace("%group_name%", group)
                 .replace("%group_online%", Integer.toString(ReformCloudAPISpigot.getInstance().getAllRegisteredServers(group).size()));
+
+        return ChatColor.translateAlternateColorCodes('&', input);
     }
 
     private String formatInventoryName(String input, String group) {
         if (input == null || group == null)
             return input;
 
-        ChatColor.translateAlternateColorCodes('&', input);
+        input.replace("%group_name%", group);
 
-        return input.replace("%group_name%", group);
+        return ChatColor.translateAlternateColorCodes('&', input);
     }
 
     private List<String> format(List<String> input, ServerInfo serverInfo) {
@@ -272,10 +296,6 @@ public final class MobSelector implements Serializable {
                 .stream()
                 .filter(e -> e.selectorMob.getSelectorMobPosition().getTargetGroup().equals(group))
                 .collect(Collectors.toList());
-    }
-
-    public Mob findSelectorMob(SelectorMob selectorMob) {
-        return MapUtility.filter(this.spawnedMobs.values(), e -> e.selectorMob.equals(selectorMob));
     }
 
     public void createMob(SelectorMob selectorMob) {
@@ -377,33 +397,42 @@ public final class MobSelector implements Serializable {
 
         private Map<String, Integer> servers = new HashMap<>();
 
+        private Map<Integer, ServerInfo> sorted = new TreeMap<>();
+
         private void addServer(ServerInfo serverInfo) {
             if (infos.containsKey(serverInfo.getCloudProcess().getName()))
                 return;
 
-            int i = 0;
-            for (ItemStack itemStack : inventory.getContents()) {
-                if (itemStack == null || itemStack.getType() == null || itemStack.getType() == Material.AIR) {
-                    ItemStack itemStack1 = itemForServer(serverInfo);
-                    inventory.setItem(i, itemStack1);
-                    servers.put(serverInfo.getCloudProcess().getName(), i);
+            this.sorted.put(serverInfo.getCloudProcess().getProcessID(), serverInfo);
+            this.infos.clear();
 
-                    Bukkit.getOnlinePlayers().forEach(e -> {
-                        if (e.getOpenInventory() != null
-                                && e.getOpenInventory().getTopInventory() != null
-                                && e.getOpenInventory().getTopInventory().equals(inventory)) {
-                            e.updateInventory();
-                        }
-                    });
-                    break;
+            MobSelector.this.clearInventory(this.inventory);
+
+            sorted.values().forEach(e -> {
+                int i = 0;
+                for (ItemStack itemStack : inventory.getContents()) {
+                    if (itemStack == null || itemStack.getType() == null || itemStack.getType() == Material.AIR) {
+                        ItemStack itemStack1 = itemForServer(e);
+                        inventory.setItem(i, itemStack1);
+                        servers.put(e.getCloudProcess().getName(), i);
+
+                        this.infos.put(e.getCloudProcess().getName(), i);
+
+                        Bukkit.getOnlinePlayers().forEach(player -> {
+                            if (player.getOpenInventory() != null
+                                    && player.getOpenInventory().getTopInventory() != null
+                                    && player.getOpenInventory().getTopInventory().equals(inventory)) {
+                                player.updateInventory();
+                            }
+                        });
+                        break;
+                    }
+                    i++;
                 }
-                i++;
-            }
+            });
 
             if (entity != null)
                 this.entity.setCustomName(MobSelector.this.formatDisplayName(selectorMob.getDisplayName(), selectorMob.getSelectorMobPosition().getTargetGroup()));
-
-            infos.put(serverInfo.getCloudProcess().getName(), i);
         }
 
         private void updateServerInfo(ServerInfo serverInfo) {
@@ -411,6 +440,8 @@ public final class MobSelector implements Serializable {
                 addServer(serverInfo);
                 return;
             }
+
+            this.sorted.replace(serverInfo.getCloudProcess().getProcessID(), serverInfo);
 
             for (ItemStack itemStack : inventory.getContents()) {
                 if (itemStack != null
@@ -439,6 +470,8 @@ public final class MobSelector implements Serializable {
         private void removeServer(ServerInfo serverInfo) {
             if (!infos.containsKey(serverInfo.getCloudProcess().getName()))
                 return;
+
+            this.sorted.remove(serverInfo.getCloudProcess().getProcessID());
 
             servers.remove(serverInfo.getCloudProcess().getName());
             Collection<ServerInfo> serverInfos = MapUtility.filterAll(
@@ -477,6 +510,9 @@ public final class MobSelector implements Serializable {
                 if (this.entity instanceof LivingEntity)
                     ((LivingEntity) this.entity).setCollidable(false);
 
+                if (this.entity instanceof Villager)
+                    ((Villager) this.entity).setProfession(Villager.Profession.FARMER);
+
                 ReflectionUtil.setNoAI(this.entity);
                 if (!spawnedMobs.containsKey(this.entity.getUniqueId()))
                     spawnedMobs.put(this.entity.getUniqueId(), this);
@@ -509,6 +545,29 @@ public final class MobSelector implements Serializable {
         }
 
         @EventHandler
+        public void handle(final EntityDamageByEntityEvent event) {
+            if (event.getEntity().getType().isSpawnable()) {
+                Mob mob = MobSelector.this.getSpawnedMobs().get(event.getEntity().getUniqueId());
+                if (mob != null) {
+                    event.getEntity().setFireTicks(0);
+                    event.setCancelled(true);
+
+                    if (!(event.getDamager() instanceof Player))
+                        return;
+
+                    ServerInfo serverInfo = MobSelector.this.findBestServer(mob.infos.keySet());
+                    if (serverInfo == null)
+                        return;
+
+                    ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
+                    byteArrayDataOutput.writeUTF("Connect");
+                    byteArrayDataOutput.writeUTF(serverInfo.getCloudProcess().getName());
+                    ((Player) event.getDamager()).sendPluginMessage(SpigotBootstrap.getInstance(), "BungeeCord", byteArrayDataOutput.toByteArray());
+                }
+            }
+        }
+
+        @EventHandler
         public void handle(final InventoryClickEvent event) {
             if (!(event.getWhoClicked() instanceof Player) || event.getClickedInventory() == null || event.getCurrentItem() == null)
                 return;
@@ -528,7 +587,7 @@ public final class MobSelector implements Serializable {
                 }
             }
 
-            if (server == null)
+            if (server == null || server.equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()))
                 return;
 
             ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
