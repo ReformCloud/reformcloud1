@@ -30,6 +30,9 @@ public final class PropertiesManager implements Serializable {
     }
 
     public void fill(String group, Properties properties) {
+        if (this.propertiesConfig.forGroup(group) == null)
+            return;
+
         Properties properties1 = this.propertiesConfig.forGroup(group).getProperties();
         if (properties1 == null)
             return;
