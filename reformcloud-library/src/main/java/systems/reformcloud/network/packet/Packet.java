@@ -25,7 +25,7 @@ public class Packet implements Serializable {
     /**
      * Returns an empty packet which doesn't contains any data
      */
-    public static final Packet EMPTY_PACKET = new Packet(StringUtil.NULL, new Configuration());
+    static final Packet EMPTY_PACKET = new Packet(StringUtil.NULL, new Configuration());
 
     /**
      * The configuration of the packet

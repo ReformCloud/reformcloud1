@@ -35,6 +35,7 @@ import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
@@ -262,7 +263,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 .registerHandler("StartProxyProcess", new PacketInStartProxyProcess())
 
                 //Development
-                .registerQueryHandler("QueryStartDevServer", new PacketInQueryStartDevProcess())
+                .registerQueryHandler("QueryStartQueuedProcess", new PacketInQueryStartDevProcess())
                 .registerHandler("UpdateServerGroup", new PacketInUpdateServerGroup())
                 .registerHandler("CreateClient", new PacketInCreateClient())
                 .registerHandler("CreateProxyGroup", new PacketInCreateProxyGroup())
@@ -940,6 +941,42 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
             return;
 
         cloudConfiguration.createWebUser(webUser);
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup) {
+        DevProcess devProcess = new DevProcess(
+                serverGroup,
+                new Configuration(),
+                "default",
+                System.currentTimeMillis()
+        );
+        ReformCloudController.getInstance().getCloudProcessOfferService().getDevProcesses().offer(devProcess);
+        return devProcess;
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template) {
+        DevProcess devProcess = new DevProcess(
+                serverGroup,
+                new Configuration(),
+                template,
+                System.currentTimeMillis()
+        );
+        ReformCloudController.getInstance().getCloudProcessOfferService().getDevProcesses().offer(devProcess);
+        return devProcess;
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
+        DevProcess devProcess = new DevProcess(
+                serverGroup,
+                preConfig,
+                template,
+                System.currentTimeMillis()
+        );
+        ReformCloudController.getInstance().getCloudProcessOfferService().getDevProcesses().offer(devProcess);
+        return devProcess;
     }
 
     @Override

@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import com.google.gson.reflect.TypeToken;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -18,6 +19,7 @@ import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
@@ -42,6 +44,7 @@ import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.packets.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
+import systems.reformcloud.network.query.out.PacketOutQueryStartQueuedProcess;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.PermissionCache;
@@ -471,6 +474,33 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
     @Override
     public void createWebUser(WebUser webUser) {
         channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateWebUser(webUser));
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, "default", new Configuration()),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, template, new Configuration()),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, "default", preConfig),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
     }
 
     @Override

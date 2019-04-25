@@ -9,6 +9,7 @@ import systems.reformcloud.api.helper.IAsyncAPIHelper;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ClientInfo;
@@ -242,6 +243,30 @@ public final class IAsyncAPI implements Serializable, IAsyncAPIHelper {
     public void createWebUser(WebUser webUser) {
         checkAvailable();
         CompletableFuture.runAsync(() -> IAPIService.instance.get().createWebUser(webUser));
+    }
+
+    @Override
+    public CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup) {
+        checkAvailable(true);
+        CompletableFuture<DevProcess> completableFuture = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> completableFuture.complete(IAPIService.instance.get().startQueuedProcess(serverGroup)));
+        return completableFuture;
+    }
+
+    @Override
+    public CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template) {
+        checkAvailable(true);
+        CompletableFuture<DevProcess> completableFuture = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> completableFuture.complete(IAPIService.instance.get().startQueuedProcess(serverGroup, template)));
+        return completableFuture;
+    }
+
+    @Override
+    public CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
+        checkAvailable(true);
+        CompletableFuture<DevProcess> completableFuture = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> completableFuture.complete(IAPIService.instance.get().startQueuedProcess(serverGroup, template, preConfig)));
+        return completableFuture;
     }
 
     @Override

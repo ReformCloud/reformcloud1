@@ -8,6 +8,7 @@ import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ClientInfo;
@@ -183,6 +184,12 @@ public interface IAPIService {
     void createWebUser(String name, String password, Map<String, Boolean> permissions);
 
     void createWebUser(WebUser webUser);
+
+    DevProcess startQueuedProcess(ServerGroup serverGroup);
+
+    DevProcess startQueuedProcess(ServerGroup serverGroup, String template);
+
+    DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig);
 
     /**
      * Get a online player of the cloudSystem

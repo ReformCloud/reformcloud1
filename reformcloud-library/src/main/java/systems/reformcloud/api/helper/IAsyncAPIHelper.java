@@ -7,6 +7,7 @@ package systems.reformcloud.api.helper;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ClientInfo;
@@ -97,6 +98,12 @@ public interface IAsyncAPIHelper {
     void createWebUser(String name, String password, Map<String, Boolean> permissions);
 
     void createWebUser(WebUser webUser);
+
+    CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup);
+
+    CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template);
+
+    CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig);
 
     CompletableFuture<OnlinePlayer> getOnlinePlayer(UUID uniqueId);
 

@@ -5,6 +5,7 @@
 package systems.reformcloud;
 
 import com.google.common.base.Enums;
+import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -23,6 +24,7 @@ import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
@@ -47,6 +49,7 @@ import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.packets.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
+import systems.reformcloud.network.query.out.PacketOutQueryStartQueuedProcess;
 import systems.reformcloud.player.api.PlayerProvider;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -468,6 +471,33 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
     @Override
     public void createWebUser(WebUser webUser) {
         channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateWebUser(webUser));
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, "default", new Configuration()),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, template, new Configuration()),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, "default", preConfig),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
     }
 
     @Override
