@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import lombok.Getter;
 import systems.reformcloud.commands.CommandPermissions;
 import systems.reformcloud.database.PermissionDatabase;
 import systems.reformcloud.network.out.PacketOutUpdatePermissionCache;
@@ -16,12 +15,14 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
-@Getter
 public final class PermissionsAddon extends ControllerAddonImpl implements Serializable {
-    @Getter
     private static PermissionsAddon instance;
 
     private PermissionDatabase permissionDatabase;
+
+    public static PermissionsAddon getInstance() {
+        return PermissionsAddon.instance;
+    }
 
     @Override
     public void onAddonClazzPrepare() {
@@ -45,5 +46,9 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
                 .unregisterQueryHandler("QueryGetPermissionHolder")
 
                 .unregisterHandler("UpdatePermissionHolder");
+    }
+
+    public PermissionDatabase getPermissionDatabase() {
+        return this.permissionDatabase;
     }
 }

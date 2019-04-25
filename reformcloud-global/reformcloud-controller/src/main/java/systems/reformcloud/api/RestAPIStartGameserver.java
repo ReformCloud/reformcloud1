@@ -37,7 +37,7 @@ public final class RestAPIStartGameserver implements Serializable, WebHandler {
         if (!httpHeaders.contains("-XUser")
                 || !httpHeaders.contains("-XPassword")
                 || !httpHeaders.contains("-XGroup")) {
-            answer.addProperty("response", Arrays.asList("No -XUser, -XPassword or -XGroup provided"));
+            answer.addValue("response", Arrays.asList("No -XUser, -XPassword or -XGroup provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -50,19 +50,19 @@ public final class RestAPIStartGameserver implements Serializable, WebHandler {
                 .findFirst()
                 .orElse(null);
         if (webUser == null) {
-            answer.addProperty("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!webUser.getPassword().equals(StringEncrypt.encryptSHA512(httpHeaders.get("-XPassword")))) {
-            answer.addProperty("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!RestAPIUtility.hasPermission(webUser, "web.api.start.gameserver")) {
-            answer.addProperty("response", Arrays.asList("Permission denied"));
+            answer.addValue("response", Arrays.asList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -73,7 +73,7 @@ public final class RestAPIStartGameserver implements Serializable, WebHandler {
                 .getServerGroups()
                 .get(httpHeaders.get("-XGroup"));
         if (serverGroup == null) {
-            answer.addProperty("response", Arrays.asList("ServerGroup doesn't exists"));
+            answer.addValue("response", Arrays.asList("ServerGroup doesn't exists"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -89,12 +89,12 @@ public final class RestAPIStartGameserver implements Serializable, WebHandler {
             ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
                     new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
             );
-            answer.addBooleanProperty("success", true).addProperty("response", Arrays.asList("Trying to startup serverProcess..."));
+            answer.addBooleanValue("success", true).addValue("response", Arrays.asList("Trying to startup serverProcess..."));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;
         } else {
-            answer.addProperty("response", Arrays.asList("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes"));
+            answer.addValue("response", Arrays.asList("The Client of the ServerGroup isn't connected to ReformCloudController or Client is not available to startup processes"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;

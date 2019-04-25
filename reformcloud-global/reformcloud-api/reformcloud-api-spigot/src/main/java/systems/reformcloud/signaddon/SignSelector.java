@@ -8,8 +8,6 @@ import com.google.common.base.Enums;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -50,10 +48,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 11.12.2018
  */
 
-@Getter
-@Setter
 public final class SignSelector {
-    @Getter
     private static SignSelector instance;
 
     private SignLayoutConfiguration signLayoutConfiguration;
@@ -105,6 +100,10 @@ public final class SignSelector {
                     instance = null;
                     SpigotBootstrap.getInstance().getServer().getPluginCommand("reformsigns").unregister(SpigotBootstrap.getInstance().getCommandMap());
                 });
+    }
+
+    public static SignSelector getInstance() {
+        return SignSelector.instance;
     }
 
     public void updateAll() {
@@ -311,6 +310,30 @@ public final class SignSelector {
 
     public Sign getSign(final Location location) {
         return getSign(toSignPosition(null, location));
+    }
+
+    public SignLayoutConfiguration getSignLayoutConfiguration() {
+        return this.signLayoutConfiguration;
+    }
+
+    public Worker getWorker() {
+        return this.worker;
+    }
+
+    public Map<UUID, Sign> getSignMap() {
+        return this.signMap;
+    }
+
+    public void setSignLayoutConfiguration(SignLayoutConfiguration signLayoutConfiguration) {
+        this.signLayoutConfiguration = signLayoutConfiguration;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
+    public void setSignMap(Map<UUID, Sign> signMap) {
+        this.signMap = signMap;
     }
 
     private class Worker extends Thread {

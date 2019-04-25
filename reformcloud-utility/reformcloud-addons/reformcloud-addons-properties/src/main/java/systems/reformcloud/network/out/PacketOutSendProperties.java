@@ -20,7 +20,7 @@ public final class PacketOutSendProperties extends Packet implements Serializabl
     public PacketOutSendProperties(UUID result) {
         super(
                 StringUtil.NULL,
-                new Configuration().addProperty("config", PropertiesConfig.getInstance().getPropertiesConfig()),
+                new Configuration().addValue("config", PropertiesConfig.getInstance().getPropertiesConfig()),
                 result
         );
     }

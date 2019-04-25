@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 public final class PacketOutUpdateIngameCommands extends Packet implements Serializable {
     public PacketOutUpdateIngameCommands() {
-        super("UpdateIngameCommands", new Configuration().addProperty("commands",
+        super("UpdateIngameCommands", new Configuration().addValue("commands",
                 ReformCloudController.getInstance().getIngameCommandManger().getAllRegisteredCommands()));
     }
 }

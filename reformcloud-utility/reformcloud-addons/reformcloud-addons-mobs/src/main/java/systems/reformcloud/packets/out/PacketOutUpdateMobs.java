@@ -22,8 +22,8 @@ public final class PacketOutUpdateMobs extends Packet implements Serializable {
         super(
                 "UpdateMobs",
                 new Configuration()
-                        .addProperty("mobs", mobs)
-                        .addProperty("config", selectorMobConfig)
+                        .addValue("mobs", mobs)
+                        .addValue("config", selectorMobConfig)
         );
     }
 }

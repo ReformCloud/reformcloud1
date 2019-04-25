@@ -90,8 +90,12 @@ public final class CloudAddonsListener implements Serializable, Listener {
                 team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
                 team.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
                 team.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()));
-                if (permissionGroup.getTabColorCode() != null && permissionGroup.getTabColorCode().trim().length() == 1)
-                    team.setColor(ChatColor.getByChar(permissionGroup.getTabColorCode()));
+
+                try {
+                    if (permissionGroup.getTabColorCode() != null && permissionGroup.getTabColorCode().trim().length() == 1)
+                        team.setColor(ChatColor.getByChar(permissionGroup.getTabColorCode()));
+                } catch (final Throwable ignored) {
+                }
 
                 PermissionHolder onlinePermsHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(online.getUniqueId());
                 if (onlinePermsHolder == null)

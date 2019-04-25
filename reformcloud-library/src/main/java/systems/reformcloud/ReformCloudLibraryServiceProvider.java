@@ -4,8 +4,6 @@
 
 package systems.reformcloud;
 
-import lombok.Data;
-import lombok.Getter;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.language.LanguageManager;
@@ -20,12 +18,10 @@ import systems.reformcloud.utility.threading.TaskScheduler;
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-@Data
 public final class ReformCloudLibraryServiceProvider {
     /**
      * The internal instance of this class
      */
-    @Getter
     private static ReformCloudLibraryServiceProvider instance;
 
     /**
@@ -91,5 +87,146 @@ public final class ReformCloudLibraryServiceProvider {
         this.loggerProvider = loggerProvider;
         this.eventManager = eventManager;
         this.loaded = new LanguageManager(lang).getLoaded();
+    }
+
+    public static ReformCloudLibraryServiceProvider getInstance() {
+        return ReformCloudLibraryServiceProvider.instance;
+    }
+
+    public InternalCloudNetwork getInternalCloudNetwork() {
+        return this.internalCloudNetwork;
+    }
+
+    public Language getLoaded() {
+        return this.loaded;
+    }
+
+    public EventManager getEventManager() {
+        return this.eventManager;
+    }
+
+    public ChannelHandler getChannelHandler() {
+        return this.channelHandler;
+    }
+
+    public LoggerProvider getLoggerProvider() {
+        return this.loggerProvider;
+    }
+
+    public String getKey() {
+        return this.key;
+    }
+
+    public String getControllerIP() {
+        return this.controllerIP;
+    }
+
+    public NettyHandler getNettyHandler() {
+        return this.nettyHandler;
+    }
+
+    public TaskScheduler getTaskScheduler() {
+        return this.taskScheduler;
+    }
+
+    public void setInternalCloudNetwork(InternalCloudNetwork internalCloudNetwork) {
+        this.internalCloudNetwork = internalCloudNetwork;
+    }
+
+    public void setLoaded(Language loaded) {
+        this.loaded = loaded;
+    }
+
+    public void setEventManager(EventManager eventManager) {
+        this.eventManager = eventManager;
+    }
+
+    public void setChannelHandler(ChannelHandler channelHandler) {
+        this.channelHandler = channelHandler;
+    }
+
+    public void setLoggerProvider(LoggerProvider loggerProvider) {
+        this.loggerProvider = loggerProvider;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setControllerIP(String controllerIP) {
+        this.controllerIP = controllerIP;
+    }
+
+    public void setTaskScheduler(TaskScheduler taskScheduler) {
+        this.taskScheduler = taskScheduler;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof ReformCloudLibraryServiceProvider)) return false;
+        final ReformCloudLibraryServiceProvider other = (ReformCloudLibraryServiceProvider) o;
+        final Object this$internalCloudNetwork = this.getInternalCloudNetwork();
+        final Object other$internalCloudNetwork = other.getInternalCloudNetwork();
+        if (this$internalCloudNetwork == null ? other$internalCloudNetwork != null : !this$internalCloudNetwork.equals(other$internalCloudNetwork))
+            return false;
+        final Object this$loaded = this.getLoaded();
+        final Object other$loaded = other.getLoaded();
+        if (this$loaded == null ? other$loaded != null : !this$loaded.equals(other$loaded)) return false;
+        final Object this$eventManager = this.getEventManager();
+        final Object other$eventManager = other.getEventManager();
+        if (this$eventManager == null ? other$eventManager != null : !this$eventManager.equals(other$eventManager))
+            return false;
+        final Object this$channelHandler = this.getChannelHandler();
+        final Object other$channelHandler = other.getChannelHandler();
+        if (this$channelHandler == null ? other$channelHandler != null : !this$channelHandler.equals(other$channelHandler))
+            return false;
+        final Object this$loggerProvider = this.getLoggerProvider();
+        final Object other$loggerProvider = other.getLoggerProvider();
+        if (this$loggerProvider == null ? other$loggerProvider != null : !this$loggerProvider.equals(other$loggerProvider))
+            return false;
+        final Object this$key = this.getKey();
+        final Object other$key = other.getKey();
+        if (this$key == null ? other$key != null : !this$key.equals(other$key)) return false;
+        final Object this$controllerIP = this.getControllerIP();
+        final Object other$controllerIP = other.getControllerIP();
+        if (this$controllerIP == null ? other$controllerIP != null : !this$controllerIP.equals(other$controllerIP))
+            return false;
+        final Object this$nettyHandler = this.getNettyHandler();
+        final Object other$nettyHandler = other.getNettyHandler();
+        if (this$nettyHandler == null ? other$nettyHandler != null : !this$nettyHandler.equals(other$nettyHandler))
+            return false;
+        final Object this$taskScheduler = this.getTaskScheduler();
+        final Object other$taskScheduler = other.getTaskScheduler();
+        if (this$taskScheduler == null ? other$taskScheduler != null : !this$taskScheduler.equals(other$taskScheduler))
+            return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $internalCloudNetwork = this.getInternalCloudNetwork();
+        result = result * PRIME + ($internalCloudNetwork == null ? 43 : $internalCloudNetwork.hashCode());
+        final Object $loaded = this.getLoaded();
+        result = result * PRIME + ($loaded == null ? 43 : $loaded.hashCode());
+        final Object $eventManager = this.getEventManager();
+        result = result * PRIME + ($eventManager == null ? 43 : $eventManager.hashCode());
+        final Object $channelHandler = this.getChannelHandler();
+        result = result * PRIME + ($channelHandler == null ? 43 : $channelHandler.hashCode());
+        final Object $loggerProvider = this.getLoggerProvider();
+        result = result * PRIME + ($loggerProvider == null ? 43 : $loggerProvider.hashCode());
+        final Object $key = this.getKey();
+        result = result * PRIME + ($key == null ? 43 : $key.hashCode());
+        final Object $controllerIP = this.getControllerIP();
+        result = result * PRIME + ($controllerIP == null ? 43 : $controllerIP.hashCode());
+        final Object $nettyHandler = this.getNettyHandler();
+        result = result * PRIME + ($nettyHandler == null ? 43 : $nettyHandler.hashCode());
+        final Object $taskScheduler = this.getTaskScheduler();
+        result = result * PRIME + ($taskScheduler == null ? 43 : $taskScheduler.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ReformCloudLibraryServiceProvider(internalCloudNetwork=" + this.getInternalCloudNetwork() + ", loaded=" + this.getLoaded() + ", eventManager=" + this.getEventManager() + ", channelHandler=" + this.getChannelHandler() + ", loggerProvider=" + this.getLoggerProvider() + ", key=" + this.getKey() + ", controllerIP=" + this.getControllerIP() + ", nettyHandler=" + this.getNettyHandler() + ", taskScheduler=" + this.getTaskScheduler() + ")";
     }
 }

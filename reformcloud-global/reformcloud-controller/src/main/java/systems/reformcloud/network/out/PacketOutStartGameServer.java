@@ -18,7 +18,7 @@ import java.util.UUID;
 public final class PacketOutStartGameServer extends Packet {
     public PacketOutStartGameServer(final ServerGroup group, final String processName, final UUID serverProcess, final Configuration configuration, final String id) {
         super("StartCloudServer",
-                new Configuration().addProperty("group", group).addStringProperty("name", processName).addProperty("serverProcess", serverProcess).addConfigurationProperty("preConfig", configuration).addIntegerProperty("id", Integer.valueOf(id))
+                new Configuration().addValue("group", group).addStringValue("name", processName).addValue("serverProcess", serverProcess).addConfigurationValue("preConfig", configuration).addIntegerValue("id", Integer.valueOf(id))
         );
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_server_added_to_queue()
                 .replace("%uid%", String.valueOf(serverProcess))
@@ -27,7 +27,7 @@ public final class PacketOutStartGameServer extends Packet {
 
     public PacketOutStartGameServer(final ServerGroup group, final String processName, final UUID serverProcess, final Configuration configuration, final String id, final String template) {
         super("StartCloudServer",
-                new Configuration().addProperty("group", group).addStringProperty("name", processName).addStringProperty("template", template).addProperty("serverProcess", serverProcess).addConfigurationProperty("preConfig", configuration).addIntegerProperty("id", Integer.valueOf(id))
+                new Configuration().addValue("group", group).addStringValue("name", processName).addStringValue("template", template).addValue("serverProcess", serverProcess).addConfigurationValue("preConfig", configuration).addIntegerValue("id", Integer.valueOf(id))
         );
         ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_server_added_to_queue()
                 .replace("%uid%", String.valueOf(serverProcess))

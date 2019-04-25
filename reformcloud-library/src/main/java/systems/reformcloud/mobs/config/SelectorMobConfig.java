@@ -4,8 +4,6 @@
 
 package systems.reformcloud.mobs.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import systems.reformcloud.mobs.inventory.SelectorMobInventory;
 import systems.reformcloud.mobs.inventory.item.SelectorsMobServerItem;
 
@@ -15,9 +13,21 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 21.04.2019
  */
 
-@AllArgsConstructor
-@Getter
 public final class SelectorMobConfig implements Serializable {
     private SelectorMobInventory selectorMobInventory;
     private SelectorsMobServerItem selectorsMobServerItem;
+
+    @java.beans.ConstructorProperties({"selectorMobInventory", "selectorsMobServerItem"})
+    public SelectorMobConfig(SelectorMobInventory selectorMobInventory, SelectorsMobServerItem selectorsMobServerItem) {
+        this.selectorMobInventory = selectorMobInventory;
+        this.selectorsMobServerItem = selectorsMobServerItem;
+    }
+
+    public SelectorMobInventory getSelectorMobInventory() {
+        return this.selectorMobInventory;
+    }
+
+    public SelectorsMobServerItem getSelectorsMobServerItem() {
+        return this.selectorsMobServerItem;
+    }
 }

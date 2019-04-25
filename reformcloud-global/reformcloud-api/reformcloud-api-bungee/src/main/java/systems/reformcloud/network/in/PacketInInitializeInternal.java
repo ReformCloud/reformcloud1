@@ -44,7 +44,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         new IconManager();
 
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new Packet(
-                "AuthSuccess", new Configuration().addStringProperty("name", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
+                "AuthSuccess", new Configuration().addStringValue("name", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
         ));
         ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(
                 process -> {

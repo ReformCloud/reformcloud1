@@ -19,6 +19,6 @@ import java.util.UUID;
 
 public final class PacketOutSignUpdate extends Packet implements Serializable {
     public PacketOutSignUpdate(final SignLayoutConfiguration signLayoutConfiguration, final Map<UUID, Sign> signs) {
-        super("SignUpdate", new Configuration().addProperty("signConfig", signLayoutConfiguration).addProperty("signMap", signs));
+        super("SignUpdate", new Configuration().addValue("signConfig", signLayoutConfiguration).addValue("signMap", signs));
     }
 }

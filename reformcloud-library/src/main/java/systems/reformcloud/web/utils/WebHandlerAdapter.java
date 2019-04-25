@@ -4,7 +4,6 @@
 
 package systems.reformcloud.web.utils;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.utility.Require;
 
@@ -19,7 +18,6 @@ public final class WebHandlerAdapter implements Serializable {
     /**
      * The map of all web handler
      */
-    @Getter
     private Map<String, WebHandler> webHandlerMap = ReformCloudLibraryService.concurrentHashMap();
 
     /**
@@ -78,5 +76,9 @@ public final class WebHandlerAdapter implements Serializable {
     public WebHandler getHandler(final String path) {
         Require.requireNotNull(path);
         return this.webHandlerMap.getOrDefault(path, null);
+    }
+
+    public Map<String, WebHandler> getWebHandlerMap() {
+        return this.webHandlerMap;
     }
 }

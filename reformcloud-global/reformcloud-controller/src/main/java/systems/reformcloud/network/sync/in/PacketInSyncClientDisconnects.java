@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.out.PacketOutUpdateAll;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -60,6 +61,8 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                 if (ReformCloudController.getInstance().getScreenSessionProvider().isInScreen(e.getCloudProcess().getName()))
                     ReformCloudController.getInstance().getScreenSessionProvider().leaveScreen();
             });
+
+            ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
         }
     }
 }

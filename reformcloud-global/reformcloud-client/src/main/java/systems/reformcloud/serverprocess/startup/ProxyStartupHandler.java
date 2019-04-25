@@ -4,7 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -41,7 +40,6 @@ import java.util.Arrays;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-@Getter
 public final class ProxyStartupHandler implements Serializable {
     private ProxyStartupInfo proxyStartupInfo;
     private Path path;
@@ -243,19 +241,21 @@ public final class ProxyStartupHandler implements Serializable {
         }
 
         ProxyInfo proxyInfo = new ProxyInfo(
-                new CloudProcess(proxyStartupInfo.getName(), proxyStartupInfo.getUid(), ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+                new CloudProcess(proxyStartupInfo.getName(), proxyStartupInfo.getUid(),
+                        ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+                        proxyStartupInfo.getProxyGroup().getName(), proxyStartupInfo.getConfiguration(),
                         template, proxyStartupInfo.getId()),
-                proxyStartupInfo.getProxyGroup(), proxyStartupInfo.getProxyGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
+                proxyStartupInfo.getProxyGroup(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
                 this.port, 0, proxyStartupInfo.getProxyGroup().getMemory(), false, new ArrayList<>()
         );
 
         new Configuration()
-                .addProperty("info", proxyInfo)
-                .addProperty("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
-                .addStringProperty("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
-                .addBooleanProperty("ssl", ReformCloudClient.getInstance().isSsl())
-                .addBooleanProperty("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
-                .addProperty("startupInfo", proxyStartupInfo)
+                .addValue("info", proxyInfo)
+                .addValue("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
+                .addStringValue("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
+                .addBooleanValue("ssl", ReformCloudClient.getInstance().isSsl())
+                .addBooleanValue("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
+                .addValue("startupInfo", proxyStartupInfo)
 
                 .write(Paths.get(path + "/reformcloud/config.json"));
 
@@ -279,7 +279,7 @@ public final class ProxyStartupHandler implements Serializable {
                         "BungeeCord.jar"
                 };
 
-        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getGroup(), cmd, after)
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getCloudProcess().getGroup(), cmd, after)
                 .replace("%port%", Integer.toString(port))
                 .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
                 .replace("%name%", proxyStartupInfo.getName())
@@ -460,5 +460,45 @@ public final class ProxyStartupHandler implements Serializable {
         }
 
         return ReformCloudClient.getInstance().getLoggerProvider().uploadLog(stringBuilder.substring(0));
+    }
+
+    public ProxyStartupInfo getProxyStartupInfo() {
+        return this.proxyStartupInfo;
+    }
+
+    public Path getPath() {
+        return this.path;
+    }
+
+    public Process getProcess() {
+        return this.process;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public boolean isToShutdown() {
+        return this.toShutdown;
+    }
+
+    public ScreenHandler getScreenHandler() {
+        return this.screenHandler;
+    }
+
+    public ProcessStartupStage getProcessStartupStage() {
+        return this.processStartupStage;
+    }
+
+    public Template getTemplate() {
+        return this.template;
+    }
+
+    public long getStartupTime() {
+        return this.startupTime;
+    }
+
+    public long getFinishedTime() {
+        return this.finishedTime;
     }
 }

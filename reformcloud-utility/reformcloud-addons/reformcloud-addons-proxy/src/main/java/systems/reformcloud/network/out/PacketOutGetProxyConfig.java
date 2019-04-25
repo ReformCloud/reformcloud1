@@ -20,7 +20,7 @@ public final class PacketOutGetProxyConfig extends Packet implements Serializabl
     public PacketOutGetProxyConfig(UUID result, Optional<ProxySettings> proxySettings) {
         super(
                 "GetProxyConfig",
-                new Configuration().addProperty("settings", proxySettings),
+                new Configuration().addValue("settings", proxySettings),
                 result
         );
     }

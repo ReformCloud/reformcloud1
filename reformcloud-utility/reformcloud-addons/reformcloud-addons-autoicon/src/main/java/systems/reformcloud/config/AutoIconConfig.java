@@ -5,7 +5,6 @@
 package systems.reformcloud.config;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.autoicon.IconData;
@@ -34,7 +33,6 @@ public final class AutoIconConfig implements Serializable {
 
     private Map<String, IconData> icons = new HashMap<>();
 
-    @Getter
     private static AutoIconConfig instance;
 
     public AutoIconConfig() {
@@ -46,7 +44,7 @@ public final class AutoIconConfig implements Serializable {
         if (!Files.exists(Paths.get("reformcloud/addons/icons"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/icons/files"));
             new Configuration()
-                    .addProperty("config", Collections.singletonList(new IconConfig(
+                    .addValue("config", Collections.singletonList(new IconConfig(
                             "Proxy",
                             10,
                             Collections.singletonList("reformcloud/addons/icons/files/default.png")
@@ -81,6 +79,10 @@ public final class AutoIconConfig implements Serializable {
                 }
             });
         });
+    }
+
+    public static AutoIconConfig getInstance() {
+        return AutoIconConfig.instance;
     }
 
     private void copyCompiledFile(final String from, final String to) {

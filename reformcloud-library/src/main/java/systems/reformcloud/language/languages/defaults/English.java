@@ -4,7 +4,6 @@
 
 package systems.reformcloud.language.languages.defaults;
 
-import lombok.Getter;
 import systems.reformcloud.language.utility.Language;
 
 import java.io.Serializable;
@@ -13,7 +12,6 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 04.02.2019
  */
 
-@Getter
 public final class English extends Language implements Serializable {
     private static final long serialVersionUID = 3190567310112749787L;
 

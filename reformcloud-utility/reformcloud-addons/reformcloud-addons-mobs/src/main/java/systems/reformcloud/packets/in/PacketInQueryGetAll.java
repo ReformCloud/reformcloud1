@@ -26,8 +26,8 @@ public final class PacketInQueryGetAll implements Serializable, NetworkQueryInbo
                 new Packet(
                         StringUtil.NULL,
                         new Configuration()
-                                .addProperty("mobs", MobSelector.getInstance().getMobs())
-                                .addProperty("config", MobSelector.getInstance().getSelectorMobConfig()),
+                                .addValue("mobs", MobSelector.getInstance().getMobs())
+                                .addValue("config", MobSelector.getInstance().getSelectorMobConfig()),
                         resultID
                 )
         );

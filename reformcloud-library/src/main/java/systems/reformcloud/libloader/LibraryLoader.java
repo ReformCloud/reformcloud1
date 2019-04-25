@@ -49,7 +49,7 @@ public final class LibraryLoader implements Serializable {
             return;
         }
 
-        this.libraries.addAll(Arrays.asList(new Netty(), new Quartz(), new SnakeYaml(), new CommonsIO(), new JLine(),
+        this.libraries.addAll(Arrays.asList(new Netty(), new SnakeYaml(), new CommonsIO(), new JLine(),
                 new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents(), new Guava()));
     }
 

@@ -126,7 +126,7 @@ public final class CloudAddonsListener implements Listener {
                         new TextComponent(TextComponent.fromLegacyText(
                                 ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                         .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
-                                        .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                        .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                         .replace("%player_name%", event.getConnection().getName() != null ? event.getConnection().getName() : StringUtil.NULL)
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getVersion()).name())
                         )));
@@ -159,7 +159,7 @@ public final class CloudAddonsListener implements Listener {
                         new TextComponent(TextComponent.fromLegacyText(
                                 ChatColor.translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                         .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
-                                        .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                        .replace("%current_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                         .replace("%player_name%", event.getConnection().getName() != null ? event.getConnection().getName() : StringUtil.NULL)
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getVersion()).name())
                         )));

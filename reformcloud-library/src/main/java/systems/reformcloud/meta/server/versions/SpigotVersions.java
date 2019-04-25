@@ -4,8 +4,6 @@
 
 package systems.reformcloud.meta.server.versions;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +13,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * @author _Klaro | Pasqual K. / created on 28.01.2019
  */
 
-@Getter
 public enum SpigotVersions implements Serializable {
     /**
      * Spigot Versions
@@ -160,5 +157,17 @@ public enum SpigotVersions implements Serializable {
         this.name = name;
         this.version = version;
         this.url = url;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getVersion() {
+        return this.version;
+    }
+
+    public String getUrl() {
+        return this.url;
     }
 }

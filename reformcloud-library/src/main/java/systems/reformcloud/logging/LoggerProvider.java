@@ -4,9 +4,8 @@
 
 package systems.reformcloud.logging;
 
+import com.google.gson.JsonObject;
 import jline.console.ConsoleReader;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -41,7 +40,6 @@ import java.util.logging.*;
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-@Getter
 public class LoggerProvider extends AbstractLoggerProvider implements Serializable, AutoCloseable, Reload, Shutdown {
     private static final long serialVersionUID = 3076534030843453815L;
 
@@ -73,13 +71,11 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     /**
      * The current controller time
      */
-    @Setter
     private long controllerTime = System.currentTimeMillis();
 
     /**
      * The current debug status
      */
-    @Setter
     private boolean debug = false;
 
     /**
@@ -95,7 +91,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     public LoggerProvider() throws IOException {
         instance = Optional.of(this);
         AbstractLoggerProvider.globalInstance.set(this);
-        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "ERROR");
 
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
 
@@ -383,9 +379,12 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
             final String result = EntityUtils.toString(httpResponse.getEntity());
+            JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(result).getAsJsonObject();
+            if (httpResponse.getStatusLine().getStatusCode() != 201)
+                return "The following error occurred: " + jsonObject.get("message").getAsString();
 
-            return "https://paste.reformcloud.systems/" + ReformCloudLibraryService.PARSER
-                    .parse(result).getAsJsonObject().get("key").getAsString();
+
+            return "https://paste.reformcloud.systems/" + jsonObject.get("key").getAsString();
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while uploading log", ex);
         }
@@ -416,6 +415,42 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     @Override
     public Consumer<Throwable> exception() {
         return this::exception;
+    }
+
+    public ConsoleReader getConsoleReader() {
+        return this.consoleReader;
+    }
+
+    public DateFormat getDateFormat() {
+        return this.dateFormat;
+    }
+
+    public File getDebugLogFile() {
+        return this.debugLogFile;
+    }
+
+    public LoggerHandler getLoggerHandler() {
+        return this.loggerHandler;
+    }
+
+    public long getControllerTime() {
+        return this.controllerTime;
+    }
+
+    public boolean isDebug() {
+        return this.debug;
+    }
+
+    public List<IConsoleInputHandler> getIConsoleInputHandlers() {
+        return this.iConsoleInputHandlers;
+    }
+
+    public void setControllerTime(long controllerTime) {
+        this.controllerTime = controllerTime;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     private final class LoggerHandler extends Logger {

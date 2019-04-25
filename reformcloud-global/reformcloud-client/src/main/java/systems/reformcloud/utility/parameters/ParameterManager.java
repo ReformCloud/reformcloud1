@@ -4,7 +4,6 @@
 
 package systems.reformcloud.utility.parameters;
 
-import lombok.AllArgsConstructor;
 import systems.reformcloud.parameters.ParameterGroup;
 import systems.reformcloud.utility.StringUtil;
 
@@ -15,9 +14,13 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 14.04.2019
  */
 
-@AllArgsConstructor
 public final class ParameterManager implements Serializable {
     private List<ParameterGroup> parameterGroups;
+
+    @java.beans.ConstructorProperties({"parameterGroups"})
+    public ParameterManager(List<ParameterGroup> parameterGroups) {
+        this.parameterGroups = parameterGroups;
+    }
 
     public boolean exists(String name) {
         return this.parameterGroups.stream().anyMatch(e -> e.getGroupName().equals(name));

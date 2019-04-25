@@ -18,7 +18,7 @@ public final class ConfigurationTest implements Serializable {
     @Test
     public void configurationTest() {
         Configuration configuration = new Configuration();
-        configuration.addStringProperty("test", "test").addProperty("uuid", UUID.randomUUID());
+        configuration.addStringValue("test", "test").addValue("uuid", UUID.randomUUID());
         System.out.println(configuration.getJsonString());
         configuration.clear();
         System.out.println(configuration.getJsonString());

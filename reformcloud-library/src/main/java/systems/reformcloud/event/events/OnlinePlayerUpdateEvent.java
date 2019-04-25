@@ -4,7 +4,6 @@
 
 package systems.reformcloud.event.events;
 
-import lombok.Getter;
 import systems.reformcloud.event.utility.Cancellable;
 import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -33,6 +32,13 @@ public final class OnlinePlayerUpdateEvent extends Event implements Serializable
         this.newPlayer = newPlayer;
     }
 
-    @Getter
     private OnlinePlayer oldPlayer, newPlayer;
+
+    public OnlinePlayer getOldPlayer() {
+        return this.oldPlayer;
+    }
+
+    public OnlinePlayer getNewPlayer() {
+        return this.newPlayer;
+    }
 }

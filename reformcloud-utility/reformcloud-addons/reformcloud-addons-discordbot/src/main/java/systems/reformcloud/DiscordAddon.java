@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -23,11 +22,9 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
-@Getter
 public final class DiscordAddon extends ControllerAddonImpl implements Serializable {
     private static final long serialVersionUID = 3321468728377410418L;
 
-    @Getter
     private static DiscordAddon instance;
 
     private JDA jda;
@@ -36,6 +33,10 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
     private TextChannel textChannel;
 
     private ConsoleWriter consoleWriter;
+
+    public static DiscordAddon getInstance() {
+        return DiscordAddon.instance;
+    }
 
     @Override
     public void onAddonClazzPrepare() {
@@ -69,5 +70,21 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
             this.jda.shutdownNow();
             this.jda = null;
         }
+    }
+
+    public JDA getJda() {
+        return this.jda;
+    }
+
+    public DiscordConfig getDiscordConfig() {
+        return this.discordConfig;
+    }
+
+    public TextChannel getTextChannel() {
+        return this.textChannel;
+    }
+
+    public ConsoleWriter getConsoleWriter() {
+        return this.consoleWriter;
     }
 }

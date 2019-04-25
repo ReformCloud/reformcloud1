@@ -4,14 +4,12 @@
 
 package systems.reformcloud.logging.enums;
 
-import lombok.Getter;
 import org.fusesource.jansi.Ansi;
 
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-@Getter
 public enum AnsiColourHandler {
     RESET("reset", 'r', Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.DEFAULT).boldOff().toString()),
     WHITE("white", 'f', Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).bold().toString()),
@@ -62,5 +60,17 @@ public enum AnsiColourHandler {
             text = text.replace('§' + "" + consoleColour.index, consoleColour.ansiCode);
 
         return text;
+    }
+
+    public String getAnsiCode() {
+        return this.ansiCode;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public char getIndex() {
+        return this.index;
     }
 }

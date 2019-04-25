@@ -86,7 +86,7 @@ public final class CloudAddonsListener {
                 serverPing = serverPing.asBuilder().description(
                         TextComponent.of(translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                 .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
-                                .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                 .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
                         )
                 ).build();
@@ -122,7 +122,7 @@ public final class CloudAddonsListener {
                         TextComponent.of(
                                 translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                         .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
-                                        .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                        .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
                         )
                 ).build();

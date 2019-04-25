@@ -5,7 +5,6 @@
 package systems.reformcloud.configuration;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.server.ServerGroup;
@@ -26,7 +25,6 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 14.04.2019
  */
 
-@Getter
 public final class ParametersConfiguration implements Serializable {
     private List<ParameterGroup> parameters;
 
@@ -36,7 +34,7 @@ public final class ParametersConfiguration implements Serializable {
             ServerGroup serverGroup = ReformCloudController.getInstance().getAllServerGroups().stream().findFirst().orElse(null);
             Configuration configuration = new Configuration();
 
-            configuration.addProperty("config", serverGroup == null ? Collections.EMPTY_LIST : Collections.singletonList(new ParameterGroup(
+            configuration.addValue("config", serverGroup == null ? Collections.EMPTY_LIST : Collections.singletonList(new ParameterGroup(
                     serverGroup.getName(), StringUtil.JAVA, new ArrayList<>(), new ArrayList<>()
             )));
 
@@ -56,15 +54,19 @@ public final class ParametersConfiguration implements Serializable {
     public void delete(String name) {
         List<ParameterGroup> copy = MapUtility.copyOf(this.parameters);
         copy.stream().filter(e -> e.getGroupName().equals(name)).forEach(e -> this.parameters.remove(e));
-        new Configuration().addProperty("config", this.parameters).write("reformcloud/addons/parameters/config.json");
+        new Configuration().addValue("config", this.parameters).write("reformcloud/addons/parameters/config.json");
     }
 
     public void create(ParameterGroup parameterGroup) {
         this.parameters.add(parameterGroup);
-        new Configuration().addProperty("config", this.parameters).write("reformcloud/addons/parameters/config.json");
+        new Configuration().addValue("config", this.parameters).write("reformcloud/addons/parameters/config.json");
     }
 
     public boolean exists(String name) {
         return this.parameters.stream().anyMatch(e -> e.getGroupName().equals(name));
+    }
+
+    public List<ParameterGroup> getParameters() {
+        return this.parameters;
     }
 }

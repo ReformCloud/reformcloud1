@@ -4,7 +4,6 @@
 
 package systems.reformcloud.examples.event;
 
-import lombok.Getter;
 import systems.reformcloud.event.utility.Cancellable;
 import systems.reformcloud.event.utility.Event;
 
@@ -53,6 +52,9 @@ public final class EventExample extends Event implements Serializable, Cancellab
     /**
      * Get the event content
      */
-    @Getter
     private Event event;
+
+    public Event getEvent() {
+        return this.event;
+    }
 }

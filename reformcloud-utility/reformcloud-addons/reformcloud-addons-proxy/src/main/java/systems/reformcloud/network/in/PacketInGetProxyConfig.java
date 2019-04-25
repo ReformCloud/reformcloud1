@@ -23,7 +23,7 @@ public final class PacketInGetProxyConfig implements Serializable, NetworkQueryI
         ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                 configuration.getStringValue("from"),
                 new PacketOutGetProxyConfig(resultID, ProxyAddon.getInstance().getProxyAddonConfiguration().getForProxy(
-                        ReformCloudController.getInstance().getProxyInfo(configuration.getStringValue("from")).getGroup()
+                        ReformCloudController.getInstance().getProxyInfo(configuration.getStringValue("from")).getCloudProcess().getGroup()
                 ))
         );
     }

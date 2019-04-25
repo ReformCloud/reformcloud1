@@ -30,7 +30,7 @@ public final class ProxyAddonConfiguration implements Serializable {
     public ProxyAddonConfiguration() {
         if (!Files.exists(Paths.get("reformcloud/addons/proxy/config.json"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/proxy"));
-            new Configuration().addProperty("config", Collections.singletonList(
+            new Configuration().addValue("config", Collections.singletonList(
                     new ProxySettings(
                             ReformCloudController.getInstance().getAllProxyGroups().parallelStream().findFirst().get().getName(),
                             "§2Reform§fCloud §8● §a§lOfficial Cloud System §8» §7%current_server% §8● §7%current_proxy% \n §7Online count §8» " +
@@ -98,7 +98,7 @@ public final class ProxyAddonConfiguration implements Serializable {
                 ))
         );
         this.proxySettings.add(proxySetting);
-        new Configuration().addProperty("config", proxySettings)
+        new Configuration().addValue("config", proxySettings)
                 .write(Paths.get("reformcloud/addons/proxy/config.json"));
         this.reload();
         return true;
@@ -110,7 +110,7 @@ public final class ProxyAddonConfiguration implements Serializable {
 
         ProxySettings proxySetting = this.getForProxy(name).get();
         this.proxySettings.remove(proxySetting);
-        new Configuration().addProperty("config", proxySettings)
+        new Configuration().addValue("config", proxySettings)
                 .write(Paths.get("reformcloud/addons/proxy/config.json"));
         this.reload();
         return true;
@@ -127,7 +127,7 @@ public final class ProxyAddonConfiguration implements Serializable {
                     .getServerProcessManager()
                     .getAllRegisteredProxyProcesses()
                     .stream()
-                    .filter(e1 -> e1.getGroup().equals(e.getTargetProxyGroup()))
+                    .filter(e1 -> e1.getCloudProcess().getGroup().equals(e.getTargetProxyGroup()))
                     .forEach(e2 -> ReformCloudController.getInstance().sendPacketSync(
                             e2.getCloudProcess().getName(),
                             new PacketOutUpdateProxyConfig(Optional.of(e))

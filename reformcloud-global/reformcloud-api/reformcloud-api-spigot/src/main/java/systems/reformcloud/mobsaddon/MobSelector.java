@@ -8,8 +8,6 @@ import com.google.common.base.Enums;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -61,15 +59,11 @@ import java.util.stream.Collectors;
  * @author _Klaro | Pasqual K. / created on 21.04.2019
  */
 
-@Getter
 public final class MobSelector implements Serializable {
-    @Getter
     private static MobSelector instance;
 
-    @Setter
     private Map<UUID, SelectorMob> mobs;
 
-    @Setter
     private SelectorMobConfig selectorMobConfig;
 
     private Map<UUID, Mob> spawnedMobs = new HashMap<>();
@@ -115,6 +109,10 @@ public final class MobSelector implements Serializable {
                     ReformCloudAPISpigot.getInstance().getNettyHandler().unregisterHandler("UpdateMobs");
                 }
         );
+    }
+
+    public static MobSelector getInstance() {
+        return MobSelector.instance;
     }
 
     public Location toLocation(SelectorMobPosition selectorMobPosition) {
@@ -237,7 +235,7 @@ public final class MobSelector implements Serializable {
 
         input.replace("%server_name%", serverInfo.getCloudProcess().getName())
                 .replace("%server_uid%", serverInfo.getCloudProcess().getProcessUID().toString())
-                .replace("%server_group_name%", serverInfo.getGroup())
+                .replace("%server_group_name%", serverInfo.getCloudProcess().getGroup())
                 .replace("%server_motd%", serverInfo.getMotd())
                 .replace("%server_client%", serverInfo.getCloudProcess().getClient())
                 .replace("%server_template%", serverInfo.getCloudProcess().getLoadedTemplate().getName())
@@ -361,6 +359,22 @@ public final class MobSelector implements Serializable {
             return;
 
         this.spawnedMobs.remove(mob.entity.getUniqueId()).despawn();
+    }
+
+    public SelectorMobConfig getSelectorMobConfig() {
+        return this.selectorMobConfig;
+    }
+
+    public Map<UUID, Mob> getSpawnedMobs() {
+        return this.spawnedMobs;
+    }
+
+    public void setMobs(Map<UUID, SelectorMob> mobs) {
+        this.mobs = mobs;
+    }
+
+    public void setSelectorMobConfig(SelectorMobConfig selectorMobConfig) {
+        this.selectorMobConfig = selectorMobConfig;
     }
 
     private class Mob {
@@ -638,7 +652,7 @@ public final class MobSelector implements Serializable {
         @EventHandler
         public void handle(final CloudServerAddEvent event) {
             if (event.getServerInfo().getServerState().equals(ServerState.READY)) {
-                Collection<Mob> mobs = findMobsByGroup(event.getServerInfo().getGroup());
+                Collection<Mob> mobs = findMobsByGroup(event.getServerInfo().getCloudProcess().getGroup());
                 if (mobs.isEmpty())
                     return;
 
@@ -648,7 +662,7 @@ public final class MobSelector implements Serializable {
 
         @EventHandler
         public void handle(final CloudServerInfoUpdateEvent event) {
-            Collection<Mob> mobs = findMobsByGroup(event.getServerInfo().getGroup());
+            Collection<Mob> mobs = findMobsByGroup(event.getServerInfo().getCloudProcess().getGroup());
             if (mobs.isEmpty())
                 return;
 
@@ -660,7 +674,7 @@ public final class MobSelector implements Serializable {
 
         @EventHandler
         public void handle(final CloudServerRemoveEvent event) {
-            Collection<Mob> mobs = findMobsByGroup(event.getServerInfo().getGroup());
+            Collection<Mob> mobs = findMobsByGroup(event.getServerInfo().getCloudProcess().getGroup());
             if (mobs.isEmpty())
                 return;
 

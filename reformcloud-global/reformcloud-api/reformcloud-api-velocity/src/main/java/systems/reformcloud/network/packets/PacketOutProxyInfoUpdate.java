@@ -14,6 +14,6 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutProxyInfoUpdate extends Packet {
     public PacketOutProxyInfoUpdate(final ProxyInfo proxyInfo) {
-        super("ProxyInfoUpdate", new Configuration().addProperty("proxyInfo", proxyInfo));
+        super("ProxyInfoUpdate", new Configuration().addValue("proxyInfo", proxyInfo));
     }
 }

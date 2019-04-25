@@ -4,7 +4,6 @@
 
 package systems.reformcloud.event.events;
 
-import lombok.Getter;
 import systems.reformcloud.event.utility.Cancellable;
 import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.network.packet.AwaitingPacket;
@@ -56,6 +55,9 @@ public final class OutgoingPacketEvent extends Event implements Serializable, Ca
     /**
      * The packet which should be sent
      */
-    @Getter
     private AwaitingPacket awaitingPacket;
+
+    public AwaitingPacket getAwaitingPacket() {
+        return this.awaitingPacket;
+    }
 }

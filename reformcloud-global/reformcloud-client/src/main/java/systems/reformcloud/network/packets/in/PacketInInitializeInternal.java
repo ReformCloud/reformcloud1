@@ -34,7 +34,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
 
         ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new Packet(
                 "AuthSuccess",
-                new Configuration().addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                new Configuration().addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
         ));
 
         ReformCloudLibraryServiceProvider.getInstance().setLoaded(

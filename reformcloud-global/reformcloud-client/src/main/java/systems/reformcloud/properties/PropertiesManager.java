@@ -4,8 +4,6 @@
 
 package systems.reformcloud.properties;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -14,19 +12,21 @@ import java.util.Properties;
  * @author _Klaro | Pasqual K. / created on 22.04.2019
  */
 
-@Getter
 public final class PropertiesManager implements Serializable {
     private PropertiesConfig propertiesConfig;
 
     public static boolean available = false;
 
-    @Getter
     public static PropertiesManager instance;
 
     public PropertiesManager(PropertiesConfig propertiesConfig) {
         available = true;
         instance = this;
         this.propertiesConfig = propertiesConfig;
+    }
+
+    public static PropertiesManager getInstance() {
+        return PropertiesManager.instance;
     }
 
     public void fill(String group, Properties properties) {
@@ -47,5 +47,9 @@ public final class PropertiesManager implements Serializable {
     public void delete() {
         available = false;
         instance = null;
+    }
+
+    public PropertiesConfig getPropertiesConfig() {
+        return this.propertiesConfig;
     }
 }

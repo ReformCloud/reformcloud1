@@ -35,7 +35,7 @@ public final class AuthenticationHandler implements AuthenticationManager {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
+                            "InitializeCloudNetwork", new Configuration().addValue("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();
@@ -47,7 +47,7 @@ public final class AuthenticationHandler implements AuthenticationManager {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
+                            "InitializeCloudNetwork", new Configuration().addValue("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();
@@ -60,7 +60,7 @@ public final class AuthenticationHandler implements AuthenticationManager {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addProperty("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
+                            "InitializeCloudNetwork", new Configuration().addValue("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();

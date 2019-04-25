@@ -20,7 +20,7 @@ public final class PacketOutSyncScreenDisable extends Packet implements Serializ
         super(
                 "ScreenDisable",
                 new Configuration()
-                        .addStringProperty("name", name)
+                        .addStringValue("name", name)
         );
     }
 }

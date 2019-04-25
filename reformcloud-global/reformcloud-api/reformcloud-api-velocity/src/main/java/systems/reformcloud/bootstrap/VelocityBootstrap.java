@@ -17,7 +17,6 @@ import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.netty.util.ResourceLeakDetector;
-import lombok.Getter;
 import org.slf4j.Logger;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.commands.CommandHub;
@@ -38,7 +37,6 @@ import java.util.Optional;
  * @author _Klaro | Pasqual K. / created on 24.03.2019
  */
 
-@Getter
 @Plugin(id = "reformcloudapi",
         name = "ReformCloudAPIVelocity",
         version = "1.0",
@@ -49,7 +47,6 @@ public final class VelocityBootstrap implements Serializable {
     private static final LegacyChannelIdentifier LEGACY_BUNGEE_CHANNEL = new LegacyChannelIdentifier("BungeeCord");
     private static final MinecraftChannelIdentifier MODERN_BUNGEE_CHANNEL = MinecraftChannelIdentifier.create("bungeecord", "main");
 
-    @Getter
     private static VelocityBootstrap instance;
 
     private ProxyServer proxy;
@@ -65,6 +62,10 @@ public final class VelocityBootstrap implements Serializable {
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
         proxy.getConfiguration().getAttemptConnectionOrder().clear();
+    }
+
+    public static VelocityBootstrap getInstance() {
+        return VelocityBootstrap.instance;
     }
 
     public ProxyServer getProxyServer() {
@@ -112,5 +113,9 @@ public final class VelocityBootstrap implements Serializable {
             Optional<RegisteredServer> info = proxy.getServer(in.readUTF());
             info.ifPresent(serverInfo -> connection.getPlayer().createConnectionRequest(serverInfo).fireAndForget());
         }
+    }
+
+    public ProxyServer getProxy() {
+        return this.proxy;
     }
 }

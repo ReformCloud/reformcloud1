@@ -4,7 +4,6 @@
 
 package systems.reformcloud.signs;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.signs.configuration.SignConfiguration;
@@ -17,9 +16,7 @@ import systems.reformcloud.utility.runtime.Shutdown;
  * @author _Klaro | Pasqual K. / created on 12.12.2018
  */
 
-@Getter
 public final class SignSelector implements Shutdown {
-    @Getter
     private static SignSelector instance;
 
     private SignConfiguration signConfiguration;
@@ -45,11 +42,19 @@ public final class SignSelector implements Shutdown {
                 .registerQueryHandler("QueryGetSigns", new PacketInRequestSigns());
     }
 
+    public static SignSelector getInstance() {
+        return SignSelector.instance;
+    }
+
     /**
      * Shutdowns the SignSelector
      */
     @Override
     public void shutdownAll() {
         instance = null;
+    }
+
+    public SignConfiguration getSignConfiguration() {
+        return this.signConfiguration;
     }
 }

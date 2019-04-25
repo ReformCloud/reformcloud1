@@ -34,7 +34,7 @@ public final class PacketInGetConfig implements Serializable, NetworkQueryInboun
                         configuration.getStringValue("from"),
                         new Packet(
                                 StringUtil.NULL,
-                                new Configuration().addProperty("data", iconData),
+                                new Configuration().addValue("data", iconData),
                                 resultID
                         )
                 );

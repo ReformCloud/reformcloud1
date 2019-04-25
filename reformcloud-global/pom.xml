@@ -25,12 +25,5 @@
             <version>1.5</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${dependency.quartz.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

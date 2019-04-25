@@ -31,7 +31,7 @@ public final class RestAPIUtility implements Serializable {
     }
 
     public static Configuration createDefaultAnswer() {
-        return new Configuration().addBooleanProperty("success", false).addProperty("response", new ArrayList<>());
+        return new Configuration().addBooleanValue("success", false).addValue("response", new ArrayList<>());
     }
 
     public static boolean hasPermission(final WebUser webUser, final String permission) {

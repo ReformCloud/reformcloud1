@@ -11,5 +11,8 @@
 
     <artifactId>reformcloud-addons-parameters</artifactId>
 
+    <build>
+        <finalName>ReformCloudParameters</finalName>
+    </build>
 
 </project>

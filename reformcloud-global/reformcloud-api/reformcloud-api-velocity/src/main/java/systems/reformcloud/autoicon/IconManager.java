@@ -6,7 +6,6 @@ package systems.reformcloud.autoicon;
 
 import com.google.gson.reflect.TypeToken;
 import com.velocitypowered.api.util.Favicon;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
@@ -26,12 +25,10 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class IconManager implements Serializable {
-    @Getter
     public static IconManager instance;
 
     private IconData iconData;
 
-    @Getter
     private Favicon current;
 
     private List<Favicon> favicons = new ArrayList<>();
@@ -86,9 +83,17 @@ public final class IconManager implements Serializable {
         );
     }
 
+    public static IconManager getInstance() {
+        return IconManager.instance;
+    }
+
     public void delete() {
         instance = null;
         this.running = false;
         this.current = null;
+    }
+
+    public Favicon getCurrent() {
+        return this.current;
     }
 }

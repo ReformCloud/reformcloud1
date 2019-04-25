@@ -4,17 +4,12 @@
 
 package systems.reformcloud.commands.utility;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-@AllArgsConstructor
-@Getter
 public abstract class Command implements Serializable {
     /**
      * Some general information about the command
@@ -26,6 +21,14 @@ public abstract class Command implements Serializable {
      */
     private String[] aliases;
 
+    @java.beans.ConstructorProperties({"name", "description", "permission", "aliases"})
+    public Command(String name, String description, String permission, String[] aliases) {
+        this.name = name;
+        this.description = description;
+        this.permission = permission;
+        this.aliases = aliases;
+    }
+
     /**
      * Executes the command
      *
@@ -33,4 +36,20 @@ public abstract class Command implements Serializable {
      * @param args              The given command arguments
      */
     public abstract void executeCommand(CommandSender commandSender, String[] args);
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String getPermission() {
+        return this.permission;
+    }
+
+    public String[] getAliases() {
+        return this.aliases;
+    }
 }

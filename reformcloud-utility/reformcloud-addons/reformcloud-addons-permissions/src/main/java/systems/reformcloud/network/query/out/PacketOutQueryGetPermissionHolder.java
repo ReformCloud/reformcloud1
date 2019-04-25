@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public final class PacketOutQueryGetPermissionHolder extends Packet implements Serializable {
     public PacketOutQueryGetPermissionHolder(PermissionHolder permissionHolder, UUID resultID) {
-        super("undefined", new Configuration().addProperty("holder", permissionHolder));
+        super("undefined", new Configuration().addValue("holder", permissionHolder));
         super.setResult(resultID);
     }
 }

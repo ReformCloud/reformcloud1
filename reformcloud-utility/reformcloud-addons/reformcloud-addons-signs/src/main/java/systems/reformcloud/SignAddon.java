@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import lombok.Getter;
 import systems.reformcloud.signs.SignSelector;
 import systems.reformcloud.utility.ControllerAddonImpl;
 
@@ -17,8 +16,11 @@ import java.io.Serializable;
 public final class SignAddon extends ControllerAddonImpl implements Serializable {
     private static final long serialVersionUID = -3291689192807455021L;
 
-    @Getter
     private static SignSelector signSelector;
+
+    public static SignSelector getSignSelector() {
+        return SignAddon.signSelector;
+    }
 
     @Override
     public void onAddonClazzPrepare() {

@@ -13,7 +13,7 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutSendControllerConsoleMessage extends Packet {
     public PacketOutSendControllerConsoleMessage(final String message) {
-        super("SendControllerConsoleMessage", new Configuration().addStringProperty("message", message));
+        super("SendControllerConsoleMessage", new Configuration().addStringValue("message", message));
     }
 
     public PacketOutSendControllerConsoleMessage(final String... messages) {

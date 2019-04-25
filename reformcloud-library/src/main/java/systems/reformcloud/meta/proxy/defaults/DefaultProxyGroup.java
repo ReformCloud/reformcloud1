@@ -4,7 +4,6 @@
 
 package systems.reformcloud.meta.proxy.defaults;
 
-import lombok.ToString;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
@@ -19,7 +18,6 @@ import java.util.Collections;
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
-@ToString
 public final class DefaultProxyGroup extends ProxyGroup implements Serializable {
     private static final long serialVersionUID = -1867335836689571544L;
 
@@ -81,5 +79,9 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 128,
                 proxyVersions
         );
+    }
+
+    public String toString() {
+        return "DefaultProxyGroup()";
     }
 }

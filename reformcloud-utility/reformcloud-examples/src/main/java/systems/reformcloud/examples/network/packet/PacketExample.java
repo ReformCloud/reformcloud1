@@ -18,7 +18,7 @@ public final class PacketExample extends Packet implements Serializable { //Clas
     public PacketExample() {
         super(
                 "Example", //Type of the packet, packet will be handled by this name
-                new Configuration().addStringProperty("example", StringUtil.NULL) //What is in the packet, main message, information
+                new Configuration().addStringValue("example", StringUtil.NULL) //What is in the packet, main message, information
         );
     }
 }

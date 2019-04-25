@@ -18,7 +18,7 @@ public final class PacketOutCreateMob extends Packet implements Serializable {
     public PacketOutCreateMob(SelectorMob selectorMob) {
         super(
                 "CreateMob",
-                new Configuration().addProperty("mob", selectorMob)
+                new Configuration().addValue("mob", selectorMob)
         );
     }
 }

@@ -20,8 +20,8 @@ public final class PacketOutSyncScreenUpdate extends Packet implements Serializa
         super(
                 "ScreenUpdate",
                 new Configuration()
-                        .addStringProperty("line", line)
-                        .addStringProperty("from", who)
+                        .addStringValue("line", line)
+                        .addStringValue("from", who)
         );
     }
 }

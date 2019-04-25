@@ -69,8 +69,8 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
                 defaultPlayer.getSpigotVersion()
         );
 
-        new Configuration().addProperty("player", offlinePlayer).write(Paths.get(dir + "/" + defaultPlayer.getUniqueID() + ".json"));
-        new Configuration().addProperty("uuid", offlinePlayer.getUniqueID()).write(Paths.get(name_to_uuid + "/" +
+        new Configuration().addValue("player", offlinePlayer).write(Paths.get(dir + "/" + defaultPlayer.getUniqueID() + ".json"));
+        new Configuration().addValue("uuid", offlinePlayer.getUniqueID()).write(Paths.get(name_to_uuid + "/" +
                 defaultPlayer.getName() + ".json"));
         this.cachedOfflinePlayers.add(defaultPlayer.getUniqueID(), offlinePlayer);
         return offlinePlayer;
@@ -157,7 +157,7 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
 
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
         new Configuration()
-                .addProperty("player", offlinePlayer)
+                .addValue("player", offlinePlayer)
                 .write(Paths.get(dir + "/" + offlinePlayer.getUniqueID() + ".json"));
         this.cachedOfflinePlayers.invalidate(offlinePlayer.getUniqueID());
         this.cachedOfflinePlayers.add(offlinePlayer.getUniqueID(), offlinePlayer);

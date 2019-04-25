@@ -36,13 +36,13 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
 
         InternalWebUser internalWebUser = ReformCloudController.getInstance().getInternalCloudNetwork().getInternalWebUser();
         if (internalWebUser == null || !internalWebUser.getName().equals(httpHeaders.get("-XUser"))) {
-            answer.addProperty("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!internalWebUser.getPassword().equals(httpHeaders.get("-XPassword"))) {
-            answer.addProperty("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -72,7 +72,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
             );
 
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
-            fullHttpResponse.content().writeBytes(answer.addProperty("success", true).getJsonString().getBytes());
+            fullHttpResponse.content().writeBytes(answer.addValue("success", true).getJsonString().getBytes());
             return fullHttpResponse;
         }
 

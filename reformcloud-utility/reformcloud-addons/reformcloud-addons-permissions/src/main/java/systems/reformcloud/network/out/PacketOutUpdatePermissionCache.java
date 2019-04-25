@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 public final class PacketOutUpdatePermissionCache extends Packet implements Serializable {
     public PacketOutUpdatePermissionCache() {
-        super("UpdatePermissionCache", new Configuration().addProperty("cache",
+        super("UpdatePermissionCache", new Configuration().addValue("cache",
                 PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache()));
     }
 }

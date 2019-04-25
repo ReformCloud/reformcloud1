@@ -12,8 +12,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-import lombok.Getter;
-import lombok.Setter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
@@ -29,9 +27,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 24.10.2018
  */
 
-@Getter
 public final class NettySocketClient implements AutoCloseable, Serializable {
-    @Setter
     private int connections = 1;
 
     private SslContext sslContext;
@@ -86,9 +82,9 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
 
             bootstrap.connect(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel().writeAndFlush(new Packet("Auth",
                     new Configuration()
-                            .addStringProperty("key", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
-                            .addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                            .addProperty("AuthenticationType", AuthenticationType.INTERNAL)
+                            .addStringValue("key", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
+                            .addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                            .addValue("AuthenticationType", AuthenticationType.INTERNAL)
             ));
 
             ReformCloudClient.getInstance().getLoggerProvider()
@@ -111,5 +107,21 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
 
         eventLoopGroup.shutdownGracefully();
         eventLoopGroup = null;
+    }
+
+    public int getConnections() {
+        return this.connections;
+    }
+
+    public SslContext getSslContext() {
+        return this.sslContext;
+    }
+
+    public EventLoopGroup getEventLoopGroup() {
+        return this.eventLoopGroup;
+    }
+
+    public void setConnections(int connections) {
+        this.connections = connections;
     }
 }

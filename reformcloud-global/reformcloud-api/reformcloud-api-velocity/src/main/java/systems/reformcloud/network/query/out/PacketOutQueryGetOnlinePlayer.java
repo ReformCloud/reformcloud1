@@ -16,10 +16,10 @@ import java.util.UUID;
 
 public final class PacketOutQueryGetOnlinePlayer extends Packet implements Serializable {
     public PacketOutQueryGetOnlinePlayer(UUID uuid) {
-        super("QueryGetOnlinePlayer", new Configuration().addProperty("uuid", uuid));
+        super("QueryGetOnlinePlayer", new Configuration().addValue("uuid", uuid));
     }
 
     public PacketOutQueryGetOnlinePlayer(String name) {
-        super("QueryGetOnlinePlayer", new Configuration().addProperty("name", name));
+        super("QueryGetOnlinePlayer", new Configuration().addValue("name", name));
     }
 }

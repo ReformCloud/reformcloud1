@@ -5,7 +5,6 @@
 package systems.reformcloud.selector;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
@@ -31,9 +30,7 @@ import java.util.*;
  * @author _Klaro | Pasqual K. / created on 21.04.2019
  */
 
-@Getter
 public final class MobSelector implements Serializable {
-    @Getter
     private static MobSelector instance;
 
     private final String directory = "reformcloud/addons/mobs",
@@ -53,6 +50,10 @@ public final class MobSelector implements Serializable {
         this.reload();
     }
 
+    public static MobSelector getInstance() {
+        return MobSelector.instance;
+    }
+
     private void defaultInit() {
         if (!Files.exists(Paths.get(directory))) {
             FileUtils.createDirectory(Paths.get(directory));
@@ -62,7 +63,7 @@ public final class MobSelector implements Serializable {
 
     public void reload() {
         if (!Files.exists(Paths.get(directory + "/config.json"))) {
-            new Configuration().addProperty("config", new SelectorMobConfig(
+            new Configuration().addValue("config", new SelectorMobConfig(
                     new SelectorMobInventory(
                             "§7» §a%group_name%",
                             54,
@@ -84,7 +85,7 @@ public final class MobSelector implements Serializable {
 
         if (!Files.exists(Paths.get(databaseDir + "/database.json")))
             new Configuration()
-                    .addProperty("database", new HashMap<>())
+                    .addValue("database", new HashMap<>())
                     .write(databaseDir + "/database.json");
 
         this.mobs = Configuration.parse(databaseDir + "/database.json").getValue("database", new TypeToken<Map<UUID, SelectorMob>>() {
@@ -105,7 +106,7 @@ public final class MobSelector implements Serializable {
 
     public void saveDatabase() {
         new Configuration()
-                .addProperty("database", this.mobs == null ? new HashMap<>() : this.mobs)
+                .addValue("database", this.mobs == null ? new HashMap<>() : this.mobs)
                 .write(databaseDir + "/database.json");
     }
 
@@ -153,5 +154,21 @@ public final class MobSelector implements Serializable {
 
     public SelectorMob getMob(UUID uuid) {
         return this.mobs.get(uuid);
+    }
+
+    public String getDirectory() {
+        return this.directory;
+    }
+
+    public String getDatabaseDir() {
+        return this.databaseDir;
+    }
+
+    public Map<UUID, SelectorMob> getMobs() {
+        return this.mobs;
+    }
+
+    public SelectorMobConfig getSelectorMobConfig() {
+        return this.selectorMobConfig;
     }
 }

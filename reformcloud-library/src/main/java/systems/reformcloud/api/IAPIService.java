@@ -6,12 +6,18 @@ package systems.reformcloud.api;
 
 import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.enums.ProxyModeType;
+import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.meta.server.versions.SpigotVersions;
+import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
@@ -19,9 +25,7 @@ import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -129,6 +133,56 @@ public interface IAPIService {
      *                   while starting up the process
      */
     void startProxy(ProxyGroup proxyGroup, Configuration preConfig, String template);
+
+    boolean stopProxy(String name);
+
+    boolean stopProxy(ProxyInfo proxyInfo);
+
+    boolean stopServer(String name);
+
+    boolean stopServer(ServerInfo serverInfo);
+
+    void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, SpigotVersions spigotVersions);
+
+    void createServerGroup(ServerGroup serverGroup);
+
+    void createServerGroup(String name);
+
+    void createServerGroup(String name, ServerModeType serverModeType, Collection<Template> templates);
+
+    void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, Collection<Template> templates, SpigotVersions spigotVersions);
+
+    void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, ProxyVersions proxyVersions);
+
+    void createProxyGroup(ProxyGroup proxyGroup);
+
+    void createProxyGroup(String name);
+
+    void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<Template> templates);
+
+    void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, Collection<Template> templates, ProxyVersions proxyVersions);
+
+    void createClient(String name, String host);
+
+    void createClient(String name);
+
+    void createClient(Client client);
+
+    void updateServerInfo(ServerInfo serverInfo);
+
+    void updateProxyInfo(ProxyInfo proxyInfo);
+
+    void updateServerGroup(ServerGroup serverGroup);
+
+    void updateProxyGroup(ProxyGroup proxyGroup);
+
+    void createWebUser(String name);
+
+    void createWebUser(String name, String password);
+
+    void createWebUser(String name, String password, Map<String, Boolean> permissions);
+
+    void createWebUser(WebUser webUser);
 
     /**
      * Get a online player of the cloudSystem

@@ -19,7 +19,7 @@ public final class PacketOutUploadLog extends Packet implements Serializable {
     public PacketOutUploadLog(final String name, final String type) {
         super(
                 "PacketInUploadLog",
-                new Configuration().addStringProperty("name", name).addStringProperty("type", type)
+                new Configuration().addStringValue("name", name).addStringValue("type", type)
         );
     }
 }

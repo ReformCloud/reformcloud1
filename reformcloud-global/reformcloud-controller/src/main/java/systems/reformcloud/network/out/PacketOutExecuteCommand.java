@@ -13,6 +13,6 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutExecuteCommand extends Packet {
     public PacketOutExecuteCommand(final String command, final String targetType, final String targetName) {
-        super("ExecuteCommand", new Configuration().addStringProperty("command", command).addProperty("type", targetType).addProperty("target", targetName));
+        super("ExecuteCommand", new Configuration().addStringValue("command", command).addValue("type", targetType).addValue("target", targetName));
     }
 }

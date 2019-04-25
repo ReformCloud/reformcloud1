@@ -6,7 +6,6 @@ package systems.reformcloud.network.channel;
 
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.events.OutgoingPacketEvent;
@@ -38,19 +37,16 @@ public final class ChannelHandler implements Serializable {
     /**
      * All waiting query packet
      */
-    @Getter
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * The executor service to run several tasks at the same time
      */
-    @Getter
     private final ExecutorService executorService = ReformCloudLibraryService.EXECUTOR_SERVICE;
 
     /**
      * The queue of the waiting packets
      */
-    @Getter
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
     /**
@@ -416,6 +412,18 @@ public final class ChannelHandler implements Serializable {
      */
     public void toQueryPacket(Packet packet, UUID resultID, String component) {
         packet.setResult(resultID);
-        packet.getConfiguration().addStringProperty("from", component);
+        packet.getConfiguration().addStringValue("from", component);
+    }
+
+    public Map<UUID, PacketFuture> getResults() {
+        return this.results;
+    }
+
+    public ExecutorService getExecutorService() {
+        return this.executorService;
+    }
+
+    public Queue<AwaitingPacket> getPacketQueue() {
+        return this.packetQueue;
     }
 }

@@ -4,7 +4,6 @@
 
 package systems.reformcloud.commands.ingame.command;
 
-import lombok.Getter;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
 
 import java.io.Serializable;
@@ -13,7 +12,6 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 19.03.2019
  */
 
-@Getter
 public abstract class IngameCommand implements Serializable {
     /**
      * The name of the ingame command
@@ -60,4 +58,16 @@ public abstract class IngameCommand implements Serializable {
      * @param args              The arguments provided with the command
      */
     public abstract void handle(IngameCommandSender commandSender, String[] args);
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getPermission() {
+        return this.permission;
+    }
+
+    public String[] getAliases() {
+        return this.aliases;
+    }
 }

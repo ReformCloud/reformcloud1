@@ -4,8 +4,6 @@
 
 package systems.reformcloud.signs;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import systems.reformcloud.signs.map.TemplateMap;
 
 import java.io.Serializable;
@@ -16,8 +14,6 @@ import java.util.Map;
  * @author _Klaro | Pasqual K. / created on 11.12.2018
  */
 
-@AllArgsConstructor
-@Getter
 public final class SignLayoutConfiguration implements Serializable {
     /**
      * The default layout which will be used when no layout is configured for the current group
@@ -38,4 +34,28 @@ public final class SignLayoutConfiguration implements Serializable {
      * The loading layout
      */
     private SignLayout.LoadingLayout loadingLayout;
+
+    @java.beans.ConstructorProperties({"defaultLayout", "groupLayouts", "groupTemplateLayouts", "loadingLayout"})
+    public SignLayoutConfiguration(SignLayout.GroupLayout defaultLayout, Map<String, SignLayout.GroupLayout> groupLayouts, List<TemplateMap<String, String, SignLayout.TemplateLayout>> groupTemplateLayouts, SignLayout.LoadingLayout loadingLayout) {
+        this.defaultLayout = defaultLayout;
+        this.groupLayouts = groupLayouts;
+        this.groupTemplateLayouts = groupTemplateLayouts;
+        this.loadingLayout = loadingLayout;
+    }
+
+    public SignLayout.GroupLayout getDefaultLayout() {
+        return this.defaultLayout;
+    }
+
+    public Map<String, SignLayout.GroupLayout> getGroupLayouts() {
+        return this.groupLayouts;
+    }
+
+    public List<TemplateMap<String, String, SignLayout.TemplateLayout>> getGroupTemplateLayouts() {
+        return this.groupTemplateLayouts;
+    }
+
+    public SignLayout.LoadingLayout getLoadingLayout() {
+        return this.loadingLayout;
+    }
 }

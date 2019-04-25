@@ -6,7 +6,6 @@ package systems.reformcloud.network.channel;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.AllArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.api.IEventHandler;
@@ -24,12 +23,16 @@ import java.net.InetSocketAddress;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-@AllArgsConstructor
 public final class ChannelReader extends SimpleChannelInboundHandler implements Serializable {
     /**
      * The channel handler instance
      */
     private ChannelHandler channelHandler;
+
+    @java.beans.ConstructorProperties({"channelHandler"})
+    public ChannelReader(ChannelHandler channelHandler) {
+        this.channelHandler = channelHandler;
+    }
 
     @Override
     protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final Object object) {

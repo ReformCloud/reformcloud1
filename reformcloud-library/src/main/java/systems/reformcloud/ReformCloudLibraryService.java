@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -23,6 +24,7 @@ import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import systems.reformcloud.api.IAsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.LoggerProvider;
@@ -32,6 +34,7 @@ import systems.reformcloud.network.handler.Decoder;
 import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
+import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.checkable.Checkable;
 
 import java.lang.management.ManagementFactory;
@@ -45,8 +48,12 @@ import java.util.concurrent.*;
 
 public final class ReformCloudLibraryService {
     static {
-        Thread.currentThread().setName("ReformCloud-Main");
+        String threadName = "ReformCloud-Main";
+        THREAD_MAIN_NAME = threadName;
+        Thread.currentThread().setName(threadName);
         Thread.setDefaultUncaughtExceptionHandler((t, cause) -> AbstractLoggerProvider.defaultLogger().exception(cause));
+
+        new IAsyncAPI();
 
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("io.netty.noPreferDirect", "true");
@@ -57,6 +64,11 @@ public final class ReformCloudLibraryService {
         System.setProperty("io.netty.noPreferDirect", "true");
         System.setProperty("io.netty.allocator.type", "UNPOOLED");
     }
+
+    /**
+     * Get the reformcloud main thread name
+     */
+    public static final String THREAD_MAIN_NAME;
 
     /**
      * The cloud created gson instance
@@ -81,7 +93,16 @@ public final class ReformCloudLibraryService {
     /**
      * The executor service used by the cloud
      */
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
+            new ThreadFactoryBuilder()
+                    .setDaemon(true)
+                    .setNameFormat("ReformCloud-PoolThread-%d")
+                    .setUncaughtExceptionHandler(((t, e) -> {
+                        if (ReformCloudLibraryServiceProvider.getInstance() != null)
+                            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error in thread group", e);
+                        else
+                            e.printStackTrace(System.err);
+                    })).build());
 
     /**
      * Creates a new ConcurrentHashMap
@@ -105,7 +126,6 @@ public final class ReformCloudLibraryService {
                         "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
-
 
     /**
      * Sends the cloud header colored
@@ -342,6 +362,15 @@ public final class ReformCloudLibraryService {
      */
     public static long bytesToMB(final long b) {
         return b / 1024 / 1024;
+    }
+
+    /**
+     * Checks if the caller thread is the main thread
+     *
+     * @return If the caller thread is the main thread
+     */
+    public static boolean isOnMainThread() {
+        return Thread.currentThread().getName().equals(THREAD_MAIN_NAME);
     }
 
     /**

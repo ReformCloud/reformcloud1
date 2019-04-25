@@ -4,8 +4,6 @@
 
 package systems.reformcloud.test;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.junit.Test;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.annotation.Handler;
@@ -26,10 +24,17 @@ public final class ListenerTest implements Serializable {
         eventManager.fire(new TestEvent(false));
     }
 
-    @AllArgsConstructor
-    @Getter
     public class TestEvent extends Event {
         boolean test;
+
+        @java.beans.ConstructorProperties({"test"})
+        public TestEvent(boolean test) {
+            this.test = test;
+        }
+
+        public boolean isTest() {
+            return this.test;
+        }
     }
 
     public class ListenerTest0 implements Listener {

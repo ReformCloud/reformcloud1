@@ -35,10 +35,10 @@ public final class ControllerTemplateDeploy implements Serializable {
             ).openConnection();
 
             Configuration configuration = new Configuration()
-                    .addStringProperty("template", template)
-                    .addStringProperty("group", group)
-                    .addBooleanProperty("proxy", proxy)
-                    .addStringProperty("client", requester);
+                    .addStringValue("template", template)
+                    .addStringValue("group", group)
+                    .addBooleanValue("proxy", proxy)
+                    .addStringValue("client", requester);
 
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());

@@ -13,6 +13,6 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutStopProcess extends Packet {
     public PacketOutStopProcess(final String name) {
-        super("StopProcess", new Configuration().addStringProperty("name", name));
+        super("StopProcess", new Configuration().addStringValue("name", name));
     }
 }

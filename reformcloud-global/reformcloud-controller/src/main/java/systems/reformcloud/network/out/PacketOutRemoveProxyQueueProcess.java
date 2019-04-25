@@ -17,7 +17,7 @@ public final class PacketOutRemoveProxyQueueProcess extends Packet implements Se
     public PacketOutRemoveProxyQueueProcess(final String name) {
         super(
                 "RemoveProxyQueueProcess",
-                new Configuration().addStringProperty("name", name)
+                new Configuration().addStringValue("name", name)
         );
     }
 }

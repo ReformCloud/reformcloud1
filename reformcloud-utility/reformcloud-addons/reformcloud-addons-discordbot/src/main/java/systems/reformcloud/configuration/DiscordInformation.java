@@ -4,17 +4,31 @@
 
 package systems.reformcloud.configuration;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
-@AllArgsConstructor
-@Getter
 public final class DiscordInformation implements Serializable {
     private String token, channelID, game;
+
+    @java.beans.ConstructorProperties({"token", "channelID", "game"})
+    public DiscordInformation(String token, String channelID, String game) {
+        this.token = token;
+        this.channelID = channelID;
+        this.game = game;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public String getChannelID() {
+        return this.channelID;
+    }
+
+    public String getGame() {
+        return this.game;
+    }
 }

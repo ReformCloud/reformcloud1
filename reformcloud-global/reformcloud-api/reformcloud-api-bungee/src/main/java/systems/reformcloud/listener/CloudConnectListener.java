@@ -206,8 +206,8 @@ public final class CloudConnectListener implements Listener {
         proxiedPlayer.setTabHeader(TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&',
                         proxySettings.getTabHeader()
-                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getGroup())
-                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getCloudProcess().getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                 .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                 .replace("%current_server%", proxiedPlayer.getServer().getInfo().getName())
                                 .replace("%online_players_current%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
@@ -217,8 +217,8 @@ public final class CloudConnectListener implements Listener {
                 )), TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&',
                         proxySettings.getTabFooter()
-                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getGroup())
-                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getCloudProcess().getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                 .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                 .replace("%current_server%", proxiedPlayer.getServer().getInfo().getName())
                                 .replace("%online_players_current%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))

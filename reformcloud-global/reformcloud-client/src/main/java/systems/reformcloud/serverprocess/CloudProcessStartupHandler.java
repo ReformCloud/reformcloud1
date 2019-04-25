@@ -4,7 +4,6 @@
 
 package systems.reformcloud.serverprocess;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
@@ -24,7 +23,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * @author _Klaro | Pasqual K. / created on 29.10.2018
  */
 
-@Getter
 public final class CloudProcessStartupHandler implements Runnable, Serializable {
     private final Queue<ServerStartupInfo> serverStartupInfo = new ConcurrentLinkedDeque<>();
     private final Queue<ProxyStartupInfo> proxyStartupInfo = new ConcurrentLinkedDeque<>();
@@ -132,5 +130,13 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
             this.proxyStartupInfo.remove(e);
             ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSendControllerConsoleMessage("ProxyProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3" + ReformCloudClient.getInstance().getCloudConfiguration().getClientName() + "§r queue"));
         });
+    }
+
+    public Queue<ServerStartupInfo> getServerStartupInfo() {
+        return this.serverStartupInfo;
+    }
+
+    public Queue<ProxyStartupInfo> getProxyStartupInfo() {
+        return this.proxyStartupInfo;
     }
 }

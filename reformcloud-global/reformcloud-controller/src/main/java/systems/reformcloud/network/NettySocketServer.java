@@ -10,7 +10,6 @@ import io.netty.channel.*;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -29,7 +28,6 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
-@Getter
 public final class NettySocketServer extends ChannelInitializer<Channel> implements AutoCloseable, Serializable {
     private SslContext sslContext;
     private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup(), bossGroup = ReformCloudLibraryService.eventLoopGroup();
@@ -135,5 +133,17 @@ public final class NettySocketServer extends ChannelInitializer<Channel> impleme
                 return true;
 
         return false;
+    }
+
+    public SslContext getSslContext() {
+        return this.sslContext;
+    }
+
+    public EventLoopGroup getWorkerGroup() {
+        return this.workerGroup;
+    }
+
+    public EventLoopGroup getBossGroup() {
+        return this.bossGroup;
     }
 }

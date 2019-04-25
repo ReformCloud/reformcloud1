@@ -4,7 +4,6 @@
 
 package systems.reformcloud.database;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
@@ -28,7 +27,6 @@ import java.util.*;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
-@Getter
 public final class PermissionDatabase implements Serializable {
     private File playerDir = new File("reformcloud/database/permissions/players/");
 
@@ -41,7 +39,7 @@ public final class PermissionDatabase implements Serializable {
             playerDir.mkdirs();
             new File("reformcloud/addons/permissions").mkdirs();
 
-            new Configuration().addProperty("permissionConfig", new PermissionCache(false, false,
+            new Configuration().addValue("permissionConfig", new PermissionCache(false, false,
                     "%display% %player% &7|&r %message%",
                     Collections.singletonList(new PermissionGroup(
                             "admin", null, null, null, "c", 999, Collections.singletonMap("*", true)
@@ -129,7 +127,7 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public PermissionHolder createPermissionHolder(PermissionHolder permissionHolder) {
-        new Configuration().addProperty("holder", permissionHolder)
+        new Configuration().addValue("holder", permissionHolder)
                 .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));
         this.cachedPermissionHolders.put(permissionHolder.getUniqueID(), permissionHolder);
 
@@ -138,7 +136,7 @@ public final class PermissionDatabase implements Serializable {
 
     public void updatePermissionHolder(PermissionHolder permissionHolder) {
         this.cachedPermissionHolders.replace(permissionHolder.getUniqueID(), permissionHolder);
-        new Configuration().addProperty("holder", permissionHolder)
+        new Configuration().addValue("holder", permissionHolder)
                 .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));
     }
 
@@ -167,7 +165,7 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public void update() {
-        new Configuration().addProperty("permissionConfig", this.permissionCache).write(Paths.get("reformcloud/addons/permissions/config.json"));
+        new Configuration().addValue("permissionConfig", this.permissionCache).write(Paths.get("reformcloud/addons/permissions/config.json"));
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
                 new PacketOutUpdatePermissionCache()
         );
@@ -182,5 +180,17 @@ public final class PermissionDatabase implements Serializable {
         permissionGroups.add(this.permissionCache.getDefaultGroup());
 
         return permissionGroups;
+    }
+
+    public File getPlayerDir() {
+        return this.playerDir;
+    }
+
+    public PermissionCache getPermissionCache() {
+        return this.permissionCache;
+    }
+
+    public Map<UUID, PermissionHolder> getCachedPermissionHolders() {
+        return this.cachedPermissionHolders;
     }
 }

@@ -4,7 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import lombok.Getter;
 import net.md_5.config.ConfigurationProvider;
 import net.md_5.config.YamlConfiguration;
 import systems.reformcloud.ReformCloudClient;
@@ -42,7 +41,6 @@ import java.util.Properties;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-@Getter
 public final class CloudServerStartupHandler implements Serializable {
     private Path path;
     private ServerStartupInfo serverStartupInfo;
@@ -333,19 +331,20 @@ public final class CloudServerStartupHandler implements Serializable {
         ServerInfo serverInfo = new ServerInfo(
                 new CloudProcess(serverStartupInfo.getName(), serverStartupInfo.getUid(),
                         ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+                        serverStartupInfo.getServerGroup().getName(), serverStartupInfo.getConfiguration(),
                         loaded, serverStartupInfo.getId()),
-                serverStartupInfo.getServerGroup(), ServerState.NOT_READY, serverStartupInfo.getServerGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
+                serverStartupInfo.getServerGroup(), ServerState.NOT_READY, ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
                 serverStartupInfo.getServerGroup().getMotd(), this.port, 0, serverStartupInfo.getServerGroup().getMemory(),
                 false, new ArrayList<>()
         );
 
         new Configuration()
-                .addProperty("info", serverInfo)
-                .addProperty("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
-                .addStringProperty("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
-                .addBooleanProperty("ssl", ReformCloudClient.getInstance().isSsl())
-                .addBooleanProperty("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
-                .addProperty("startupInfo", serverStartupInfo)
+                .addValue("info", serverInfo)
+                .addValue("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
+                .addStringValue("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
+                .addBooleanValue("ssl", ReformCloudClient.getInstance().isSsl())
+                .addBooleanValue("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
+                .addValue("startupInfo", serverStartupInfo)
 
                 .write(Paths.get(path + "/reformcloud/config.json"));
 
@@ -370,7 +369,7 @@ public final class CloudServerStartupHandler implements Serializable {
                         "nogui"
                 };
 
-        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(serverInfo.getGroup(), cmd, after)
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(serverInfo.getCloudProcess().getGroup(), cmd, after)
                 .replace("%port%", Integer.toString(port))
                 .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
                 .replace("%name%", serverStartupInfo.getName())
@@ -546,5 +545,49 @@ public final class CloudServerStartupHandler implements Serializable {
                 || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_10_2)
                 || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_11_2)
                 || this.serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.SPONGEVANILLA_1_12_2);
+    }
+
+    public Path getPath() {
+        return this.path;
+    }
+
+    public ServerStartupInfo getServerStartupInfo() {
+        return this.serverStartupInfo;
+    }
+
+    public Process getProcess() {
+        return this.process;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public boolean isToShutdown() {
+        return this.toShutdown;
+    }
+
+    public Template getLoaded() {
+        return this.loaded;
+    }
+
+    public ScreenHandler getScreenHandler() {
+        return this.screenHandler;
+    }
+
+    public ProcessStartupStage getProcessStartupStage() {
+        return this.processStartupStage;
+    }
+
+    public boolean isFirstGroupStart() {
+        return this.firstGroupStart;
+    }
+
+    public long getStartupTime() {
+        return this.startupTime;
+    }
+
+    public long getFinishedTime() {
+        return this.finishedTime;
     }
 }

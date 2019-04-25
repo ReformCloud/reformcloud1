@@ -16,6 +16,6 @@ import java.util.UUID;
 public final class PacketOutCheckPlayer extends Packet {
     public PacketOutCheckPlayer(final UUID uuid) {
         super("QueryCheckPlayer", new Configuration()
-                .addProperty("uuid", uuid));
+                .addValue("uuid", uuid));
     }
 }

@@ -4,9 +4,6 @@
 
 package systems.reformcloud.internal.events;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import systems.reformcloud.meta.info.ProxyInfo;
 
@@ -16,12 +13,15 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 12.03.2019
  */
 
-@AllArgsConstructor
-@Getter
-public final class CloudProxyInfoUpdateEvent extends Event implements Serializable {
+public final class CloudProxyInfoUpdateEvent extends DefaultCloudEvent implements Serializable {
     private static final HandlerList handlerList = new HandlerList();
 
     private ProxyInfo proxyInfo;
+
+    @java.beans.ConstructorProperties({"proxyInfo"})
+    public CloudProxyInfoUpdateEvent(ProxyInfo proxyInfo) {
+        this.proxyInfo = proxyInfo;
+    }
 
     @Override
     public HandlerList getHandlers() {
@@ -30,5 +30,9 @@ public final class CloudProxyInfoUpdateEvent extends Event implements Serializab
 
     public static HandlerList getHandlerList() {
         return handlerList;
+    }
+
+    public ProxyInfo getProxyInfo() {
+        return this.proxyInfo;
     }
 }

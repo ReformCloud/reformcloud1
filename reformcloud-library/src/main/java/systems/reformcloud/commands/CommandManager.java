@@ -4,7 +4,6 @@
 
 package systems.reformcloud.commands;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.defaults.CommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
@@ -27,7 +26,6 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     /**
      * The command list, where all commands are located in
      */
-    @Getter
     private List<Command> commands = new ArrayList<>();
 
     /**
@@ -145,5 +143,9 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      */
     public systems.reformcloud.commands.utility.CommandSender newCommandSender(final Map<String, Boolean> permissions) {
         return new DefaultUserCommandSender(permissions);
+    }
+
+    public List<Command> getCommands() {
+        return this.commands;
     }
 }

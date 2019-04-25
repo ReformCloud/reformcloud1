@@ -4,8 +4,6 @@
 
 package systems.reformcloud.serverprocess.shutdown;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
 import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
@@ -17,11 +15,11 @@ import java.util.concurrent.TimeUnit;
  * @author _Klaro | Pasqual K. / created on 04.02.2019
  */
 
-public final class ShutdownWorker implements Serializable, Job {
+public final class ShutdownWorker implements Serializable, Runnable {
     private static final long serialVersionUID = 8124418130754401586L;
 
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
+    public void run() {
         if (!ReformCloudClient.RUNNING || ReformCloudClient.getInstance().isShutdown())
             return;
 

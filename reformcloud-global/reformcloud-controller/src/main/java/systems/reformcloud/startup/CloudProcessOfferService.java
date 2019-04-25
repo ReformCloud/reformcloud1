@@ -4,11 +4,11 @@
 
 package systems.reformcloud.startup;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.out.PacketOutStartGameServer;
@@ -17,6 +17,7 @@ import systems.reformcloud.utility.map.maps.Trio;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,14 +25,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class CloudProcessOfferService implements Runnable, Serializable {
-    @Getter
     private Map<String, String> waiting = ReformCloudLibraryService.concurrentHashMap();
 
-    @Getter
     private Map<String, String> waitingPerClient = ReformCloudLibraryService.concurrentHashMap();
 
     private List<Trio<String, String, Integer>> servers = new ArrayList<>();
     private List<Trio<String, String, Integer>> proxies = new ArrayList<>();
+
+    private Queue<DevProcess> devProcesses = new ConcurrentLinkedDeque<>();
 
     private void offerServers() {
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().values().forEach(serverGroup -> {
@@ -83,6 +84,37 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
                 );
             }
         });
+    }
+
+    private void offerDevProcesses() {
+        DevProcess devProcess = this.devProcesses.poll();
+        if (devProcess == null)
+            return;
+
+        Client startup = ReformCloudController.getInstance().getBestClient(devProcess.getServerGroup().getClients(), devProcess.getServerGroup().getMemory());
+
+        if (startup == null) {
+            devProcesses.offer(devProcess);
+            return;
+        }
+
+        final Collection<String> servers = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                .getOnlineServers(devProcess.getServerGroup().getName());
+        final Collection<String> waiting = this.getWaiting(devProcess.getServerGroup().getName());
+
+        final int waitingAndOnline = servers.size() + waiting.size();
+        final String id = Integer.toString(this.nextServerID(devProcess.getServerGroup().getName()));
+        final String name = devProcess.getServerGroup().getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+
+        if (devProcess.getServerGroup().getMaxOnline() > waitingAndOnline || devProcess.getServerGroup().getMaxOnline() == -1) {
+            this.waiting.put(name, devProcess.getServerGroup().getName());
+            this.waitingPerClient.put(name, startup.getName());
+            this.registerID(devProcess.getServerGroup().getName(), name, Integer.valueOf(id));
+            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(startup.getName(),
+                    new PacketOutStartGameServer(devProcess.getServerGroup(), name, UUID.randomUUID(), devProcess.getPreConfig(), id, devProcess.getTemplate())
+            );
+        } else
+            this.devProcesses.offer(devProcess);
     }
 
     public Collection<String> getWaiting(final String name) {
@@ -165,5 +197,17 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
 
             ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 2);
         }
+    }
+
+    public Map<String, String> getWaiting() {
+        return this.waiting;
+    }
+
+    public Map<String, String> getWaitingPerClient() {
+        return this.waitingPerClient;
+    }
+
+    public Queue<DevProcess> getDevProcesses() {
+        return this.devProcesses;
     }
 }

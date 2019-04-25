@@ -30,13 +30,13 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
 
         InternalWebUser internalWebUser = ReformCloudController.getInstance().getInternalCloudNetwork().getInternalWebUser();
         if (internalWebUser == null || !internalWebUser.getName().equals(httpHeaders.get("-XUser"))) {
-            answer.addProperty("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!internalWebUser.getPassword().equals(httpHeaders.get("-XPassword"))) {
-            answer.addProperty("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }

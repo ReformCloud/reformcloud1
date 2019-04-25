@@ -5,7 +5,6 @@
 package systems.reformcloud.utility;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import systems.reformcloud.meta.client.settings.ClientSettings;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
@@ -36,7 +35,6 @@ public final class TypeTokenAdaptor implements Serializable {
         /**
          * Some helpful type tokens for the cloud system
          */
-    @Getter
     private static final Type
             SERVER_GROUP_TYPE = new TypeToken<ServerGroup>() {
     }.getType(),
@@ -74,4 +72,76 @@ public final class TypeTokenAdaptor implements Serializable {
             }.getType(),
             CLIENT_INFO_TYPE = new TypeToken<ClientInfo>() {
             }.getType();
+
+    public static Type getSERVER_GROUP_TYPE() {
+        return TypeTokenAdaptor.SERVER_GROUP_TYPE;
+    }
+
+    public static Type getPROXY_GROUP_TYPE() {
+        return TypeTokenAdaptor.PROXY_GROUP_TYPE;
+    }
+
+    public static Type getSERVER_INFO_TYPE() {
+        return TypeTokenAdaptor.SERVER_INFO_TYPE;
+    }
+
+    public static Type getPROXY_INFO_TYPE() {
+        return TypeTokenAdaptor.PROXY_INFO_TYPE;
+    }
+
+    public static Type getSERVER_STARTUP_INFO_TYPE() {
+        return TypeTokenAdaptor.SERVER_STARTUP_INFO_TYPE;
+    }
+
+    public static Type getPROXY_STARTUP_INFO_TYPE() {
+        return TypeTokenAdaptor.PROXY_STARTUP_INFO_TYPE;
+    }
+
+    public static Type getINTERNAL_CLOUD_NETWORK_TYPE() {
+        return TypeTokenAdaptor.INTERNAL_CLOUD_NETWORK_TYPE;
+    }
+
+    public static Type getPACKET_TYPE() {
+        return TypeTokenAdaptor.PACKET_TYPE;
+    }
+
+    public static Type getETHERNET_ADDRESS_TYPE() {
+        return TypeTokenAdaptor.ETHERNET_ADDRESS_TYPE;
+    }
+
+    public static Type getAUTHENTICATION_TYPE() {
+        return TypeTokenAdaptor.AUTHENTICATION_TYPE;
+    }
+
+    public static Type getSIGN_LAYOUT_CONFIG_TYPE() {
+        return TypeTokenAdaptor.SIGN_LAYOUT_CONFIG_TYPE;
+    }
+
+    public static Type getOFFLINE_PLAYER_TYPE() {
+        return TypeTokenAdaptor.OFFLINE_PLAYER_TYPE;
+    }
+
+    public static Type getONLINE_PLAYER_TYPE() {
+        return TypeTokenAdaptor.ONLINE_PLAYER_TYPE;
+    }
+
+    public static Type getDEFAULT_PLAYER_TYPE() {
+        return TypeTokenAdaptor.DEFAULT_PLAYER_TYPE;
+    }
+
+    public static Type getPERMISSION_CACHE_TYPE() {
+        return TypeTokenAdaptor.PERMISSION_CACHE_TYPE;
+    }
+
+    public static Type getPERMISSION_HOLDER_TYPE() {
+        return TypeTokenAdaptor.PERMISSION_HOLDER_TYPE;
+    }
+
+    public static Type getCLIENT_SETTING_TYPE() {
+        return TypeTokenAdaptor.CLIENT_SETTING_TYPE;
+    }
+
+    public static Type getCLIENT_INFO_TYPE() {
+        return TypeTokenAdaptor.CLIENT_INFO_TYPE;
+    }
 }

@@ -15,10 +15,10 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutAddProcess extends Packet {
     public PacketOutAddProcess(final ServerInfo serverInfo) {
-        super("ProcessAdd", new Configuration().addProperty("serverInfo", serverInfo));
+        super("ProcessAdd", new Configuration().addValue("serverInfo", serverInfo));
     }
 
     public PacketOutAddProcess(final ProxyInfo proxyInfo) {
-        super("ProcessAdd", new Configuration().addProperty("proxyInfo", proxyInfo));
+        super("ProcessAdd", new Configuration().addValue("proxyInfo", proxyInfo));
     }
 }

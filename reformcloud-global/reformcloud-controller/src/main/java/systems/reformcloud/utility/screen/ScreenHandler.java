@@ -4,8 +4,6 @@
 
 package systems.reformcloud.utility.screen;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
@@ -15,7 +13,6 @@ import java.io.Serializable;
 public abstract class ScreenHandler implements Serializable {
     private static final long serialVersionUID = 937457820217096807L;
 
-    @Getter
     private String client;
 
     protected ScreenHandler(final String client) {
@@ -25,4 +22,8 @@ public abstract class ScreenHandler implements Serializable {
     public abstract void sendLine(String in);
 
     public abstract void executeCommand(String cmd);
+
+    public String getClient() {
+        return this.client;
+    }
 }

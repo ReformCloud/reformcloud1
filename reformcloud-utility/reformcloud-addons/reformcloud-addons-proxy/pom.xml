@@ -11,5 +11,8 @@
 
     <artifactId>reformcloud-addons-proxy</artifactId>
 
+    <build>
+        <finalName>ReformCloudProxy</finalName>
+    </build>
 
 </project>

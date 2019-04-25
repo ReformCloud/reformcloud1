@@ -4,7 +4,6 @@
 
 package systems.reformcloud.synchronization;
 
-import lombok.Setter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.info.ClientInfo;
@@ -22,7 +21,6 @@ public final class SynchronizationHandler implements Serializable, Runnable {
 
     private boolean deleted = false;
 
-    @Setter
     private ClientInfo lastInfo = ReformCloudClient.getInstance().getClientInfo();
 
     @Override
@@ -53,11 +51,15 @@ public final class SynchronizationHandler implements Serializable, Runnable {
                 );
             }
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 3);
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 10);
         }
     }
 
     public void delete() {
         this.deleted = true;
+    }
+
+    public void setLastInfo(ClientInfo lastInfo) {
+        this.lastInfo = lastInfo;
     }
 }

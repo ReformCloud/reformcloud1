@@ -4,8 +4,6 @@
 
 package systems.reformcloud.database;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
 import systems.reformcloud.ReformCloudController;
 
 import java.io.Serializable;
@@ -14,9 +12,9 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 28.03.2019
  */
 
-public final class DatabaseSaver implements Serializable, Job {
+public final class DatabaseSaver implements Serializable, Runnable {
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
+    public void run() {
         ReformCloudController.getInstance().getDatabaseProviders().forEach(DatabaseProvider::save);
     }
 }

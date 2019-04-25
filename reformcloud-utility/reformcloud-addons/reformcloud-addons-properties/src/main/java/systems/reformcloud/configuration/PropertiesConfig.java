@@ -5,7 +5,6 @@
 package systems.reformcloud.configuration;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -23,9 +22,7 @@ import java.util.Properties;
  * @author _Klaro | Pasqual K. / created on 21.04.2019
  */
 
-@Getter
 public final class PropertiesConfig implements Serializable {
-    @Getter
     private static PropertiesConfig instance;
 
     private systems.reformcloud.properties.PropertiesConfig propertiesConfig;
@@ -39,7 +36,7 @@ public final class PropertiesConfig implements Serializable {
         if (!Files.exists(Paths.get("reformcloud/addons/properties"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/properties"));
             new Configuration()
-                    .addProperty("config", new systems.reformcloud.properties.PropertiesConfig(
+                    .addValue("config", new systems.reformcloud.properties.PropertiesConfig(
                             Collections.singletonList(new PropertiesGroup(
                                     "Lobby",
                                     this.defaults()
@@ -53,6 +50,10 @@ public final class PropertiesConfig implements Serializable {
         this.registerNetworkHandlers();
     }
 
+    public static PropertiesConfig getInstance() {
+        return PropertiesConfig.instance;
+    }
+
     private void registerNetworkHandlers() {
         ReformCloudController.getInstance().getNettyHandler().registerQueryHandler("RequestProperties", new PacketInRequestProperties());
     }
@@ -63,5 +64,9 @@ public final class PropertiesConfig implements Serializable {
         properties.setProperty("pvp", "true");
 
         return properties;
+    }
+
+    public systems.reformcloud.properties.PropertiesConfig getPropertiesConfig() {
+        return this.propertiesConfig;
     }
 }

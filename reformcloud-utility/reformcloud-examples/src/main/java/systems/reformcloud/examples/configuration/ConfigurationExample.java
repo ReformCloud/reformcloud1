@@ -20,15 +20,15 @@ public final class ConfigurationExample implements Serializable {
             Configuration configuration = new Configuration(); //Returns a new, empty configuration
 
             configuration
-                    .addStringProperty("key", "value") //Adds a String value into the json configuration
+                    .addStringValue("key", "value") //Adds a String value into the json configuration
 
-                    .addProperty("object", new Object()) //Adds a object into the Configuration ; Can be a class, too
+                    .addValue("object", new Object()) //Adds a object into the Configuration ; Can be a class, too
 
-                    .addBooleanProperty("boolean", true) //Adds a boolean property
+                    .addBooleanValue("boolean", true) //Adds a boolean property
 
-                    .addConfigurationProperty("config", new Configuration()) //Adds a full configuration
+                    .addConfigurationValue("config", new Configuration()) //Adds a full configuration
 
-                    .addIntegerProperty("int", 1) //Adds an Integer into the configuration
+                    .addIntegerValue("int", 1) //Adds an Integer into the configuration
                     .write(Paths.get("URLClassPath.json")); //saves it as a file : !! Don't forget the .json !!
         }
 

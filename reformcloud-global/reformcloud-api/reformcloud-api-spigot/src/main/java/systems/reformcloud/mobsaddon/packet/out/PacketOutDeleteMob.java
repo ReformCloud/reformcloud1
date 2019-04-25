@@ -18,7 +18,7 @@ public final class PacketOutDeleteMob extends Packet implements Serializable {
     public PacketOutDeleteMob(UUID selectorMob) {
         super(
                 "DeleteMob",
-                new Configuration().addProperty("mob", selectorMob)
+                new Configuration().addValue("mob", selectorMob)
         );
     }
 }

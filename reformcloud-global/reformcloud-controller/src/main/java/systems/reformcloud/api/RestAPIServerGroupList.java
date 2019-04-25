@@ -31,7 +31,7 @@ public final class RestAPIServerGroupList implements Serializable, WebHandler {
 
         final HttpHeaders httpHeaders = httpRequest.headers();
         if (!httpHeaders.contains("-XUser") || !httpHeaders.contains("-XPassword")) {
-            answer.addProperty("response", Arrays.asList("No -XUser or -XPassword provided"));
+            answer.addValue("response", Arrays.asList("No -XUser or -XPassword provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -44,25 +44,25 @@ public final class RestAPIServerGroupList implements Serializable, WebHandler {
                 .findFirst()
                 .orElse(null);
         if (webUser == null) {
-            answer.addProperty("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!webUser.getPassword().equals(StringEncrypt.encryptSHA512(httpHeaders.get("-XPassword")))) {
-            answer.addProperty("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!RestAPIUtility.hasPermission(webUser, "web.api.list.groups.server")) {
-            answer.addProperty("response", Arrays.asList("Permission denied"));
+            answer.addValue("response", Arrays.asList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
-        answer.addProperty("success", true)
-                .addProperty("response",
+        answer.addValue("success", true)
+                .addValue("response",
                         ReformCloudController.getInstance()
                                 .getInternalCloudNetwork()
                                 .getServerGroups()
