@@ -5,7 +5,8 @@
 package systems.reformcloud.meta.server;
 
 import systems.reformcloud.meta.Template;
-import systems.reformcloud.meta.autostart.AutoStart;
+import systems.reformcloud.meta.auto.start.AutoStart;
+import systems.reformcloud.meta.auto.stop.AutoStop;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
@@ -33,11 +34,12 @@ public class ServerGroup implements Serializable {
     protected ServerModeType serverModeType;
 
     private AutoStart autoStart;
+    private AutoStop autoStop;
 
     protected SpigotVersions spigotVersions;
 
-    @java.beans.ConstructorProperties({"name", "motd", "join_permission", "clients", "templates", "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "save_logs", "one_startup_when_server_full", "serverModeType", "spigotVersions"})
-    public ServerGroup(String name, String motd, String join_permission, List<String> clients, List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers, int startPort, boolean maintenance, boolean save_logs, AutoStart autoStart, ServerModeType serverModeType, SpigotVersions spigotVersions) {
+    @java.beans.ConstructorProperties({"name", "motd", "join_permission", "clients", "templates", "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "save_logs", "autoStart", "autoStop", "serverModeType", "spigotVersions"})
+    public ServerGroup(String name, String motd, String join_permission, List<String> clients, List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers, int startPort, boolean maintenance, boolean save_logs, AutoStart autoStart, AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions) {
         this.name = name;
         this.motd = motd;
         this.join_permission = join_permission;
@@ -51,6 +53,7 @@ public class ServerGroup implements Serializable {
         this.maintenance = maintenance;
         this.save_logs = save_logs;
         this.autoStart = autoStart;
+        this.autoStop = autoStop;
         this.serverModeType = serverModeType;
         this.spigotVersions = spigotVersions;
     }
@@ -194,5 +197,13 @@ public class ServerGroup implements Serializable {
 
     public void setAutoStart(AutoStart autoStart) {
         this.autoStart = autoStart;
+    }
+
+    public AutoStop getAutoStop() {
+        return autoStop;
+    }
+
+    public void setAutoStop(AutoStop autoStop) {
+        this.autoStop = autoStop;
     }
 }

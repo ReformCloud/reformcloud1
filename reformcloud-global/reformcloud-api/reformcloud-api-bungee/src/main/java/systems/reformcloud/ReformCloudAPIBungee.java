@@ -23,7 +23,8 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
-import systems.reformcloud.meta.autostart.AutoStart;
+import systems.reformcloud.meta.auto.start.AutoStart;
+import systems.reformcloud.meta.auto.stop.AutoStop;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
@@ -146,6 +147,16 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.proxyStartupInfo.getName()
         );
+
+        if (this.proxyInfo.getProxyGroup().getAutoStop().isEnabled()) {
+            ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, this.proxyInfo.getProxyGroup().getAutoStop().getCheckEverySeconds());
+                if (BungeecordBootstrap.getInstance().getProxy().getOnlineCount() == 0) {
+                    if (this.getAllRegisteredProxies(proxyInfo.getCloudProcess().getGroup()).size() > proxyInfo.getProxyGroup().getMinOnline())
+                        BungeecordBootstrap.getInstance().getProxy().stop();
+                }
+            });
+        }
     }
 
     public static ReformCloudAPIBungee getInstance() {
@@ -240,6 +251,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 true,
                 false,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions
         );
@@ -275,6 +287,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 true,
                 false,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 SpigotVersions.SPIGOT_1_8_8
         );
@@ -297,6 +310,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 true,
                 false,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions
         );
@@ -313,6 +327,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,
@@ -344,6 +359,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,
@@ -367,6 +383,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,
@@ -390,6 +407,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,

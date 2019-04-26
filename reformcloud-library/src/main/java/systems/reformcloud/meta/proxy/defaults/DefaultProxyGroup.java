@@ -5,7 +5,8 @@
 package systems.reformcloud.meta.proxy.defaults;
 
 import systems.reformcloud.meta.Template;
-import systems.reformcloud.meta.autostart.AutoStart;
+import systems.reformcloud.meta.auto.start.AutoStart;
+import systems.reformcloud.meta.auto.stop.AutoStop;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -32,6 +33,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.SECONDS.toSeconds(5)),
                 true,
                 true,
                 false,
@@ -53,6 +55,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.SECONDS.toSeconds(5)),
                 true,
                 true,
                 false,
@@ -74,6 +77,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.SECONDS.toSeconds(5)),
                 true,
                 true,
                 false,

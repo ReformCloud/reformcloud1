@@ -5,7 +5,8 @@
 package systems.reformcloud.meta.proxy;
 
 import systems.reformcloud.meta.Template;
-import systems.reformcloud.meta.autostart.AutoStart;
+import systems.reformcloud.meta.auto.start.AutoStart;
+import systems.reformcloud.meta.auto.stop.AutoStop;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
@@ -27,6 +28,7 @@ public class ProxyGroup implements Serializable {
     protected Collection<UUID> whitelist;
 
     protected AutoStart autoStart;
+    protected AutoStop autoStop;
 
     protected ProxyModeType proxyModeType;
 
@@ -36,8 +38,8 @@ public class ProxyGroup implements Serializable {
 
     protected ProxyVersions proxyVersions;
 
-    @java.beans.ConstructorProperties({"name", "clients", "disabledServerGroups", "templates", "whitelist", "proxyModeType", "controllerCommandLogging", "maintenance", "save_logs", "startPort", "minOnline", "maxOnline", "maxPlayers", "memory", "proxyVersions"})
-    public ProxyGroup(String name, List<String> clients, List<String> disabledServerGroups, List<Template> templates, Collection<UUID> whitelist, ProxyModeType proxyModeType, AutoStart autoStart, boolean controllerCommandLogging, boolean maintenance, boolean save_logs, int startPort, int minOnline, int maxOnline, int maxPlayers, int memory, ProxyVersions proxyVersions) {
+    @java.beans.ConstructorProperties({"name", "clients", "disabledServerGroups", "templates", "whitelist", "proxyModeType", "autoStart", "autoStop", "controllerCommandLogging", "maintenance", "save_logs", "startPort", "minOnline", "maxOnline", "maxPlayers", "memory", "proxyVersions"})
+    public ProxyGroup(String name, List<String> clients, List<String> disabledServerGroups, List<Template> templates, Collection<UUID> whitelist, ProxyModeType proxyModeType, AutoStart autoStart, AutoStop autoStop, boolean controllerCommandLogging, boolean maintenance, boolean save_logs, int startPort, int minOnline, int maxOnline, int maxPlayers, int memory, ProxyVersions proxyVersions) {
         this.name = name;
         this.clients = clients;
         this.disabledServerGroups = disabledServerGroups;
@@ -46,6 +48,7 @@ public class ProxyGroup implements Serializable {
         this.proxyModeType = proxyModeType;
         this.controllerCommandLogging = controllerCommandLogging;
         this.autoStart = autoStart;
+        this.autoStop = autoStop;
         this.maintenance = maintenance;
         this.save_logs = save_logs;
         this.startPort = startPort;
@@ -207,6 +210,14 @@ public class ProxyGroup implements Serializable {
 
     public void setAutoStart(AutoStart autoStart) {
         this.autoStart = autoStart;
+    }
+
+    public AutoStop getAutoStop() {
+        return autoStop;
+    }
+
+    public void setAutoStop(AutoStop autoStop) {
+        this.autoStop = autoStop;
     }
 
     public boolean equals(final Object o) {

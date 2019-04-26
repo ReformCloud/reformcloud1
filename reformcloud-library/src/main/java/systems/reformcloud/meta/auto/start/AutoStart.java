@@ -2,7 +2,7 @@
   Copyright © 2019 Pasqual K. | All rights reserved
  */
 
-package systems.reformcloud.meta.autostart;
+package systems.reformcloud.meta.auto.start;
 
 import java.io.Serializable;
 

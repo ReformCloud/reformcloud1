@@ -19,7 +19,8 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
-import systems.reformcloud.meta.autostart.AutoStart;
+import systems.reformcloud.meta.auto.start.AutoStart;
+import systems.reformcloud.meta.auto.stop.AutoStop;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
@@ -469,6 +470,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 true,
                 false,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions
         );
@@ -504,6 +506,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 true,
                 false,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 SpigotVersions.SPIGOT_1_8_8
         );
@@ -526,6 +529,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 true,
                 false,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions
         );
@@ -542,6 +546,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,
@@ -573,6 +578,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,
@@ -596,6 +602,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,
@@ -619,6 +626,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
                 false,
