@@ -13,11 +13,6 @@ import java.io.Serializable;
  */
 
 public final class Guava extends Dependency implements Serializable {
-    /**
-     * Creates a new constructor of the dependency
-     *
-     * @param url The download url of the dependency or {@code null} if the cloud should use the default url
-     */
     public Guava() {
         super(null);
     }

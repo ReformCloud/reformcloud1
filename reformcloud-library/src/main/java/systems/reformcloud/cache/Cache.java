@@ -9,6 +9,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Map;
@@ -38,6 +39,7 @@ public final class Cache<K, V> implements Serializable {
                 .recordStats()
                 .build(new CacheLoader<K, V>() {
                     @Override
+                    @ParametersAreNonnullByDefault
                     public V load(K k) throws Exception {
                         return get(k);
                     }

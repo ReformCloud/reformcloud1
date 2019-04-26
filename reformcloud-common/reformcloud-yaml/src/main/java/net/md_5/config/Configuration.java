@@ -131,8 +131,8 @@ public final class Configuration {
     }
 
     public byte getByte(String path, byte def) {
-        Object val = get(path, def);
-        return (val instanceof Number) ? ((Number) val).byteValue() : def;
+        Number val = get(path, def);
+        return (val != null) ? val.byteValue() : def;
     }
 
     public List<Byte> getByteList(String path) {
