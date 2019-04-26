@@ -69,19 +69,19 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
             }
         } else if (strings.length == 2 && strings[0].equalsIgnoreCase("deleteall")) {
             int deleted = MobSelector.getInstance().deleteAllMobs(strings[1]);
-            commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + deleted + " Mobs deleted");
+            commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + " " + deleted + " Mobs deleted");
             return true;
         } else if (strings.length == 2 && strings[0].equalsIgnoreCase("delete")) {
             if (MobSelector.getInstance().deleteMob(strings[1]))
-                commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + "Mob has been deleted");
+                commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + " Mob has been deleted");
             else
-                commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + "Mob doesn't exists");
+                commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + " Mob doesn't exists");
 
             return true;
         } else if (strings.length == 1 && strings[0].equalsIgnoreCase("list")) {
             Collection<SelectorMob> mobs = MobSelector.getInstance().getMobs();
             mobs.forEach(e -> commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix()
-                    + "=> " + e.getName() + " " + e.getSelectorMobPosition()));
+                    + " => " + e.getName() + " " + e.getSelectorMobPosition()));
 
             return true;
         } else if (strings.length == 1 && strings[0].equalsIgnoreCase("available")) {
@@ -89,21 +89,21 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
             for (EntityType value : entityTypes) {
                 if (value.isSpawnable())
                     commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() +
-                            "=> " + value.name());
+                            " => " + value.name());
             }
 
             return true;
         } else {
             commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix()
-                    + "§7/mobs create <type> <name> <group> <displayName>");
+                    + " §7/mobs create <type> <name> <group> <displayName>");
             commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix()
-                    + "§7/mobs deleteall <group>");
+                    + " §7/mobs deleteall <group>");
             commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix()
-                    + "§7/mobs delete <name>");
+                    + " §7/mobs delete <name>");
             commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix()
-                    + "§7/mobs list");
+                    + " §7/mobs list");
             commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix()
-                    + "§7/mobs available");
+                    + " §7/mobs available");
         }
 
         return false;
