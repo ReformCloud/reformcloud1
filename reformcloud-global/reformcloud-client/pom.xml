@@ -38,7 +38,7 @@
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>${dependency.jline.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
