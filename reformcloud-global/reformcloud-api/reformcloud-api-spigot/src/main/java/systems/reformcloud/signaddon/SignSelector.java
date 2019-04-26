@@ -462,8 +462,7 @@ public final class SignSelector {
         @EventHandler(priority = EventPriority.LOW)
         public void handle(final PlayerInteractEvent event) {
             if ((event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-                    && (event.getClickedBlock().getType().equals(Material.SIGN)
-                    || event.getClickedBlock().getType().equals(Material.WALL_SIGN))) {
+                    && event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof org.bukkit.block.Sign) {
                 final Sign sign = getSign(event.getClickedBlock().getLocation());
                 if (sign != null && sign.getServerInfo() != null && !sign.getServerInfo().getServerGroup().isMaintenance()) {
                     ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();

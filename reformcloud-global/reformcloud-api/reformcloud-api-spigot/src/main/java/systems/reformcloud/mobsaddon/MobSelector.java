@@ -233,7 +233,7 @@ public final class MobSelector implements Serializable {
         if (input == null || serverInfo == null)
             return input;
 
-        input.replace("%server_name%", serverInfo.getCloudProcess().getName())
+        input = input.replace("%server_name%", serverInfo.getCloudProcess().getName())
                 .replace("%server_uid%", serverInfo.getCloudProcess().getProcessUID().toString())
                 .replace("%server_group_name%", serverInfo.getCloudProcess().getGroup())
                 .replace("%server_motd%", serverInfo.getMotd())
@@ -253,7 +253,7 @@ public final class MobSelector implements Serializable {
         if (input == null || group == null)
             return input;
 
-        input
+        input = input
                 .replace("%group_name%", group)
                 .replace("%group_online%", Integer.toString(ReformCloudAPISpigot.getInstance().getAllRegisteredServers(group).size()));
 
@@ -264,7 +264,7 @@ public final class MobSelector implements Serializable {
         if (input == null || group == null)
             return input;
 
-        input.replace("%group_name%", group);
+        input = input.replace("%group_name%", group);
 
         return ChatColor.translateAlternateColorCodes('&', input);
     }
