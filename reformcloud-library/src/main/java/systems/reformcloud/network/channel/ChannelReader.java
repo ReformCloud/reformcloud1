@@ -18,6 +18,7 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -66,7 +67,8 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
 
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Trying to handle authentication of " +
                     "channel [IP=" + address + "]");
-            new AuthenticationHandler().handleAuth(packet.getConfiguration().getValue("AuthenticationType", TypeTokenAdaptor.getAUTHENTICATION_TYPE()),
+            new AuthenticationHandler().handleAuth(Objects.requireNonNull(
+                    packet.getConfiguration().getValue("AuthenticationType", TypeTokenAdaptor.getAUTHENTICATION_TYPE())),
                     packet, channelHandlerContext, channelHandler);
         }
 
@@ -101,7 +103,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         if (!this.channelHandler.isChannelRegistered(ctx)
                 && ctx.channel().isActive()
                 && ctx.channel().isOpen()
@@ -148,7 +150,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
     }
 }
