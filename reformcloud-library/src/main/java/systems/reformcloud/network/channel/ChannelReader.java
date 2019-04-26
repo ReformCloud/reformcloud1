@@ -146,4 +146,9 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
             );
         }
     }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
+    }
 }
