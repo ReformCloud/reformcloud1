@@ -32,6 +32,7 @@ import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.network.packets.PacketOutDeleteSign;
 import systems.reformcloud.network.query.out.PacketOutQueryGetSigns;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.signs.SignLayout;
@@ -39,8 +40,10 @@ import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.signs.SignPosition;
 import systems.reformcloud.signs.map.TemplateMap;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+import systems.reformcloud.utility.map.MapUtility;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
@@ -207,6 +210,20 @@ public final class SignSelector {
             if (sign.getServerInfo() != null && sign.getServerInfo().getCloudProcess().getName().equals(serverInfo.getCloudProcess().getName()))
                 return true;
         return false;
+    }
+
+    public int deleteAllSigns(String group) {
+        Collection<Sign> signs = MapUtility.filterAll(this.signMap.values(), e -> e.getSignPosition().getTargetGroup().equals(group));
+        if (signs.isEmpty())
+            return 0;
+
+        int deleted = 0;
+        for (Sign sign : signs) {
+            ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutDeleteSign(sign));
+            deleted++;
+        }
+
+        return deleted;
     }
 
     private SignLayout.TemplateLayout isTemplateLayoutAvailable(ServerInfo serverInfo) {

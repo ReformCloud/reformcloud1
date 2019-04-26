@@ -358,6 +358,7 @@ public final class CloudServerStartupHandler implements Serializable {
                         "-XX:-UseAdaptiveSizePolicy",
                         "-XX:CompileThreshold=100",
                         "-Dcom.mojang.eula.agree=true",
+                        "-DIReallyKnowWhatIAmDoingISwear=true",
                         "-Djline.terminal=jline.UnsupportedTerminal",
                         "-Xmx" + this.serverStartupInfo.getServerGroup().getMemory() + "M",
                 };

@@ -241,7 +241,7 @@ public final class CloudConfiguration implements Serializable {
         String messagePath = "reformcloud/messages.json";
         if (!Files.exists(Paths.get(messagePath))) {
             new Configuration()
-                    .addStringValue("internal-global-prefix", "§2R§feform§2C§floud §7┃ ")
+                    .addStringValue("internal-global-prefix", "§2R§feform§2C§floud §7┃")
 
                     .addStringValue("internal-api-bungee-command-no-permission", "§cYou do not have permission to execute this command")
 
@@ -267,7 +267,7 @@ public final class CloudConfiguration implements Serializable {
                     .addStringValue("internal-api-spigot-connect-only-proxy", "%prefix% §cOnly Proxy join allowed")
 
                     .addStringValue("internal-api-spigot-command-signs-not-enabled", "%prefix% §7Signs aren't enabled")
-                    .addStringValue("internal-api-spigot-command-signs-create-usage", "%prefix% §7/reformsigns <create/createitem> <group-name>")
+                    .addStringValue("internal-api-spigot-command-signs-create-usage", "%prefix% §7/reformsigns <create/createitem/deleteall> <group-name>")
                     .addStringValue("internal-api-spigot-command-signs-create-success", "%prefix% §7Sign was created successfully")
                     .addStringValue("internal-api-spigot-command-signs-create-already-exists", "%prefix% §7Sign already exits")
                     .addStringValue("internal-api-spigot-command-signs-block-not-sign", "%prefix% §7Target block isn't a sign")

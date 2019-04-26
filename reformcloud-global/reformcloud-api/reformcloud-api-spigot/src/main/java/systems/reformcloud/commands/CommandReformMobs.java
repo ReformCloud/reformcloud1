@@ -36,6 +36,11 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
                 return false;
             }
 
+            if (ReformCloudAPISpigot.getInstance().getServerGroup(strings[3]) == null) {
+                commandSender.sendMessage("The serverGroup doesn't exists");
+                return false;
+            }
+
             try {
                 EntityType entityType = MapUtility.filter(EntityType.values(), e -> e.getEntityClass() != null
                         && e.getEntityClass().getSimpleName().equalsIgnoreCase(strings[1]));

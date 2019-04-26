@@ -114,6 +114,10 @@ public final class CommandReformSigns implements Serializable, Listener, Command
             commandSender.sendMessage(ReformCloudAPISpigot.getInstance()
                     .getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-item-success"));
             return true;
+        } else if (strings.length == 2 && strings[0].equalsIgnoreCase("deleteall")) {
+            int deleted = SignSelector.getInstance().deleteAllSigns(strings[1]);
+            commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getPrefix() + " §7" + deleted + " signs deleted");
+            return true;
         }
 
         commandSender.sendMessage(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-command-signs-usage-1"));
