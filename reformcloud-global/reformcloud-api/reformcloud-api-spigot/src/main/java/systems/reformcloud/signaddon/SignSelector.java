@@ -288,9 +288,7 @@ public final class SignSelector {
                 .findFirst()
                 .orElse(null);
         if (templateTemplateMap != null) {
-            SignLayout.TemplateLayout templateLayout = templateTemplateMap.getLayout();
-            if (templateLayout != null)
-                return templateLayout;
+            return templateTemplateMap.getLayout();
         }
 
         return null;
@@ -420,8 +418,7 @@ public final class SignSelector {
                     if (!e.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
                             && !SignSelector.this.isOnSign(e)) {
                         final Sign sign = findFreeSign(e.getServerGroup().getName());
-                        if (sign != null && !sign.getSignPosition().getTargetGroup()
-                                .equals(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getName()))
+                        if (sign != null)
                             SignSelector.this.updateSign(sign, e);
                     }
                 });
