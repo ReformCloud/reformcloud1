@@ -46,17 +46,17 @@ public class SignConfiguration {
         if (!Files.exists(Paths.get("reformcloud/addons/signs/" + path))) {
             new Configuration().addValue("config", new SignLayoutConfiguration(
                     new SignLayout.GroupLayout(
-                            new SignLayout(new String[]{"§8§m---------§r", "&c§lmaintenance", " ", "§8§m---------"}, "SAND", 0),
-                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
-                            new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
-                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0)
+                            new SignLayout(new String[]{"§8§m---------§r", "&c§lmaintenance", " ", "§8§m---------"}, "REDSTONE_BLOCK", 0),
+                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "GOLD_BLOCK", 0),
+                            new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "DIAMOND_BLOCK", 0),
+                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "EMERALD_BLOCK", 0)
 
-                    ), ReformCloudLibraryService.concurrentHashMap(), Collections.singletonList(new TemplateMap<>("Lobby", "default", new SignLayout.TemplateLayout(
-                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
-                    new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "SAND", 0),
-                    new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "SAND", 0)
-            ))), new SignLayout.LoadingLayout(
-                    4, 0,
+                    ), ReformCloudLibraryService.concurrentHashMap(),
+                    Collections.singletonList(new TemplateMap<>("Lobby", "default", new SignLayout.TemplateLayout(
+                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "GOLD_BLOCK", 0),
+                            new SignLayout(new String[]{"%server%", "&6&lFULL", "%online_players%/%max_players%", "%motd%"}, "DIAMOND_BLOCK", 0),
+                            new SignLayout(new String[]{"%server%", "&6&l%client%", "%online_players%/%max_players%", "%motd%"}, "EMERALD_BLOCK", 0)
+                    ))), new SignLayout.LoadingLayout(4, 0,
                     new SignLayout[]{
                             new SignLayout(new String[]{"§0§m-------------", "  Server", " l", "§0§m-------------"}),
                             new SignLayout(new String[]{"§0§m-------------", "  Server", " lo", "§0§m-------------"}),

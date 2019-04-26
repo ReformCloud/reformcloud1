@@ -174,7 +174,7 @@ public final class SignSelector {
                 block.setType(material);
                 BlockState blockState = block.getState();
                 blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
-                blockState.update();
+                blockState.update(true);
             }
         }
 

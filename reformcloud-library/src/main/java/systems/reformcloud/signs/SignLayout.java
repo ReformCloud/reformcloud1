@@ -33,7 +33,7 @@ public final class SignLayout implements Serializable {
      */
     public SignLayout(String[] lines) {
         this.lines = lines;
-        this.materialName = "SAND";
+        this.materialName = "IRON_BLOCK";
         this.materialData = 0;
     }
 
