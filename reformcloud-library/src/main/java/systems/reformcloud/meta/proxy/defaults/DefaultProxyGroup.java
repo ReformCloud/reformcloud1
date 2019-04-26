@@ -5,6 +5,7 @@
 package systems.reformcloud.meta.proxy.defaults;
 
 import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.autostart.AutoStart;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -13,6 +14,7 @@ import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
@@ -29,6 +31,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 true,
                 true,
                 false,
@@ -49,6 +52,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 true,
                 true,
                 false,
@@ -69,6 +73,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 proxyModeType,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 true,
                 true,
                 false,
