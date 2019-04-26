@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
@@ -46,6 +47,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.12.2018
@@ -160,24 +163,45 @@ public final class SignSelector {
     private void set(final org.bukkit.block.Sign sign, SignLayout layout, final ServerInfo serverInfo, final ServerGroup serverGroup) {
         if (sign == null)
             return;
-        org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
-        if (signData == null)
-            return;
 
-        if (layout == null && serverInfo == null && serverGroup == null) {
-            String[] lines = new String[]{" ", " ", " ", " "};
-            SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> e.sendSignChange(sign.getLocation(), lines));
-            return;
-        }
+        try {
+            org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
+            if (signData != null) {
+                if (layout == null && serverInfo == null && serverGroup == null) {
+                    String[] lines = new String[]{" ", " ", " ", " "};
+                    SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> e.sendSignChange(sign.getLocation(), lines));
+                    return;
+                }
 
-        if (signData.isWallSign()) {
-            Block block = sign.getLocation().getBlock().getRelative(signData.getAttachedFace());
-            Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
-            if (material != null) {
-                block.setType(material);
-                BlockState blockState = block.getState();
-                blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
-                blockState.update(true);
+                if (signData.isWallSign()) {
+                    Block block = sign.getLocation().getBlock().getRelative(signData.getAttachedFace());
+                    Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
+                    if (material != null) {
+                        block.setType(material);
+                        BlockState blockState = block.getState();
+                        blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
+                        blockState.update(true);
+                    }
+                }
+            }
+        } catch (final Throwable ignored) {
+            try {
+                sign.setEditable(true);
+                BlockFace blockFace = getFace(sign.getLocation().getBlock().getBlockData().getAsString());
+                if (blockFace != null) {
+                    BlockFace opposite = getOpposite(blockFace);
+                    if (!opposite.equals(BlockFace.SELF)) {
+                        Block behind = sign.getLocation().getBlock().getRelative(opposite);
+                        Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
+                        if (material != null) {
+                            behind.setType(material);
+                            BlockState blockState = behind.getState();
+                            blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
+                            blockState.update(true);
+                        }
+                    }
+                }
+            } catch (final Throwable ignored1) {
             }
         }
 
@@ -202,6 +226,32 @@ public final class SignSelector {
                         .replace("%client%", serverInfo.getCloudProcess().getClient()));
             }
             this.updateSignForAllPlayers(sign, lines);
+        }
+    }
+
+    private BlockFace getFace(String in) {
+        if (in == null)
+            return null;
+
+        Matcher matcher = Pattern.compile("(.*)\\[facing=(.*),waterlogged=(.*)]").matcher(in);
+        return matcher.matches() ? Enums.getIfPresent(BlockFace.class, matcher.group(2).toUpperCase()).orNull() : null;
+    }
+
+    private BlockFace getOpposite(BlockFace blockFace) {
+        if (blockFace == null)
+            return BlockFace.SELF;
+
+        switch (blockFace) {
+            case EAST:
+                return BlockFace.WEST;
+            case NORTH:
+                return BlockFace.SOUTH;
+            case WEST:
+                return BlockFace.EAST;
+            case SOUTH:
+                return BlockFace.NORTH;
+            default:
+                return BlockFace.SELF;
         }
     }
 

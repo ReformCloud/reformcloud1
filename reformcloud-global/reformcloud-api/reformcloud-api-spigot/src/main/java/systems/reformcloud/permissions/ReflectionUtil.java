@@ -6,6 +6,9 @@ package systems.reformcloud.permissions;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -49,6 +52,10 @@ public final class ReflectionUtil implements Serializable {
             object.getClass().getMethod("setInt", String.class, int.class).invoke(object, "Silent", 1);
             entityClazz.getMethod("f", nbt).invoke(nmsEntity, object);
         } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException | InstantiationException ex) {
+            if (entity instanceof LivingEntity)
+                ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
+
+            System.out.println("[ReformCloud] Could not enable no ai for entity " + entity.getUniqueId() + ", trying to set slowness");
             ex.printStackTrace();
         }
     }
