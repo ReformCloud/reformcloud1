@@ -18,6 +18,7 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.autostart.AutoStart;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
@@ -241,7 +242,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 41000,
                 true,
                 false,
-                false,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 serverModeType,
                 spigotVersions
         );
@@ -276,7 +277,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 41000,
                 true,
                 false,
-                false,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 serverModeType,
                 SpigotVersions.SPIGOT_1_8_8
         );
@@ -298,7 +299,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 41000,
                 true,
                 false,
-                false,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 serverModeType,
                 spigotVersions
         );
@@ -314,6 +315,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 new ArrayList<>(),
                 new ArrayList<>(),
                 proxyModeType,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 false,
                 true,
                 false,
@@ -344,6 +346,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 false,
                 true,
                 false,
@@ -366,6 +369,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 new ArrayList<>(templates),
                 new ArrayList<>(),
                 proxyModeType,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 false,
                 true,
                 false,
@@ -388,6 +392,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 new ArrayList<>(templates),
                 new ArrayList<>(),
                 proxyModeType,
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 false,
                 true,
                 false,

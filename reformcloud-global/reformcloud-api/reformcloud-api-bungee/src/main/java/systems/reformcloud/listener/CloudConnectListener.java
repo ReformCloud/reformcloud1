@@ -12,6 +12,7 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -28,12 +29,15 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
  */
 
 public final class CloudConnectListener implements Listener {
+    private boolean started = false;
+
     @EventHandler(priority = -127)
     public void handle(final ServerConnectEvent event) {
         if (event.getPlayer().getServer() == null) {
@@ -135,6 +139,15 @@ public final class CloudConnectListener implements Listener {
             proxyInfo.setFull(true);
         else
             proxyInfo.setFull(false);
+
+        if (!started && proxyInfo.getProxyGroup().getAutoStart().isEnabled() && proxyInfo.getProxyGroup().getMaxPlayers() <= proxyInfo.getOnline()) {
+            started = true;
+            ReformCloudAPIBungee.getInstance().startProxy(proxyInfo.getProxyGroup());
+            ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS.toMillis(proxyInfo.getProxyGroup().getAutoStart().getAllowAutoStartEverySeconds()));
+                started = false;
+            });
+        }
 
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
                 new PacketOutLoginPlayer(event.getConnection().getUniqueId()));

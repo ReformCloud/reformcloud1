@@ -15,6 +15,7 @@ import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.text.TextComponent;
 import systems.reformcloud.ReformCloudAPIVelocity;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -31,12 +32,15 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
  */
 
 public final class CloudConnectListener {
+    private boolean started = false;
+
     @Subscribe(order = PostOrder.FIRST)
     public void handle(final ServerPreConnectEvent event) {
         if (event.getPlayer().getCurrentServer().orElse(null) == null) {
@@ -134,6 +138,15 @@ public final class CloudConnectListener {
             proxyInfo.setFull(true);
         else
             proxyInfo.setFull(false);
+
+        if (!started && proxyInfo.getProxyGroup().getAutoStart().isEnabled() && proxyInfo.getProxyGroup().getAutoStart().getPlayerMax() <= proxyInfo.getOnline()) {
+            started = true;
+            ReformCloudAPIVelocity.getInstance().startProxy(proxyInfo.getProxyGroup());
+            ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, proxyInfo.getProxyGroup().getAutoStart().getAllowAutoStartEverySeconds());
+                started = false;
+            });
+        }
 
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLoginPlayer(event.getPlayer().getUniqueId()));
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
