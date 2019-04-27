@@ -87,11 +87,6 @@ public final class ReformCloudLibraryService {
     public static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
 
     /**
-     * The cache clearer of the cloud system
-     */
-    public static final CacheClearer CACHE_CLEARER = new CacheClearer();
-
-    /**
      * The current thread local random instance
      */
     public static final ThreadLocalRandom THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
@@ -109,6 +104,11 @@ public final class ReformCloudLibraryService {
                         else
                             e.printStackTrace(System.err);
                     })).build());
+
+    /**
+     * The cache clearer of the cloud system
+     */
+    public static final CacheClearer CACHE_CLEARER = new CacheClearer();
 
     /**
      * Creates a new ConcurrentHashMap

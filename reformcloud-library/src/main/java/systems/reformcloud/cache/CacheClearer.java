@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class CacheClearer implements Serializable {
-    public List<Cache> caches = new ArrayList<>();
+    private List<Cache> caches = new ArrayList<>();
 
     public CacheClearer() {
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
