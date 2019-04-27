@@ -207,7 +207,7 @@ public final class MobSelector implements Serializable {
         for (SelectorMobInventoryItem item : mobInventory.getItems()) {
             ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, item.getMaterialName()).isPresent()
                     ? Material.getMaterial(item.getMaterialName())
-                    : Material.GLASS_PANE, 1, item.getSubId());
+                    : Material.CACTUS, 1, item.getSubId());
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta != null) {
                 itemMeta.setDisplayName(item.getName());
@@ -221,7 +221,7 @@ public final class MobSelector implements Serializable {
         SelectorsMobServerItem serverItem = this.selectorMobConfig.getSelectorsMobServerItem();
         ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, serverItem.getItemName()).isPresent()
                 ? Material.getMaterial(serverItem.getItemName())
-                : Material.GLASS_PANE, 1, serverItem.getSubId());
+                : Material.CACTUS, 1, serverItem.getSubId());
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(format(serverItem.getName(), serverInfo));
         itemMeta.setLore(format(serverItem.getLore(), serverInfo));
@@ -505,9 +505,11 @@ public final class MobSelector implements Serializable {
         }
 
         private void despawn() {
-            spawnedMobs.remove(this.entity.getUniqueId());
-            this.entity.remove();
-            this.entity = null;
+            SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
+                spawnedMobs.remove(this.entity.getUniqueId());
+                this.entity.remove();
+                this.entity = null;
+            });
         }
 
         private void spawn() {
@@ -520,9 +522,12 @@ public final class MobSelector implements Serializable {
                 this.entity.setCustomNameVisible(true);
                 this.entity.setFireTicks(0);
                 this.entity.setOp(false);
-                this.entity.setGravity(false);
-                if (this.entity instanceof LivingEntity)
-                    ((LivingEntity) this.entity).setCollidable(false);
+                try {
+                    entity.setGravity(false);
+                    if (this.entity instanceof LivingEntity)
+                        ((LivingEntity) this.entity).setCollidable(false);
+                } catch (final Throwable ignored) {
+                }
 
                 if (this.entity instanceof Villager)
                     ((Villager) this.entity).setProfession(Villager.Profession.FARMER);

@@ -26,6 +26,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import systems.reformcloud.api.IAsyncAPI;
 import systems.reformcloud.cache.Cache;
+import systems.reformcloud.cache.CacheClearer;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.channel.ChannelHandler;
@@ -84,6 +85,11 @@ public final class ReformCloudLibraryService {
      * Netty booleans
      */
     public static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
+
+    /**
+     * The cache clearer of the cloud system
+     */
+    public static final CacheClearer CACHE_CLEARER = new CacheClearer();
 
     /**
      * The current thread local random instance

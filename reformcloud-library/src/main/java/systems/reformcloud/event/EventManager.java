@@ -12,6 +12,7 @@ import systems.reformcloud.logging.AbstractLoggerProvider;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -40,6 +41,9 @@ public final class EventManager implements Serializable {
         Map<Class<?>, Set<Method>> response = new HashMap<>();
         for (Method method : listener.getClass().getDeclaredMethods()) {
             Handler handler = method.getAnnotation(Handler.class);
+            if (!Modifier.isPublic(method.getModifiers()) || !method.getReturnType().equals(Void.TYPE))
+                continue;
+
             if (handler != null) {
                 Class<?>[] parameters = method.getParameterTypes();
                 if (parameters.length != 1) {
