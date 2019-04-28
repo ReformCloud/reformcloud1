@@ -157,8 +157,15 @@ public final class CommandReformCloud implements Command {
         if (strings.length == 2 && strings[0].equalsIgnoreCase("execute"))
             return Arrays.asList("server", "proxy");
 
-        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute"))
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute")) {
+            if (strings[1].equalsIgnoreCase("server"))
+                return registeredSevers();
+
+            if (strings[1].equalsIgnoreCase("proxy"))
+                return registeredProxies();
+
             return registered();
+        }
 
         if (strings.length == 4 && strings[0].equalsIgnoreCase("execute"))
             return Arrays.asList("ban", "help", "reformclod");
@@ -182,6 +189,18 @@ public final class CommandReformCloud implements Command {
     private List<String> proxies() {
         List<String> out = new LinkedList<>();
         ReformCloudAPIVelocity.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
+        return out;
+    }
+
+    private List<String> registeredSevers() {
+        List<String> out = new LinkedList<>();
+        ReformCloudAPIVelocity.getInstance().getAllRegisteredServers().forEach(e -> out.add(e.getCloudProcess().getName()));
+        return out;
+    }
+
+    private List<String> registeredProxies() {
+        List<String> out = new LinkedList<>();
+        ReformCloudAPIVelocity.getInstance().getAllRegisteredProxies().forEach(e -> out.add(e.getCloudProcess().getName()));
         return out;
     }
 

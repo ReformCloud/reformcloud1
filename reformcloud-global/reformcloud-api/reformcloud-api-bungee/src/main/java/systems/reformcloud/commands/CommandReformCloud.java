@@ -176,11 +176,18 @@ public final class CommandReformCloud extends Command implements Serializable, T
         if (strings.length == 2 && strings[0].equalsIgnoreCase("execute"))
             return Arrays.asList("server", "proxy");
 
-        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute"))
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute")) {
+            if (strings[1].equalsIgnoreCase("server"))
+                return registeredSevers();
+
+            if (strings[1].equalsIgnoreCase("proxy"))
+                return registeredProxies();
+
             return registered();
+        }
 
         if (strings.length == 4 && strings[0].equalsIgnoreCase("execute"))
-            return Arrays.asList("ban", "help", "reformclod");
+            return Arrays.asList("ban", "help", "reformcloud");
 
         if (strings.length == 2 && strings[0].equalsIgnoreCase("process"))
             return Arrays.asList("start", "stop");
@@ -195,6 +202,18 @@ public final class CommandReformCloud extends Command implements Serializable, T
         Collection<String> out = new LinkedList<>();
         ReformCloudAPIBungee.getInstance().getAllRegisteredProxies().forEach(e -> out.add(e.getCloudProcess().getName()));
         ReformCloudAPIBungee.getInstance().getAllRegisteredServers().forEach(e -> out.add(e.getCloudProcess().getName()));
+        return out;
+    }
+
+    private Collection<String> registeredSevers() {
+        Collection<String> out = new LinkedList<>();
+        ReformCloudAPIBungee.getInstance().getAllRegisteredServers().forEach(e -> out.add(e.getCloudProcess().getName()));
+        return out;
+    }
+
+    private Collection<String> registeredProxies() {
+        Collection<String> out = new LinkedList<>();
+        ReformCloudAPIBungee.getInstance().getAllRegisteredProxies().forEach(e -> out.add(e.getCloudProcess().getName()));
         return out;
     }
 
