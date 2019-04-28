@@ -4,6 +4,7 @@
 
 package systems.reformcloud.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -120,7 +121,8 @@ public final class PlayerConnectListener implements Listener, Serializable {
         }
 
         ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
-        if (!started && serverInfo.getServerGroup().getAutoStart().isEnabled() && serverInfo.getServerGroup().getMaxPlayers() <= serverInfo.getOnline()) {
+        if (!started && serverInfo.getServerGroup().getAutoStart().isEnabled()
+                && Bukkit.getServer().getOnlinePlayers().size() >= serverInfo.getServerGroup().getAutoStart().getPlayerMax()) {
             started = true;
             ReformCloudAPISpigot.getInstance().startQueuedProcess(serverInfo.getServerGroup());
             SpigotBootstrap.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(SpigotBootstrap.getInstance(), () -> {

@@ -140,7 +140,8 @@ public final class CloudConnectListener implements Listener {
         else
             proxyInfo.setFull(false);
 
-        if (!started && proxyInfo.getProxyGroup().getAutoStart().isEnabled() && proxyInfo.getProxyGroup().getMaxPlayers() <= proxyInfo.getOnline()) {
+        if (!started && proxyInfo.getProxyGroup().getAutoStart().isEnabled()
+                && BungeecordBootstrap.getInstance().getProxy().getOnlineCount() >= proxyInfo.getProxyGroup().getAutoStart().getPlayerMax()) {
             started = true;
             ReformCloudAPIBungee.getInstance().startProxy(proxyInfo.getProxyGroup());
             ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
