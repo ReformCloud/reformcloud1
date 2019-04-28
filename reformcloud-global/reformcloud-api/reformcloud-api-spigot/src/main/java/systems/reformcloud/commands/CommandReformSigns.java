@@ -130,7 +130,7 @@ public final class CommandReformSigns implements Serializable, Listener, Command
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (strings.length == 1
+        if (strings.length == 2
                 && (strings[0].equalsIgnoreCase("create")
                 || strings[0].equalsIgnoreCase("createitem")
                 || strings[0].equalsIgnoreCase("deleteall")))

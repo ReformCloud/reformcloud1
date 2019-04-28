@@ -111,22 +111,22 @@ public final class CommandReformMobs implements Serializable, CommandExecutor, T
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("create"))
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("create"))
             return new LinkedList<>(available());
 
-        if (strings.length == 2 && strings[0].equalsIgnoreCase("create"))
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("create"))
             return Arrays.asList("_Klaro", "MrDoubleTime", "ReformCloud", commandSender.getName());
 
-        if (strings.length == 3 && strings[0].equalsIgnoreCase("create"))
+        if (strings.length == 4 && strings[0].equalsIgnoreCase("create"))
             return new LinkedList<>(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerGroups().keySet());
 
-        if (strings.length == 4 && strings[0].equalsIgnoreCase("create"))
+        if (strings.length == 5 && strings[0].equalsIgnoreCase("create"))
             return Arrays.asList("&6&lI'm cool", "&5&lMrDoubleTime is cool", "&7&lLobby");
 
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("delete"))
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("delete"))
             return new LinkedList<>(names());
 
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("deleteall"))
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("deleteall"))
             return new LinkedList<>(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerGroups().keySet());
 
 

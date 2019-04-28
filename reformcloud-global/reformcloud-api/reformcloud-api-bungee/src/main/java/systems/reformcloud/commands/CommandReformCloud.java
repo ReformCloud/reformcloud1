@@ -158,34 +158,34 @@ public final class CommandReformCloud extends Command implements Serializable, T
 
     @Override
     public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings) {
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("copy"))
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("copy"))
             return registered();
 
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("whitelist"))
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("whitelist"))
             return Arrays.asList("add", "remove");
 
-        if (strings.length == 2 && strings[0].equalsIgnoreCase("whitelist")) {
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("whitelist")) {
             Collection<String> out = proxies();
             out.add("--all");
             return out;
         }
 
-        if (strings.length == 3 && strings[0].equalsIgnoreCase("whitelist"))
+        if (strings.length == 4 && strings[0].equalsIgnoreCase("whitelist"))
             return players();
 
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("execute"))
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("execute"))
             return Arrays.asList("server", "proxy");
 
-        if (strings.length == 2 && strings[0].equalsIgnoreCase("execute"))
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute"))
             return registered();
 
-        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute"))
+        if (strings.length == 4 && strings[0].equalsIgnoreCase("execute"))
             return Arrays.asList("ban", "help", "reformclod");
 
-        if (strings.length == 1 && strings[0].equalsIgnoreCase("process"))
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("process"))
             return Arrays.asList("start", "stop");
 
-        if (strings.length == 2 && strings[0].equalsIgnoreCase("process"))
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("process"))
             return registered();
 
         return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
