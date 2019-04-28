@@ -10,7 +10,6 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.FileUtils;
 
@@ -18,6 +17,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 24.10.2018
@@ -163,9 +163,9 @@ public final class CloudConfiguration implements Serializable {
         this.controllerKey = FileUtils.readFileAsString(new File("reformcloud/files/ControllerKEY"));
     }
 
-    private String readString(final LoggerProvider loggerProvider, Checkable<String> checkable) {
+    private String readString(final LoggerProvider loggerProvider, Predicate<String> checkable) {
         String readLine = loggerProvider.readLine();
-        while (readLine == null || !checkable.isChecked(readLine) || readLine.trim().isEmpty()) {
+        while (readLine == null || !checkable.test(readLine) || readLine.trim().isEmpty()) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
         }
@@ -173,9 +173,9 @@ public final class CloudConfiguration implements Serializable {
         return readLine;
     }
 
-    private Integer readInt(final LoggerProvider loggerProvider, Checkable<Integer> checkable) {
+    private Integer readInt(final LoggerProvider loggerProvider, Predicate<Integer> checkable) {
         String readLine = loggerProvider.readLine();
-        while (readLine == null || readLine.trim().isEmpty() || !ReformCloudLibraryService.checkIsInteger(readLine) || !checkable.isChecked(Integer.parseInt(readLine))) {
+        while (readLine == null || readLine.trim().isEmpty() || !ReformCloudLibraryService.checkIsInteger(readLine) || !checkable.test(Integer.parseInt(readLine))) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
         }

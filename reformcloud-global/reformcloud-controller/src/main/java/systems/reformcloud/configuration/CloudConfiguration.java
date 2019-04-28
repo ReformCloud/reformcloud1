@@ -25,7 +25,6 @@ import systems.reformcloud.network.out.PacketOutStopProcess;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
@@ -34,6 +33,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
@@ -491,10 +491,10 @@ public final class CloudConfiguration implements Serializable {
         Configuration.parse(Paths.get("reformcloud/groups/proxies/" + group + ".json")).addValue("group", proxyGroup).write(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
     }
 
-    public String readString(final LoggerProvider loggerProvider, Checkable<String> checkable) {
+    public String readString(final LoggerProvider loggerProvider, Predicate<String> checkable) {
         String readLine = loggerProvider.readLine();
         while (readLine == null
-                || !checkable.isChecked(readLine)
+                || !checkable.test(readLine)
                 || readLine.trim().isEmpty()) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
@@ -503,12 +503,12 @@ public final class CloudConfiguration implements Serializable {
         return readLine;
     }
 
-    private Integer readInt(final LoggerProvider loggerProvider, Checkable<Integer> checkable) {
+    private Integer readInt(final LoggerProvider loggerProvider, Predicate<Integer> checkable) {
         String readLine = loggerProvider.readLine();
         while (readLine == null
                 || readLine.trim().isEmpty()
                 || !ReformCloudLibraryService.checkIsInteger(readLine)
-                || !checkable.isChecked(Integer.parseInt(readLine))) {
+                || !checkable.test(Integer.parseInt(readLine))) {
             loggerProvider.info("Input invalid, please try again");
             readLine = loggerProvider.readLine();
         }

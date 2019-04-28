@@ -4,7 +4,6 @@
 
 package systems.reformcloud.utility.map;
 
-import systems.reformcloud.utility.checkable.Checkable;
 import systems.reformcloud.utility.converter.Converter;
 import systems.reformcloud.utility.map.maps.Double;
 import systems.reformcloud.utility.map.maps.Trio;
@@ -13,6 +12,7 @@ import systems.reformcloud.utility.map.pool.Callback;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 31.03.2019
@@ -204,35 +204,35 @@ public final class MapUtility implements Serializable {
                 callback.onCall(t);
     }
 
-    public static <T> T filter(Collection<T> collection, Checkable<T> checkable) {
+    public static <T> T filter(Collection<T> collection, Predicate<T> checkable) {
         for (T t : collection)
-            if (checkable.isChecked(t))
+            if (checkable.test(t))
                 return t;
 
         return null;
     }
 
-    public static <T> T filter(T[] ts, Checkable<T> checkable) {
+    public static <T> T filter(T[] ts, Predicate<T> checkable) {
         for (T t : ts)
-            if (checkable.isChecked(t))
+            if (checkable.test(t))
                 return t;
 
         return null;
     }
 
-    public static <T> Collection<T> filterAll(T[] ts, Checkable<T> checkable) {
+    public static <T> Collection<T> filterAll(T[] ts, Predicate<T> checkable) {
         Collection<T> out = new LinkedList<>();
         for (T t : ts)
-            if (checkable.isChecked(t))
+            if (checkable.test(t))
                 out.add(t);
 
         return out;
     }
 
-    public static <T> Collection<T> filterAll(Collection<T> collection, Checkable<T> checkable) {
+    public static <T> Collection<T> filterAll(Collection<T> collection, Predicate<T> checkable) {
         Collection<T> out = new LinkedList<>();
         for (T t : collection)
-            if (checkable.isChecked(t))
+            if (checkable.test(t))
                 out.add(t);
 
         return out;
@@ -257,10 +257,10 @@ public final class MapUtility implements Serializable {
         return out;
     }
 
-    public static <T> void removeAll(Collection<T> list, Checkable<T> checkable) {
+    public static <T> void removeAll(Collection<T> list, Predicate<T> checkable) {
         Collection<T> remove = new LinkedList<>();
         for (T t : list)
-            if (checkable.isChecked(t))
+            if (checkable.test(t))
                 remove.add(t);
 
         if (!remove.isEmpty())
