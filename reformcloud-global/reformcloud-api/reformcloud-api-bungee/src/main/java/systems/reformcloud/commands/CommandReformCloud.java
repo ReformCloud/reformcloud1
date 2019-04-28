@@ -7,17 +7,22 @@ package systems.reformcloud.commands;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 import systems.reformcloud.ReformCloudAPIBungee;
+import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
  */
 
-public final class CommandReformCloud extends Command {
+public final class CommandReformCloud extends Command implements Serializable, TabExecutor {
     public CommandReformCloud() {
         super("reformcloud");
     }
@@ -145,9 +150,63 @@ public final class CommandReformCloud extends Command {
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name> \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud execute <server/proxy> <name> <command> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud process <start/stop> <group/name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud process <start/stop> <name> \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud reload \n")),
                 new TextComponent(TextComponent.fromLegacyText(prefix + "/reformcloud version"))
         );
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings) {
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("copy"))
+            return registered();
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("whitelist"))
+            return Arrays.asList("add", "remove");
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("whitelist")) {
+            Collection<String> out = proxies();
+            out.add("--all");
+            return out;
+        }
+
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("whitelist"))
+            return players();
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("execute"))
+            return Arrays.asList("server", "proxy");
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("execute"))
+            return registered();
+
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute"))
+            return Arrays.asList("ban", "help", "reformclod");
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("process"))
+            return Arrays.asList("start", "stop");
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("process"))
+            return registered();
+
+        return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
+    }
+
+    private Collection<String> registered() {
+        Collection<String> out = new LinkedList<>();
+        ReformCloudAPIBungee.getInstance().getAllRegisteredProxies().forEach(e -> out.add(e.getCloudProcess().getName()));
+        ReformCloudAPIBungee.getInstance().getAllRegisteredServers().forEach(e -> out.add(e.getCloudProcess().getName()));
+        return out;
+    }
+
+    private Collection<String> proxies() {
+        Collection<String> out = new LinkedList<>();
+        ReformCloudAPIBungee.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
+        return out;
+    }
+
+    private Collection<String> players() {
+        Collection<String> out = new LinkedList<>();
+        BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> out.add(e.getName()));
+        return out;
     }
 }

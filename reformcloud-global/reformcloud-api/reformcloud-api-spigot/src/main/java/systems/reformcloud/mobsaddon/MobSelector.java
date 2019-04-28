@@ -377,7 +377,7 @@ public final class MobSelector implements Serializable {
         this.selectorMobConfig = selectorMobConfig;
     }
 
-    private class Mob {
+    public class Mob {
         private Mob(SelectorMob selectorMob) {
             this.selectorMob = selectorMob;
             this.location = toLocation(selectorMob.getSelectorMobPosition());
@@ -397,7 +397,7 @@ public final class MobSelector implements Serializable {
             this.spawn();
         }
 
-        private SelectorMob selectorMob;
+        public SelectorMob selectorMob;
 
         private Location location;
 

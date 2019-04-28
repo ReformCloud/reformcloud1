@@ -10,10 +10,13 @@ import net.kyori.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import systems.reformcloud.ReformCloudAPIVelocity;
+import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -132,5 +135,59 @@ public final class CommandReformCloud implements Command {
         commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud process <start/stop> <group/name> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud reload \n"));
         commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud version"));
+    }
+
+    @Override
+    public @MaybePresent List<String> suggest(@MaybePresent CommandSource source, @NonNull @MaybePresent String[] strings) {
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("copy"))
+            return registered();
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("whitelist"))
+            return Arrays.asList("add", "remove");
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("whitelist")) {
+            List<String> out = proxies();
+            out.add("--all");
+            return out;
+        }
+
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("whitelist"))
+            return players();
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("execute"))
+            return Arrays.asList("server", "proxy");
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("execute"))
+            return registered();
+
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("execute"))
+            return Arrays.asList("ban", "help", "reformclod");
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("process"))
+            return Arrays.asList("start", "stop");
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("process"))
+            return registered();
+
+        return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
+    }
+
+    private List<String> registered() {
+        List<String> out = new LinkedList<>();
+        ReformCloudAPIVelocity.getInstance().getAllRegisteredProxies().forEach(e -> out.add(e.getCloudProcess().getName()));
+        ReformCloudAPIVelocity.getInstance().getAllRegisteredServers().forEach(e -> out.add(e.getCloudProcess().getName()));
+        return out;
+    }
+
+    private List<String> proxies() {
+        List<String> out = new LinkedList<>();
+        ReformCloudAPIVelocity.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
+        return out;
+    }
+
+    private List<String> players() {
+        List<String> out = new LinkedList<>();
+        VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> out.add(e.getUsername()));
+        return out;
     }
 }

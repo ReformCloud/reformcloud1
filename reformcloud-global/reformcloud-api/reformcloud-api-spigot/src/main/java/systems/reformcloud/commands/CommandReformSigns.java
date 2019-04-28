@@ -24,6 +24,8 @@ import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.signs.Sign;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -128,7 +130,13 @@ public final class CommandReformSigns implements Serializable, Listener, Command
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return null;
+        if (strings.length == 1
+                && (strings[0].equalsIgnoreCase("create")
+                || strings[0].equalsIgnoreCase("createitem")
+                || strings[0].equalsIgnoreCase("deleteall")))
+            return new LinkedList<>(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerGroups().keySet());
+
+        return new LinkedList<>(Arrays.asList("create", "createitem", "deleteall", "delete", "deleteitem", "list"));
     }
 
     private ItemStack signItem(final String group) {

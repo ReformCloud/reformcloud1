@@ -331,8 +331,9 @@ public final class SignSelector {
 
     private org.bukkit.block.Sign toNormalSign(final SignPosition position) {
         final Block block = toLocation(position).getBlock();
-        if (!(block.getState() instanceof org.bukkit.block.Sign))
+        if (block == null || !(block.getState() instanceof org.bukkit.block.Sign))
             return null;
+
         return (org.bukkit.block.Sign) block.getState();
     }
 

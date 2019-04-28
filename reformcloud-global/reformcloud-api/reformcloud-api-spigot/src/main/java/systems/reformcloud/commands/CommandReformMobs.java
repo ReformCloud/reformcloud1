@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import systems.reformcloud.ReformCloudAPISpigot;
@@ -16,14 +17,13 @@ import systems.reformcloud.mobsaddon.MobSelector;
 import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.04.2019
  */
 
-public final class CommandReformMobs implements Serializable, CommandExecutor {
+public final class CommandReformMobs implements Serializable, CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player))
@@ -107,5 +107,42 @@ public final class CommandReformMobs implements Serializable, CommandExecutor {
         }
 
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("create"))
+            return new LinkedList<>(available());
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("create"))
+            return Arrays.asList("_Klaro", "MrDoubleTime", "ReformCloud", commandSender.getName());
+
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("create"))
+            return new LinkedList<>(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerGroups().keySet());
+
+        if (strings.length == 4 && strings[0].equalsIgnoreCase("create"))
+            return Arrays.asList("&6&lI'm cool", "&5&lMrDoubleTime is cool", "&7&lLobby");
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("delete"))
+            return new LinkedList<>(names());
+
+        if (strings.length == 1 && strings[0].equalsIgnoreCase("deleteall"))
+            return new LinkedList<>(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerGroups().keySet());
+
+
+        return new LinkedList<>(Arrays.asList("create", "delete", "deleteall", "list", "available"));
+    }
+
+    private Collection<String> available() {
+        Collection<String> out = new LinkedList<>();
+        Collection<EntityType> collection = MapUtility.filterAll(EntityType.values(), e -> e.getEntityClass() != null && e.isSpawnable());
+        collection.forEach(e -> out.add(e.getEntityClass().getSimpleName()));
+        return out;
+    }
+
+    private Collection<String> names() {
+        Collection<String> out = new LinkedList<>();
+        MobSelector.getInstance().getSpawnedMobs().forEach((k, v) -> out.add(v.selectorMob.getName()));
+        return out;
     }
 }
