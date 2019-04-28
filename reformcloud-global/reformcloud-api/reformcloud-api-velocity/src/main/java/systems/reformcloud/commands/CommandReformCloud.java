@@ -168,7 +168,7 @@ public final class CommandReformCloud implements Command {
         }
 
         if (strings.length == 4 && strings[0].equalsIgnoreCase("execute"))
-            return Arrays.asList("ban", "help", "reformclod");
+            return Arrays.asList("ban", "help", "reformcloud");
 
         if (strings.length == 2 && strings[0].equalsIgnoreCase("process"))
             return Arrays.asList("start", "stop");
