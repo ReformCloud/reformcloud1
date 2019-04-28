@@ -69,7 +69,9 @@ public final class CommandReformCloud extends Command {
                 ReformCloudAPIBungee.getInstance().getChannelHandler()
                         .sendPacketAsynchronous("ReformCloudController",
                                 new PacketOutDispatchConsoleCommand("copy " + strings[1]));
-                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+                commandSender.sendMessage(TextComponent.fromLegacyText(
+                        ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-send-controller")
+                ));
             } else
                 commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "/reformcloud copy <name>"));
 
@@ -84,7 +86,9 @@ public final class CommandReformCloud extends Command {
                 ReformCloudAPIBungee.getInstance().getChannelHandler()
                         .sendPacketAsynchronous("ReformCloudController",
                                 new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
-                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+                commandSender.sendMessage(TextComponent.fromLegacyText(
+                        ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-send-controller")
+                ));
             } else
                 commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud whitelist <add/remove> <proxyGroup/--all> <name>"));
 
@@ -99,7 +103,9 @@ public final class CommandReformCloud extends Command {
                 ReformCloudAPIBungee.getInstance().getChannelHandler()
                         .sendPacketAsynchronous("ReformCloudController",
                                 new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
-                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+                commandSender.sendMessage(TextComponent.fromLegacyText(
+                        ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-send-controller")
+                ));
             } else
                 commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud execute <server/proxy> <name> <command>"));
 
@@ -114,7 +120,9 @@ public final class CommandReformCloud extends Command {
                 ReformCloudAPIBungee.getInstance().getChannelHandler()
                         .sendPacketAsynchronous("ReformCloudController",
                                 new PacketOutDispatchConsoleCommand(stringBuilder.substring(0, stringBuilder.length() - 1)));
-                commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+                commandSender.sendMessage(TextComponent.fromLegacyText(
+                        ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-send-controller")
+                ));
             } else
                 commandSender.sendMessage(TextComponent.fromLegacyText("/reformcloud process <start/stop> <group/name>"));
 
@@ -125,7 +133,9 @@ public final class CommandReformCloud extends Command {
             ReformCloudAPIBungee.getInstance().getChannelHandler()
                     .sendPacketAsynchronous("ReformCloudController",
                             new PacketOutDispatchConsoleCommand("reload"));
-            commandSender.sendMessage(TextComponent.fromLegacyText("The command was send to the controller"));
+            commandSender.sendMessage(TextComponent.fromLegacyText(
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-send-controller")
+            ));
 
             return;
         }

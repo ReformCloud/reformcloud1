@@ -258,6 +258,8 @@ public final class CloudConfiguration implements Serializable {
                     .addStringValue("internal-api-bungee-maintenance-join-no-permission", "§cWhitelist is enabled, but you are not added")
                     .addStringValue("internal-api-bungee-connect-hub-no-server", "%prefix% §7There is no hub server available")
 
+                    .addStringValue("internal-api-bungee-command-send-controller", "%prefix% The command was send to the controller")
+
                     .addStringValue("internal-api-bungee-startup-server", "%prefix% §7ServerProcess §6%server-name% §7is starting...")
                     .addStringValue("internal-api-bungee-startup-proxy", "%prefix% §7ProxyProcess §6%proxy-name% §7is starting...")
                     .addStringValue("internal-api-bungee-remove-server", "%prefix% §7ServerProcess §6%server-name% §7is stopping...")
