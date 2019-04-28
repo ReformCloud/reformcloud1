@@ -12,6 +12,7 @@ import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.client.settings.ClientSettings;
+import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -711,6 +712,27 @@ public final class CommandAssignment extends Command implements Serializable {
                 return;
             }
 
+            if (args[2].equalsIgnoreCase("proxymodetype")) {
+                if (!args[3].equalsIgnoreCase("static")
+                        && !args[3].equalsIgnoreCase("dynamic")) {
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                            .replace("%reason%", "Please provide a valid reset type"));
+                    return;
+                }
+
+                proxyGroup.setProxyModeType(ProxyModeType.valueOf(args[3].toUpperCase()));
+                ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
+                if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
+                    ReformCloudController.getInstance().reloadAllSave();
+                }
+
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                        .replace("%name%", args[2].toLowerCase())
+                        .replace("%group%", proxyGroup.getName())
+                        .replace("%value%", args[3]));
+                return;
+            }
+
             this.sendHelp(commandSender);
         } else if (args.length == 4 && args[0].equalsIgnoreCase("client")) {
             Client client = ReformCloudController.getInstance().getClient(args[1]);
@@ -802,7 +824,7 @@ public final class CommandAssignment extends Command implements Serializable {
         commandSender.sendMessage("assignment SERVERGROUP <name> <permission, clients, templates, memory, maxonline, " +
                 "minonline, maxplayers, startport, maintenance, savelogs, servermodetype, version> <value> <--update>");
         commandSender.sendMessage("assignment PROXYGROUP <name> <clients, templates, disabledgroups, maintenance, " +
-                "savelogs, memory, maxonline, minonline, maxplayers, commandlogging, version> <value> <--update>");
+                "savelogs, memory, maxonline, minonline, proxymodetype, maxplayers, commandlogging, version> <value> <--update>");
         commandSender.sendMessage("assignment CLIENT <name> <starthost, memory, maxcpu, maxlogsize> <value>");
     }
 }
