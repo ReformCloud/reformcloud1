@@ -192,6 +192,7 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
+            this.offerDevProcesses();
             this.offerServers();
             this.offerProxies();
 
