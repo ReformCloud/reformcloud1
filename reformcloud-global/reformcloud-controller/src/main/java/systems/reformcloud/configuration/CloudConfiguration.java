@@ -152,6 +152,9 @@ public final class CloudConfiguration implements Serializable {
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProxy.jar", "reformcloud/addons/ReformCloudProxy.jar");
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudParameters.jar", "reformcloud/addons/ReformCloudParameters.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudAutoIcon.jar", "reformcloud/addons/ReformCloudAutoIcon.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProperties.jar", "reformcloud/addons/ReformCloudProperties.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudMobs.jar", "reformcloud/addons/ReformCloudMobs.jar");
         }
 
         final String web = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)

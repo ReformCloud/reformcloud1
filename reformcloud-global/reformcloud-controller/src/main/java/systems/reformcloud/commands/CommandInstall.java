@@ -56,6 +56,27 @@ public final class CommandInstall extends Command implements Serializable {
                 );
                 ReformCloudController.getInstance().reloadAllSave();
                 return;
+            } else if (args[0].equalsIgnoreCase("autoicon")) {
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudAutoIcon.jar", "reformcloud/addons/ReformCloudAutoIcon.jar");
+                commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage().getDownload_success()
+                );
+                ReformCloudController.getInstance().reloadAllSave();
+                return;
+            } else if (args[0].equalsIgnoreCase("properties")) {
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProperties.jar", "reformcloud/addons/ReformCloudProperties.jar");
+                commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage().getDownload_success()
+                );
+                ReformCloudController.getInstance().reloadAllSave();
+                return;
+            } else if (args[0].equalsIgnoreCase("mobs")) {
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudMobs.jar", "reformcloud/addons/ReformCloudMobs.jar");
+                commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage().getDownload_success()
+                );
+                ReformCloudController.getInstance().reloadAllSave();
+                return;
             }
         }
 
