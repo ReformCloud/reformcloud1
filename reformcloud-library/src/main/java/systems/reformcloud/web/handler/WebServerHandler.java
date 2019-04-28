@@ -12,7 +12,6 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import lombok.RequiredArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.web.utils.WebHandler;
@@ -29,7 +28,6 @@ import java.util.function.Consumer;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-@RequiredArgsConstructor
 public final class WebServerHandler extends ChannelInboundHandlerAdapter implements Serializable {
     /**
      * The web handler of the cloud system
@@ -40,6 +38,11 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
      * Handles all exceptions which occurs while handling messages
      */
     private Consumer<Throwable> exception = this::handleException;
+
+    @java.beans.ConstructorProperties({"webHandlerAdapter"})
+    public WebServerHandler(WebHandlerAdapter webHandlerAdapter) {
+        this.webHandlerAdapter = webHandlerAdapter;
+    }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {

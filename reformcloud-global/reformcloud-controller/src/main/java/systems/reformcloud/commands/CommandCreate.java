@@ -5,13 +5,15 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -34,56 +36,61 @@ public final class CommandCreate extends Command implements Serializable {
         super("create", "Creates a new ServerGroup, ProxyGroup or Client", "reformcloud.command.create", new String[0]);
     }
 
+    private final Language language = ReformCloudController.getInstance().getLoadedLanguage();
+
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("servergroup")) {
             LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance().getCloudConfiguration();
 
-            loggerProvider.info("Please enter the name of the ServerGroup");
+            loggerProvider.info(language.getSetup_name_of_group());
             String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(s) == null);
-            loggerProvider.info("Please enter the client of the ServerGroup");
+            loggerProvider.info(language.getSetup_name_of_client());
             String client = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) != null);
 
-            loggerProvider.info("Please choose a minecraft version");
+            loggerProvider.info(language.getSetup_choose_minecraft_version());
             SpigotVersions.AVAILABLE_VERSIONS.forEach(e -> loggerProvider.info(e));
             String version = cloudConfiguration.readString(loggerProvider, s -> SpigotVersions.AVAILABLE_VERSIONS.contains(s));
-            loggerProvider.info("Which Spigot-Version should be used?");
+            loggerProvider.info(language.getSetup_choose_spigot_version());
             SpigotVersions.sortedByVersion(version).values().forEach(e -> loggerProvider.info("   " + e.name()));
             String provider = cloudConfiguration.readString(loggerProvider, s -> SpigotVersions.getByName(s) != null);
 
-            loggerProvider.info("Please choose a reset type [\"LOBBY\", \"DYNAMIC\", \"STATIC\"]");
+            loggerProvider.info(language.getSetup_choose_reset_type());
             String resetType = cloudConfiguration.readString(loggerProvider, s -> s.equalsIgnoreCase("dynamic") || s.equalsIgnoreCase("static") || s.equalsIgnoreCase("lobby"));
 
-            commandSender.sendMessage("Trying to create new ServerGroup...");
-            ReformCloudController.getInstance().getCloudConfiguration().createServerGroup(new DefaultGroup(name, client, SpigotVersions.getByName(provider), ServerModeType.valueOf(resetType)));
+            commandSender.sendMessage(language.getSetup_trying_to_create().replace("%group%", name));
+            ReformCloudController.getInstance().getCloudConfiguration().createServerGroup(new DefaultGroup(name, client, SpigotVersions.getByName(provider), ServerModeType.of(resetType)));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("proxygroup")) {
             LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance().getCloudConfiguration();
 
-            loggerProvider.info("Please enter the name of the ProxyGroup");
+            loggerProvider.info(language.getSetup_name_of_group());
             String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(s) == null);
-            loggerProvider.info("Please enter the client of the ProxyGroup");
+            loggerProvider.info(language.getSetup_name_of_client());
             String client = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) != null);
 
-            loggerProvider.info("Which Proxy-Version should be used?");
+            loggerProvider.info(language.getSetup_choose_proxy_version());
             ProxyVersions.sorted().values().forEach(e -> loggerProvider.info("   " + e.name()));
             String in = cloudConfiguration.readString(loggerProvider, s -> ProxyVersions.getByName(s) != null);
 
-            commandSender.sendMessage("Trying to create new ProxyGroup...");
-            ReformCloudController.getInstance().getCloudConfiguration().createProxyGroup(new DefaultProxyGroup(name, client, ProxyVersions.getByName(in)));
+            loggerProvider.info(language.getSetup_choose_proxy_reset_type());
+            String resetType = cloudConfiguration.readString(loggerProvider, s -> s.equalsIgnoreCase("dynamic") || s.equalsIgnoreCase("static"));
+
+            commandSender.sendMessage(language.getSetup_trying_to_create().replace("%group%", name));
+            ReformCloudController.getInstance().getCloudConfiguration().createProxyGroup(new DefaultProxyGroup(name, client, ProxyVersions.getByName(in), ProxyModeType.of(resetType)));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("client")) {
             LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance().getCloudConfiguration();
 
-            loggerProvider.info("Please enter the name of the client");
+            loggerProvider.info(language.getSetup_name_of_new_client());
             String name = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) == null);
-            loggerProvider.info("Please enter the ip address of the client");
+            loggerProvider.info(language.getSetup_ip_of_new_client());
             String ip = cloudConfiguration.readString(loggerProvider, s -> s.split("\\.").length == 4);
 
-            commandSender.sendMessage("Trying to create new Client...");
+            commandSender.sendMessage(language.getSetup_trying_to_create().replace("%group%", name));
             ReformCloudController.getInstance().getCloudConfiguration().createClient(new Client(name, ip, null));
             return;
         }
@@ -111,13 +118,17 @@ public final class CommandCreate extends Command implements Serializable {
                         .filter(e -> e.getUser().equals(args[1]))
                         .findFirst()
                         .orElse(null) != null) {
-                    commandSender.sendMessage("WebUser already exists");
+                    commandSender.sendMessage(language.getCommand_error_occurred().replace("%message%", "The webuser already exists"));
                     return;
                 }
 
                 final WebUser webUser = new WebUser(args[1], StringEncrypt.encryptSHA512(args[2]), new HashMap<>());
                 ReformCloudController.getInstance().getCloudConfiguration().createWebUser(webUser);
-                commandSender.sendMessage("WebUser \"" + webUser.getUser() + "\" was created successfully with password \"" + args[2] + "\"");
+                commandSender.sendMessage(
+                        language.getCommand_create_webuser_created()
+                                .replace("%name%", webUser.getUser())
+                                .replace("%password%", args[2])
+                );
                 break;
             }
             case "template": {
@@ -133,13 +144,15 @@ public final class CommandCreate extends Command implements Serializable {
                         .get(args[1]);
                 if (serverGroup != null) {
                     if (serverGroup.getTemplateOrElseNull(args[2]) != null) {
-                        commandSender.sendMessage("Template already exists");
+                        commandSender.sendMessage(
+                                language.getCommand_error_occurred().replace("%message%", "Template already exists")
+                        );
                         return;
                     }
 
                     serverGroup.getTemplates().add(new Template(args[2], null, TemplateBackend.CLIENT));
                     ReformCloudController.getInstance().getCloudConfiguration().updateServerGroup(serverGroup);
-                    commandSender.sendMessage("Template was created successfully");
+                    commandSender.sendMessage(language.getCommand_create_template_created_success());
                     return;
                 } else {
                     ProxyGroup proxyGroup = ReformCloudController
@@ -148,18 +161,22 @@ public final class CommandCreate extends Command implements Serializable {
                             .getProxyGroups()
                             .get(args[1]);
                     if (proxyGroup == null) {
-                        commandSender.sendMessage("Group doesn't exists");
+                        commandSender.sendMessage(
+                                language.getCommand_error_occurred().replace("%message%", "Group doesn't exists")
+                        );
                         return;
                     }
 
                     if (proxyGroup.getTemplateOrElseNull(args[2]) != null) {
-                        commandSender.sendMessage("Template already exists");
+                        commandSender.sendMessage(
+                                language.getCommand_error_occurred().replace("%message%", "Template already exists")
+                        );
                         return;
                     }
 
                     proxyGroup.getTemplates().add(new Template(args[2], null, TemplateBackend.CLIENT));
                     ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
-                    commandSender.sendMessage("Template was created successfully");
+                    commandSender.sendMessage(language.getCommand_create_template_created_success());
                 }
                 break;
             }

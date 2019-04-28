@@ -6,7 +6,6 @@ package systems.reformcloud.network.channel;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.AllArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.api.IEventHandler;
@@ -19,17 +18,22 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-@AllArgsConstructor
 public final class ChannelReader extends SimpleChannelInboundHandler implements Serializable {
     /**
      * The channel handler instance
      */
     private ChannelHandler channelHandler;
+
+    @java.beans.ConstructorProperties({"channelHandler"})
+    public ChannelReader(ChannelHandler channelHandler) {
+        this.channelHandler = channelHandler;
+    }
 
     @Override
     protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final Object object) {
@@ -42,7 +46,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
                 "[Type=" + packet.getType() + "/Query=" + (packet.getResult() != null) + "/Message=" + packet.getConfiguration());
 
         IncomingPacketEvent incomingPacketEvent = new IncomingPacketEvent(packet, channelHandlerContext);
-        ReformCloudLibraryServiceProvider.getInstance().getEventManager().callEvent(incomingPacketEvent);
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(incomingPacketEvent);
         if (incomingPacketEvent.isCancelled())
             return;
 
@@ -63,7 +67,8 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
 
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Trying to handle authentication of " +
                     "channel [IP=" + address + "]");
-            new AuthenticationHandler().handleAuth(packet.getConfiguration().getValue("AuthenticationType", TypeTokenAdaptor.getAUTHENTICATION_TYPE()),
+            new AuthenticationHandler().handleAuth(Objects.requireNonNull(
+                    packet.getConfiguration().getValue("AuthenticationType", TypeTokenAdaptor.getAUTHENTICATION_TYPE())),
                     packet, channelHandlerContext, channelHandler);
         }
 
@@ -98,7 +103,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         if (!this.channelHandler.isChannelRegistered(ctx)
                 && ctx.channel().isActive()
                 && ctx.channel().isOpen()
@@ -142,5 +147,10 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
                     cause
             );
         }
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) {
+        ctx.flush();
     }
 }

@@ -38,9 +38,9 @@ public final class ControllerTemplateDownload implements Serializable {
             httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
             httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
             httpURLConnection.setRequestProperty("-XConfig", new Configuration()
-                    .addStringProperty("template", template)
-                    .addStringProperty("group", group)
-                    .addBooleanProperty("proxy", proxy).getJsonString());
+                    .addStringValue("template", template)
+                    .addStringValue("group", group)
+                    .addBooleanValue("proxy", proxy).getJsonString());
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setDoOutput(false);
             httpURLConnection.setDoInput(true);

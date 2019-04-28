@@ -4,9 +4,6 @@
 
 package systems.reformcloud.meta.client;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import systems.reformcloud.meta.info.ClientInfo;
 
 import java.io.Serializable;
@@ -15,9 +12,6 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
-@AllArgsConstructor
-@Getter
-@Setter
 public class Client implements Serializable {
     private static final long serialVersionUID = 7702400116714803106L;
 
@@ -31,6 +25,13 @@ public class Client implements Serializable {
      */
     private ClientInfo clientInfo;
 
+    @java.beans.ConstructorProperties({"name", "ip", "clientInfo"})
+    public Client(String name, String ip, ClientInfo clientInfo) {
+        this.name = name;
+        this.ip = ip;
+        this.clientInfo = clientInfo;
+    }
+
     /**
      * Converts the client info into a client state
      *
@@ -43,6 +44,30 @@ public class Client implements Serializable {
             return ClientState.READY;
 
         return ClientState.CONNECTED;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getIp() {
+        return this.ip;
+    }
+
+    public ClientInfo getClientInfo() {
+        return this.clientInfo;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public void setClientInfo(ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
     }
 
     public enum ClientState {

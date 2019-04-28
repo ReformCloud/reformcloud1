@@ -65,9 +65,9 @@ public final class NettySocketClient implements AutoCloseable {
 
             bootstrap.connect(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel().writeAndFlush(new Packet("Auth",
                     new Configuration()
-                            .addStringProperty("key", key)
-                            .addStringProperty("name", name)
-                            .addProperty("AuthenticationType", AuthenticationType.PROXY)
+                            .addStringValue("key", key)
+                            .addStringValue("name", name)
+                            .addValue("AuthenticationType", AuthenticationType.PROXY)
             ));
         } catch (final Throwable ignored) {
         }

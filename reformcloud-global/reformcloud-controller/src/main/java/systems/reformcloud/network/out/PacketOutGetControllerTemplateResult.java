@@ -18,11 +18,11 @@ public final class PacketOutGetControllerTemplateResult extends Packet implement
     public PacketOutGetControllerTemplateResult(String encoded, String name, UUID processUID, String type, String group) {
         super("GetControllerTemplateResult",
                 new Configuration()
-                        .addStringProperty("encode", encoded)
-                        .addStringProperty("name", name)
-                        .addStringProperty("group", group)
-                        .addStringProperty("type", type)
-                        .addProperty("uuid", processUID)
+                        .addStringValue("encode", encoded)
+                        .addStringValue("name", name)
+                        .addStringValue("group", group)
+                        .addStringValue("type", type)
+                        .addValue("uuid", processUID)
         );
     }
 }

@@ -16,8 +16,8 @@ import java.util.UUID;
 
 public final class PacketOutSendMessage extends Packet implements Serializable {
     public PacketOutSendMessage(UUID uniqueID, String message, String proxy) {
-        super("SendPlayerMessage", new Configuration().addProperty("uuid", uniqueID)
-                .addStringProperty("message", message).addStringProperty("proxy", proxy)
+        super("SendPlayerMessage", new Configuration().addValue("uuid", uniqueID)
+                .addStringValue("message", message).addStringValue("proxy", proxy)
         );
     }
 }

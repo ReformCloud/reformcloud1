@@ -70,9 +70,9 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
 
             bootstrap.connect(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel().writeAndFlush(new Packet("Auth",
                     new Configuration()
-                            .addStringProperty("key", key)
-                            .addStringProperty("name", name)
-                            .addProperty("AuthenticationType", AuthenticationType.SERVER)
+                            .addStringValue("key", key)
+                            .addStringValue("name", name)
+                            .addValue("AuthenticationType", AuthenticationType.SERVER)
             ));
         } catch (final Throwable ignored) {
         }

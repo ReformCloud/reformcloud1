@@ -4,10 +4,6 @@
 
 package systems.reformcloud.event;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,8 +12,6 @@ import java.lang.reflect.Method;
  * @author _Klaro | Pasqual K. / created on 16.04.2019
  */
 
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-@Getter(value = AccessLevel.PRIVATE)
 final class EventClass implements Serializable {
     /**
      * The current listener class
@@ -29,6 +23,12 @@ final class EventClass implements Serializable {
      */
     private Method method;
 
+    @java.beans.ConstructorProperties({"listener", "method"})
+    EventClass(Object listener, Method method) {
+        this.listener = listener;
+        this.method = method;
+    }
+
     /**
      * Calls the current listener
      *
@@ -38,5 +38,13 @@ final class EventClass implements Serializable {
      */
     void invoke(Object event) throws InvocationTargetException, IllegalAccessException {
         method.invoke(listener, event);
+    }
+
+    private Object getListener() {
+        return this.listener;
+    }
+
+    private Method getMethod() {
+        return this.method;
     }
 }

@@ -20,7 +20,7 @@ public final class PacketOutSyncClientUpdateSuccess extends Packet implements Se
     public PacketOutSyncClientUpdateSuccess() {
         super(
                 "ClientReloadSuccess",
-                new Configuration().addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                new Configuration().addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
         );
     }
 }

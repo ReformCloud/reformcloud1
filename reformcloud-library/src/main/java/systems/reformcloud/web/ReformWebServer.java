@@ -14,7 +14,6 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
@@ -30,7 +29,6 @@ import java.security.cert.CertificateException;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-@Getter
 public final class ReformWebServer implements Serializable {
     /**
      * The boss group of the web server
@@ -115,5 +113,25 @@ public final class ReformWebServer implements Serializable {
     public void shutdown() {
         this.bossGroup.shutdownGracefully();
         this.workerGroup.shutdownGracefully();
+    }
+
+    public EventLoopGroup getBossGroup() {
+        return this.bossGroup;
+    }
+
+    public EventLoopGroup getWorkerGroup() {
+        return this.workerGroup;
+    }
+
+    public ServerBootstrap getServerBootstrap() {
+        return this.serverBootstrap;
+    }
+
+    public SslContext getSslContext() {
+        return this.sslContext;
+    }
+
+    public WebHandlerAdapter getWebHandlerAdapter() {
+        return this.webHandlerAdapter;
     }
 }

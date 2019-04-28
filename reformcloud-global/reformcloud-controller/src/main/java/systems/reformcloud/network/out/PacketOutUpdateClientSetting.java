@@ -19,8 +19,8 @@ public final class PacketOutUpdateClientSetting extends Packet implements Serial
         super(
                 "UpdateClientSetting",
                 new Configuration()
-                        .addProperty("setting", clientSettings)
-                        .addStringProperty("value", newValue)
+                        .addValue("setting", clientSettings)
+                        .addStringValue("value", newValue)
         );
     }
 }

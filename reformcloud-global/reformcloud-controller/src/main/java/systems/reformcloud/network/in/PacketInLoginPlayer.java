@@ -20,6 +20,6 @@ public final class PacketInLoginPlayer implements NetworkInboundHandler {
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getUuid().add(configuration.getValue("uuid", UUID.class));
         ReformCloudController.getInstance().getStatisticsProvider().addLogin();
-        ReformCloudController.getInstance().getEventManager().callEvent(new PlayerConnectEvent(configuration.getValue("uuid", UUID.class)));
+        ReformCloudController.getInstance().getEventManager().fire(new PlayerConnectEvent(configuration.getValue("uuid", UUID.class)));
     }
 }

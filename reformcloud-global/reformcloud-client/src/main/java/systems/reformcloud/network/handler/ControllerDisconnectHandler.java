@@ -24,6 +24,18 @@ public final class ControllerDisconnectHandler extends ChannelInboundHandlerAdap
                 && ReformCloudClient.getInstance().getNettySocketClient().getConnections() == -1
                 && ReformCloudClient.RUNNING) {
             ReformCloudClient.getInstance().getNettySocketClient().close();
+            ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredProxyProcesses().forEach(proxyProcess -> {
+                proxyProcess.shutdown(null, false);
+                ReformCloudClient.getInstance().getLoggerProvider().info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_shutdown_process()
+                        .replace("%name%", proxyProcess.getProxyStartupInfo().getName()));
+                ReformCloudLibraryService.sleep(1000);
+            });
+            ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerProcesses().forEach(serverProcess -> {
+                serverProcess.shutdown(false);
+                ReformCloudClient.getInstance().getLoggerProvider().info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_shutdown_process()
+                        .replace("%name%", serverProcess.getServerStartupInfo().getName()));
+                ReformCloudLibraryService.sleep(1000);
+            });
             ReformCloudLibraryService.sleep(1000);
             ReformCloudClient.getInstance().connect(ReformCloudClient.getInstance().isSsl());
         }

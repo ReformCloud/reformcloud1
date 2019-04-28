@@ -6,7 +6,7 @@ package systems.reformcloud.configurations;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import lombok.Data;
+import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
@@ -27,7 +27,6 @@ import java.util.Set;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-@Data
 public final class Configuration {
     /**
      * The json object of the configuration
@@ -57,7 +56,7 @@ public final class Configuration {
      * @param value     The string as value
      * @return The config class instance
      */
-    public Configuration addStringProperty(String key, String value) {
+    public Configuration addStringValue(String key, String value) {
         if (key == null || value == null)
             return this;
 
@@ -72,7 +71,7 @@ public final class Configuration {
      * @param value     The string as value
      * @return The config class instance
      */
-    public Configuration addIntegerProperty(String key, Integer value) {
+    public Configuration addIntegerValue(String key, Integer value) {
         if (key == null || value == null)
             return this;
 
@@ -87,7 +86,7 @@ public final class Configuration {
      * @param value     The string as value
      * @return The config class instance
      */
-    public Configuration addBooleanProperty(String key, Boolean value) {
+    public Configuration addBooleanValue(String key, Boolean value) {
         if (key == null || value == null)
             return this;
 
@@ -102,7 +101,7 @@ public final class Configuration {
      * @param value     The string as value
      * @return The config class instance
      */
-    public Configuration addLongProperty(String key, Long value) {
+    public Configuration addLongValue(String key, Long value) {
         if (key == null || value == null)
             return this;
 
@@ -117,7 +116,7 @@ public final class Configuration {
      * @param value     The string as value
      * @return The config class instance
      */
-    public Configuration addConfigurationProperty(String key, Configuration value) {
+    public Configuration addConfigurationValue(String key, Configuration value) {
         if (key == null || value == null)
             return this;
 
@@ -132,7 +131,7 @@ public final class Configuration {
      * @param value     The string as value
      * @return The config class instance
      */
-    public Configuration addProperty(String key, Object value) {
+    public Configuration addValue(String key, Object value) {
         if (key == null || value == null)
             return this;
 
@@ -211,6 +210,17 @@ public final class Configuration {
      */
     public <T> T getValue(String key, Type type) {
         return jsonObject.has(key) ? ReformCloudLibraryService.GSON.fromJson(jsonObject.get(key), type) : null;
+    }
+
+    /**
+     * Gets a object value out of the config
+     *
+     * @param key       The key of the config value
+     * @param typeToken The defining type token of the containing object
+     * @return The config class instance
+     */
+    public <T> T getValue(String key, TypeToken<T> typeToken) {
+        return getValue(key, typeToken.getType());
     }
 
     /**
@@ -320,7 +330,7 @@ public final class Configuration {
     public static Configuration fromMap(Map<? extends String, ?> in) {
         Configuration configuration = new Configuration();
         for (Map.Entry<? extends String, ?> entry : in.entrySet())
-            configuration.addProperty(entry.getKey(), entry.getValue());
+            configuration.addValue(entry.getKey(), entry.getValue());
 
         return configuration;
     }
@@ -353,5 +363,36 @@ public final class Configuration {
      */
     public boolean contains(String key) {
         return this.jsonObject.has(key);
+    }
+
+    public JsonObject getJsonObject() {
+        return this.jsonObject;
+    }
+
+    public void setJsonObject(JsonObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Configuration)) return false;
+        final Configuration other = (Configuration) o;
+        final Object this$jsonObject = this.getJsonObject();
+        final Object other$jsonObject = other.getJsonObject();
+        if (this$jsonObject == null ? other$jsonObject != null : !this$jsonObject.equals(other$jsonObject))
+            return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $jsonObject = this.getJsonObject();
+        result = result * PRIME + ($jsonObject == null ? 43 : $jsonObject.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "Configuration(jsonObject=" + this.getJsonObject() + ")";
     }
 }

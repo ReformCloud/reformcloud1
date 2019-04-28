@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -23,11 +22,9 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
-@Getter
 public final class DiscordAddon extends ControllerAddonImpl implements Serializable {
     private static final long serialVersionUID = 3321468728377410418L;
 
-    @Getter
     private static DiscordAddon instance;
 
     private JDA jda;
@@ -36,6 +33,10 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
     private TextChannel textChannel;
 
     private ConsoleWriter consoleWriter;
+
+    public static DiscordAddon getInstance() {
+        return DiscordAddon.instance;
+    }
 
     @Override
     public void onAddonClazzPrepare() {
@@ -51,13 +52,13 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
         final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT)
                 .setAudioEnabled(false)
                 .setAutoReconnect(true)
-                .setToken(this.discordConfig.getDiscordInformations().getToken())
+                .setToken(this.discordConfig.getDiscordInformation().getToken())
                 .addEventListeners(new ConsoleInputHandler())
-                .setActivity(Activity.playing(this.discordConfig.getDiscordInformations().getGame()));
+                .setActivity(Activity.playing(this.discordConfig.getDiscordInformation().getGame()));
 
         try {
             this.jda = jdaBuilder.build().awaitReady();
-            this.textChannel = jda.getTextChannelById(this.discordConfig.getDiscordInformations().getChannelID());
+            this.textChannel = jda.getTextChannelById(this.discordConfig.getDiscordInformation().getChannelID());
         } catch (final InterruptedException | LoginException ex) {
             StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(), "Error while startup of addon DiscordBot", ex);
         }
@@ -68,9 +69,22 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
         if (jda != null) {
             this.jda.shutdownNow();
             this.jda = null;
-
-            if (!consoleWriter.getThread().isInterrupted())
-                this.consoleWriter.getThread().interrupt();
         }
+    }
+
+    public JDA getJda() {
+        return this.jda;
+    }
+
+    public DiscordConfig getDiscordConfig() {
+        return this.discordConfig;
+    }
+
+    public TextChannel getTextChannel() {
+        return this.textChannel;
+    }
+
+    public ConsoleWriter getConsoleWriter() {
+        return this.consoleWriter;
     }
 }

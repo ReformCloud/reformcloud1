@@ -18,11 +18,11 @@ import java.util.UUID;
 public final class PacketOutGetControllerTemplate extends Packet implements Serializable {
     public PacketOutGetControllerTemplate(String type, String groupName, String template, UUID processUID, String name) {
         super("GetControllerTemplate", new Configuration()
-                .addStringProperty("type", type)
-                .addStringProperty("requester", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                .addStringProperty("groupName", groupName)
-                .addStringProperty("name", name)
-                .addProperty("uuid", processUID)
-                .addStringProperty("template", template));
+                .addStringValue("type", type)
+                .addStringValue("requester", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                .addStringValue("groupName", groupName)
+                .addStringValue("name", name)
+                .addValue("uuid", processUID)
+                .addStringValue("template", template));
     }
 }

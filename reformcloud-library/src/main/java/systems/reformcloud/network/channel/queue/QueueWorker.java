@@ -4,7 +4,6 @@
 
 package systems.reformcloud.network.channel.queue;
 
-import lombok.AllArgsConstructor;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.network.channel.ChannelHandler;
@@ -17,12 +16,14 @@ import java.util.concurrent.TimeUnit;
  * @author _Klaro | Pasqual K. / created on 28.03.2019
  */
 
-@AllArgsConstructor
 public final class QueueWorker implements Serializable, Runnable {
     /**
      * The instance of the channel handler to send the packets in the correct channels
      */
     private final ChannelHandler instance = ReformCloudLibraryServiceProvider.getInstance().getChannelHandler();
+
+    public QueueWorker() {
+    }
 
     @Override
     public void run() {

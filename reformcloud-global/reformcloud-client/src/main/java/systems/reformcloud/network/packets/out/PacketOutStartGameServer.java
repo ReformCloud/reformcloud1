@@ -14,10 +14,10 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutStartGameServer extends Packet {
     public PacketOutStartGameServer(final ServerGroup serverGroup, final Configuration preConfiguration) {
-        super("StartGameProcess", new Configuration().addProperty("group", serverGroup).addConfigurationProperty("pre", preConfiguration));
+        super("StartGameProcess", new Configuration().addValue("group", serverGroup).addConfigurationValue("pre", preConfiguration));
     }
 
     public PacketOutStartGameServer(final ServerGroup serverGroup, final Configuration preConfiguration, final String template) {
-        super("StartGameProcess", new Configuration().addProperty("group", serverGroup).addStringProperty("template", template).addConfigurationProperty("pre", preConfiguration));
+        super("StartGameProcess", new Configuration().addValue("group", serverGroup).addStringValue("template", template).addConfigurationValue("pre", preConfiguration));
     }
 }

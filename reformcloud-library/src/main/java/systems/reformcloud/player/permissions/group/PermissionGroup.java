@@ -4,8 +4,6 @@
 
 package systems.reformcloud.player.permissions.group;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -15,13 +13,11 @@ import java.util.Map;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
-@AllArgsConstructor
-@Getter
 public final class PermissionGroup implements Serializable {
     /**
      * General info about the group
      */
-    private String name, prefix, suffix, display;
+    private String name, prefix, suffix, display, tabColorCode;
 
     /**
      * The group id
@@ -32,6 +28,17 @@ public final class PermissionGroup implements Serializable {
      * The permissions of the group
      */
     private Map<String, Boolean> permissions;
+
+    @java.beans.ConstructorProperties({"name", "prefix", "suffix", "display", "tabColorCode", "groupID", "permissions"})
+    public PermissionGroup(String name, String prefix, String suffix, String display, String tabColorCode, int groupID, Map<String, Boolean> permissions) {
+        this.name = name;
+        this.prefix = prefix;
+        this.suffix = suffix;
+        this.display = display;
+        this.tabColorCode = tabColorCode;
+        this.groupID = groupID;
+        this.permissions = permissions;
+    }
 
     /**
      * Adds a permission to the group
@@ -86,5 +93,21 @@ public final class PermissionGroup implements Serializable {
             return StringUtil.EMPTY;
 
         return display;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getTabColorCode() {
+        return this.tabColorCode;
+    }
+
+    public int getGroupID() {
+        return this.groupID;
+    }
+
+    public Map<String, Boolean> getPermissions() {
+        return this.permissions;
     }
 }

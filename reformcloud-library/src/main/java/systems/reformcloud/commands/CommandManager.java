@@ -4,11 +4,10 @@
 
 package systems.reformcloud.commands;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.defaults.CommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
-import systems.reformcloud.commands.interfaces.Command;
+import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -27,7 +26,6 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     /**
      * The command list, where all commands are located in
      */
-    @Getter
     private List<Command> commands = new ArrayList<>();
 
     /**
@@ -38,7 +36,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      * @return if the command is registered or not
      */
     @Override
-    public boolean dispatchCommand(systems.reformcloud.commands.interfaces.CommandSender commandSender, String command) {
+    public boolean dispatchCommand(systems.reformcloud.commands.utility.CommandSender commandSender, String command) {
         String[] strings = command.split(" ");
 
         if (strings.length <= 0)
@@ -143,7 +141,11 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      * @param permissions       The permissions of the command sender
      * @return a new command sender
      */
-    public systems.reformcloud.commands.interfaces.CommandSender newCommandSender(final Map<String, Boolean> permissions) {
+    public systems.reformcloud.commands.utility.CommandSender newCommandSender(final Map<String, Boolean> permissions) {
         return new DefaultUserCommandSender(permissions);
+    }
+
+    public List<Command> getCommands() {
+        return this.commands;
     }
 }

@@ -5,7 +5,6 @@
 package systems.reformcloud.language;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.language.languages.defaults.English;
 import systems.reformcloud.language.languages.defaults.German;
@@ -27,7 +26,6 @@ public final class LanguageManager implements Serializable {
     /**
      * The currently loaded language
      */
-    @Getter
     public final Language loaded;
 
     /**
@@ -45,9 +43,9 @@ public final class LanguageManager implements Serializable {
 
         if (!Files.exists(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json"))) {
             if (lang.equalsIgnoreCase("german"))
-                new Configuration().addProperty("lang", new German()).write(Paths.get("reformcloud/language/german.json"));
+                new Configuration().addValue("lang", new German()).write(Paths.get("reformcloud/language/german.json"));
             else if (lang.equalsIgnoreCase("english"))
-                new Configuration().addProperty("lang", new English()).write(Paths.get("reformcloud/language/english.json"));
+                new Configuration().addValue("lang", new English()).write(Paths.get("reformcloud/language/english.json"));
             else {
                 this.loaded = new English();
                 return;
@@ -56,5 +54,9 @@ public final class LanguageManager implements Serializable {
 
         loaded = Configuration.parse(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json")).getValue("lang", new TypeToken<Language>() {
         }.getType());
+    }
+
+    public Language getLoaded() {
+        return this.loaded;
     }
 }

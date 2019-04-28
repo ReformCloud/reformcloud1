@@ -17,7 +17,7 @@ import java.io.Serializable;
 public final class PacketOutSyncExceptionThrown extends Packet implements Serializable {
     public PacketOutSyncExceptionThrown(final Throwable cause) {
         super("ExceptionThrown", new Configuration()
-                .addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                .addProperty("cause", cause));
+                .addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                .addValue("cause", cause));
     }
 }

@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -23,21 +24,24 @@ import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
+import systems.reformcloud.api.IAsyncAPI;
 import systems.reformcloud.cache.Cache;
+import systems.reformcloud.cache.CacheClearer;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.handler.Decoder;
 import systems.reformcloud.network.handler.Encoder;
-import systems.reformcloud.utility.checkable.Checkable;
+import systems.reformcloud.network.length.LengthDecoder;
+import systems.reformcloud.network.length.LengthEncoder;
+import systems.reformcloud.utility.StringUtil;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -45,8 +49,12 @@ import java.util.concurrent.*;
 
 public final class ReformCloudLibraryService {
     static {
-        Thread.currentThread().setName("ReformCloud-Main");
+        String threadName = "ReformCloud-Main";
+        THREAD_MAIN_NAME = threadName;
+        Thread.currentThread().setName(threadName);
         Thread.setDefaultUncaughtExceptionHandler((t, cause) -> AbstractLoggerProvider.defaultLogger().exception(cause));
+
+        new IAsyncAPI();
 
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("io.netty.noPreferDirect", "true");
@@ -57,6 +65,11 @@ public final class ReformCloudLibraryService {
         System.setProperty("io.netty.noPreferDirect", "true");
         System.setProperty("io.netty.allocator.type", "UNPOOLED");
     }
+
+    /**
+     * Get the reformcloud main thread name
+     */
+    public static final String THREAD_MAIN_NAME;
 
     /**
      * The cloud created gson instance
@@ -81,7 +94,21 @@ public final class ReformCloudLibraryService {
     /**
      * The executor service used by the cloud
      */
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
+            new ThreadFactoryBuilder()
+                    .setDaemon(true)
+                    .setNameFormat("ReformCloud-PoolThread-%d")
+                    .setUncaughtExceptionHandler(((t, e) -> {
+                        if (ReformCloudLibraryServiceProvider.getInstance() != null)
+                            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error in thread group", e);
+                        else
+                            e.printStackTrace(System.err);
+                    })).build());
+
+    /**
+     * The cache clearer of the cloud system
+     */
+    public static final CacheClearer CACHE_CLEARER = new CacheClearer();
 
     /**
      * Creates a new ConcurrentHashMap
@@ -105,7 +132,6 @@ public final class ReformCloudLibraryService {
                         "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
-
 
     /**
      * Sends the cloud header colored
@@ -155,10 +181,10 @@ public final class ReformCloudLibraryService {
      */
     public static Channel prepareChannel(Channel channel, ChannelHandler channelHandler) {
         channel.pipeline().addLast(
-                new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4),
-                new LengthFieldPrepender(4),
-                new Encoder(),
+                new LengthDecoder(),
                 new Decoder(),
+                new LengthEncoder(),
+                new Encoder(),
                 new ChannelReader(channelHandler));
 
         return channel;
@@ -208,10 +234,7 @@ public final class ReformCloudLibraryService {
      * @param time      The time which should be slept
      */
     public static void sleep(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (final InterruptedException ignored) {
-        }
+        sleep(TimeUnit.MILLISECONDS, time);
     }
 
     /**
@@ -348,14 +371,23 @@ public final class ReformCloudLibraryService {
     }
 
     /**
+     * Checks if the caller thread is the main thread
+     *
+     * @return If the caller thread is the main thread
+     */
+    public static boolean isOnMainThread() {
+        return Thread.currentThread().getName().equals(THREAD_MAIN_NAME);
+    }
+
+    /**
      * Checks if the object equals the parameters of the checkable
      *
      * @param checkable     The checkable with the check parameters
      * @param toCheck       The object which should be checked
      * @return If the parameters of the checkable are true or not
      */
-    public static boolean check(Checkable<Object> checkable, final Object toCheck) {
-        return toCheck != null && checkable != null && checkable.isChecked(toCheck);
+    public static boolean check(Predicate<Object> checkable, final Object toCheck) {
+        return toCheck != null && checkable != null && checkable.test(toCheck);
     }
 
     /**

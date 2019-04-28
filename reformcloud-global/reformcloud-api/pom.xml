@@ -5,7 +5,7 @@
     <parent>
         <artifactId>reformcloud-global</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.4</version>
+        <version>1.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -44,7 +44,7 @@
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>${dependency.jline.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -56,9 +56,6 @@
                 <version>${plugin.shade.version}</version>
                 <executions>
                     <execution>
-                        <configuration>
-                            <generateUniqueDependencyReducedPom>false</generateUniqueDependencyReducedPom>
-                        </configuration>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>

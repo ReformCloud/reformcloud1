@@ -17,7 +17,7 @@ public final class PacketOutRemoveServerQueueProcess extends Packet implements S
     public PacketOutRemoveServerQueueProcess(final String name) {
         super(
                 "RemoveServerQueueProcess",
-                new Configuration().addStringProperty("name", name)
+                new Configuration().addStringValue("name", name)
         );
     }
 }

@@ -4,15 +4,12 @@
 
 package systems.reformcloud.meta.client.settings;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.03.2019
  */
 
-@Getter
 public enum ClientSettings implements Serializable {
     START_HOST("general.start-host"),
     MEMORY("general.memory"),
@@ -48,5 +45,9 @@ public enum ClientSettings implements Serializable {
         }
 
         return clientSettings;
+    }
+
+    public String getConfigString() {
+        return this.configString;
     }
 }

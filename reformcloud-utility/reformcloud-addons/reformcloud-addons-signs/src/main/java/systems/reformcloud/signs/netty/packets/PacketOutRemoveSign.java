@@ -14,6 +14,6 @@ import systems.reformcloud.signs.Sign;
 
 public final class PacketOutRemoveSign extends Packet {
     public PacketOutRemoveSign(final Sign sign) {
-        super("RemoveSign", new Configuration().addProperty("sign", sign));
+        super("RemoveSign", new Configuration().addValue("sign", sign));
     }
 }

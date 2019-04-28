@@ -18,8 +18,8 @@ public final class PacketOutSyncNameToUUID extends Packet implements Serializabl
     public PacketOutSyncNameToUUID(final UUID uuid, final String whoIam) {
         super(
                 "SyncNameToUUID",
-                new Configuration().addStringProperty("who", whoIam)
-                        .addProperty("result", uuid)
+                new Configuration().addStringValue("who", whoIam)
+                        .addValue("result", uuid)
         );
     }
 }

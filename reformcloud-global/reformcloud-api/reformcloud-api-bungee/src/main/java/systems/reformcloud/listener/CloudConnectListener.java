@@ -12,6 +12,7 @@ import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
@@ -28,12 +29,15 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
  */
 
 public final class CloudConnectListener implements Listener {
+    private boolean started = false;
+
     @EventHandler(priority = -127)
     public void handle(final ServerConnectEvent event) {
         if (event.getPlayer().getServer() == null) {
@@ -136,6 +140,16 @@ public final class CloudConnectListener implements Listener {
         else
             proxyInfo.setFull(false);
 
+        if (!started && proxyInfo.getProxyGroup().getAutoStart().isEnabled()
+                && BungeecordBootstrap.getInstance().getProxy().getOnlineCount() >= proxyInfo.getProxyGroup().getAutoStart().getPlayerMax()) {
+            started = true;
+            ReformCloudAPIBungee.getInstance().startProxy(proxyInfo.getProxyGroup());
+            ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS.toMillis(proxyInfo.getProxyGroup().getAutoStart().getAllowAutoStartEverySeconds()));
+                started = false;
+            });
+        }
+
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
                 new PacketOutLoginPlayer(event.getConnection().getUniqueId()));
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
@@ -206,8 +220,8 @@ public final class CloudConnectListener implements Listener {
         proxiedPlayer.setTabHeader(TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&',
                         proxySettings.getTabHeader()
-                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getGroup())
-                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getCloudProcess().getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                 .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                 .replace("%current_server%", proxiedPlayer.getServer().getInfo().getName())
                                 .replace("%online_players_current%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
@@ -217,8 +231,8 @@ public final class CloudConnectListener implements Listener {
                 )), TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&',
                         proxySettings.getTabFooter()
-                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getGroup())
-                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_server_group%", ReformCloudAPIBungee.getInstance().getServerInfo(proxiedPlayer.getServer().getInfo().getName()).getCloudProcess().getGroup())
+                                .replace("%current_proxy_group%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                 .replace("%current_proxy%", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
                                 .replace("%current_server%", proxiedPlayer.getServer().getInfo().getName())
                                 .replace("%online_players_current%", Integer.toString(BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))

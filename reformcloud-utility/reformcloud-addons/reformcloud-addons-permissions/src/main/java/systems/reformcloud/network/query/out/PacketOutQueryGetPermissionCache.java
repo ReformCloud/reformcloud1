@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public final class PacketOutQueryGetPermissionCache extends Packet implements Serializable {
     public PacketOutQueryGetPermissionCache(UUID result) {
-        super("undefined", new Configuration().addProperty("cache",
+        super("undefined", new Configuration().addValue("cache",
                 PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache()));
         super.setResult(result);
     }

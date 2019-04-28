@@ -5,7 +5,6 @@
 package systems.reformcloud.launcher;
 
 import io.netty.util.ResourceLeakDetector;
-import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 import systems.reformcloud.ReformCloudAPIBungee;
@@ -29,10 +28,12 @@ import java.util.Arrays;
  * @author _Klaro | Pasqual K. / created on 01.11.2018
  */
 
-@Getter
 public final class BungeecordBootstrap extends Plugin implements Serializable {
-    @Getter
     public static BungeecordBootstrap instance;
+
+    public static BungeecordBootstrap getInstance() {
+        return BungeecordBootstrap.instance;
+    }
 
     @Override
     public void onLoad() {
@@ -44,7 +45,7 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
 
     @Override
     public void onEnable() {
-        this.getProxy().getConfig().getListeners().forEach(listener -> listener.getServerPriority().clear());
+        this.getProxy().getConfig().getListeners().forEach(listenerInfo -> listenerInfo.getServerPriority().clear());
 
         Arrays.asList(
                 new CloudProxyPingListener(),
@@ -61,7 +62,7 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
         ).forEach(command -> this.getProxy().getPluginManager().registerCommand(this, command));
 
         /*
-         *  Clear the default config servers
+         * Clears the default config servers
          */
         BungeeCord.getInstance().getConfig().getServers().clear();
 

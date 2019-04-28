@@ -4,8 +4,6 @@
 
 package systems.reformcloud.events;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import systems.reformcloud.meta.info.ProxyInfo;
 
 import java.io.Serializable;
@@ -16,8 +14,15 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-@AllArgsConstructor
-@Getter
 public final class CloudProxyAddEvent implements Serializable {
     private ProxyInfo proxyInfo;
+
+    @java.beans.ConstructorProperties({"proxyInfo"})
+    public CloudProxyAddEvent(ProxyInfo proxyInfo) {
+        this.proxyInfo = proxyInfo;
+    }
+
+    public ProxyInfo getProxyInfo() {
+        return this.proxyInfo;
+    }
 }

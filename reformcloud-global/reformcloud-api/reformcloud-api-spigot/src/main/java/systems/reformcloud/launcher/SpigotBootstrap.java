@@ -5,13 +5,13 @@
 package systems.reformcloud.launcher;
 
 import io.netty.util.ResourceLeakDetector;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.libloader.LibraryLoader;
+import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.PlayerConnectListener;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
@@ -24,13 +24,15 @@ import java.lang.reflect.InvocationTargetException;
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-@Getter
 public final class SpigotBootstrap extends JavaPlugin implements Serializable {
-    @Getter
     public static SpigotBootstrap instance;
 
     @Deprecated
     private long start;
+
+    public static SpigotBootstrap getInstance() {
+        return SpigotBootstrap.instance;
+    }
 
     @Override
     public void onLoad() {
@@ -44,6 +46,9 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
     @Override
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(new PlayerConnectListener(), this);
+        this.getServer().getPluginManager().registerEvents(new CloudAddonsListener(), this);
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
         try {
             new ReformCloudAPISpigot();
@@ -78,5 +83,10 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
         }
 
         return commandMap;
+    }
+
+    @Deprecated
+    public long getStart() {
+        return this.start;
     }
 }

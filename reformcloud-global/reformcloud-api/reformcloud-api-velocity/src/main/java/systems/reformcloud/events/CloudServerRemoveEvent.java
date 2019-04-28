@@ -4,8 +4,6 @@
 
 package systems.reformcloud.events;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import systems.reformcloud.meta.info.ServerInfo;
 
 /**
@@ -15,8 +13,15 @@ import systems.reformcloud.meta.info.ServerInfo;
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-@AllArgsConstructor
-@Getter
 public final class CloudServerRemoveEvent {
     private ServerInfo serverInfo;
+
+    @java.beans.ConstructorProperties({"serverInfo"})
+    public CloudServerRemoveEvent(ServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
+
+    public ServerInfo getServerInfo() {
+        return this.serverInfo;
+    }
 }

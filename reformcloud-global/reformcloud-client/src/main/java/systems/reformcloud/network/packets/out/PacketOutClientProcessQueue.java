@@ -24,9 +24,9 @@ public final class PacketOutClientProcessQueue extends Packet implements Seriali
         super(
                 "ClientProcessQueue",
                 new Configuration()
-                        .addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                        .addProperty("servers", servers)
-                        .addProperty("proxies", proxies)
+                        .addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                        .addValue("servers", servers)
+                        .addValue("proxies", proxies)
         );
     }
 }

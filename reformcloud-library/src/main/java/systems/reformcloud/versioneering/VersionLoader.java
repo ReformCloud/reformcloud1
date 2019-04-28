@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -37,9 +38,15 @@ final class VersionLoader implements Serializable {
                 return ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject().get("version").getAsString();
             }
         } catch (final IOException ex) {
+            if (ex instanceof UnknownHostException) {
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve().accept("Cannot resolve update host," +
+                        " make sure you have an internet connection");
+                return StringUtil.REFORM_VERSION;
+            }
+
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while checking newest version", ex);
         }
 
-        return StringUtil.NULL;
+        return StringUtil.REFORM_VERSION;
     }
 }

@@ -5,8 +5,7 @@
 package systems.reformcloud.examples.command;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.CommandSender;
 
 import java.io.Serializable;
 

@@ -14,6 +14,6 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutServerInfoUpdate extends Packet {
     public PacketOutServerInfoUpdate(final ServerInfo serverInfo) {
-        super("ServerInfoUpdate", new Configuration().addProperty("serverInfo", serverInfo));
+        super("ServerInfoUpdate", new Configuration().addValue("serverInfo", serverInfo));
     }
 }

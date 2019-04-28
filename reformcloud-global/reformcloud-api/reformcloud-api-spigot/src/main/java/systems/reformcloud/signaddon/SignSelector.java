@@ -8,13 +8,12 @@ import com.google.common.base.Enums;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.reflect.TypeToken;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.EventHandler;
@@ -34,6 +33,7 @@ import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.network.packets.PacketOutDeleteSign;
 import systems.reformcloud.network.query.out.PacketOutQueryGetSigns;
 import systems.reformcloud.signs.Sign;
 import systems.reformcloud.signs.SignLayout;
@@ -41,19 +41,20 @@ import systems.reformcloud.signs.SignLayoutConfiguration;
 import systems.reformcloud.signs.SignPosition;
 import systems.reformcloud.signs.map.TemplateMap;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+import systems.reformcloud.utility.map.MapUtility;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.12.2018
  */
 
-@Getter
-@Setter
 public final class SignSelector {
-    @Getter
     private static SignSelector instance;
 
     private SignLayoutConfiguration signLayoutConfiguration;
@@ -79,7 +80,6 @@ public final class SignSelector {
                     this.signMap = configuration.getValue("signMap", new TypeToken<Map<UUID, Sign>>() {
                     }.getType());
 
-                    SpigotBootstrap.getInstance().getServer().getMessenger().registerOutgoingPluginChannel(SpigotBootstrap.getInstance(), "BungeeCord");
                     SpigotBootstrap.getInstance().getServer().getPluginManager().registerEvents(new ListenerImpl(), SpigotBootstrap.getInstance());
 
                     CommandReformSigns commandReformSigns = new CommandReformSigns();
@@ -106,6 +106,10 @@ public final class SignSelector {
                     instance = null;
                     SpigotBootstrap.getInstance().getServer().getPluginCommand("reformsigns").unregister(SpigotBootstrap.getInstance().getCommandMap());
                 });
+    }
+
+    public static SignSelector getInstance() {
+        return SignSelector.instance;
     }
 
     public void updateAll() {
@@ -159,24 +163,45 @@ public final class SignSelector {
     private void set(final org.bukkit.block.Sign sign, SignLayout layout, final ServerInfo serverInfo, final ServerGroup serverGroup) {
         if (sign == null)
             return;
-        org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
-        if (signData == null)
-            return;
 
-        if (layout == null && serverInfo == null && serverGroup == null) {
-            String[] lines = new String[]{" ", " ", " ", " "};
-            SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> e.sendSignChange(sign.getLocation(), lines));
-            return;
-        }
+        try {
+            org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
+            if (signData != null) {
+                if (layout == null && serverInfo == null && serverGroup == null) {
+                    String[] lines = new String[]{" ", " ", " ", " "};
+                    SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> e.sendSignChange(sign.getLocation(), lines));
+                    return;
+                }
 
-        if (signData.isWallSign()) {
-            Block block = sign.getLocation().getBlock().getRelative(signData.getAttachedFace());
-            Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
-            if (material != null) {
-                block.setType(material);
-                BlockState blockState = block.getState();
-                blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
-                blockState.update();
+                if (signData.isWallSign()) {
+                    Block block = sign.getLocation().getBlock().getRelative(signData.getAttachedFace());
+                    Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
+                    if (material != null) {
+                        block.setType(material);
+                        BlockState blockState = block.getState();
+                        blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
+                        blockState.update(true);
+                    }
+                }
+            }
+        } catch (final Throwable ignored) {
+            try {
+                sign.setEditable(true);
+                BlockFace blockFace = getFace(sign.getLocation().getBlock().getBlockData().getAsString());
+                if (blockFace != null) {
+                    BlockFace opposite = getOpposite(blockFace);
+                    if (!opposite.equals(BlockFace.SELF)) {
+                        Block behind = sign.getLocation().getBlock().getRelative(opposite);
+                        Material material = Enums.getIfPresent(Material.class, layout.getMaterialName().toUpperCase()).orNull();
+                        if (material != null) {
+                            behind.setType(material);
+                            BlockState blockState = behind.getState();
+                            blockState.setData(new MaterialData(material, (byte) layout.getMaterialData()));
+                            blockState.update(true);
+                        }
+                    }
+                }
+            } catch (final Throwable ignored1) {
             }
         }
 
@@ -198,9 +223,41 @@ public final class SignSelector {
                         .replace("%online_players%", Integer.toString(serverInfo.getOnlinePlayers().size()))
                         .replace("%max_players%", Integer.toString(serverInfo.getServerGroup().getMaxPlayers()))
                         .replace("%state%", serverInfo.getServerState().name())
+                        .replace("%host%", serverInfo.getHost())
+                        .replace("%port%", Integer.toString(serverInfo.getPort()))
+                        .replace("%template%", serverInfo.getCloudProcess().getLoadedTemplate().getName())
+                        .replace("%max_memory%", Integer.toString(serverInfo.getMaxMemory()))
+                        .replace("%version%", serverInfo.getServerGroup().getSpigotVersions().getVersion())
+                        .replace("%version_name%", serverInfo.getServerGroup().getSpigotVersions().getName())
                         .replace("%client%", serverInfo.getCloudProcess().getClient()));
             }
             this.updateSignForAllPlayers(sign, lines);
+        }
+    }
+
+    private BlockFace getFace(String in) {
+        if (in == null)
+            return null;
+
+        Matcher matcher = Pattern.compile("(.*)\\[facing=(.*),waterlogged=(.*)]").matcher(in);
+        return matcher.matches() ? Enums.getIfPresent(BlockFace.class, matcher.group(2).toUpperCase()).orNull() : null;
+    }
+
+    private BlockFace getOpposite(BlockFace blockFace) {
+        if (blockFace == null)
+            return BlockFace.SELF;
+
+        switch (blockFace) {
+            case EAST:
+                return BlockFace.WEST;
+            case NORTH:
+                return BlockFace.SOUTH;
+            case WEST:
+                return BlockFace.EAST;
+            case SOUTH:
+                return BlockFace.NORTH;
+            default:
+                return BlockFace.SELF;
         }
     }
 
@@ -209,6 +266,20 @@ public final class SignSelector {
             if (sign.getServerInfo() != null && sign.getServerInfo().getCloudProcess().getName().equals(serverInfo.getCloudProcess().getName()))
                 return true;
         return false;
+    }
+
+    public int deleteAllSigns(String group) {
+        Collection<Sign> signs = MapUtility.filterAll(this.signMap.values(), e -> e.getSignPosition().getTargetGroup().equals(group));
+        if (signs.isEmpty())
+            return 0;
+
+        int deleted = 0;
+        for (Sign sign : signs) {
+            ReformCloudAPISpigot.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutDeleteSign(sign));
+            deleted++;
+        }
+
+        return deleted;
     }
 
     private SignLayout.TemplateLayout isTemplateLayoutAvailable(ServerInfo serverInfo) {
@@ -223,9 +294,7 @@ public final class SignSelector {
                 .findFirst()
                 .orElse(null);
         if (templateTemplateMap != null) {
-            SignLayout.TemplateLayout templateLayout = templateTemplateMap.getLayout();
-            if (templateLayout != null)
-                return templateLayout;
+            return templateTemplateMap.getLayout();
         }
 
         return null;
@@ -268,8 +337,9 @@ public final class SignSelector {
 
     private org.bukkit.block.Sign toNormalSign(final SignPosition position) {
         final Block block = toLocation(position).getBlock();
-        if (!(block.getState() instanceof org.bukkit.block.Sign))
+        if (block == null || !(block.getState() instanceof org.bukkit.block.Sign))
             return null;
+
         return (org.bukkit.block.Sign) block.getState();
     }
 
@@ -314,6 +384,30 @@ public final class SignSelector {
         return getSign(toSignPosition(null, location));
     }
 
+    public SignLayoutConfiguration getSignLayoutConfiguration() {
+        return this.signLayoutConfiguration;
+    }
+
+    public Worker getWorker() {
+        return this.worker;
+    }
+
+    public Map<UUID, Sign> getSignMap() {
+        return this.signMap;
+    }
+
+    public void setSignLayoutConfiguration(SignLayoutConfiguration signLayoutConfiguration) {
+        this.signLayoutConfiguration = signLayoutConfiguration;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
+    public void setSignMap(Map<UUID, Sign> signMap) {
+        this.signMap = signMap;
+    }
+
     private class Worker extends Thread {
         Worker(final int animations) {
             this.animations = animations;
@@ -331,8 +425,7 @@ public final class SignSelector {
                     if (!e.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
                             && !SignSelector.this.isOnSign(e)) {
                         final Sign sign = findFreeSign(e.getServerGroup().getName());
-                        if (sign != null && !sign.getSignPosition().getTargetGroup()
-                                .equals(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getName()))
+                        if (sign != null)
                             SignSelector.this.updateSign(sign, e);
                     }
                 });
@@ -373,8 +466,7 @@ public final class SignSelector {
         @EventHandler(priority = EventPriority.LOW)
         public void handle(final PlayerInteractEvent event) {
             if ((event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-                    && (event.getClickedBlock().getType().equals(Material.SIGN)
-                    || event.getClickedBlock().getType().equals(Material.WALL_SIGN))) {
+                    && event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof org.bukkit.block.Sign) {
                 final Sign sign = getSign(event.getClickedBlock().getLocation());
                 if (sign != null && sign.getServerInfo() != null && !sign.getServerInfo().getServerGroup().isMaintenance()) {
                     ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();

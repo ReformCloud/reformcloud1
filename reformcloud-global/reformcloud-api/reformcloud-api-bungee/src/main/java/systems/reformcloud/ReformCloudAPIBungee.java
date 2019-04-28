@@ -5,8 +5,7 @@
 package systems.reformcloud;
 
 import com.google.common.base.Enums;
-import lombok.Getter;
-import lombok.Setter;
+import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -18,19 +17,29 @@ import systems.reformcloud.api.save.ISaveAPIService;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.auto.start.AutoStart;
+import systems.reformcloud.meta.auto.stop.AutoStop;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.dev.DevProcess;
+import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
+import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
+import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
+import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
 import systems.reformcloud.network.api.event.NetworkEventAdapter;
@@ -39,20 +48,20 @@ import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
-import systems.reformcloud.network.packets.PacketOutStartGameServer;
-import systems.reformcloud.network.packets.PacketOutStartProxy;
-import systems.reformcloud.network.packets.PacketOutUpdateOfflinePlayer;
-import systems.reformcloud.network.packets.PacketOutUpdateOnlinePlayer;
+import systems.reformcloud.network.packets.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
+import systems.reformcloud.network.query.out.PacketOutQueryStartQueuedProcess;
 import systems.reformcloud.player.api.PlayerProvider;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
+import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.defaults.DefaultCloudService;
 
 import java.io.Serializable;
 import java.nio.file.Paths;
@@ -65,10 +74,7 @@ import java.util.stream.Collectors;
  * @author _Klaro | Pasqual K. / created on 01.11.2018
  */
 
-@Setter
-@Getter
 public final class ReformCloudAPIBungee implements IAPIService, Serializable {
-    @Getter
     public static ReformCloudAPIBungee instance;
 
     private final NettySocketClient nettySocketClient;
@@ -103,6 +109,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
 
         ISaveAPIService.instance.set(new SaveAPIImpl());
         IAPIService.instance.set(this);
+        new DefaultCloudService(this);
         IDefaultPlayerProvider.instance.set(new PlayerProvider());
 
         Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
@@ -129,6 +136,8 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 .registerHandler("KickPlayer", new PacketInKickPlayer())
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("SendPlayerMessage", new PacketInSendPlayerMessage())
+                .registerHandler("DisableIcons", new PacketInDisableIcons())
+                .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
@@ -138,6 +147,20 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 ethernetAddress, channelHandler, configuration.getBooleanValue("ssl"),
                 configuration.getStringValue("controllerKey"), this.proxyStartupInfo.getName()
         );
+
+        if (this.proxyInfo.getProxyGroup().getAutoStop().isEnabled()) {
+            ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, this.proxyInfo.getProxyGroup().getAutoStop().getCheckEverySeconds());
+                if (BungeecordBootstrap.getInstance().getProxy().getOnlineCount() == 0) {
+                    if (this.getAllRegisteredProxies(proxyInfo.getCloudProcess().getGroup()).size() > proxyInfo.getProxyGroup().getMinOnline())
+                        BungeecordBootstrap.getInstance().getProxy().stop();
+                }
+            });
+        }
+    }
+
+    public static ReformCloudAPIBungee getInstance() {
+        return ReformCloudAPIBungee.instance;
     }
 
     @Override
@@ -193,6 +216,314 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
     }
 
     @Override
+    public boolean stopProxy(String name) {
+        return channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutStopProcess(name));
+    }
+
+    @Override
+    public boolean stopProxy(ProxyInfo proxyInfo) {
+        return stopProxy(proxyInfo.getCloudProcess().getName());
+    }
+
+    @Override
+    public boolean stopServer(String name) {
+        return channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutStopProcess(name));
+    }
+
+    @Override
+    public boolean stopServer(ServerInfo serverInfo) {
+        return stopServer(serverInfo.getCloudProcess().getName());
+    }
+
+    @Override
+    public void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, SpigotVersions spigotVersions) {
+        ServerGroup serverGroup = new ServerGroup(
+                name,
+                "ReformCloud",
+                null,
+                new ArrayList<>(clients),
+                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                512,
+                1,
+                -1,
+                50,
+                41000,
+                true,
+                false,
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+                serverModeType,
+                spigotVersions
+        );
+        createServerGroup(serverGroup);
+    }
+
+    @Override
+    public void createServerGroup(ServerGroup serverGroup) {
+        if (this.internalCloudNetwork.getServerGroups().get(serverGroup.getName()) != null)
+            return;
+
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateServerGroup(serverGroup));
+    }
+
+    @Override
+    public void createServerGroup(String name) {
+        createServerGroup(name, ServerModeType.DYNAMIC, Arrays.asList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+    }
+
+    @Override
+    public void createServerGroup(String name, ServerModeType serverModeType, Collection<Template> templates) {
+        ServerGroup serverGroup = new ServerGroup(
+                name,
+                "ReformCloud",
+                null,
+                new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
+                new ArrayList<>(templates),
+                512,
+                1,
+                -1,
+                50,
+                41000,
+                true,
+                false,
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+                serverModeType,
+                SpigotVersions.SPIGOT_1_8_8
+        );
+        createServerGroup(serverGroup);
+    }
+
+    @Override
+    public void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, Collection<Template> templates, SpigotVersions spigotVersions) {
+        ServerGroup serverGroup = new ServerGroup(
+                name,
+                "ReformCloud",
+                null,
+                new ArrayList<>(clients),
+                new ArrayList<>(templates),
+                512,
+                1,
+                -1,
+                50,
+                41000,
+                true,
+                false,
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+                serverModeType,
+                spigotVersions
+        );
+        createServerGroup(serverGroup);
+    }
+
+    @Override
+    public void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, ProxyVersions proxyVersions) {
+        ProxyGroup proxyGroup = new ProxyGroup(
+                name,
+                new ArrayList<>(clients),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                proxyModeType,
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+                false,
+                true,
+                false,
+                25565,
+                1,
+                -1,
+                512,
+                128,
+                proxyVersions
+        );
+        createProxyGroup(proxyGroup);
+    }
+
+    @Override
+    public void createProxyGroup(ProxyGroup proxyGroup) {
+        if (this.internalCloudNetwork.getProxyGroups().get(proxyGroup.getName()) != null)
+            return;
+
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateProxyGroup(proxyGroup));
+    }
+
+    @Override
+    public void createProxyGroup(String name) {
+        ProxyGroup proxyGroup = new ProxyGroup(
+                name,
+                new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
+                new ArrayList<>(),
+                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                new ArrayList<>(),
+                ProxyModeType.DYNAMIC,
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+                false,
+                true,
+                false,
+                25565,
+                1,
+                -1,
+                512,
+                128,
+                ProxyVersions.BUNGEECORD
+        );
+        createProxyGroup(proxyGroup);
+    }
+
+    @Override
+    public void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<Template> templates) {
+        ProxyGroup proxyGroup = new ProxyGroup(
+                name,
+                new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
+                new ArrayList<>(),
+                new ArrayList<>(templates),
+                new ArrayList<>(),
+                proxyModeType,
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+                false,
+                true,
+                false,
+                25565,
+                1,
+                -1,
+                512,
+                128,
+                ProxyVersions.BUNGEECORD
+        );
+        createProxyGroup(proxyGroup);
+    }
+
+    @Override
+    public void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, Collection<Template> templates, ProxyVersions proxyVersions) {
+        ProxyGroup proxyGroup = new ProxyGroup(
+                name,
+                new ArrayList<>(clients),
+                new ArrayList<>(),
+                new ArrayList<>(templates),
+                new ArrayList<>(),
+                proxyModeType,
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+                false,
+                true,
+                false,
+                25565,
+                1,
+                -1,
+                512,
+                128,
+                proxyVersions
+        );
+        createProxyGroup(proxyGroup);
+    }
+
+    @Override
+    public void createClient(String name, String host) {
+        Client client = new Client(
+                name,
+                host,
+                null
+        );
+        createClient(client);
+    }
+
+    @Override
+    public void createClient(String name) {
+        Client client = new Client(
+                name,
+                "127.0.0.1",
+                null
+        );
+        createClient(client);
+    }
+
+    @Override
+    public void createClient(Client client) {
+        if (this.internalCloudNetwork.getClients().get(client.getName()) != null)
+            return;
+
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateClient(client));
+    }
+
+    @Override
+    public void updateServerInfo(ServerInfo serverInfo) {
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateServerInfo(serverInfo));
+    }
+
+    @Override
+    public void updateProxyInfo(ProxyInfo proxyInfo) {
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateProxyInfo(proxyInfo));
+    }
+
+    @Override
+    public void updateServerGroup(ServerGroup serverGroup) {
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateServerGroup(serverGroup));
+    }
+
+    @Override
+    public void updateProxyGroup(ProxyGroup proxyGroup) {
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateProxyGroup(proxyGroup));
+    }
+
+    @Override
+    public void createWebUser(String name) {
+        String password = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
+                + StringUtil.EMPTY
+                + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE);
+
+        WebUser webUser = new WebUser(name, StringEncrypt.encryptSHA512(password), new HashMap<>());
+        createWebUser(webUser);
+    }
+
+    @Override
+    public void createWebUser(String name, String password) {
+        WebUser webUser = new WebUser(name, StringEncrypt.encryptSHA512(password), new HashMap<>());
+        createWebUser(webUser);
+    }
+
+    @Override
+    public void createWebUser(String name, String password, Map<String, Boolean> permissions) {
+        WebUser webUser = new WebUser(name, StringEncrypt.encryptSHA512(password), permissions);
+        createWebUser(webUser);
+    }
+
+    @Override
+    public void createWebUser(WebUser webUser) {
+        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateWebUser(webUser));
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, "default", new Configuration()),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, template, new Configuration()),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
+    }
+
+    @Override
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
+        return this.createPacketFuture(
+                new PacketOutQueryStartQueuedProcess(serverGroup, "default", preConfig),
+                "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
+        });
+    }
+
+    @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
         if (this.onlinePlayers.containsKey(uniqueId))
             return this.onlinePlayers.get(uniqueId);
@@ -201,7 +532,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 new PacketOutQueryGetOnlinePlayer(uniqueId),
                 "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null)
             return null;
 
@@ -768,5 +1099,81 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
         AtomicInteger atomicInteger = new AtomicInteger(0);
         this.getAllProxyGroups().forEach(e -> atomicInteger.addAndGet(e.getMaxPlayers()));
         return atomicInteger.get();
+    }
+
+    public NettySocketClient getNettySocketClient() {
+        return this.nettySocketClient;
+    }
+
+    public ChannelHandler getChannelHandler() {
+        return this.channelHandler;
+    }
+
+    public ProxySettings getProxySettings() {
+        return this.proxySettings;
+    }
+
+    public ProxyStartupInfo getProxyStartupInfo() {
+        return this.proxyStartupInfo;
+    }
+
+    public ProxyInfo getProxyInfo() {
+        return this.proxyInfo;
+    }
+
+    public InternalCloudNetwork getInternalCloudNetwork() {
+        return this.internalCloudNetwork;
+    }
+
+    public PermissionCache getPermissionCache() {
+        return this.permissionCache;
+    }
+
+    public Map<UUID, OnlinePlayer> getOnlinePlayers() {
+        return this.onlinePlayers;
+    }
+
+    public Map<UUID, PermissionHolder> getCachedPermissionHolders() {
+        return this.cachedPermissionHolders;
+    }
+
+    public List<IngameCommand> getRegisteredIngameCommands() {
+        return this.registeredIngameCommands;
+    }
+
+    public long getInternalTime() {
+        return this.internalTime;
+    }
+
+    public void setProxySettings(ProxySettings proxySettings) {
+        this.proxySettings = proxySettings;
+    }
+
+    public void setProxyInfo(ProxyInfo proxyInfo) {
+        this.proxyInfo = proxyInfo;
+    }
+
+    public void setInternalCloudNetwork(InternalCloudNetwork internalCloudNetwork) {
+        this.internalCloudNetwork = internalCloudNetwork;
+    }
+
+    public void setPermissionCache(PermissionCache permissionCache) {
+        this.permissionCache = permissionCache;
+    }
+
+    public void setOnlinePlayers(Map<UUID, OnlinePlayer> onlinePlayers) {
+        this.onlinePlayers = onlinePlayers;
+    }
+
+    public void setCachedPermissionHolders(Map<UUID, PermissionHolder> cachedPermissionHolders) {
+        this.cachedPermissionHolders = cachedPermissionHolders;
+    }
+
+    public void setRegisteredIngameCommands(List<IngameCommand> registeredIngameCommands) {
+        this.registeredIngameCommands = registeredIngameCommands;
+    }
+
+    public void setInternalTime(long internalTime) {
+        this.internalTime = internalTime;
     }
 }

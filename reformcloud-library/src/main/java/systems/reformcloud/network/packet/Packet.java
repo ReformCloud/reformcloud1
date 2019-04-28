@@ -5,9 +5,6 @@
 package systems.reformcloud.network.packet;
 
 import io.netty.buffer.ByteBuf;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.utility.StringUtil;
@@ -22,15 +19,13 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-@Getter
-@Setter
 public class Packet implements Serializable {
     private static final long serialVersionUID = -30847898951064299L;
 
     /**
      * Returns an empty packet which doesn't contains any data
      */
-    public static final Packet EMPTY_PACKET = new Packet(StringUtil.NULL, new Configuration());
+    static final Packet EMPTY_PACKET = new Packet(StringUtil.NULL, new Configuration());
 
     /**
      * The configuration of the packet
@@ -50,23 +45,23 @@ public class Packet implements Serializable {
     public Packet() {
     }
 
-    public Packet(@NonNull final String type, @NonNull Configuration configuration) {
+    public Packet(final String type, Configuration configuration) {
         this.type = type;
         this.configuration = configuration;
     }
 
-    public Packet(@NonNull final String type, @NonNull Configuration configuration, @NonNull UUID resultID) {
+    public Packet(final String type, Configuration configuration, UUID resultID) {
         this.type = type;
         this.configuration = configuration;
         this.result = resultID;
     }
 
-    public Packet(@NonNull final String type, @NonNull Map<? extends String, ?> configuration) {
+    public Packet(final String type, Map<? extends String, ?> configuration) {
         this.type = type;
         this.configuration = Configuration.fromMap(configuration);
     }
 
-    public Packet(@NonNull final String type, @NonNull Map<? extends String, ?> configuration, @NonNull UUID resultID) {
+    public Packet(final String type, Map<? extends String, ?> configuration, UUID resultID) {
         this.type = type;
         this.configuration = Configuration.fromMap(configuration);
         this.result = resultID;
@@ -77,7 +72,7 @@ public class Packet implements Serializable {
      *
      * @param byteBuf       The byte buf containing the packet information
      */
-    public void read(@NonNull ByteBuf byteBuf) {
+    public void read(ByteBuf byteBuf) {
         if (byteBuf.readableBytes() != 0) {
             final Packet packet = ReformCloudLibraryService.GSON.fromJson(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8), TypeTokenAdaptor.getPACKET_TYPE());
             this.configuration = packet.configuration;
@@ -91,7 +86,7 @@ public class Packet implements Serializable {
      *
      * @param byteBuf   The byte buf where the packet should be written to
      */
-    public void write(@NonNull ByteBuf byteBuf) {
+    public void write(ByteBuf byteBuf) {
         byte[] bytes = ReformCloudLibraryService.GSON.toJson(this).getBytes(StandardCharsets.UTF_8);
         this.writeLongs(bytes.length, byteBuf).writeBytes(bytes);
     }
@@ -122,5 +117,29 @@ public class Packet implements Serializable {
         } while ((read & 0b10000000) != 0);
 
         return result;
+    }
+
+    public Configuration getConfiguration() {
+        return this.configuration;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public UUID getResult() {
+        return this.result;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setResult(UUID result) {
+        this.result = result;
     }
 }

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>reformcloud-parent</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.4</version>
+        <version>1.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -30,6 +30,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${dependency.guava.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -49,7 +50,7 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-yaml</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
             <scope>provided</scope>
         </dependency>
 
@@ -57,13 +58,6 @@
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>${dependency.jline.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${dependency.quartz.version}</version>
             <scope>provided</scope>
         </dependency>
 

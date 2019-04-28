@@ -12,3 +12,8 @@ commands:
       - rs
       - signs
       - cloudsigns
+  mobs:
+    aliases:
+      - cloudmobs
+      - reformmobbs
+      - rm

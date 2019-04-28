@@ -4,7 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -41,7 +40,6 @@ import java.util.Arrays;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-@Getter
 public final class ProxyStartupHandler implements Serializable {
     private ProxyStartupInfo proxyStartupInfo;
     private Path path;
@@ -66,7 +64,15 @@ public final class ProxyStartupHandler implements Serializable {
         this.startupTime = System.currentTimeMillis();
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.proxyStartupInfo = proxyStartupInfo;
-        this.path = Paths.get("reformcloud/temp/proxies/" + proxyStartupInfo.getName() + "-" + proxyStartupInfo.getUid());
+
+        if (this.proxyStartupInfo.getProxyGroup().isStatic()) {
+            this.path = Paths.get("reformcloud/static/proxies/" + proxyStartupInfo.getName());
+            FileUtils.createDirectory(path);
+        } else {
+            this.path = Paths.get("reformcloud/temp/proxies/" + proxyStartupInfo.getName() + "-" + proxyStartupInfo.getUid());
+            FileUtils.deleteFullDirectory(path);
+            FileUtils.createDirectory(path);
+        }
     }
 
     /**
@@ -84,30 +90,32 @@ public final class ProxyStartupHandler implements Serializable {
             template = this.proxyStartupInfo.getProxyGroup().randomTemplate();
 
         this.processStartupStage = ProcessStartupStage.COPY;
-        this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
-                .replace("%path%", this.path + ""));
-        if (template.getTemplateBackend().equals(TemplateBackend.URL)
-                && template.getTemplate_url() != null) {
-            new TemplatePreparer(path + "/template.zip").loadTemplate(template.getTemplate_url());
-            try {
-                ZoneInformationProtocolUtility.unZip(new File(path + "/template.zip"), path + "");
-            } catch (final Exception ex) {
-                ex.printStackTrace();
+        if (!this.proxyStartupInfo.getProxyGroup().isStatic()) {
+            this.sendMessage(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_copies_template()
+                    .replace("%path%", this.path + ""));
+            if (template.getTemplateBackend().equals(TemplateBackend.URL)
+                    && template.getTemplate_url() != null) {
+                new TemplatePreparer(path + "/template.zip").loadTemplate(template.getTemplate_url());
+                try {
+                    ZoneInformationProtocolUtility.unZip(new File(path + "/template.zip"), path + "");
+                } catch (final Exception ex) {
+                    ex.printStackTrace();
+                    return false;
+                }
+            } else if (template.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                FileUtils.copyAllFiles(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/" + template.getName()), path + StringUtil.EMPTY);
+            } else if (template.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+                ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                        new PacketOutGetControllerTemplate("proxy",
+                                this.proxyStartupInfo.getProxyGroup().getName(),
+                                this.template.getName(),
+                                this.proxyStartupInfo.getUid(),
+                                this.proxyStartupInfo.getName())
+                );
+                ReformCloudLibraryService.sleep(50);
+            } else {
                 return false;
             }
-        } else if (template.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-            FileUtils.copyAllFiles(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/" + template.getName()), path + StringUtil.EMPTY);
-        } else if (template.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
-                    new PacketOutGetControllerTemplate("proxy",
-                            this.proxyStartupInfo.getProxyGroup().getName(),
-                            this.template.getName(),
-                            this.proxyStartupInfo.getUid(),
-                            this.proxyStartupInfo.getName())
-            );
-            ReformCloudLibraryService.sleep(50);
-        } else {
-            return false;
         }
 
         FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
@@ -233,19 +241,21 @@ public final class ProxyStartupHandler implements Serializable {
         }
 
         ProxyInfo proxyInfo = new ProxyInfo(
-                new CloudProcess(proxyStartupInfo.getName(), proxyStartupInfo.getUid(), ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+                new CloudProcess(proxyStartupInfo.getName(), proxyStartupInfo.getUid(),
+                        ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+                        proxyStartupInfo.getProxyGroup().getName(), proxyStartupInfo.getConfiguration(),
                         template, proxyStartupInfo.getId()),
-                proxyStartupInfo.getProxyGroup(), proxyStartupInfo.getProxyGroup().getName(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
+                proxyStartupInfo.getProxyGroup(), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
                 this.port, 0, proxyStartupInfo.getProxyGroup().getMemory(), false, new ArrayList<>()
         );
 
         new Configuration()
-                .addProperty("info", proxyInfo)
-                .addProperty("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
-                .addStringProperty("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
-                .addBooleanProperty("ssl", ReformCloudClient.getInstance().isSsl())
-                .addBooleanProperty("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
-                .addProperty("startupInfo", proxyStartupInfo)
+                .addValue("info", proxyInfo)
+                .addValue("address", ReformCloudClient.getInstance().getCloudConfiguration().getEthernetAddress())
+                .addStringValue("controllerKey", ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
+                .addBooleanValue("ssl", ReformCloudClient.getInstance().isSsl())
+                .addBooleanValue("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
+                .addValue("startupInfo", proxyStartupInfo)
 
                 .write(Paths.get(path + "/reformcloud/config.json"));
 
@@ -269,7 +279,7 @@ public final class ProxyStartupHandler implements Serializable {
                         "BungeeCord.jar"
                 };
 
-        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getGroup(), cmd, after)
+        String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getCloudProcess().getGroup(), cmd, after)
                 .replace("%port%", Integer.toString(port))
                 .replace("%host%", ReformCloudClient.getInstance().getCloudConfiguration().getStartIP())
                 .replace("%name%", proxyStartupInfo.getName())
@@ -354,7 +364,7 @@ public final class ProxyStartupHandler implements Serializable {
             }
         }
 
-        if (this.template.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
+        if (this.template.getTemplateBackend().equals(TemplateBackend.CONTROLLER) && !proxyStartupInfo.getProxyGroup().isStatic()) {
             byte[] template = ZoneInformationProtocolUtility.zipDirectoryToBytes(this.path);
             ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized(
                     "ReformCloudController", new PacketOutUpdateControllerTemplate(
@@ -364,13 +374,19 @@ public final class ProxyStartupHandler implements Serializable {
             );
         }
 
-        FileUtils.deleteFullDirectory(path);
+        if (!this.proxyStartupInfo.getProxyGroup().isStatic())
+            FileUtils.deleteFullDirectory(path);
+        else
+            FileUtils.deleteFileIfExists(proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)
+                    ? path + "/plugins/ReformAPIVelocity.jar"
+                    : path + "/plugins/ReformAPIBungee.jar");
 
         final ProxyInfo proxyInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
                 .getServerProcessManager().getRegisteredProxyByUID(this.proxyStartupInfo.getUid());
 
-        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                new PacketOutRemoveProcess(proxyInfo));
+        if (update)
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                    new PacketOutRemoveProcess(proxyInfo));
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterProxyProcess(this.proxyStartupInfo.getName());
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterProxyProcess(
@@ -444,5 +460,45 @@ public final class ProxyStartupHandler implements Serializable {
         }
 
         return ReformCloudClient.getInstance().getLoggerProvider().uploadLog(stringBuilder.substring(0));
+    }
+
+    public ProxyStartupInfo getProxyStartupInfo() {
+        return this.proxyStartupInfo;
+    }
+
+    public Path getPath() {
+        return this.path;
+    }
+
+    public Process getProcess() {
+        return this.process;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public boolean isToShutdown() {
+        return this.toShutdown;
+    }
+
+    public ScreenHandler getScreenHandler() {
+        return this.screenHandler;
+    }
+
+    public ProcessStartupStage getProcessStartupStage() {
+        return this.processStartupStage;
+    }
+
+    public Template getTemplate() {
+        return this.template;
+    }
+
+    public long getStartupTime() {
+        return this.startupTime;
+    }
+
+    public long getFinishedTime() {
+        return this.finishedTime;
     }
 }

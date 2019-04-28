@@ -31,7 +31,7 @@ public final class RestAPIPermissionCheck implements Serializable, WebHandler {
 
         final HttpHeaders httpHeaders = httpRequest.headers();
         if (!httpHeaders.contains("-XUser") || !httpHeaders.contains("-XPassword") || !httpHeaders.contains("-XPermission")) {
-            answer.addProperty("response", Arrays.asList("No -XUser, -XPassword or -XPermission provided"));
+            answer.addValue("response", Arrays.asList("No -XUser, -XPassword or -XPermission provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -44,25 +44,25 @@ public final class RestAPIPermissionCheck implements Serializable, WebHandler {
                 .findFirst()
                 .orElse(null);
         if (webUser == null) {
-            answer.addProperty("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!webUser.getPassword().equals(StringEncrypt.encryptSHA512(httpHeaders.get("-XPassword")))) {
-            answer.addProperty("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (RestAPIUtility.hasPermission(webUser, httpHeaders.get("-XPermission"))) {
-            answer.addProperty("success", true).addProperty("response", Arrays.asList("Permission is set"));
+            answer.addValue("success", true).addValue("response", Arrays.asList("Permission is set"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;
         }
 
-        answer.addProperty("success", true).addProperty("response", Arrays.asList("Permission isn't set"));
+        answer.addValue("success", true).addValue("response", Arrays.asList("Permission isn't set"));
         fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
         return fullHttpResponse;
     }

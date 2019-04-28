@@ -4,7 +4,6 @@
 
 package systems.reformcloud.addons;
 
-import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
 import systems.reformcloud.addons.extendable.AddonExtendable;
@@ -25,7 +24,6 @@ import java.util.jar.JarFile;
  */
 
 public class AddonParallelLoader extends AddonExtendable {
-    @Getter
     private Queue<JavaAddon> javaAddons = new ConcurrentLinkedDeque<>();
 
     /**
@@ -212,5 +210,9 @@ public class AddonParallelLoader extends AddonExtendable {
         }
 
         return moduleConfigs;
+    }
+
+    public Queue<JavaAddon> getJavaAddons() {
+        return this.javaAddons;
     }
 }

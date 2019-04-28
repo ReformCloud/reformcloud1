@@ -4,15 +4,12 @@
 
 package systems.reformcloud.libloader.utility;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.01.2019
  */
 
-@Getter
 public abstract class Dependency implements Serializable {
     private static final long serialVersionUID = 8492066666707362125L;
 
@@ -51,4 +48,8 @@ public abstract class Dependency implements Serializable {
      * @return      The version id of the dependency
      */
     public abstract String getVersion();
+
+    public String getDownload_url() {
+        return this.download_url;
+    }
 }

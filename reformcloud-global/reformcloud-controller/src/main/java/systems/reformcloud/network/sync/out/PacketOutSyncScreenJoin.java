@@ -20,7 +20,7 @@ public final class PacketOutSyncScreenJoin extends Packet implements Serializabl
         super(
                 "JoinScreen",
                 new Configuration()
-                        .addStringProperty("name", name)
+                        .addStringValue("name", name)
         );
     }
 }

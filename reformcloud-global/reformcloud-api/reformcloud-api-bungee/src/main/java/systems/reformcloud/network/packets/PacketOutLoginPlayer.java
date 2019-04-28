@@ -15,6 +15,6 @@ import java.util.UUID;
 
 public final class PacketOutLoginPlayer extends Packet {
     public PacketOutLoginPlayer(final UUID uuid) {
-        super("LoginPlayer", new Configuration().addProperty("uuid", uuid));
+        super("LoginPlayer", new Configuration().addValue("uuid", uuid));
     }
 }

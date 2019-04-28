@@ -19,7 +19,7 @@ public final class PacketOutGetLog extends Packet implements Serializable {
     public PacketOutGetLog(final String url, final String process) {
         super(
                 "ProcessLog",
-                new Configuration().addStringProperty("process", process).addStringProperty("url", url)
+                new Configuration().addStringValue("process", process).addStringValue("url", url)
         );
     }
 }

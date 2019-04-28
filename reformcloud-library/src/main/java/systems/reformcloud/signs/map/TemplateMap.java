@@ -4,17 +4,12 @@
 
 package systems.reformcloud.signs.map;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.02.2019
  */
 
-@AllArgsConstructor
-@Getter
 public final class TemplateMap<F, S, T> implements Serializable {
     /**
      * The name of the group
@@ -30,4 +25,23 @@ public final class TemplateMap<F, S, T> implements Serializable {
      * The template sign layout
      */
     private T layout;
+
+    @java.beans.ConstructorProperties({"group", "template", "layout"})
+    public TemplateMap(F group, S template, T layout) {
+        this.group = group;
+        this.template = template;
+        this.layout = layout;
+    }
+
+    public F getGroup() {
+        return this.group;
+    }
+
+    public S getTemplate() {
+        return this.template;
+    }
+
+    public T getLayout() {
+        return this.layout;
+    }
 }

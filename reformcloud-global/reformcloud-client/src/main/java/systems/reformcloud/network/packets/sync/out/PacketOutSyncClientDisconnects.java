@@ -20,7 +20,7 @@ public final class PacketOutSyncClientDisconnects extends Packet implements Seri
     public PacketOutSyncClientDisconnects() {
         super(
                 "ClientDisconnects",
-                new Configuration().addStringProperty("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                new Configuration().addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
         );
     }
 }

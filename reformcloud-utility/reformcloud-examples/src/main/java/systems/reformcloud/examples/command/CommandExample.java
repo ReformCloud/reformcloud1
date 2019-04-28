@@ -4,8 +4,8 @@
 
 package systems.reformcloud.examples.command;
 
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 
 import java.io.Serializable;
 

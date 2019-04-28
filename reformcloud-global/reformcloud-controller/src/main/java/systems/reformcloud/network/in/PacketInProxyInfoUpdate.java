@@ -32,6 +32,6 @@ public final class PacketInProxyInfoUpdate implements Serializable, NetworkInbou
                 new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()),
                 new PacketOutProxyInfoUpdate(proxyInfo)
         );
-        ReformCloudController.getInstance().getEventManager().callEvent(new ProxyInfoUpdateEvent(proxyInfo));
+        ReformCloudController.getInstance().getEventManager().fire(new ProxyInfoUpdateEvent(proxyInfo));
     }
 }

@@ -19,7 +19,7 @@ public final class PacketOutRequestParametersResponse extends Packet implements 
     public PacketOutRequestParametersResponse(UUID key) {
         super(
                 "undefined",
-                new Configuration().addProperty("parameters", ParametersAddon.getInstance().getParametersConfiguration().getParameters()),
+                new Configuration().addValue("parameters", ParametersAddon.getInstance().getParametersConfiguration().getParameters()),
                 key
         );
     }

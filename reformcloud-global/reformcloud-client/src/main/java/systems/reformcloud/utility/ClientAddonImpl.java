@@ -7,7 +7,7 @@ package systems.reformcloud.utility;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.JavaAddon;
-import systems.reformcloud.commands.interfaces.Command;
+import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.event.utility.Listener;
 
 import java.util.Arrays;

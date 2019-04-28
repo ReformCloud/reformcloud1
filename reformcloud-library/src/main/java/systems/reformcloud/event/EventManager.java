@@ -12,7 +12,9 @@ import systems.reformcloud.logging.AbstractLoggerProvider;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
@@ -25,6 +27,11 @@ public final class EventManager implements Serializable {
     protected Map<Class<?>, EventClass[]> handlers = ReformCloudLibraryService.concurrentHashMap();
 
     /**
+     * Consumer handel all fired events
+     */
+    private Consumer<Object> fireAndForget = this::callEvent;
+
+    /**
      * Get the handling events of the class
      *
      * @param listener      The listener class which should be created
@@ -34,10 +41,14 @@ public final class EventManager implements Serializable {
         Map<Class<?>, Set<Method>> response = new HashMap<>();
         for (Method method : listener.getClass().getDeclaredMethods()) {
             Handler handler = method.getAnnotation(Handler.class);
+            if (!Modifier.isPublic(method.getModifiers()) || !method.getReturnType().equals(Void.TYPE))
+                continue;
+
             if (handler != null) {
                 Class<?>[] parameters = method.getParameterTypes();
                 if (parameters.length != 1) {
-                    AbstractLoggerProvider.defaultLogger().serve().accept("An handler tried to register a listener with more than one parameter");
+                    AbstractLoggerProvider.defaultLogger().serve().accept("An handler tried to register a listener with"
+                            + parameters.length + "parameter(s)");
                     continue;
                 }
 
@@ -77,7 +88,7 @@ public final class EventManager implements Serializable {
      *
      * @param event     The event which should be called
      */
-    private void callEvent0(Object event) {
+    private void callEvent(Object event) {
         EventClass[] eventClasses = this.handlers.get(event.getClass());
         if (eventClasses != null) {
             for (EventClass eventClass : eventClasses) {
@@ -96,8 +107,8 @@ public final class EventManager implements Serializable {
      * @param event     The event which should be
      * @param <T>       The event which should be called, extending the event class
      */
-    public <T extends Event> void callEvent(T event) {
-        this.callEvent0(event);
+    public <T extends Event> void fire(T event) {
+        this.fireAndForget.accept(event);
     }
 
     /**

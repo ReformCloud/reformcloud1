@@ -5,9 +5,6 @@
 package systems.reformcloud.database.statistics;
 
 import com.google.gson.reflect.TypeToken;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.database.DatabaseProvider;
@@ -24,7 +21,6 @@ import java.nio.file.Paths;
 public final class StatisticsProvider extends DatabaseProvider implements Serializable {
     private static final long serialVersionUID = -209566855414655806L;
 
-    @Getter
     private Stats stats;
 
     @Override
@@ -35,7 +31,7 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
     @Override
     public void load() {
         if (!Files.exists(Paths.get("reformcloud/database/stats/stats.json"))) {
-            new Configuration().addProperty("stats", new Stats(
+            new Configuration().addValue("stats", new Stats(
                     0,
                     0,
                     0,
@@ -62,7 +58,7 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
 
         this.setLastShutdown();
         Configuration.parse(Paths.get("reformcloud/database/stats/stats.json"))
-                .addProperty("stats", this.stats)
+                .addValue("stats", this.stats)
                 .write(Paths.get("reformcloud/database/stats/stats.json"));
     }
 
@@ -129,11 +125,28 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
         return this.stats != null;
     }
 
-    @AllArgsConstructor
-    @Data
+    public Stats getStats() {
+        return this.stats;
+    }
+
     public final class Stats {
         private int startup, rootStartup, login, consoleCommands, ingameCommands;
         private long firstStartup, lastStartup, lastShutdown, serverOnlineTime, walkedDistance, blocksPlaced;
+
+        @java.beans.ConstructorProperties({"startup", "rootStartup", "login", "consoleCommands", "ingameCommands", "firstStartup", "lastStartup", "lastShutdown", "serverOnlineTime", "walkedDistance", "blocksPlaced"})
+        public Stats(int startup, int rootStartup, int login, int consoleCommands, int ingameCommands, long firstStartup, long lastStartup, long lastShutdown, long serverOnlineTime, long walkedDistance, long blocksPlaced) {
+            this.startup = startup;
+            this.rootStartup = rootStartup;
+            this.login = login;
+            this.consoleCommands = consoleCommands;
+            this.ingameCommands = ingameCommands;
+            this.firstStartup = firstStartup;
+            this.lastStartup = lastStartup;
+            this.lastShutdown = lastShutdown;
+            this.serverOnlineTime = serverOnlineTime;
+            this.walkedDistance = walkedDistance;
+            this.blocksPlaced = blocksPlaced;
+        }
 
         public String getFirstStartup() {
             return getDateFormatted(firstStartup);
@@ -153,6 +166,82 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
 
         public boolean hasShutdown() {
             return this.lastShutdown != 0;
+        }
+
+        public int getStartup() {
+            return this.startup;
+        }
+
+        public int getRootStartup() {
+            return this.rootStartup;
+        }
+
+        public int getLogin() {
+            return this.login;
+        }
+
+        public int getConsoleCommands() {
+            return this.consoleCommands;
+        }
+
+        public int getIngameCommands() {
+            return this.ingameCommands;
+        }
+
+        public long getServerOnlineTime() {
+            return this.serverOnlineTime;
+        }
+
+        public long getWalkedDistance() {
+            return this.walkedDistance;
+        }
+
+        public long getBlocksPlaced() {
+            return this.blocksPlaced;
+        }
+
+        public void setStartup(int startup) {
+            this.startup = startup;
+        }
+
+        public void setRootStartup(int rootStartup) {
+            this.rootStartup = rootStartup;
+        }
+
+        public void setLogin(int login) {
+            this.login = login;
+        }
+
+        public void setConsoleCommands(int consoleCommands) {
+            this.consoleCommands = consoleCommands;
+        }
+
+        public void setIngameCommands(int ingameCommands) {
+            this.ingameCommands = ingameCommands;
+        }
+
+        public void setFirstStartup(long firstStartup) {
+            this.firstStartup = firstStartup;
+        }
+
+        public void setLastStartup(long lastStartup) {
+            this.lastStartup = lastStartup;
+        }
+
+        public void setLastShutdown(long lastShutdown) {
+            this.lastShutdown = lastShutdown;
+        }
+
+        public void setServerOnlineTime(long serverOnlineTime) {
+            this.serverOnlineTime = serverOnlineTime;
+        }
+
+        public void setWalkedDistance(long walkedDistance) {
+            this.walkedDistance = walkedDistance;
+        }
+
+        public void setBlocksPlaced(long blocksPlaced) {
+            this.blocksPlaced = blocksPlaced;
         }
     }
 }

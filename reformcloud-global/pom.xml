@@ -5,7 +5,7 @@
     <parent>
         <artifactId>reformcloud-parent</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.4</version>
+        <version>1.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,15 +22,8 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-library</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${dependency.quartz.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

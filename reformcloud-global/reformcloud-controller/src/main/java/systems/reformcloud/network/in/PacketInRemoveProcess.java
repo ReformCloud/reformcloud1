@@ -5,7 +5,6 @@
 package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.events.ProxyStoppedEvent;
 import systems.reformcloud.event.events.ServerStartedEvent;
@@ -30,7 +29,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                 return;
 
             ReformCloudController.getInstance().getCloudProcessOfferService().unregisterID(serverInfo);
-            ReformCloudController.getInstance().getEventManager().callEvent(new ServerStartedEvent(serverInfo));
+            ReformCloudController.getInstance().getEventManager().fire(new ServerStartedEvent(serverInfo));
 
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_stopped()
                     .replace("%name%", serverInfo.getCloudProcess().getName())
@@ -52,7 +51,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                 return;
 
             ReformCloudController.getInstance().getCloudProcessOfferService().unregisterProxyID(proxyInfo);
-            ReformCloudController.getInstance().getEventManager().callEvent(new ProxyStoppedEvent(proxyInfo));
+            ReformCloudController.getInstance().getEventManager().fire(new ProxyStoppedEvent(proxyInfo));
 
             ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_stopped()
                     .replace("%name%", proxyInfo.getCloudProcess().getName())

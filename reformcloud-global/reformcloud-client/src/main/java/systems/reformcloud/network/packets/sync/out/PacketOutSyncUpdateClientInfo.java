@@ -22,8 +22,8 @@ public final class PacketOutSyncUpdateClientInfo extends Packet implements Seria
         super(
                 "UpdateClientInfo",
                 new Configuration()
-                        .addStringProperty("from", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                        .addProperty("info", clientInfo)
+                        .addStringValue("from", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                        .addValue("info", clientInfo)
         );
     }
 }

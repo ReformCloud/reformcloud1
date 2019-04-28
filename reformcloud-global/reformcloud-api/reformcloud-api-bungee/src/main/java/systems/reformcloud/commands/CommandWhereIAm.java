@@ -28,7 +28,7 @@ public final class CommandWhereIAm extends Command implements Serializable {
         if (!(commandSender instanceof ProxiedPlayer)) {
             commandSender.sendMessage(TextComponent.fromLegacyText(
                     ChatColor.translateAlternateColorCodes('&',
-                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + "An §cerror §7occurred"))
+                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " An §cerror §7occurred"))
             );
             return;
         }
@@ -37,7 +37,7 @@ public final class CommandWhereIAm extends Command implements Serializable {
         if (proxiedPlayer.getServer() == null || proxiedPlayer.getServer().getInfo() == null) {
             proxiedPlayer.sendMessage(TextComponent.fromLegacyText(
                     ChatColor.translateAlternateColorCodes('&',
-                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + "An §cerror §7occurred"))
+                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " An §cerror §7occurred"))
             );
             return;
         }
@@ -49,7 +49,7 @@ public final class CommandWhereIAm extends Command implements Serializable {
         if (serverInfo == null) {
             proxiedPlayer.sendMessage(TextComponent.fromLegacyText(
                     ChatColor.translateAlternateColorCodes('&',
-                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + "An §cerror §7occurred"))
+                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " An §cerror §7occurred"))
             );
             return;
         }
@@ -57,7 +57,7 @@ public final class CommandWhereIAm extends Command implements Serializable {
         proxiedPlayer.sendMessage(TextComponent.fromLegacyText(
                 ChatColor.translateAlternateColorCodes('&',
                         ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() +
-                                "You are currently connected to §e" + serverInfo.getCloudProcess().getName() +
+                                " You are currently connected to §e" + serverInfo.getCloudProcess().getName() +
                                 " §7on ServerGroup §e" + serverInfo.getServerGroup().getName() + "§7 (Process UniqueID: §e" +
                                 serverInfo.getCloudProcess().getProcessUID() + ")")
                 )

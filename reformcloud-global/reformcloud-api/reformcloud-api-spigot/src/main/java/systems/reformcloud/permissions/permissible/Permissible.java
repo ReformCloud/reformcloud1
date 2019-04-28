@@ -4,7 +4,6 @@
 
 package systems.reformcloud.permissions.permissible;
 
-import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
-@Getter
 public final class Permissible extends PermissibleBase implements Serializable {
     private PermissionHolder permissionHolder;
     private List<PermissionGroup> inGroups;
@@ -86,5 +84,13 @@ public final class Permissible extends PermissibleBase implements Serializable {
     private void checkAvailable() {
         if (permissionHolder == null)
             throw new IllegalStateException("PermissionHolder cannot be null");
+    }
+
+    public PermissionHolder getPermissionHolder() {
+        return permissionHolder;
+    }
+
+    public List<PermissionGroup> getInGroups() {
+        return inGroups;
     }
 }

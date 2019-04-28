@@ -18,7 +18,7 @@ public final class PacketOutParametersUpdate extends Packet implements Serializa
     public PacketOutParametersUpdate() {
         super(
                 "ParametersUpdate",
-                new Configuration().addProperty("parameters", ParametersAddon.getInstance().getParametersConfiguration().getParameters())
+                new Configuration().addValue("parameters", ParametersAddon.getInstance().getParametersConfiguration().getParameters())
         );
     }
 }

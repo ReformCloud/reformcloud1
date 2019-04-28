@@ -20,8 +20,11 @@ public final class PacketInRemoveSign implements NetworkInboundHandler, Serializ
     @Override
     public void handle(Configuration configuration) {
         if (SignSelector.getInstance() != null) {
-            SignSelector.getInstance().handleSignRemove(configuration.getValue("sign", new TypeToken<Sign>() {
-            }.getType()));
+            try {
+                SignSelector.getInstance().handleSignRemove(configuration.getValue("sign", new TypeToken<Sign>() {
+                }.getType()));
+            } catch (final NullPointerException ignored) {
+            }
         }
     }
 }

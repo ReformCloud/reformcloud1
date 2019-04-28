@@ -5,7 +5,6 @@
 package systems.reformcloud.event.events;
 
 import io.netty.channel.ChannelHandlerContext;
-import lombok.Getter;
 import systems.reformcloud.event.utility.Cancellable;
 import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.network.packet.Packet;
@@ -58,12 +57,18 @@ public final class IncomingPacketEvent extends Event implements Serializable, Ca
     /**
      * The packet which was handled
      */
-    @Getter
     private Packet in;
 
     /**
      * The channel handler context of the channel the packet come from
      */
-    @Getter
     private ChannelHandlerContext channelHandlerContext;
+
+    public Packet getIn() {
+        return this.in;
+    }
+
+    public ChannelHandlerContext getChannelHandlerContext() {
+        return this.channelHandlerContext;
+    }
 }

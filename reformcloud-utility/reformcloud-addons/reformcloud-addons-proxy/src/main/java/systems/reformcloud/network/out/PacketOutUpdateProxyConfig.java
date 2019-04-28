@@ -17,6 +17,6 @@ import java.util.Optional;
 
 public final class PacketOutUpdateProxyConfig extends Packet implements Serializable {
     public PacketOutUpdateProxyConfig(Optional<ProxySettings> proxySettings) {
-        super("UpdateProxyConfig", new Configuration().addProperty("settings", proxySettings));
+        super("UpdateProxyConfig", new Configuration().addValue("settings", proxySettings));
     }
 }

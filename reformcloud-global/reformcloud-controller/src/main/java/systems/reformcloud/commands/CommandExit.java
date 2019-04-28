@@ -4,8 +4,9 @@
 
 package systems.reformcloud.commands;
 
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.utility.ExitUtil;
 
 import java.io.Serializable;
@@ -21,7 +22,7 @@ public final class CommandExit extends Command implements Serializable {
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        commandSender.sendMessage("ReformCloud will stop...");
+        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_exit_doing());
         System.exit(ExitUtil.STOPPED_SUCESS);
     }
 }

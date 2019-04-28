@@ -20,9 +20,10 @@ public final class StringUtil {
             SPACE = " ",
             SLASH = "/",
             BACK_SLASH = "\\",
-            BUNGEE_API_DOWNLOAD = "3435GKLORXKaSGC",
-            SPIGOT_API_DOWNLOAD = "F52LTZU4ECayQFL",
-            VELOCITY_API_DOWNLOAD = "FGHLQE4543EFVQ",
+    //API Names: Version Specification date time B(ungee) S(igot) V(elocity)
+    BUNGEE_API_DOWNLOAD = "15BETA20042050B",
+            SPIGOT_API_DOWNLOAD = "15BETA20042050S",
+            VELOCITY_API_DOWNLOAD = "15BETA20042050V",
             NULL = "null",
             OS_NAME = System.getProperty("os.name"),
             OS_ARCH = System.getProperty("os.arch"),

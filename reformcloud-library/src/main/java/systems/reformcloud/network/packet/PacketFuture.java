@@ -4,7 +4,6 @@
 
 package systems.reformcloud.network.packet;
 
-import lombok.Getter;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 
@@ -15,7 +14,6 @@ import java.util.concurrent.*;
  * @author _Klaro | Pasqual K. / created on 06.03.2019
  */
 
-@Getter
 public final class PacketFuture implements Serializable {
     /**
      * The completable future for the packets
@@ -122,7 +120,7 @@ public final class PacketFuture implements Serializable {
             Packet packet = this.syncUninterruptedly();
             if (packet.getResult() == null && this.onFailure != null)
                 this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-            else if (this.onSuccess != null)
+            else if (packet.getResult() != null && this.onSuccess != null)
                 this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
         });
     }
@@ -206,5 +204,33 @@ public final class PacketFuture implements Serializable {
     public void handleIncoming(Packet in) {
         completableFuture.complete(in);
         channelHandler.getResults().remove(in.getResult());
+    }
+
+    public CompletableFuture<Packet> getCompletableFuture() {
+        return this.completableFuture;
+    }
+
+    public ExecutorService getExecutorService() {
+        return this.executorService;
+    }
+
+    public NetworkQueryInboundHandler getOnSuccess() {
+        return this.onSuccess;
+    }
+
+    public NetworkQueryInboundHandler getOnFailure() {
+        return this.onFailure;
+    }
+
+    public ChannelHandler getChannelHandler() {
+        return this.channelHandler;
+    }
+
+    public Packet getSentPacket() {
+        return this.sentPacket;
+    }
+
+    public String getTo() {
+        return this.to;
     }
 }

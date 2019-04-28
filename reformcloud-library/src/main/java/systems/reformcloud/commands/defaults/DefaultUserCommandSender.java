@@ -4,9 +4,7 @@
 
 package systems.reformcloud.commands.defaults;
 
-import lombok.AllArgsConstructor;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 
 import java.util.Map;
@@ -15,12 +13,16 @@ import java.util.Map;
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-@AllArgsConstructor
 public class DefaultUserCommandSender implements CommandSender {
     /**
      * The permissions of the command sender
      */
     private Map<String, Boolean> permissions;
+
+    @java.beans.ConstructorProperties({"permissions"})
+    public DefaultUserCommandSender(Map<String, Boolean> permissions) {
+        this.permissions = permissions;
+    }
 
     /**
      * Sends a message to the console

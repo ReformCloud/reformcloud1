@@ -4,7 +4,6 @@
 
 package systems.reformcloud.synchronization;
 
-import lombok.Setter;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.info.ClientInfo;
@@ -20,12 +19,13 @@ import java.util.concurrent.TimeUnit;
 public final class SynchronizationHandler implements Serializable, Runnable {
     private static final long serialVersionUID = -7527313886584796220L;
 
-    @Setter
+    private boolean deleted = false;
+
     private ClientInfo lastInfo = ReformCloudClient.getInstance().getClientInfo();
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted() && !deleted) {
             ClientInfo current = ReformCloudClient.getInstance().getClientInfo();
 
             double cpuUsage = ReformCloudLibraryService.cpuUsage();
@@ -51,7 +51,15 @@ public final class SynchronizationHandler implements Serializable, Runnable {
                 );
             }
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 5);
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 10);
         }
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public void setLastInfo(ClientInfo lastInfo) {
+        this.lastInfo = lastInfo;
     }
 }

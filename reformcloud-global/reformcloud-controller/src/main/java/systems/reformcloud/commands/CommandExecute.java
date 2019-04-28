@@ -5,8 +5,8 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.network.out.PacketOutExecuteCommand;
 import systems.reformcloud.utility.StringUtil;
 
@@ -36,7 +36,7 @@ public final class CommandExecute extends Command implements Serializable {
                         stringBuilder.append(args[i]).append(StringUtil.SPACE);
 
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[1]).getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), args[1]));
-                    commandSender.sendMessage("The command has been executed.");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_execute_success());
                 } else if (args[1].equalsIgnoreCase("--all")) {
                     StringBuilder stringBuilder = new StringBuilder();
                     for (short i = 2; i < args.length; i++)
@@ -46,9 +46,10 @@ public final class CommandExecute extends Command implements Serializable {
                         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(e.getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), e.getCloudProcess().getName()));
                     });
 
-                    commandSender.sendMessage("The command has been executed.");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_execute_success());
                 } else
-                    commandSender.sendMessage("This Server is not connected to controller");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "This Server is not connected to controller"));
                 break;
             }
             case "proxy": {
@@ -58,7 +59,7 @@ public final class CommandExecute extends Command implements Serializable {
                         stringBuilder.append(args[i]).append(StringUtil.SPACE);
 
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[1]).getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), args[1]));
-                    commandSender.sendMessage("The command has been executed.");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_execute_success());
                 } else if (args[1].equalsIgnoreCase("--all")) {
                     StringBuilder stringBuilder = new StringBuilder();
                     for (short i = 2; i < args.length; i++)
@@ -68,9 +69,10 @@ public final class CommandExecute extends Command implements Serializable {
                         ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(e.getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), e.getCloudProcess().getName()));
                     });
 
-                    commandSender.sendMessage("The command has been executed.");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_execute_success());
                 } else
-                    commandSender.sendMessage("This Proxy is not connected to controller");
+                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                            .replace("%message%", "This Proxy is not connected to controller"));
                 break;
             }
             default: {

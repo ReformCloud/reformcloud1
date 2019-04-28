@@ -14,6 +14,6 @@ import systems.reformcloud.network.packet.Packet;
 
 public final class PacketOutRequestSignUpdate extends Packet {
     public PacketOutRequestSignUpdate() {
-        super("RequestSignUpdate", new Configuration().addStringProperty("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()));
+        super("RequestSignUpdate", new Configuration().addStringValue("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()));
     }
 }

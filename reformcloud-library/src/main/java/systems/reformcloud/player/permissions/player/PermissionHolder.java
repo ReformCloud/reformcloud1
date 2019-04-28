@@ -4,8 +4,6 @@
 
 package systems.reformcloud.player.permissions.player;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
@@ -17,8 +15,6 @@ import java.util.stream.Collectors;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
-@AllArgsConstructor
-@Getter
 public final class PermissionHolder implements Serializable {
     /**
      * The uuid of the player
@@ -34,6 +30,13 @@ public final class PermissionHolder implements Serializable {
      * The player permissions
      */
     private Map<String, Boolean> playerPermissions;
+
+    @java.beans.ConstructorProperties({"uniqueID", "permissionGroups", "playerPermissions"})
+    public PermissionHolder(UUID uniqueID, Map<String, Long> permissionGroups, Map<String, Boolean> playerPermissions) {
+        this.uniqueID = uniqueID;
+        this.permissionGroups = permissionGroups;
+        this.playerPermissions = playerPermissions;
+    }
 
     /**
      * Checks if a player has the given permission
@@ -162,5 +165,17 @@ public final class PermissionHolder implements Serializable {
         }
 
         return Optional.ofNullable(permissionGroup);
+    }
+
+    public UUID getUniqueID() {
+        return this.uniqueID;
+    }
+
+    public Map<String, Long> getPermissionGroups() {
+        return this.permissionGroups;
+    }
+
+    public Map<String, Boolean> getPlayerPermissions() {
+        return this.playerPermissions;
     }
 }

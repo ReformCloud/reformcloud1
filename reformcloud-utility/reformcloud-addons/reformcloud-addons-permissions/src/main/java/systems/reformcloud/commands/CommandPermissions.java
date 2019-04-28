@@ -7,8 +7,8 @@ package systems.reformcloud.commands;
 import systems.reformcloud.PermissionsAddon;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.interfaces.Command;
-import systems.reformcloud.commands.interfaces.CommandSender;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 
@@ -49,7 +49,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            PermissionGroup permissionGroup = new PermissionGroup(args[0], "", "", "", 1, new HashMap<>());
+            PermissionGroup permissionGroup = new PermissionGroup(args[0], "", "", "", "7", 1, new HashMap<>());
             PermissionsAddon.getInstance().getPermissionDatabase().createPermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
 
@@ -67,7 +67,7 @@ public final class CommandPermissions extends Command implements Serializable {
                     .getName().equals(permissionGroup.getName())) {
                 PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().setDefaultGroup(
                         new PermissionGroup("default" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong()
-                                , "", "", "", 1, new HashMap<>())
+                                , "", "", "", "7", 1, new HashMap<>())
                 );
             }
 

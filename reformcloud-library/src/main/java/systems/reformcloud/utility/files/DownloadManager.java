@@ -44,7 +44,10 @@ public final class DownloadManager implements Serializable {
             return;
         }
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info("Trying to download " + input + "...");
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+                ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_trying()
+                        .replace("%name%", input)
+        );
         try {
             URLConnection urlConnection = new URL(url).openConnection();
             urlConnection.setRequestProperty(REQUEST_PROPERTY.getFirst(), REQUEST_PROPERTY.getSecond());
@@ -56,7 +59,9 @@ public final class DownloadManager implements Serializable {
                 Files.copy(inputStream, Paths.get(to), StandardCopyOption.REPLACE_EXISTING);
             }
 
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info("Download was completed successfully");
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+                    ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_success()
+            );
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not download", ex);
         }
@@ -99,7 +104,10 @@ public final class DownloadManager implements Serializable {
             return;
         }
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info("Trying to download " + input + "...");
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+                ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_trying()
+                        .replace("%name%", input)
+        );
         try {
             URLConnection urlConnection = new URL(url).openConnection();
             urlConnection.setRequestProperty(REQUEST_PROPERTY.getFirst(), REQUEST_PROPERTY.getSecond());
@@ -113,7 +121,9 @@ public final class DownloadManager implements Serializable {
 
             ((HttpURLConnection) urlConnection).disconnect();
 
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info("Download was completed successfully");
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+                    ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_success()
+            );
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Download failed", ex);
         }

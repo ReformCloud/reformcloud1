@@ -4,9 +4,9 @@
 
 package systems.reformcloud.utility;
 
-import lombok.Getter;
 import systems.reformcloud.DiscordAddon;
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 
@@ -21,14 +21,9 @@ import java.util.LinkedList;
 public final class ConsoleWriter implements Serializable, Runnable, IConsoleInputHandler {
     private Deque<String> consoleMessages = new LinkedList<>();
 
-    @Getter
-    private Thread thread;
-
     public ConsoleWriter() {
         ReformCloudController.getInstance().getLoggerProvider().registerLoggerHandler(this);
-        thread = new Thread(this);
-        thread.setDaemon(true);
-        thread.start();
+        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this);
     }
 
     @Override
@@ -58,10 +53,7 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
                 }
             }
 
-            try {
-                Thread.sleep(2000);
-            } catch (final InterruptedException ignored) {
-            }
+            ReformCloudLibraryService.sleep(500);
         }
     }
 

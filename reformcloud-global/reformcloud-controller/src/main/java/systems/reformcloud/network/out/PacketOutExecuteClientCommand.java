@@ -17,7 +17,7 @@ public final class PacketOutExecuteClientCommand extends Packet implements Seria
     public PacketOutExecuteClientCommand(String command) {
         super(
                 "ExecuteClientCommand",
-                new Configuration().addStringProperty("cmd", command)
+                new Configuration().addStringValue("cmd", command)
         );
     }
 }

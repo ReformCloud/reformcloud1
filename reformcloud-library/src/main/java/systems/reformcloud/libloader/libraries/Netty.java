@@ -31,6 +31,6 @@ public final class Netty extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "4.1.34.Final";
+        return "4.1.35.Final";
     }
 }

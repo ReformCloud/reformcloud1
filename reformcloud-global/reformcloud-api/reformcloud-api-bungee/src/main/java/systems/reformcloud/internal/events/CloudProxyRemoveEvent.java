@@ -4,8 +4,6 @@
 
 package systems.reformcloud.internal.events;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.md_5.bungee.api.plugin.Event;
 import systems.reformcloud.meta.info.ProxyInfo;
 
@@ -17,8 +15,15 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-@AllArgsConstructor
-@Getter
 public final class CloudProxyRemoveEvent extends Event implements Serializable {
     private ProxyInfo proxyInfo;
+
+    @java.beans.ConstructorProperties({"proxyInfo"})
+    public CloudProxyRemoveEvent(ProxyInfo proxyInfo) {
+        this.proxyInfo = proxyInfo;
+    }
+
+    public ProxyInfo getProxyInfo() {
+        return this.proxyInfo;
+    }
 }

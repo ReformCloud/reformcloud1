@@ -4,26 +4,22 @@
 
 package systems.reformcloud.cache;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.CacheStats;
-import com.google.common.cache.LoadingCache;
+import systems.reformcloud.ReformCloudLibraryService;
 
 import java.io.Serializable;
-import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
+import java.util.TreeMap;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.04.2019
  */
 
 public final class Cache<K, V> implements Serializable {
-    /**
-     * The cache which is used
-     */
-    private LoadingCache<K, V> cache;
+    private TreeMap<K, V> cache = new TreeMap<>();
+
+    private long maxSize;
 
     /**
      * Creates a new instance of the cache class
@@ -31,17 +27,8 @@ public final class Cache<K, V> implements Serializable {
      * @param maxSize The maximum size of the cache
      */
     public Cache(long maxSize) {
-        this.cache = CacheBuilder
-                .newBuilder()
-                .maximumSize(maxSize)
-                .expireAfterWrite(Duration.ofMinutes(15))
-                .recordStats()
-                .build(new CacheLoader<K, V>() {
-                    @Override
-                    public V load(K k) throws Exception {
-                        return get(k);
-                    }
-                });
+        this.maxSize = maxSize;
+        ReformCloudLibraryService.CACHE_CLEARER.register(this);
     }
 
     /**
@@ -49,9 +36,8 @@ public final class Cache<K, V> implements Serializable {
      *
      * @param k                     The key of the cached item
      * @return The cached item or {@code null} when the cache don't contains the item
-     * @throws ExecutionException   This exception will be thrown when any exception occurs while loading out of the cache
      */
-    public V get(K k) throws ExecutionException {
+    public V get(K k) {
         return cache.get(k);
     }
 
@@ -61,14 +47,14 @@ public final class Cache<K, V> implements Serializable {
      * @param k     The key of the item which should be invalided
      */
     public void invalidate(K k) {
-        this.cache.invalidate(k);
+        this.cache.remove(k);
     }
 
     /**
      * Invalidates all keys of the cache
      */
     public void invalidateAll() {
-        this.cache.invalidateAll();
+        this.cache.clear();
     }
 
     /**
@@ -79,6 +65,9 @@ public final class Cache<K, V> implements Serializable {
      */
     public void add(K k, V v) {
         this.cache.put(k, v);
+        if (cache.size() >= maxSize)
+            while (this.cache.size() >= maxSize)
+                this.cache.remove(this.cache.lastKey());
     }
 
     /**
@@ -88,7 +77,7 @@ public final class Cache<K, V> implements Serializable {
      * @return If the cache contains the item or not
      */
     public boolean contains(K k) {
-        return this.cache.asMap().containsKey(k);
+        return this.cache.containsKey(k);
     }
 
     /**
@@ -98,11 +87,7 @@ public final class Cache<K, V> implements Serializable {
      * @return An optional containing the item or an empty optional
      */
     public Optional<V> getSave(K k) {
-        try {
-            return Optional.ofNullable(this.get(k));
-        } catch (ExecutionException e) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(get(k));
     }
 
     /**
@@ -111,15 +96,15 @@ public final class Cache<K, V> implements Serializable {
      * @return An map of all items which are in the cache
      */
     public Map<K, V> asMap() {
-        return this.cache.asMap();
+        return new HashMap<>(this.cache);
     }
 
     /**
-     * Gets the stats of the cache
+     * Get the max size of the cache
      *
-     * @return The created stats of the cache
+     * @return The max size of the cache
      */
-    public CacheStats getStats() {
-        return cache.stats();
+    public long getMaxSize() {
+        return maxSize;
     }
 }

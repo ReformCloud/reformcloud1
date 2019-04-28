@@ -4,17 +4,12 @@
 
 package systems.reformcloud.utility.cloudsystem;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
-@AllArgsConstructor
-@Getter
 public final class EthernetAddress implements Serializable {
     /**
      * The host of the address
@@ -25,4 +20,18 @@ public final class EthernetAddress implements Serializable {
      * The port of the address
      */
     private int port;
+
+    @java.beans.ConstructorProperties({"host", "port"})
+    public EthernetAddress(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    public String getHost() {
+        return this.host;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
 }

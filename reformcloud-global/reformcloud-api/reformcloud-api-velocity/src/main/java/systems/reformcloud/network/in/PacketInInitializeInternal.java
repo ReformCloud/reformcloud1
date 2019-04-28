@@ -7,6 +7,7 @@ package systems.reformcloud.network.in;
 import com.google.gson.reflect.TypeToken;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import systems.reformcloud.ReformCloudAPIVelocity;
+import systems.reformcloud.autoicon.IconManager;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.events.CloudNetworkInitializeEvent;
@@ -42,8 +43,10 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         if (proxyGroup == null)
             return;
 
+        new IconManager();
+
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new Packet(
-                "AuthSuccess", new Configuration().addStringProperty("name", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+                "AuthSuccess", new Configuration().addStringValue("name", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
         ));
         ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(
                 process -> {

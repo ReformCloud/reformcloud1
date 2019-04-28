@@ -8,7 +8,6 @@ import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
-import systems.reformcloud.signaddon.SignSelector;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
@@ -25,8 +24,5 @@ public final class PacketInUpdateAll implements NetworkInboundHandler, Serializa
 
         if (ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getProcessUID()) != null)
             ReformCloudAPISpigot.getInstance().setServerInfo(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getProcessUID()));
-
-        if (SignSelector.getInstance() != null)
-            SignSelector.getInstance().updateAll();
     }
 }

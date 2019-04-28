@@ -29,6 +29,6 @@ public final class CommonsCodec extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "1.10";
+        return "1.12";
     }
 }

@@ -19,6 +19,7 @@ import net.kyori.text.TextComponent;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.autoicon.IconManager;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.events.CloudProxyInfoUpdateEvent;
@@ -66,10 +67,13 @@ public final class CloudAddonsListener {
 
     @Subscribe
     public void handle(final ProxyPingEvent event) {
+        ServerPing serverPing = event.getPing();
         if (ReformCloudAPIVelocity.getInstance().getProxySettings() == null)
             return;
 
-        ServerPing serverPing = event.getPing();
+        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null)
+            serverPing = serverPing.asBuilder().favicon(IconManager.getInstance().getCurrent()).build();
+
         ProxySettings proxySettings = ReformCloudAPIVelocity.getInstance().getProxySettings();
         final ProxyGroup proxyGroup = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
                 .getProxyGroups().get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());
@@ -82,7 +86,7 @@ public final class CloudAddonsListener {
                 serverPing = serverPing.asBuilder().description(
                         TextComponent.of(translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                 .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
-                                .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                 .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
                         )
                 ).build();
@@ -118,7 +122,7 @@ public final class CloudAddonsListener {
                         TextComponent.of(
                                 translateAlternateColorCodes('&', motd.getFirst() + "\n" + motd.getSecond())
                                         .replace("%current_proxy%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
-                                        .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getGroup())
+                                        .replace("%current_group%", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getGroup())
                                         .replace("%player_version%", SpigotVersion.getByProtocolId(event.getConnection().getProtocolVersion().getProtocol()).name())
                         )
                 ).build();

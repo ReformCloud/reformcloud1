@@ -4,9 +4,6 @@
 
 package systems.reformcloud.signs;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import systems.reformcloud.meta.info.ServerInfo;
 
 import java.io.Serializable;
@@ -16,8 +13,6 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 11.12.2018
  */
 
-@AllArgsConstructor
-@Getter
 public final class Sign implements Serializable {
     /**
      * The uuid of the sign
@@ -32,6 +27,28 @@ public final class Sign implements Serializable {
     /**
      * The server info of the sign
      */
-    @Setter
     private ServerInfo serverInfo;
+
+    @java.beans.ConstructorProperties({"uuid", "signPosition", "serverInfo"})
+    public Sign(UUID uuid, SignPosition signPosition, ServerInfo serverInfo) {
+        this.uuid = uuid;
+        this.signPosition = signPosition;
+        this.serverInfo = serverInfo;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
+    }
+
+    public SignPosition getSignPosition() {
+        return this.signPosition;
+    }
+
+    public ServerInfo getServerInfo() {
+        return this.serverInfo;
+    }
+
+    public void setServerInfo(ServerInfo serverInfo) {
+        this.serverInfo = serverInfo;
+    }
 }

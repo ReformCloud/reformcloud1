@@ -10,6 +10,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import systems.reformcloud.ReformCloudAPIBungee;
+import systems.reformcloud.autoicon.IconManager;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 
@@ -23,6 +24,9 @@ public final class CloudProxyPingListener implements Listener {
     public void handle(final ProxyPingEvent event) {
         if (ReformCloudAPIBungee.getInstance().getProxySettings() != null)
             return;
+
+        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null)
+            event.getResponse().setFavicon(IconManager.getInstance().getCurrent());
 
         final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
                 .getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());

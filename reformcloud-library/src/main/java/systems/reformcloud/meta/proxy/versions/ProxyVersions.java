@@ -4,8 +4,6 @@
 
 package systems.reformcloud.meta.proxy.versions;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author _Klaro | Pasqual K. / created on 28.01.2019
  */
 
-@Getter
 public enum ProxyVersions implements Serializable {
     WATERFALL("Waterfall", "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar"),
     HEXACORD("HexaCord", "https://archive.mcmirror.io/HexaCord/HexaCord-v139.jar"),
@@ -48,5 +45,13 @@ public enum ProxyVersions implements Serializable {
     ProxyVersions(final String name, final String url) {
         this.name = name;
         this.url = url;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getUrl() {
+        return this.url;
     }
 }

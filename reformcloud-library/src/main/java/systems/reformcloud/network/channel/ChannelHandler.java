@@ -6,20 +6,23 @@ package systems.reformcloud.network.channel;
 
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.Getter;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.events.OutgoingPacketEvent;
+import systems.reformcloud.meta.enums.ServerModeType;
+import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.channel.queue.QueueWorker;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
+import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -34,19 +37,16 @@ public final class ChannelHandler implements Serializable {
     /**
      * All waiting query packet
      */
-    @Getter
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * The executor service to run several tasks at the same time
      */
-    @Getter
     private final ExecutorService executorService = ReformCloudLibraryService.EXECUTOR_SERVICE;
 
     /**
      * The queue of the waiting packets
      */
-    @Getter
     private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
 
     /**
@@ -370,6 +370,40 @@ public final class ChannelHandler implements Serializable {
     }
 
     /**
+     * Sends a packet to all lobby servers
+     *
+     * @param provider The server process manager which should be used to identify the lobbies
+     * @param packets  The packets which should be send
+     */
+    public void sendToAllLobbies(ServerProcessManager provider, Packet... packets) {
+        List<ServerInfo> lobbies = provider
+                .getAllRegisteredServerProcesses()
+                .stream()
+                .filter(e -> e.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY))
+                .collect(Collectors.toList());
+        for (ServerInfo serverInfo : lobbies)
+            for (Packet packet : packets)
+                this.sendPacketSynchronized(serverInfo.getCloudProcess().getName(), packet);
+    }
+
+    /**
+     * Sends a direct packet to all lobby servers
+     *
+     * @param provider The server process manager which should be used to identify the lobbies
+     * @param packets  The packets which should be send
+     */
+    public void sendToAllLobbiesDirect(ServerProcessManager provider, Packet... packets) {
+        List<ServerInfo> lobbies = provider
+                .getAllRegisteredServerProcesses()
+                .stream()
+                .filter(e -> e.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY))
+                .collect(Collectors.toList());
+        for (ServerInfo serverInfo : lobbies)
+            for (Packet packet : packets)
+                this.sendDirectPacket(serverInfo.getCloudProcess().getName(), packet);
+    }
+
+    /**
      * Converts a normal packet into a query packet
      *
      * @param packet        The packet which should be converted
@@ -378,6 +412,18 @@ public final class ChannelHandler implements Serializable {
      */
     public void toQueryPacket(Packet packet, UUID resultID, String component) {
         packet.setResult(resultID);
-        packet.getConfiguration().addStringProperty("from", component);
+        packet.getConfiguration().addStringValue("from", component);
+    }
+
+    public Map<UUID, PacketFuture> getResults() {
+        return this.results;
+    }
+
+    public ExecutorService getExecutorService() {
+        return this.executorService;
+    }
+
+    public Queue<AwaitingPacket> getPacketQueue() {
+        return this.packetQueue;
     }
 }

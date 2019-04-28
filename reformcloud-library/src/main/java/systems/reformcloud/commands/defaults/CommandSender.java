@@ -4,14 +4,13 @@
 
 package systems.reformcloud.commands.defaults;
 
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public class CommandSender implements systems.reformcloud.commands.interfaces.CommandSender {
+public class CommandSender implements systems.reformcloud.commands.utility.CommandSender {
     /**
      * Sends a message to the console
      *

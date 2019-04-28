@@ -23,7 +23,7 @@ public final class PacketInUpdateInternalCloudNetwork implements NetworkInboundH
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
-        ReformCloudController.getInstance().getEventManager().callEvent(new InternalCloudNetworkUpdateEvent(
+        ReformCloudController.getInstance().getEventManager().fire(new InternalCloudNetworkUpdateEvent(
                 ReformCloudController.getInstance().getInternalCloudNetwork())
         );
     }

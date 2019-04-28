@@ -7,6 +7,7 @@ package systems.reformcloud.network.in;
 import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.ProxyServer;
 import systems.reformcloud.ReformCloudAPIBungee;
+import systems.reformcloud.autoicon.IconManager;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.internal.events.CloudNetworkInitializeEvent;
 import systems.reformcloud.launcher.BungeecordBootstrap;
@@ -40,8 +41,10 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         if (proxyGroup == null)
             return;
 
+        new IconManager();
+
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new Packet(
-                "AuthSuccess", new Configuration().addStringProperty("name", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
+                "AuthSuccess", new Configuration().addStringValue("name", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
         ));
         ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(
                 process -> {

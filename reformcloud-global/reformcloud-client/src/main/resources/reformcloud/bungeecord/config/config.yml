@@ -15,15 +15,15 @@ online_mode: true
 disabled_commands:
   - disabledcommandhere
 servers:
-  Lobby-1:
+  ReformCloud:
     motd: ''
-    address: localhost:25565
+    address: localhost:18093
     restricted: false
 listeners:
   - query_port: 25577
     motd: "§c§lReformCloud §8┃ §c§lOffical Cloud System \n§7§lTwitter: §7@ReformCloud §8┃ §7§lDiscord: §7discord.gg/fwe2CHD"
     priorities:
-      - Lobby-1
+      - ReformCloud
     bind_local_address: true
     tab_list: GLOBAL_PING
     query_enabled: false

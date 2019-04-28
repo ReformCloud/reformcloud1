@@ -26,6 +26,6 @@ public final class PacketInServerInfoUpdate implements NetworkInboundHandler {
 
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutServerInfoUpdate(serverInfo, ReformCloudController.getInstance().getInternalCloudNetwork()));
-        ReformCloudController.getInstance().getEventManager().callEvent(new ServerInfoUpdateEvent(serverInfo));
+        ReformCloudController.getInstance().getEventManager().fire(new ServerInfoUpdateEvent(serverInfo));
     }
 }
