@@ -45,8 +45,6 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
 
     @Override
     public void onEnable() {
-        this.getProxy().getConfig().getListeners().forEach(listener -> listener.getServerPriority().clear());
-
         Arrays.asList(
                 new CloudProxyPingListener(),
                 new CloudProcessListener(),
@@ -62,7 +60,7 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
         ).forEach(command -> this.getProxy().getPluginManager().registerCommand(this, command));
 
         /*
-         *  Clear the default config servers
+         * Clears the default config servers
          */
         BungeeCord.getInstance().getConfig().getServers().clear();
 
