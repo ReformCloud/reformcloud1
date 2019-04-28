@@ -45,6 +45,8 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
 
     @Override
     public void onEnable() {
+        this.getProxy().getConfig().getListeners().forEach(listenerInfo -> listenerInfo.getServerPriority().clear());
+
         Arrays.asList(
                 new CloudProxyPingListener(),
                 new CloudProcessListener(),
