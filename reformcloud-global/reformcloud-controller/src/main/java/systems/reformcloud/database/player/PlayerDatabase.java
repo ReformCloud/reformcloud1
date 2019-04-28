@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ import java.util.UUID;
 
 public final class PlayerDatabase extends DatabaseProvider implements Serializable {
     private Cache<UUID, OfflinePlayer> cachedOfflinePlayers = ReformCloudLibraryService.newCache(1000);
-    public Cache<UUID, OnlinePlayer> cachedOnlinePlayers = ReformCloudLibraryService.newCache(1000);
+    public Map<UUID, OnlinePlayer> cachedOnlinePlayers = new HashMap<>();
 
     private final File dir = new File("reformcloud/database/players");
     private final File name_to_uuid = new File("reformcloud/database/players/nametouuid");
@@ -127,7 +128,7 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
     }
 
     public OnlinePlayer getOnlinePlayer(UUID uuid) {
-        return this.cachedOnlinePlayers.getSave(uuid).orElse(null);
+        return this.cachedOnlinePlayers.get(uuid);
     }
 
     public void cacheOfflinePlayer(OfflinePlayer offlinePlayer) {
@@ -136,23 +137,23 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
     }
 
     public void cacheOnlinePlayer(OnlinePlayer onlinePlayer) {
-        if (!this.cachedOnlinePlayers.contains(onlinePlayer.getUniqueID()))
-            this.cachedOnlinePlayers.add(onlinePlayer.getUniqueID(), onlinePlayer);
+        if (!this.cachedOnlinePlayers.containsKey(onlinePlayer.getUniqueID()))
+            this.cachedOnlinePlayers.put(onlinePlayer.getUniqueID(), onlinePlayer);
     }
 
     public void logoutPlayer(UUID uuid) {
         this.cachedOfflinePlayers.invalidate(uuid);
-        this.cachedOnlinePlayers.invalidate(uuid);
+        this.cachedOnlinePlayers.remove(uuid);
     }
 
     public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
-        if (!this.cachedOnlinePlayers.contains(onlinePlayer.getUniqueID())) {
+        if (!this.cachedOnlinePlayers.containsKey(onlinePlayer.getUniqueID())) {
             this.cacheOnlinePlayer(onlinePlayer);
             return;
         }
 
-        this.cachedOnlinePlayers.invalidate(onlinePlayer.getUniqueID());
-        this.cachedOnlinePlayers.add(onlinePlayer.getUniqueID(), onlinePlayer);
+        this.cachedOnlinePlayers.remove(onlinePlayer.getUniqueID());
+        this.cachedOnlinePlayers.put(onlinePlayer.getUniqueID(), onlinePlayer);
     }
 
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
