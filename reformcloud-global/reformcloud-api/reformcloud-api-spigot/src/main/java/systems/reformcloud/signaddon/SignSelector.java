@@ -223,6 +223,12 @@ public final class SignSelector {
                         .replace("%online_players%", Integer.toString(serverInfo.getOnlinePlayers().size()))
                         .replace("%max_players%", Integer.toString(serverInfo.getServerGroup().getMaxPlayers()))
                         .replace("%state%", serverInfo.getServerState().name())
+                        .replace("%host%", serverInfo.getHost())
+                        .replace("%port%", Integer.toString(serverInfo.getPort()))
+                        .replace("%template%", serverInfo.getCloudProcess().getLoadedTemplate().getName())
+                        .replace("%max_memory%", Integer.toString(serverInfo.getMaxMemory()))
+                        .replace("%version%", serverInfo.getServerGroup().getSpigotVersions().getVersion())
+                        .replace("%version_name%", serverInfo.getServerGroup().getSpigotVersions().getName())
                         .replace("%client%", serverInfo.getCloudProcess().getClient()));
             }
             this.updateSignForAllPlayers(sign, lines);
