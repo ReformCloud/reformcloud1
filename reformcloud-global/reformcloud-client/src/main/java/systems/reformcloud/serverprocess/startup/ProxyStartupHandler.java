@@ -82,6 +82,9 @@ public final class ProxyStartupHandler implements Serializable {
      * or {@code false} if the Client couldn't start the BungeeCord
      */
     public boolean bootstrap() {
+      if (!this.proxyStartupInfo.getProxyGroup().isStatic())
+            FileUtils.deleteFullDirectory(path);
+      
         if (this.proxyStartupInfo.getTemplate() != null)
             template = this.proxyStartupInfo.getProxyGroup().getTemplate(this.proxyStartupInfo.getTemplate());
         else
