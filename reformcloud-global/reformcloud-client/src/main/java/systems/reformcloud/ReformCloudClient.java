@@ -736,7 +736,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
         return this.createPacketFuture(
-                new PacketOutQueryStartQueuedProcess(serverGroup, "default", preConfig),
+                new PacketOutQueryStartQueuedProcess(serverGroup, template, preConfig),
                 "ReformCloudController"
         ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
         });
