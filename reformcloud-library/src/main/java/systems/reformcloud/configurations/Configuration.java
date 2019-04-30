@@ -120,7 +120,7 @@ public final class Configuration {
         if (key == null || value == null)
             return this;
 
-        this.jsonObject.addProperty(key, value.getJsonString());
+        this.jsonObject.add(key, value.jsonObject);
         return this;
     }
 
