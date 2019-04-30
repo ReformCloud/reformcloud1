@@ -321,11 +321,11 @@ public final class CommandPermissions extends Command implements Serializable {
         } else {
             commandSender.sendMessage("perms list");
             commandSender.sendMessage("perms <USERNAME> list");
-            commandSender.sendMessage("perms <GROUPNAME> setdefault");
-            commandSender.sendMessage("perms <GROUPNAME> <CREATE/DELETE>");
             commandSender.sendMessage("perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>");
             commandSender.sendMessage("perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>");
             commandSender.sendMessage("perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>");
+            commandSender.sendMessage("perms <GROUPNAME> setdefault");
+            commandSender.sendMessage("perms <GROUPNAME> <CREATE/DELETE>");
             commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>");
         }
     }
