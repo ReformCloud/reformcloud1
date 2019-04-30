@@ -80,6 +80,6 @@ public final class CommandInstall extends Command implements Serializable {
             }
         }
 
-        commandSender.sendMessage("install <signs, discord, permissions, proxy, parameters>");
+        commandSender.sendMessage("install <signs, discord, permissions, proxy, parameters, autoicon, properties, mobs>");
     }
 }
