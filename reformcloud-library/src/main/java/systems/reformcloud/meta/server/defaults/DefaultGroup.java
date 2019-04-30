@@ -38,7 +38,7 @@ public class DefaultGroup extends ServerGroup implements Serializable {
                 true,
                 false,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.SECONDS.toSeconds(5)),
+                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions
         );

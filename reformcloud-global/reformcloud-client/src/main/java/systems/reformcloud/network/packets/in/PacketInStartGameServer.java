@@ -23,7 +23,12 @@ public final class PacketInStartGameServer implements NetworkInboundHandler {
         final ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getSERVER_GROUP_TYPE());
 
         ReformCloudClient.getInstance().getCloudProcessStartupHandler().offerServerProcess(new ServerStartupInfo(
-                configuration.getValue("serverProcess", UUID.class), configuration.getStringValue("name"), (configuration.contains("template") ? configuration.getStringValue("template") : null), serverGroup, configuration.getConfiguration("preConfig"), configuration.getIntegerValue("id")
+                configuration.getValue("serverProcess", UUID.class),
+                configuration.getStringValue("name"),
+                (configuration.contains("template") ? configuration.getStringValue("template") : null),
+                serverGroup,
+                configuration.getConfiguration("preConfig"),
+                configuration.getIntegerValue("id")
         ));
     }
 }
