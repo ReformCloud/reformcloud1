@@ -27,8 +27,6 @@ public final class Permissible extends PermissibleBase implements Serializable {
     public Permissible(Player player, PermissionHolder permissionHolder) {
         super(player);
 
-        player.setOp(false);
-
         this.permissionHolder = permissionHolder;
         inGroups = ReformCloudAPISpigot.getInstance()
                 .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> permissionHolder
