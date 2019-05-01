@@ -50,6 +50,9 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public boolean hasPermission(String inName) {
+        if (this.isOp() && !inName.toLowerCase().equals("reformcloud.commands.mobs") && !inName.toLowerCase().equals("reformcloud.command.selectors"))
+            return true;
+
         return this.permissionHolder.hasPermission(inName, inGroups);
     }
 
