@@ -42,11 +42,12 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public boolean isOp() {
-        return false;
+        return super.isOp();
     }
 
     @Override
     public void setOp(boolean value) {
+        super.setOp(value);
     }
 
     @Override
