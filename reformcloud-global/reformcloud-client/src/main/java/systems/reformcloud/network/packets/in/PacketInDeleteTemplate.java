@@ -6,6 +6,7 @@ package systems.reformcloud.network.packets.in;
 
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.utility.files.FileUtils;
 
 import java.io.File;
 import java.io.Serializable;
@@ -22,18 +23,14 @@ public final class PacketInDeleteTemplate implements Serializable, NetworkInboun
                 File file = new File("reformcloud/templates/proxies/" +
                         configuration.getStringValue("group") + "/" +
                         configuration.getStringValue("template"));
-                if (file.exists()) {
-                    file.delete();
-                }
+                FileUtils.deleteFullDirectory(file);
                 break;
             }
             case "server": {
                 File file = new File("reformcloud/templates/servers/" +
                         configuration.getStringValue("group") + "/" +
                         configuration.getStringValue("template"));
-                if (file.exists()) {
-                    file.delete();
-                }
+                FileUtils.deleteFullDirectory(file);
                 break;
             }
         }
