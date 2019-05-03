@@ -217,6 +217,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 .registerHandler("ParametersUpdate", new PacketInParameterUpdate())
                 .registerHandler("EnableProperties", new PacketInEnableProperties())
                 .registerHandler("DisableProperties", new PacketInDisableProperties())
+                .registerHandler("DeleteTemplate", new PacketInDeleteTemplate())
                 .registerHandler("SyncStandby", new PacketInSyncStandby())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())

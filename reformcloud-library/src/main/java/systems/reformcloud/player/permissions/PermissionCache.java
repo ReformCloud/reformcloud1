@@ -7,6 +7,7 @@ package systems.reformcloud.player.permissions;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,5 +53,12 @@ public final class PermissionCache implements Serializable {
 
     public void setDefaultGroup(PermissionGroup defaultGroup) {
         this.defaultGroup = defaultGroup;
+    }
+
+    public List<PermissionGroup> getAllGroupsAndDefault() {
+        List<PermissionGroup> out = new ArrayList<>();
+        out.addAll(this.allRegisteredGroups);
+        out.add(defaultGroup);
+        return out;
     }
 }
