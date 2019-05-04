@@ -39,11 +39,15 @@ public final class CommandPermissions extends Command implements Serializable {
                 return Integer.compare(id1, id2);
             });
             StringBuilder stringBuilder = new StringBuilder();
-            registered.forEach(permissionGroup -> stringBuilder.append("   - ")
+            stringBuilder.append("The following groups are registered").append(": ");
+            registered.forEach(permissionGroup -> stringBuilder
+                    .append("\n")
+                    .append("   - ")
                     .append(permissionGroup.getName())
                     .append("/ID=")
                     .append(permissionGroup.getGroupID())
-                    .append("\n")
+                    .append("/Default=")
+                    .append(PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().getDefaultGroup().getName().equals(permissionGroup.getName()))
             );
             commandSender.sendMessage(stringBuilder.substring(0));
         } else if (args.length == 2 && args[1].equalsIgnoreCase("create")) {
