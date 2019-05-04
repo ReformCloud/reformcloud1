@@ -139,6 +139,9 @@ public final class CommandReformCloud implements Command {
 
     @Override
     public @MaybePresent List<String> suggest(@MaybePresent CommandSource source, @NonNull @MaybePresent String[] strings) {
+        if (!source.hasPermission("reformcloud.command.reformcloud"))
+            return new LinkedList<>();
+
         if (strings.length == 2 && strings[0].equalsIgnoreCase("copy"))
             return registered();
 

@@ -244,6 +244,9 @@ public final class CommandPermissions implements Serializable, Command {
         if (!(source instanceof Player))
             return new LinkedList<>();
 
+        if (!source.hasPermission("reformcloud.command.permissions"))
+            return new LinkedList<>();
+
         if (strings.length == 2) {
             return Arrays.asList("list", "addperm", "removeperm", "addgroup", "removegroup", "setgroup", "setdefault", "create", "delete", "add", "remove");
         }

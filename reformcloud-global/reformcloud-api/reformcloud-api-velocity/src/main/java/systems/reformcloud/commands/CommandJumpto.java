@@ -54,6 +54,9 @@ public final class CommandJumpto implements Command {
 
     @Override
     public @MaybePresent List<String> suggest(@MaybePresent CommandSource source, @NonNull @MaybePresent String[] currentArgs) {
+        if (!source.hasPermission("reformcloud.command.jumpto"))
+            return new LinkedList<>();
+
         StringBuilder stringBuilder = new StringBuilder();
 
         Arrays.stream(currentArgs).forEach(s -> stringBuilder.append(s));
