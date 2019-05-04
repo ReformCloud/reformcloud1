@@ -7,6 +7,8 @@ package systems.reformcloud.database;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.in.PacketInCreatePermissionGroup;
+import systems.reformcloud.network.in.PacketInDeletePermissionGroup;
 import systems.reformcloud.network.in.PacketInUpdatePermissionHolder;
 import systems.reformcloud.network.out.PacketOutUpdatePermissionCache;
 import systems.reformcloud.network.query.in.PacketInQueryGetPermissionCache;
@@ -56,6 +58,8 @@ public final class PermissionDatabase implements Serializable {
                 .registerQueryHandler("QueryGetPermissionCache", new PacketInQueryGetPermissionCache())
                 .registerQueryHandler("QueryGetPermissionHolder", new PacketInQueryGetPermissionHolder())
 
+                .registerHandler("DeletePermissionGroup", new PacketInDeletePermissionGroup())
+                .registerHandler("CreatePermissionGroup", new PacketInCreatePermissionGroup())
                 .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder());
     }
 

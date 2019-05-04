@@ -38,9 +38,14 @@ public final class CommandPermissions extends Command implements Serializable {
                 int id2 = as.getGroupID();
                 return Integer.compare(id1, id2);
             });
-            commandSender.sendMessage("The following permissiongroups are registered:");
-            registered.forEach(permissionGroup -> commandSender.sendMessage("   - " + permissionGroup.getName() +
-                    "/ID=" + permissionGroup.getGroupID()));
+            StringBuilder stringBuilder = new StringBuilder();
+            registered.forEach(permissionGroup -> stringBuilder.append("   - ")
+                    .append(permissionGroup.getName())
+                    .append("/ID=")
+                    .append(permissionGroup.getGroupID())
+                    .append("\n")
+            );
+            commandSender.sendMessage(stringBuilder.substring(0));
         } else if (args.length == 2 && args[1].equalsIgnoreCase("create")) {
             if (PermissionsAddon.getInstance().getPermissionDatabase()
                     .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
@@ -53,7 +58,7 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().createPermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
 
-            commandSender.sendMessage("PermissionGroup " + args[1] + " was created successfully");
+            commandSender.sendMessage("PermissionGroup " + args[0] + " was created successfully");
         } else if (args.length == 2 && args[1].equalsIgnoreCase("delete")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
                     .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
