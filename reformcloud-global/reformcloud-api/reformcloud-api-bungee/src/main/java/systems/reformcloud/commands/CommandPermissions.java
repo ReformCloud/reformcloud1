@@ -226,14 +226,15 @@ public final class CommandPermissions extends Command implements Serializable, T
             return;
         }
 
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms list"));
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms <USERNAME> list"));
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>"));
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>"));
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>"));
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms <GROUPNAME> setdefault"));
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms <GROUPNAME> <CREATE/DELETE>"));
-        commandSender.sendMessage(TextComponent.fromLegacyText("§7perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
+        String prefix = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix();
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms list"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <USERNAME> list"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> setdefault"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <CREATE/DELETE>"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
     }
 
     @Override
@@ -242,7 +243,7 @@ public final class CommandPermissions extends Command implements Serializable, T
             return new LinkedList<>();
 
         if (strings.length == 2) {
-            return Arrays.asList("list", "addperm", "removeperm", "addgroup", "removegroup", "setgoup", "setdefault", "create", "delete", "add", "remove");
+            return Arrays.asList("list", "addperm", "removeperm", "addgroup", "removegroup", "setgroup", "setdefault", "create", "delete", "add", "remove");
         }
 
         if (strings.length == 3
