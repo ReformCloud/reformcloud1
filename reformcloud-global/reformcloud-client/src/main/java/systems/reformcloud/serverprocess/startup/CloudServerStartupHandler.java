@@ -444,7 +444,7 @@ public final class CloudServerStartupHandler implements Serializable {
 
         try {
             if (this.isAlive()) {
-                this.process.destroyForcibly().waitFor();
+                this.process.destroy();
             }
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error on CloudServer shutdown", throwable);

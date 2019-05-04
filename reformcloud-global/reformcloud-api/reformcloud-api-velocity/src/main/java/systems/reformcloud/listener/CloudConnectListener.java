@@ -179,6 +179,7 @@ public final class CloudConnectListener {
             proxyInfo.setFull(false);
 
         proxyInfo.setOnline(proxyInfo.getOnline() - 1);
+        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
 
         ReformCloudAPIVelocity.getInstance().getOnlinePlayers().remove(event.getPlayer().getUniqueId());
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));

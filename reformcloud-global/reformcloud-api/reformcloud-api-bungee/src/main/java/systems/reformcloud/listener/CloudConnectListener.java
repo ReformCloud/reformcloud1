@@ -189,6 +189,7 @@ public final class CloudConnectListener implements Listener {
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));
         BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> initTab(e));
+        ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = -127)
