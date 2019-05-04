@@ -157,7 +157,7 @@ public final class CloudAddonsListener {
         event.setPing(serverPing);
     }
 
-    @Subscribe
+    @Subscribe(order = PostOrder.LAST)
     public void handle(final PermissionsSetupEvent event) {
         if (ReformCloudAPIVelocity.getInstance().getPermissionCache() == null)
             return;
