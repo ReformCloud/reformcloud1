@@ -53,6 +53,11 @@ public final class CommandJumpto implements Command {
     }
 
     @Override
+    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+        return source.getPermissionValue("reformcloud.command.jumpto").asBoolean();
+    }
+
+    @Override
     public @MaybePresent List<String> suggest(@MaybePresent CommandSource source, @NonNull @MaybePresent String[] currentArgs) {
         if (!source.hasPermission("reformcloud.command.jumpto"))
             return new LinkedList<>();

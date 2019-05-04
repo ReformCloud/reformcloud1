@@ -138,6 +138,11 @@ public final class CommandReformCloud implements Command {
     }
 
     @Override
+    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+        return source.getPermissionValue("reformcloud.command.reformcloud").asBoolean();
+    }
+
+    @Override
     public @MaybePresent List<String> suggest(@MaybePresent CommandSource source, @NonNull @MaybePresent String[] strings) {
         if (!source.hasPermission("reformcloud.command.reformcloud"))
             return new LinkedList<>();

@@ -273,6 +273,11 @@ public final class CommandPermissions implements Serializable, Command {
         return defaultHelp((Player) source);
     }
 
+    @Override
+    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+        return source.getPermissionValue("reformcloud.command.permissions").asBoolean();
+    }
+
     private List<String> defaultHelp(Player player) {
         List<String> out = new LinkedList<>();
         out.add("list");
