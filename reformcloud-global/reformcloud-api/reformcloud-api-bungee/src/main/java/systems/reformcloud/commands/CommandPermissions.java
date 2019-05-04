@@ -246,21 +246,21 @@ public final class CommandPermissions extends Command implements Serializable, T
         }
 
         if (strings.length == 3
-                && (strings[2].equalsIgnoreCase("addperm")
-                || strings[2].equalsIgnoreCase("removeperm")
-                || strings[2].equalsIgnoreCase("add")
-                || strings[2].equalsIgnoreCase("remove"))) {
+                && (strings[1].equalsIgnoreCase("addperm")
+                || strings[1].equalsIgnoreCase("removeperm")
+                || strings[1].equalsIgnoreCase("add")
+                || strings[1].equalsIgnoreCase("remove"))) {
             return Arrays.asList("reformcloud.command.jumpto", "reformcloud.command.perms", "reformcloud.command.reformcloud", "reformcloud.command.whereiam");
         }
 
         if (strings.length == 3
-                && (strings[2].equalsIgnoreCase("addgroup")
-                || strings[2].equalsIgnoreCase("setgroup")
-                || strings[2].equalsIgnoreCase("removegroup"))) {
+                && (strings[1].equalsIgnoreCase("addgroup")
+                || strings[1].equalsIgnoreCase("setgroup")
+                || strings[1].equalsIgnoreCase("removegroup"))) {
             return groupNames();
         }
 
-        if (strings.length == 4 && (strings[2].equalsIgnoreCase("addgroup") || strings[2].equalsIgnoreCase("setgroup"))) {
+        if (strings.length == 4 && (strings[1].equalsIgnoreCase("addgroup") || strings[1].equalsIgnoreCase("setgroup"))) {
             return Arrays.asList("1", "2", "3", "4", "5");
         }
 
@@ -277,7 +277,7 @@ public final class CommandPermissions extends Command implements Serializable, T
 
     private List<String> groupNames() {
         List<String> out = new LinkedList<>();
-        ReformCloudAPIBungee.getInstance().getPermissionCache().getAllRegisteredGroups().forEach(e -> out.add(e.getName()));
+        ReformCloudAPIBungee.getInstance().getPermissionCache().getAllGroupsAndDefault().forEach(e -> out.add(e.getName()));
         return out;
     }
 }

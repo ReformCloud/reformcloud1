@@ -112,7 +112,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            permissionHolder.getPlayerPermissions().replace(args[2].replace("-", ""), !args[2].startsWith("-"));
+            permissionHolder.getPlayerPermissions().put(args[2].replace("-", ""), !args[2].startsWith("-"));
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("The permission " + args[2] + " was added to the user " + args[0]);
@@ -294,6 +294,7 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
+        } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
         } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
             if (!this.isLong(args[3])) {
                 commandSender.sendMessage("The given time is not valid");

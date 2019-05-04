@@ -56,8 +56,7 @@ public final class PermissionCache implements Serializable {
     }
 
     public List<PermissionGroup> getAllGroupsAndDefault() {
-        List<PermissionGroup> out = new ArrayList<>();
-        out.addAll(this.allRegisteredGroups);
+        List<PermissionGroup> out = new ArrayList<>(this.allRegisteredGroups);
         out.add(defaultGroup);
         return out;
     }
