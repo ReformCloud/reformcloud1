@@ -162,6 +162,7 @@ public final class CloudAddonsListener {
         if (ReformCloudAPIVelocity.getInstance().getPermissionCache() == null)
             return;
 
+        System.out.println(event.getSubject());
         if (event.getSubject() instanceof Player) {
             PermissionHolder permissionHolder = ReformCloudAPIVelocity.getInstance()
                     .getCachedPermissionHolders().get(((Player) event.getSubject()).getUniqueId());
