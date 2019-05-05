@@ -6,6 +6,7 @@ package systems.reformcloud;
 
 import systems.reformcloud.commands.CommandPermissions;
 import systems.reformcloud.database.PermissionDatabase;
+import systems.reformcloud.listener.PlayerDisconnectedListener;
 import systems.reformcloud.network.out.PacketOutUpdatePermissionCache;
 import systems.reformcloud.utility.ControllerAddonImpl;
 
@@ -34,6 +35,7 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
         permissionDatabase = new PermissionDatabase();
         ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutUpdatePermissionCache());
         this.registerCommand(new CommandPermissions());
+        ReformCloudController.getInstance().getEventManager().registerListener(new PlayerDisconnectedListener());
     }
 
     @Override

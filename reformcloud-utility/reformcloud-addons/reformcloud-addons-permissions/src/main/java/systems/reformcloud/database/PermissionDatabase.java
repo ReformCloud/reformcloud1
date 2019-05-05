@@ -139,6 +139,21 @@ public final class PermissionDatabase implements Serializable {
                     try {
                         Configuration configuration = Configuration.parse(file);
                         PermissionHolder permissionHolder1 = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+                        List<String> copy = new ArrayList<>(permissionHolder1.getPermissionGroups().keySet());
+                        int currentSize = copy.size();
+                        copy.forEach(k -> {
+                            if (this.getPermissionGroup(k) == null) {
+                                permissionHolder1.getPermissionGroups().remove(k);
+                            }
+                        });
+                        if (currentSize != permissionHolder1.getPermissionGroups().size())
+                            this.updatePermissionHolder(permissionHolder1);
+
+                        if (permissionHolder1.getPermissionGroups().size() == 0) {
+                            permissionHolder1.getPermissionGroups().put(this.permissionCache.getDefaultGroup().getName(), -1L);
+                            this.updatePermissionHolder(permissionHolder1);
+                        }
+
                         this.cachedPermissionHolders.put(permissionHolderUID, permissionHolder1);
                         return permissionHolder1;
                     } catch (final Throwable throwable) {
@@ -162,6 +177,9 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public void updatePermissionHolder(PermissionHolder permissionHolder) {
+        if (permissionHolder.getPermissionGroups().size() == 0)
+            permissionHolder.getPermissionGroups().put(this.permissionCache.getDefaultGroup().getName(), -1L);
+
         this.cachedPermissionHolders.replace(permissionHolder.getUniqueID(), permissionHolder);
         new Configuration().addValue("holder", permissionHolder)
                 .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));

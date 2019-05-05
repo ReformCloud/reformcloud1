@@ -150,7 +150,7 @@ public final class CloudConnectListener {
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getUsername() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getRemoteAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));
-        VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> initTab(e));
+        VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(CloudConnectListener::initTab);
     }
 
     @Subscribe(order = PostOrder.FIRST)
