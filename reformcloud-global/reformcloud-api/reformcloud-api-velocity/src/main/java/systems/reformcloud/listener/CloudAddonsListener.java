@@ -196,6 +196,9 @@ public final class CloudAddonsListener {
         private PermissionHolder permissionHolder;
 
         private PlayerPermissionProvider(Player player, PermissionHolder permissionHolder) {
+            System.out.println("INIT");
+            System.out.println(player);
+            System.out.println(permissionHolder);
             this.permissionGroups = permissionHolder.getAllPermissionGroups(ReformCloudAPIVelocity.getInstance().getPermissionCache());
             this.permissionHolder = permissionHolder;
             this.player = player;
