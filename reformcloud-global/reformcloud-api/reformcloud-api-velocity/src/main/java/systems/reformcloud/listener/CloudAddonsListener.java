@@ -157,7 +157,7 @@ public final class CloudAddonsListener {
         event.setPing(serverPing);
     }
 
-    @Subscribe(order = PostOrder.LAST)
+    @Subscribe
     public void handle(final PermissionsSetupEvent event) {
         if (ReformCloudAPIVelocity.getInstance().getPermissionCache() == null)
             return;
@@ -169,7 +169,6 @@ public final class CloudAddonsListener {
                 return;
 
             Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
-
             copyOf.forEach((groupName, timeout) -> {
                 if (timeout != -1 && timeout <= System.currentTimeMillis())
                     permissionHolder.getPermissionGroups().remove(groupName);
