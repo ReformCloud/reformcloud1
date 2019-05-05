@@ -191,32 +191,8 @@ public final class CloudAddonsListener {
                         }
 
                         ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+                        event.setProvider(new PlayerPermissionProvider(((Player) event.getSubject()), permissionHolder));
                     });
-
-            PermissionHolder permissionHolder = ReformCloudAPIVelocity.getInstance()
-                    .getCachedPermissionHolders().get(((Player) event.getSubject()).getUniqueId());
-            if (permissionHolder == null)
-                return;
-
-            Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
-            copyOf.forEach((groupName, timeout) -> {
-                if (timeout != -1 && timeout <= System.currentTimeMillis())
-                    permissionHolder.getPermissionGroups().remove(groupName);
-            });
-
-            if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
-                if (permissionHolder.getPermissionGroups().size() == 0) {
-                    permissionHolder.getPermissionGroups().put(
-                            ReformCloudAPIVelocity.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
-                    );
-                }
-
-                ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
-                        "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
-                );
-            }
-
-            event.setProvider(new PlayerPermissionProvider(((Player) event.getSubject()), permissionHolder));
         }
     }
 
