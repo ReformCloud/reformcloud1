@@ -1,8 +1,10 @@
 name: ReformCloudAPISpigot
-version: 2.0
+version: '2.0'
 author: ReformCloud
 main: systems.reformcloud.launcher.SpigotBootstrap
-api-version: 1.13
+api-version: '1.13'
+website: reformcloud.systems
+description: The reformcloud spigot api
 
 load: STARTUP
 
