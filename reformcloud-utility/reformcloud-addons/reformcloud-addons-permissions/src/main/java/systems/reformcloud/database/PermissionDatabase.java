@@ -67,6 +67,13 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public void deletePermissionGroup(PermissionGroup permissionGroup) {
+        this.cachedPermissionHolders.forEach((k, v) -> {
+            v.getPermissionGroups().remove(permissionGroup.getName());
+            if (v.getPermissionGroups().size() == 0) {
+                v.getPermissionGroups().put(this.permissionCache.getDefaultGroup().getName(), -1L);
+                this.updatePermissionHolder(v);
+            }
+        });
         this.permissionCache.getAllRegisteredGroups().remove(permissionGroup);
     }
 
@@ -84,6 +91,21 @@ public final class PermissionDatabase implements Serializable {
                     try {
                         Configuration configuration = Configuration.parse(file);
                         PermissionHolder permissionHolder1 = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+                        List<String> copy = new ArrayList<>(permissionHolder1.getPermissionGroups().keySet());
+                        int currentSize = copy.size();
+                        copy.forEach(k -> {
+                            if (this.getPermissionGroup(k) == null) {
+                                permissionHolder1.getPermissionGroups().remove(k);
+                            }
+                        });
+                        if (currentSize != permissionHolder1.getPermissionGroups().size())
+                            this.updatePermissionHolder(permissionHolder1);
+
+                        if (permissionHolder1.getPermissionGroups().size() == 0) {
+                            permissionHolder1.getPermissionGroups().put(this.permissionCache.getDefaultGroup().getName(), -1L);
+                            this.updatePermissionHolder(permissionHolder1);
+                        }
+
                         this.cachedPermissionHolders.put(permissionHolder.getUniqueID(), permissionHolder1);
                         return permissionHolder1;
                     } catch (final Throwable throwable) {
