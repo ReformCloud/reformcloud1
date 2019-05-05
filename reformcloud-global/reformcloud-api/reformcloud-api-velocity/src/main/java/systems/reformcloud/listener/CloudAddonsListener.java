@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018
@@ -163,32 +165,37 @@ public final class CloudAddonsListener {
             return;
 
         if (event.getSubject() instanceof Player) {
-            PermissionHolder permissionHolder = ReformCloudAPIVelocity.getInstance()
-                    .getCachedPermissionHolders().get(((Player) event.getSubject()).getUniqueId());
-            System.out.println("test");
-            if (permissionHolder == null)
-                return;
-            System.out.println("test1");
+            CompletableFuture.runAsync(() -> {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(500);
+                } catch (InterruptedException ignored) {
+                }
 
-            Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
-            copyOf.forEach((groupName, timeout) -> {
-                if (timeout != -1 && timeout <= System.currentTimeMillis())
-                    permissionHolder.getPermissionGroups().remove(groupName);
-            });
+                PermissionHolder permissionHolder = ReformCloudAPIVelocity.getInstance()
+                        .getCachedPermissionHolders().get(((Player) event.getSubject()).getUniqueId());
+                if (permissionHolder == null)
+                    return;
 
-            if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
-                if (permissionHolder.getPermissionGroups().size() == 0) {
-                    permissionHolder.getPermissionGroups().put(
-                            ReformCloudAPIVelocity.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
+                Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
+                copyOf.forEach((groupName, timeout) -> {
+                    if (timeout != -1 && timeout <= System.currentTimeMillis())
+                        permissionHolder.getPermissionGroups().remove(groupName);
+                });
+
+                if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
+                    if (permissionHolder.getPermissionGroups().size() == 0) {
+                        permissionHolder.getPermissionGroups().put(
+                                ReformCloudAPIVelocity.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
+                        );
+                    }
+
+                    ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
+                            "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
                     );
                 }
 
-                ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
-                        "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
-                );
-            }
-
-            event.setProvider(new PlayerPermissionProvider(((Player) event.getSubject()), permissionHolder));
+                event.setProvider(new PlayerPermissionProvider(((Player) event.getSubject()), permissionHolder));
+            });
         }
     }
 
