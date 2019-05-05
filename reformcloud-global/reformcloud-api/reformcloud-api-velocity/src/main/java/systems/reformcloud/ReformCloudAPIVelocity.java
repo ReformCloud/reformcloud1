@@ -149,7 +149,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 ReformCloudLibraryService.sleep(TimeUnit.SECONDS, this.proxyInfo.getProxyGroup().getAutoStop().getCheckEverySeconds());
                 if (VelocityBootstrap.getInstance().getProxy().getPlayerCount() == 0) {
                     if (this.getAllRegisteredProxies(proxyInfo.getCloudProcess().getGroup()).size() > proxyInfo.getProxyGroup().getMinOnline())
-                        System.exit(-1);
+                        this.stopProxy(this.proxyInfo);
                 }
             });
         }

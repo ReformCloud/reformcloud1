@@ -153,7 +153,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 ReformCloudLibraryService.sleep(TimeUnit.SECONDS, this.proxyInfo.getProxyGroup().getAutoStop().getCheckEverySeconds());
                 if (BungeecordBootstrap.getInstance().getProxy().getOnlineCount() == 0) {
                     if (this.getAllRegisteredProxies(proxyInfo.getCloudProcess().getGroup()).size() > proxyInfo.getProxyGroup().getMinOnline())
-                        BungeecordBootstrap.getInstance().getProxy().stop();
+                        this.stopProxy(this.proxyInfo);
                 }
             });
         }

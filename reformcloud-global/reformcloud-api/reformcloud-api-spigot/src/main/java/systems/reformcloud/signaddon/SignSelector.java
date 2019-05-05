@@ -322,8 +322,10 @@ public final class SignSelector {
     }
 
     public void handleSignRemove(final Sign sign) {
-        this.signMap.remove(sign.getUuid());
-        updateSign(sign);
+        Bukkit.getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
+            this.signMap.remove(sign.getUuid());
+            updateSign(sign);
+        });
     }
 
     private void updateSign(final Sign sign, final ServerInfo serverInfo) {

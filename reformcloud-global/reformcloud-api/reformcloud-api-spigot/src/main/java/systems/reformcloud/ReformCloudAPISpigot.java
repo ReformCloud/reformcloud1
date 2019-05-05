@@ -144,7 +144,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 ReformCloudLibraryService.sleep(TimeUnit.SECONDS, this.serverInfo.getServerGroup().getAutoStop().getCheckEverySeconds());
                 if (SpigotBootstrap.getInstance().getServer().getOnlinePlayers().size() == 0) {
                     if (this.getAllRegisteredServers(serverInfo.getCloudProcess().getGroup()).size() > serverInfo.getServerGroup().getMinOnline())
-                        SpigotBootstrap.getInstance().getServer().shutdown();
+                        this.stopServer(this.serverInfo);
                 }
             });
         }
