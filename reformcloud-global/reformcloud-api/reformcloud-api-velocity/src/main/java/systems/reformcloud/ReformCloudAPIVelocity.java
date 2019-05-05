@@ -49,6 +49,7 @@ import systems.reformcloud.network.packets.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryStartQueuedProcess;
+import systems.reformcloud.permissions.VelocityPermissionProvider;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.PermissionCache;
@@ -77,6 +78,8 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
     private final ChannelHandler channelHandler;
 
     private ProxySettings proxySettings;
+
+    private final VelocityPermissionProvider velocityPermissionProvider = new VelocityPermissionProvider();
 
     private final ProxyStartupInfo proxyStartupInfo;
     private ProxyInfo proxyInfo;
@@ -1131,6 +1134,10 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
 
     public void setInternalCloudNetwork(InternalCloudNetwork internalCloudNetwork) {
         this.internalCloudNetwork = internalCloudNetwork;
+    }
+
+    public VelocityPermissionProvider getVelocityPermissionProvider() {
+        return velocityPermissionProvider;
     }
 
     public void setPermissionCache(PermissionCache permissionCache) {

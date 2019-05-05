@@ -161,76 +161,7 @@ public final class CloudAddonsListener {
         if (ReformCloudAPIVelocity.getInstance().getPermissionCache() == null)
             return;
 
-        if (event.getSubject() instanceof Player) {
-            ReformCloudAPIVelocity.getInstance().sendPacketQuery("ReformCloudController",
-                    new PacketOutQueryGetPermissionHolder(
-                            new PermissionHolder(((Player) event.getSubject()).getUniqueId(), Collections.singletonMap(ReformCloudAPIVelocity
-                                    .getInstance().getPermissionCache().getDefaultGroup().getName(), -1L), new HashMap<>())
-                    ), (configuration1, resultID1) -> {
-                        PermissionHolder permissionHolder = configuration1.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-                        if (permissionHolder == null)
-                            return;
-
-                        Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
-
-                        copyOf.forEach((groupName, timeout) -> {
-                            if (timeout != -1 && timeout <= System.currentTimeMillis())
-                                permissionHolder.getPermissionGroups().remove(groupName);
-                        });
-
-                        if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
-                            if (permissionHolder.getPermissionGroups().size() == 0) {
-                                permissionHolder.getPermissionGroups().put(
-                                        ReformCloudAPIVelocity.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
-                                );
-                            }
-
-                            ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
-                                    "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
-                            );
-                        }
-
-                        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
-                        event.setProvider(new PlayerPermissionProvider(((Player) event.getSubject()), permissionHolder));
-                    });
-        }
-    }
-
-    private class PlayerPermissionProvider implements PermissionProvider, PermissionFunction, PermissionSubject {
-        private List<PermissionGroup> permissionGroups;
-        private Player player;
-        private PermissionHolder permissionHolder;
-
-        private PlayerPermissionProvider(Player player, PermissionHolder permissionHolder) {
-            this.permissionGroups = permissionHolder.getAllPermissionGroups(ReformCloudAPIVelocity.getInstance().getPermissionCache());
-            this.permissionHolder = permissionHolder;
-            this.player = player;
-
-            System.out.println("---------------------");
-            System.out.println(permissionGroups);
-            System.out.println(this.hasPermission("reformcloud.command.permissions"));
-            System.out.println(permissionHolder.hasPermission("reformcloud.command.permissions", permissionGroups));
-            System.out.println(this.getPermissionValue("reformcloud.command.permissions").asBoolean());
-            System.out.println("---------------------");
-        }
-
-        @Override
-        public @MaybePresent Tristate getPermissionValue(@MaybePresent String s) {
-            return Tristate.fromNullableBoolean(permissionHolder.hasPermission(s, permissionGroups));
-        }
-
-        @Override
-        public boolean hasPermission(String permission) {
-            return getPermissionValue(permission).equals(Tristate.TRUE);
-        }
-
-        @Override
-        public @MaybePresent PermissionFunction createFunction(@MaybePresent PermissionSubject permissionSubject) {
-            if (this.player != permissionSubject)
-                throw new IllegalStateException("CreateFunction called with different argument");
-
-            return this;
-        }
+        event.setProvider(ReformCloudAPIVelocity.getInstance().getVelocityPermissionProvider());
     }
 
     private int onlineCount = 0;
