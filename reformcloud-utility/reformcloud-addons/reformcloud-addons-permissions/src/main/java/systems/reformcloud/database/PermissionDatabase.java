@@ -9,6 +9,7 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.in.PacketInUpdatePermissionHolder;
 import systems.reformcloud.network.out.PacketOutUpdatePermissionCache;
+import systems.reformcloud.network.out.PacketOutUpdatePermissionHolder;
 import systems.reformcloud.network.query.in.PacketInQueryGetPermissionCache;
 import systems.reformcloud.network.query.in.PacketInQueryGetPermissionHolder;
 import systems.reformcloud.player.permissions.PermissionCache;
@@ -164,6 +165,13 @@ public final class PermissionDatabase implements Serializable {
         this.cachedPermissionHolders.replace(permissionHolder.getUniqueID(), permissionHolder);
         new Configuration().addValue("holder", permissionHolder)
                 .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));
+        this.updateInstant(permissionHolder);
+    }
+
+    private void updateInstant(PermissionHolder permissionHolder) {
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
+                new PacketOutUpdatePermissionHolder(permissionHolder)
+        );
     }
 
     public void updatePermissionGroup(PermissionGroup permissionGroup) {

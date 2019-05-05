@@ -140,6 +140,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
+                .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();

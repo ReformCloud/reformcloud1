@@ -53,12 +53,14 @@ public final class VelocityPermissionFunctionAdapter implements Serializable, Pe
         if (permissionHolder != null)
             return permissionHolder;
 
-        return this.permissionHolder = ReformCloudAPIVelocity.getInstance().createPacketFuture(
+        this.permissionHolder = ReformCloudAPIVelocity.getInstance().createPacketFuture(
                 new PacketOutQueryGetPermissionHolder(
                         new PermissionHolder(permissionSubject, Collections.singletonMap(ReformCloudAPIVelocity
                                 .getInstance().getPermissionCache().getDefaultGroup().getName(), -1L), new HashMap<>())
                 ), "ReformCloudController"
         ).sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS).getConfiguration().getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+        return this.permissionHolder;
     }
 
     private List<PermissionGroup> getGroups(PermissionHolder permissionHolder) {

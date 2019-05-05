@@ -139,6 +139,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
+                .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
