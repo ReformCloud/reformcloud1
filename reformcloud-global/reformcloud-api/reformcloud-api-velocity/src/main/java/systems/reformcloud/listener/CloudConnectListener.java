@@ -155,7 +155,7 @@ public final class CloudConnectListener {
 
     @Subscribe(order = PostOrder.FIRST)
     public void handle(final KickedFromServerEvent event) {
-        if (!event.kickedDuringLogin()) {
+        if (!event.kickedDuringServerConnect()) {
             final ServerInfo serverInfo = ReformCloudAPIVelocity.getInstance().nextFreeLobby(
                     ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup(),
                     event.getPlayer(),
