@@ -275,6 +275,9 @@ public final class CommandPermissions implements Serializable, Command {
 
     @Override
     public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+        System.out.println("Check PERMS");
+        System.out.println(source);
+        System.out.println(source.getPermissionValue("reformcloud.command.permissions").asBoolean());
         return source.getPermissionValue("reformcloud.command.permissions").asBoolean();
     }
 

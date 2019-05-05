@@ -64,7 +64,7 @@ public final class CommandJumpto implements Command {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        Arrays.stream(currentArgs).forEach(s -> stringBuilder.append(s));
+        Arrays.stream(currentArgs).forEach(stringBuilder::append);
 
         LinkedList<String> iterable = new LinkedList<>();
         ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager()
