@@ -190,7 +190,7 @@ public final class CloudAddonsListener {
         }
     }
 
-    private class PlayerPermissionProvider implements PermissionProvider, PermissionFunction {
+    private class PlayerPermissionProvider implements PermissionProvider, PermissionFunction, PermissionSubject {
         private List<PermissionGroup> permissionGroups;
         private Player player;
         private PermissionHolder permissionHolder;
@@ -204,6 +204,11 @@ public final class CloudAddonsListener {
         @Override
         public @MaybePresent Tristate getPermissionValue(@MaybePresent String s) {
             return Tristate.fromNullableBoolean(permissionHolder.hasPermission(s, permissionGroups));
+        }
+
+        @Override
+        public boolean hasPermission(String permission) {
+            return getPermissionValue(permission).equals(Tristate.TRUE);
         }
 
         @Override
