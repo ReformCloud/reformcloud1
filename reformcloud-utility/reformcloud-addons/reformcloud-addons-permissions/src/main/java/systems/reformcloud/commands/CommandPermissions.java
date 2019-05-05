@@ -38,9 +38,18 @@ public final class CommandPermissions extends Command implements Serializable {
                 int id2 = as.getGroupID();
                 return Integer.compare(id1, id2);
             });
-            commandSender.sendMessage("The following permissiongroups are registered:");
-            registered.forEach(permissionGroup -> commandSender.sendMessage("   - " + permissionGroup.getName() +
-                    "/ID=" + permissionGroup.getGroupID()));
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("The following groups are registered").append(": ");
+            registered.forEach(permissionGroup -> stringBuilder
+                    .append("\n")
+                    .append("   - ")
+                    .append(permissionGroup.getName())
+                    .append("/ID=")
+                    .append(permissionGroup.getGroupID())
+                    .append("/Default=")
+                    .append(PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache().getDefaultGroup().getName().equals(permissionGroup.getName()))
+            );
+            commandSender.sendMessage(stringBuilder.substring(0));
         } else if (args.length == 2 && args[1].equalsIgnoreCase("create")) {
             if (PermissionsAddon.getInstance().getPermissionDatabase()
                     .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
@@ -53,7 +62,7 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().createPermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
 
-            commandSender.sendMessage("PermissionGroup " + args[1] + " was created successfully");
+            commandSender.sendMessage("PermissionGroup " + args[0] + " was created successfully");
         } else if (args.length == 2 && args[1].equalsIgnoreCase("delete")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
                     .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
@@ -103,7 +112,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            permissionHolder.getPlayerPermissions().replace(args[2].replace("-", ""), !args[2].startsWith("-"));
+            permissionHolder.getPlayerPermissions().put(args[2].replace("-", ""), !args[2].startsWith("-"));
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("The permission " + args[2] + " was added to the user " + args[0]);
@@ -286,6 +295,7 @@ public final class CommandPermissions extends Command implements Serializable {
 
             commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
         } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
+        } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
             if (!this.isLong(args[3])) {
                 commandSender.sendMessage("The given time is not valid");
                 return;
@@ -321,11 +331,11 @@ public final class CommandPermissions extends Command implements Serializable {
         } else {
             commandSender.sendMessage("perms list");
             commandSender.sendMessage("perms <USERNAME> list");
-            commandSender.sendMessage("perms <GROUPNAME> setdefault");
-            commandSender.sendMessage("perms <GROUPNAME> <CREATE/DELETE>");
             commandSender.sendMessage("perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>");
             commandSender.sendMessage("perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>");
             commandSender.sendMessage("perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>");
+            commandSender.sendMessage("perms <GROUPNAME> setdefault");
+            commandSender.sendMessage("perms <GROUPNAME> <CREATE/DELETE>");
             commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>");
         }
     }

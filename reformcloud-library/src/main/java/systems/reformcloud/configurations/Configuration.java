@@ -393,6 +393,6 @@ public final class Configuration {
     }
 
     public String toString() {
-        return "Configuration(jsonObject=" + this.getJsonObject() + ")";
+        return getJsonString();
     }
 }

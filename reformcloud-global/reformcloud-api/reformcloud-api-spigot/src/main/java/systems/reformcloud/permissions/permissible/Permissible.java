@@ -27,8 +27,6 @@ public final class Permissible extends PermissibleBase implements Serializable {
     public Permissible(Player player, PermissionHolder permissionHolder) {
         super(player);
 
-        player.setOp(false);
-
         this.permissionHolder = permissionHolder;
         inGroups = ReformCloudAPISpigot.getInstance()
                 .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> permissionHolder
@@ -42,15 +40,19 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public boolean isOp() {
-        return false;
+        return super.isOp();
     }
 
     @Override
     public void setOp(boolean value) {
+        super.setOp(value);
     }
 
     @Override
     public boolean hasPermission(String inName) {
+        if (this.isOp() && !inName.toLowerCase().equals("reformcloud.commands.mobs") && !inName.toLowerCase().equals("reformcloud.command.selectors"))
+            return true;
+
         return this.permissionHolder.hasPermission(inName, inGroups);
     }
 

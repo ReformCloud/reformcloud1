@@ -158,6 +158,9 @@ public final class CommandReformCloud extends Command implements Serializable, T
 
     @Override
     public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings) {
+        if (!commandSender.hasPermission(getPermission()))
+            return new LinkedList<>();
+
         if (strings.length == 2 && strings[0].equalsIgnoreCase("copy"))
             return registered();
 

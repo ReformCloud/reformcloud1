@@ -9,6 +9,7 @@ import com.velocitypowered.api.proxy.server.ServerInfo;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.autoicon.IconManager;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
+import systems.reformcloud.commands.CommandPermissions;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.events.CloudNetworkInitializeEvent;
 import systems.reformcloud.meta.enums.ServerModeType;
@@ -68,10 +69,14 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         );
 
         ReformCloudAPIVelocity.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) ->
-                        ReformCloudAPIVelocity.getInstance().setPermissionCache(configuration1.getValue("cache",
-                                TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
-                        )
+                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) -> {
+                    ReformCloudAPIVelocity.getInstance().setPermissionCache(configuration1.getValue("cache",
+                            TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                    );
+                    if (ReformCloudAPIVelocity.getInstance().getPermissionCache() != null) {
+                        VelocityBootstrap.getInstance().getProxy().getCommandManager().register(new CommandPermissions(), "perms", "permissions", "cloudperms", "cp");
+                    }
+                }
         );
 
         ReformCloudAPIVelocity.getInstance().sendPacketQuery("ReformCloudController",

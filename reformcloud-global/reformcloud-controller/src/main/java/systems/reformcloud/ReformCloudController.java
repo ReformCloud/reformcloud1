@@ -266,6 +266,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
                 //Development
                 .registerQueryHandler("QueryStartQueuedProcess", new PacketInQueryStartDevProcess())
+                .registerQueryHandler("ExecuteCommandSilent", new PacketInExecuteCommandSilent())
                 .registerHandler("UpdateServerGroup", new PacketInUpdateServerGroup())
                 .registerHandler("CreateClient", new PacketInCreateClient())
                 .registerHandler("CreateProxyGroup", new PacketInCreateProxyGroup())

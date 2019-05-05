@@ -79,7 +79,10 @@ public class CloudProcess implements Serializable {
     }
 
     public Configuration getPreConfig() {
-        return this.preConfig;
+        if (!this.preConfig.getJsonObject().has("jsonObject"))
+            return this.preConfig;
+
+        return new Configuration(this.preConfig.getJsonObject().get("jsonObject").getAsJsonObject());
     }
 
     public Template getLoadedTemplate() {

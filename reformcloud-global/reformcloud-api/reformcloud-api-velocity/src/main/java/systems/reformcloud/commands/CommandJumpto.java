@@ -53,10 +53,18 @@ public final class CommandJumpto implements Command {
     }
 
     @Override
+    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+        return source.getPermissionValue("reformcloud.command.jumpto").asBoolean();
+    }
+
+    @Override
     public @MaybePresent List<String> suggest(@MaybePresent CommandSource source, @NonNull @MaybePresent String[] currentArgs) {
+        if (!source.hasPermission("reformcloud.command.jumpto"))
+            return new LinkedList<>();
+
         StringBuilder stringBuilder = new StringBuilder();
 
-        Arrays.stream(currentArgs).forEach(s -> stringBuilder.append(s));
+        Arrays.stream(currentArgs).forEach(stringBuilder::append);
 
         LinkedList<String> iterable = new LinkedList<>();
         ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager()

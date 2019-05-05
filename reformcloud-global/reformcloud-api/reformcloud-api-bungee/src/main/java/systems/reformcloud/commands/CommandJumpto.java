@@ -52,6 +52,9 @@ public final class CommandJumpto extends Command implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings) {
+        if (!commandSender.hasPermission(getPermission()))
+            return new LinkedList<>();
+
         StringBuilder stringBuilder = new StringBuilder();
 
         Arrays.stream(strings).forEach(s -> stringBuilder.append(s));

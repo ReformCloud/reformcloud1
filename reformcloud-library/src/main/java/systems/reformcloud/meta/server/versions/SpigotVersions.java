@@ -37,8 +37,8 @@ public enum SpigotVersions implements Serializable {
     SPIGOT_1_12_2("Spigot 1.12.2", "1.12.2", "https://mcmirror.io/files/Spigot/Spigot-1.12.2-e8ded36-20181110-0947.jar"),
     SPIGOT_1_13("Spigot 1.13", "1.13", "https://mcmirror.io/files/Spigot/Spigot-1.13-fe3ab0d_1bc2433-20180815-2348.jar"),
     SPIGOT_1_13_1("Spigot 1.13.1", "1.13.1", "https://mcmirror.io/files/Spigot/Spigot-1.13.1-f6a273b_1ceee63-20180926-0919.jar"),
-    SPIGOT_1_13_2("Spigot 1.13.2", "1.13.2", "https://mcmirror.io/files/Spigot/Spigot-1.13.2-f56e2e7-20190106-2330.jar"),
-    SPIGOT_1_14("Spigot 1.14", "1.14", "https://mcmirror.io/files/Spigot/Spigot-1.14-47463c2-20190426-0659.jar"),
+    SPIGOT_1_13_2("Spigot 1.13.2", "1.13.2", "https://mcmirror.io/files/Spigot/Spigot-1.13.2-0c02b0c-20190425-0538.jar"),
+    SPIGOT_1_14("Spigot 1.14", "1.14", "https://mcmirror.io/files/Spigot/Spigot-1.14-1eece4f-20190430-1146.jar"),
     /**
      * Paper Versions
      */
@@ -52,7 +52,7 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_8_8("Paper 1.8.8-R0-1-SNAPSHOT", "1.8.8", "https://archive.mcmirror.io/Paper/Paper-1.8.8-R0.1-SNAPSHOT-latest.jar"),
     PAPER_1_11_2("Paper 1.11.2", "1.11.2", "https://archive.mcmirror.io/Paper/Paper-1.11.2-b1000.jar"),
     PAPER_1_12_2("Paper 1.12.2", "1.12.2", "https://mcmirror.io/files/Paper/Paper-1.12.2-ac69748-20181207-0309.jar"),
-    PAPER_1_13_2("Paper 1.13.2", "1.13.2", "https://mcmirror.io/files/Paper/Paper-1.13.2-ab8bbdf-20190411-0341.jar"),
+    PAPER_1_13_2("Paper 1.13.2", "1.13.2", "https://mcmirror.io/files/Paper/Paper-1.13.2-fb25dc1-20190422-2136.jar"),
     /**
      * SpongeVanilla Versions
      */

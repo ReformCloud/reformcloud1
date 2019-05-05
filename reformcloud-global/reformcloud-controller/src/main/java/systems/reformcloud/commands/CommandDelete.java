@@ -8,7 +8,11 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
+import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.web.WebUser;
+import systems.reformcloud.network.out.PacketOutDeleteTemplate;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.IOException;
@@ -25,11 +29,72 @@ public final class CommandDelete extends Command implements Serializable {
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
+        if (args.length == 3 && args[0].equalsIgnoreCase("servertemplate")) {
+            ServerGroup serverGroup = ReformCloudController.getInstance().getServerGroup(args[1]);
+            if (serverGroup == null) {
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "The server group doesn't exists"));
+                return;
+            }
+
+            Template template = serverGroup.getTemplateOrElseNull(args[2]);
+            if (template == null) {
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "The template doesn't exists"));
+                return;
+            }
+
+            serverGroup.getClients().forEach(client -> {
+                if (ReformCloudController.getInstance().getClient(client) != null && ReformCloudController.getInstance().getChannelHandler().isChannelRegistered(client)) {
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                            client, new PacketOutDeleteTemplate("server", template.getName(), serverGroup.getName())
+                    );
+                }
+            });
+
+            serverGroup.getTemplates().remove(template);
+            ReformCloudController.getInstance().updateServerGroup(serverGroup);
+            //TODO: remove message and replace it with a message in message file (before pre release)
+            commandSender.sendMessage("Done");
+            return;
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("proxytemplate")) {
+            ProxyGroup proxyGroup = ReformCloudController.getInstance().getProxyGroup(args[1]);
+            if (proxyGroup == null) {
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "The proxy group doesn't exists"));
+                return;
+            }
+
+            Template template = proxyGroup.getTemplateOrElseNull(args[2]);
+            if (template == null) {
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        .replace("%message%", "The template doesn't exists"));
+                return;
+            }
+
+            proxyGroup.getClients().forEach(client -> {
+                if (ReformCloudController.getInstance().getClient(client) != null && ReformCloudController.getInstance().getChannelHandler().isChannelRegistered(client)) {
+                    ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                            client, new PacketOutDeleteTemplate("proxy", template.getName(), proxyGroup.getName())
+                    );
+                }
+            });
+
+            proxyGroup.getTemplates().remove(template);
+            ReformCloudController.getInstance().updateProxyGroup(proxyGroup);
+            //TODO: remove message and replace it with a message in message file (before pre release)
+            commandSender.sendMessage("Done");
+            return;
+        }
+
         if (args.length != 2) {
             commandSender.sendMessage("delete SERVERGROUP <name>");
             commandSender.sendMessage("delete PROXYGROUP <name>");
             commandSender.sendMessage("delete CLIENT <name>");
             commandSender.sendMessage("delete WEBUSER <name>");
+            commandSender.sendMessage("delete <servertemplate, proxytemplate> <group> <template-name>");
             return;
         }
 
@@ -95,6 +160,7 @@ public final class CommandDelete extends Command implements Serializable {
                 commandSender.sendMessage("delete PROXYGROUP <name>");
                 commandSender.sendMessage("delete CLIENT <name>");
                 commandSender.sendMessage("delete WEBUSER <name>");
+                commandSender.sendMessage("delete <servertemplate, proxytemplate> <group> <template-name>");
             }
         }
     }

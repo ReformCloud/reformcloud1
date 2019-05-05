@@ -140,6 +140,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
+                .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
@@ -153,7 +154,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 ReformCloudLibraryService.sleep(TimeUnit.SECONDS, this.proxyInfo.getProxyGroup().getAutoStop().getCheckEverySeconds());
                 if (BungeecordBootstrap.getInstance().getProxy().getOnlineCount() == 0) {
                     if (this.getAllRegisteredProxies(proxyInfo.getCloudProcess().getGroup()).size() > proxyInfo.getProxyGroup().getMinOnline())
-                        BungeecordBootstrap.getInstance().getProxy().stop();
+                        this.stopProxy(this.proxyInfo);
                 }
             });
         }
@@ -517,7 +518,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
     @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
         return this.createPacketFuture(
-                new PacketOutQueryStartQueuedProcess(serverGroup, "default", preConfig),
+                new PacketOutQueryStartQueuedProcess(serverGroup, template, preConfig),
                 "ReformCloudController"
         ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
         });

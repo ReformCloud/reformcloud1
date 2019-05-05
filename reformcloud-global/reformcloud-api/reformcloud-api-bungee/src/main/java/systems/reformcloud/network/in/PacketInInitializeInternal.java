@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.ProxyServer;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.autoicon.IconManager;
+import systems.reformcloud.commands.CommandPermissions;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.internal.events.CloudNetworkInitializeEvent;
 import systems.reformcloud.launcher.BungeecordBootstrap;
@@ -69,10 +70,16 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         );
 
         ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) ->
-                        ReformCloudAPIBungee.getInstance().setPermissionCache(configuration1.getValue("cache",
-                                TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
-                        )
+                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) -> {
+                    ReformCloudAPIBungee.getInstance().setPermissionCache(configuration1.getValue("cache",
+                            TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                    );
+                    if (ReformCloudAPIBungee.getInstance().getPermissionCache() != null) {
+                        BungeecordBootstrap.getInstance().getProxy().getPluginManager().registerCommand(
+                                BungeecordBootstrap.getInstance(), new CommandPermissions()
+                        );
+                    }
+                }
         );
 
         ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",

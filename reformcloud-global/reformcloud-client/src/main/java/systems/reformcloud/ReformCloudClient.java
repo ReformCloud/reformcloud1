@@ -217,6 +217,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 .registerHandler("ParametersUpdate", new PacketInParameterUpdate())
                 .registerHandler("EnableProperties", new PacketInEnableProperties())
                 .registerHandler("DisableProperties", new PacketInDisableProperties())
+                .registerHandler("DeleteTemplate", new PacketInDeleteTemplate())
                 .registerHandler("SyncStandby", new PacketInSyncStandby())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
@@ -736,7 +737,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
         return this.createPacketFuture(
-                new PacketOutQueryStartQueuedProcess(serverGroup, "default", preConfig),
+                new PacketOutQueryStartQueuedProcess(serverGroup, template, preConfig),
                 "ReformCloudController"
         ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
         });

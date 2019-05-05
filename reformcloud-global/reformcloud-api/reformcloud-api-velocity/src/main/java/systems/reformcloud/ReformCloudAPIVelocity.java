@@ -49,6 +49,7 @@ import systems.reformcloud.network.packets.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryStartQueuedProcess;
+import systems.reformcloud.permissions.VelocityPermissionProvider;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.PermissionCache;
@@ -77,6 +78,8 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
     private final ChannelHandler channelHandler;
 
     private ProxySettings proxySettings;
+
+    private final VelocityPermissionProvider velocityPermissionProvider = new VelocityPermissionProvider();
 
     private final ProxyStartupInfo proxyStartupInfo;
     private ProxyInfo proxyInfo;
@@ -136,6 +139,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
+                .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
@@ -149,7 +153,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 ReformCloudLibraryService.sleep(TimeUnit.SECONDS, this.proxyInfo.getProxyGroup().getAutoStop().getCheckEverySeconds());
                 if (VelocityBootstrap.getInstance().getProxy().getPlayerCount() == 0) {
                     if (this.getAllRegisteredProxies(proxyInfo.getCloudProcess().getGroup()).size() > proxyInfo.getProxyGroup().getMinOnline())
-                        System.exit(-1);
+                        this.stopProxy(this.proxyInfo);
                 }
             });
         }
@@ -513,7 +517,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
     @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
         return this.createPacketFuture(
-                new PacketOutQueryStartQueuedProcess(serverGroup, "default", preConfig),
+                new PacketOutQueryStartQueuedProcess(serverGroup, template, preConfig),
                 "ReformCloudController"
         ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
         });
@@ -1131,6 +1135,10 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
 
     public void setInternalCloudNetwork(InternalCloudNetwork internalCloudNetwork) {
         this.internalCloudNetwork = internalCloudNetwork;
+    }
+
+    public VelocityPermissionProvider getVelocityPermissionProvider() {
+        return velocityPermissionProvider;
     }
 
     public void setPermissionCache(PermissionCache permissionCache) {

@@ -22,6 +22,11 @@ import java.io.Serializable;
 public final class CommandWhereIAm implements Serializable, Command {
     @Override
     public void execute(@MaybePresent CommandSource commandSource, @NonNull @MaybePresent String[] strings) {
+        if (!commandSource.hasPermission("reformcloud.command.whereiam")) {
+            commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-no-permission")));
+            return;
+        }
+
         if (!(commandSource instanceof Player)) {
             commandSource.sendMessage(TextComponent.of(
                     ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix() + "An §cerror §7occurred")
@@ -54,5 +59,10 @@ public final class CommandWhereIAm implements Serializable, Command {
                         " §7on ServerGroup §e" + serverInfo.getServerGroup().getName() + "§7 (Process UniqueID: §e" +
                         serverInfo.getCloudProcess().getProcessUID() + ")")
         );
+    }
+
+    @Override
+    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
+        return source.getPermissionValue("reformcloud.command.whereiam").asBoolean();
     }
 }

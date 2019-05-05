@@ -82,7 +82,8 @@ public final class ProxyStartupHandler implements Serializable {
      * or {@code false} if the Client couldn't start the BungeeCord
      */
     public boolean bootstrap() {
-        FileUtils.deleteFullDirectory(path);
+        if (!this.proxyStartupInfo.getProxyGroup().isStatic())
+            FileUtils.deleteFullDirectory(path);
 
         if (this.proxyStartupInfo.getTemplate() != null)
             template = this.proxyStartupInfo.getProxyGroup().getTemplate(this.proxyStartupInfo.getTemplate());
@@ -344,7 +345,7 @@ public final class ProxyStartupHandler implements Serializable {
 
         try {
             if (this.isAlive()) {
-                this.process.destroyForcibly().waitFor();
+                this.process.destroy();
             }
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error on Proxy shutdown", throwable);
