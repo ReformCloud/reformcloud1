@@ -164,6 +164,10 @@ public final class SignSelector {
         if (sign == null)
             return;
 
+        Location location = sign.getLocation();
+        if (!location.getWorld().isChunkLoaded(location.getChunk()))
+            return;
+
         try {
             org.bukkit.material.Sign signData = (org.bukkit.material.Sign) sign.getData();
             if (signData != null) {
