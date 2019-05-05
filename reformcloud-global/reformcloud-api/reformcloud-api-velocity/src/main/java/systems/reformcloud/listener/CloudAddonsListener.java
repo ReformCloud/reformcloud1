@@ -210,6 +210,7 @@ public final class CloudAddonsListener {
             System.out.println(permissionGroups);
             System.out.println(this.hasPermission("reformcloud.command.permissions"));
             System.out.println(permissionHolder.hasPermission("reformcloud.command.permissions", permissionGroups));
+            System.out.println(this.getPermissionValue("reformcloud.command.permissions").asBoolean());
             System.out.println("---------------------");
         }
 
