@@ -68,7 +68,11 @@ public final class PermissionDatabase implements Serializable {
 
     public void deletePermissionGroup(PermissionGroup permissionGroup) {
         this.cachedPermissionHolders.forEach((k, v) -> {
-            v.getPermissionGroups().remove(permissionGroup.getName());
+            if (v.getPermissionGroups().containsKey(permissionGroup.getName())) {
+                v.getPermissionGroups().remove(permissionGroup.getName());
+                this.updatePermissionHolder(v);
+            }
+
             if (v.getPermissionGroups().size() == 0) {
                 v.getPermissionGroups().put(this.permissionCache.getDefaultGroup().getName(), -1L);
                 this.updatePermissionHolder(v);
