@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,10 +27,14 @@ import java.util.concurrent.TimeUnit;
 
 public final class VelocityPermissionFunctionAdapter implements Serializable, PermissionFunction {
     public VelocityPermissionFunctionAdapter(PermissionSubject permissionSubject) {
-        this.permissionSubject = permissionSubject;
+        this(((Player) permissionSubject).getUniqueId());
     }
 
-    private PermissionSubject permissionSubject;
+    public VelocityPermissionFunctionAdapter(UUID uniqueID) {
+        this.permissionSubject = uniqueID;
+    }
+
+    private UUID permissionSubject;
     private PermissionHolder permissionHolder;
 
     @Override
@@ -50,7 +55,7 @@ public final class VelocityPermissionFunctionAdapter implements Serializable, Pe
 
         return this.permissionHolder = ReformCloudAPIVelocity.getInstance().createPacketFuture(
                 new PacketOutQueryGetPermissionHolder(
-                        new PermissionHolder(((Player) permissionSubject).getUniqueId(), Collections.singletonMap(ReformCloudAPIVelocity
+                        new PermissionHolder(permissionSubject, Collections.singletonMap(ReformCloudAPIVelocity
                                 .getInstance().getPermissionCache().getDefaultGroup().getName(), -1L), new HashMap<>())
                 ), "ReformCloudController"
         ).sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS).getConfiguration().getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
