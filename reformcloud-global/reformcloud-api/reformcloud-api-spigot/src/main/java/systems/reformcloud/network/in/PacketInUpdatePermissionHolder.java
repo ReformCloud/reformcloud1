@@ -31,8 +31,8 @@ public final class PacketInUpdatePermissionHolder implements Serializable, Netwo
         if (player == null)
             return;
 
-        SpigotBootstrap.getInstance().getServer().getPluginManager().callEvent(new PermissionHolderUpdateEvent(permissionHolder));
         ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+        SpigotBootstrap.getInstance().getServer().getPluginManager().callEvent(new PermissionHolderUpdateEvent(permissionHolder));
         Field field;
         try {
             Class<?> clazz = ReflectionUtil.reflectClazz(".entity.CraftHumanEntity");
