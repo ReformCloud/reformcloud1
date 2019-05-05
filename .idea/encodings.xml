@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-common/reformcloud-yaml" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-global" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-global/reformcloud-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-global/reformcloud-api/reformcloud-api-bungee" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-global/reformcloud-api/reformcloud-api-spigot" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-global/reformcloud-api/reformcloud-api-velocity" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-global/reformcloud-client" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-global/reformcloud-controller" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-library" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-autoicon" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-discordbot" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-mobs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-parameters" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-permissions" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-properties" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-proxy" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-addons/reformcloud-addons-signs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/reformcloud-utility/reformcloud-examples" charset="UTF-8" />
+  </component>
+</project>
