@@ -6,6 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.mobsaddon.MobSelector;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -29,13 +30,15 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
                 "AuthSuccess", new Configuration().addStringValue("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
         ));
 
-        try {
-            new SignSelector();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
+            try {
+                new SignSelector();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
 
-        new MobSelector();
+            new MobSelector();
+        }
 
         ReformCloudAPISpigot.getInstance().getServerInfo().setServerState(ServerState.READY);
         ReformCloudAPISpigot.getInstance().sendPacketSync("ReformCloudController", new PacketOutServerInfoUpdate(
