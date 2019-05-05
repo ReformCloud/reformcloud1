@@ -159,7 +159,7 @@ public final class PermissionHolder implements Serializable {
             if (permissionGroup == null)
                 permissionGroup = group;
             else {
-                if (group.getGroupID() > permissionGroup.getGroupID())
+                if (group.getGroupID() < permissionGroup.getGroupID())
                     permissionGroup = group;
             }
         }
