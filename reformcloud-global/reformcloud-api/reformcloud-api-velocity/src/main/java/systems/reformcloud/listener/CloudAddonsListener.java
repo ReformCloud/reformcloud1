@@ -27,17 +27,14 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.packets.PacketOutCommandExecute;
 import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
+import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.player.version.SpigotVersion;
+import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.map.maps.Double;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018
@@ -165,37 +162,61 @@ public final class CloudAddonsListener {
             return;
 
         if (event.getSubject() instanceof Player) {
-            CompletableFuture.runAsync(() -> {
-                try {
-                    TimeUnit.MILLISECONDS.sleep(500);
-                } catch (InterruptedException ignored) {
-                }
+            ReformCloudAPIVelocity.getInstance().sendPacketQuery("ReformCloudController",
+                    new PacketOutQueryGetPermissionHolder(
+                            new PermissionHolder(((Player) event.getSubject()).getUniqueId(), Collections.singletonMap(ReformCloudAPIVelocity
+                                    .getInstance().getPermissionCache().getDefaultGroup().getName(), -1L), new HashMap<>())
+                    ), (configuration1, resultID1) -> {
+                        PermissionHolder permissionHolder = configuration1.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+                        if (permissionHolder == null)
+                            return;
 
-                PermissionHolder permissionHolder = ReformCloudAPIVelocity.getInstance()
-                        .getCachedPermissionHolders().get(((Player) event.getSubject()).getUniqueId());
-                if (permissionHolder == null)
-                    return;
+                        Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
 
-                Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
-                copyOf.forEach((groupName, timeout) -> {
-                    if (timeout != -1 && timeout <= System.currentTimeMillis())
-                        permissionHolder.getPermissionGroups().remove(groupName);
-                });
+                        copyOf.forEach((groupName, timeout) -> {
+                            if (timeout != -1 && timeout <= System.currentTimeMillis())
+                                permissionHolder.getPermissionGroups().remove(groupName);
+                        });
 
-                if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
-                    if (permissionHolder.getPermissionGroups().size() == 0) {
-                        permissionHolder.getPermissionGroups().put(
-                                ReformCloudAPIVelocity.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
-                        );
-                    }
+                        if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
+                            if (permissionHolder.getPermissionGroups().size() == 0) {
+                                permissionHolder.getPermissionGroups().put(
+                                        ReformCloudAPIVelocity.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
+                                );
+                            }
 
-                    ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
-                            "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
+                            ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
+                                    "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
+                            );
+                        }
+
+                        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+                    });
+
+            PermissionHolder permissionHolder = ReformCloudAPIVelocity.getInstance()
+                    .getCachedPermissionHolders().get(((Player) event.getSubject()).getUniqueId());
+            if (permissionHolder == null)
+                return;
+
+            Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
+            copyOf.forEach((groupName, timeout) -> {
+                if (timeout != -1 && timeout <= System.currentTimeMillis())
+                    permissionHolder.getPermissionGroups().remove(groupName);
+            });
+
+            if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
+                if (permissionHolder.getPermissionGroups().size() == 0) {
+                    permissionHolder.getPermissionGroups().put(
+                            ReformCloudAPIVelocity.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
                     );
                 }
 
-                event.setProvider(new PlayerPermissionProvider(((Player) event.getSubject()), permissionHolder));
-            });
+                ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
+                        "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
+                );
+            }
+
+            event.setProvider(new PlayerPermissionProvider(((Player) event.getSubject()), permissionHolder));
         }
     }
 
