@@ -121,11 +121,13 @@ public final class CloudConnectListener {
 
     @Subscribe(order = PostOrder.FIRST)
     public void handle(final ServerConnectedEvent event) {
-        OnlinePlayer onlinePlayer = ReformCloudAPIVelocity.getInstance().getOnlinePlayer(event.getPlayer().getUniqueId());
-        onlinePlayer.setCurrentServer(event.getServer().getServerInfo().getName());
-        ReformCloudAPIVelocity.getInstance().updateOnlinePlayer(onlinePlayer);
+        VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
+            OnlinePlayer onlinePlayer = ReformCloudAPIVelocity.getInstance().getOnlinePlayer(event.getPlayer().getUniqueId());
+            onlinePlayer.setCurrentServer(event.getServer().getServerInfo().getName());
+            ReformCloudAPIVelocity.getInstance().updateOnlinePlayer(onlinePlayer);
 
-        initTab(event.getPlayer());
+            initTab(event.getPlayer());
+        }).delay(500, TimeUnit.MILLISECONDS).schedule();
     }
 
     @Subscribe(order = PostOrder.FIRST)
