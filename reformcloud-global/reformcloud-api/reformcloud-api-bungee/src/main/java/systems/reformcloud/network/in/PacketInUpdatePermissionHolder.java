@@ -7,6 +7,7 @@ package systems.reformcloud.network.in;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.internal.events.PermissionHolderUpdateEvent;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
@@ -27,5 +28,6 @@ public final class PacketInUpdatePermissionHolder implements Serializable, Netwo
             return;
 
         ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+        BungeecordBootstrap.getInstance().getProxy().getPluginManager().callEvent(new PermissionHolderUpdateEvent(permissionHolder));
     }
 }

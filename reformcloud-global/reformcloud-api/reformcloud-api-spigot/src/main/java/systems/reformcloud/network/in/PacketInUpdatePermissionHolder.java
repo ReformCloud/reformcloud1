@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.internal.events.PermissionHolderUpdateEvent;
+import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.permissions.ReflectionUtil;
 import systems.reformcloud.permissions.permissible.Permissible;
@@ -29,6 +31,7 @@ public final class PacketInUpdatePermissionHolder implements Serializable, Netwo
         if (player == null)
             return;
 
+        SpigotBootstrap.getInstance().getServer().getPluginManager().callEvent(new PermissionHolderUpdateEvent(permissionHolder));
         ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
         Field field;
         try {

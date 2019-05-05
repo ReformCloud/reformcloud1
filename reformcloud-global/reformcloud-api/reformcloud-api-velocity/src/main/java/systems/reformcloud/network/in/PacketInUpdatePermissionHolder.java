@@ -8,6 +8,7 @@ import com.velocitypowered.api.proxy.Player;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.events.PermissionHolderUpdateEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.permissions.VelocityPermissionFunctionAdapter;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
@@ -28,6 +29,7 @@ public final class PacketInUpdatePermissionHolder implements Serializable, Netwo
         if (player == null)
             return;
 
+        VelocityBootstrap.getInstance().getProxy().getEventManager().fire(new PermissionHolderUpdateEvent(permissionHolder));
         ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
         try {
             Field field = player.getClass().getDeclaredField("permissionFunction");

@@ -26,10 +26,12 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class VelocityPermissionFunctionAdapter implements Serializable, PermissionFunction {
+    @java.beans.ConstructorProperties({"permissionSubject"})
     public VelocityPermissionFunctionAdapter(PermissionSubject permissionSubject) {
         this(((Player) permissionSubject).getUniqueId());
     }
 
+    @java.beans.ConstructorProperties({"uniqueID"})
     public VelocityPermissionFunctionAdapter(UUID uniqueID) {
         this.permissionSubject = uniqueID;
     }

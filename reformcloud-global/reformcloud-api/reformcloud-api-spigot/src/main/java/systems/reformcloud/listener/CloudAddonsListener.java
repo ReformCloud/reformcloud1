@@ -14,6 +14,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Team;
 import systems.reformcloud.ReformCloudAPISpigot;
+import systems.reformcloud.internal.events.PermissionHolderUpdateEvent;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
@@ -58,12 +59,25 @@ public final class CloudAddonsListener implements Serializable, Listener {
 
     @EventHandler
     public void handle(final PlayerJoinEvent event) {
+        this.initTablist(event.getPlayer());
+    }
+
+    @EventHandler
+    public void handle(final PermissionHolderUpdateEvent event) {
+        Player player = SpigotBootstrap.getInstance().getServer().getPlayer(event.getPermissionHolder().getUniqueID());
+        if (player == null)
+            return;
+
+        this.initTablist(player);
+    }
+
+    private void initTablist(Player player) {
         if (ReformCloudAPISpigot.getInstance().getPermissionCache() == null
                 || !ReformCloudAPISpigot.getInstance().getPermissionCache().isTabEnabled())
             return;
 
         Bukkit.getScheduler().runTaskLater(SpigotBootstrap.getInstance(), () -> {
-            PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(event.getPlayer().getUniqueId());
+            PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(player.getUniqueId());
             if (permissionHolder == null)
                 return;
 
@@ -71,7 +85,6 @@ public final class CloudAddonsListener implements Serializable, Listener {
             if (permissionGroup == null)
                 return;
 
-            Player player = event.getPlayer();
             if (player.getScoreboard() == null)
                 player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
