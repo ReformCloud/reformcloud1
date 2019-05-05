@@ -202,12 +202,15 @@ public final class CloudAddonsListener {
         private PermissionHolder permissionHolder;
 
         private PlayerPermissionProvider(Player player, PermissionHolder permissionHolder) {
-            System.out.println("INIT");
-            System.out.println(player);
-            System.out.println(permissionHolder);
             this.permissionGroups = permissionHolder.getAllPermissionGroups(ReformCloudAPIVelocity.getInstance().getPermissionCache());
             this.permissionHolder = permissionHolder;
             this.player = player;
+
+            System.out.println("---------------------");
+            System.out.println(permissionGroups);
+            System.out.println(this.hasPermission("reformcloud.command.permissions"));
+            System.out.println(permissionHolder.hasPermission("reformcloud.command.permissions", permissionGroups));
+            System.out.println("---------------------");
         }
 
         @Override
