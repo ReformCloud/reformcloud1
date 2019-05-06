@@ -72,21 +72,18 @@ public final class PermissionHolder implements Serializable {
      * @return If the player has the permission or not
      */
     private boolean checkPermission0(Map<String, Boolean> permissions, String permission) {
-        if (permissions.containsKey("*") && permissions.get("*"))
-            return true;
-
         for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
             if (entry.getKey().endsWith("*") && entry.getKey().length() > 1
-                    && permission.startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))
-                    && entry.getValue()) {
-                return true;
+                    && permission.startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))) {
+                return entry.getValue();
             }
 
-            if (entry.getKey().equalsIgnoreCase(permission) && entry.getValue())
-                return true;
+            if (entry.getKey().equalsIgnoreCase(permission))
+                return entry.getValue();
         }
 
-        return false;
+        return permissions.containsKey("*") && permissions.get("*");
+
     }
 
     /**
@@ -165,6 +162,21 @@ public final class PermissionHolder implements Serializable {
         }
 
         return Optional.ofNullable(permissionGroup);
+    }
+
+    /**
+     * Checks if a permission group is present
+     *
+     * @param name The name of the permission group
+     * @return If the permission group is one of the player groups and if the permission groups is not ran out of time
+     */
+    public boolean isPermissionGroupPresent(String name) {
+        for (Map.Entry<String, Long> s : this.permissionGroups.entrySet()) {
+            if (s.getKey().equals(name) && s.getValue() > System.currentTimeMillis())
+                return true;
+        }
+
+        return false;
     }
 
     public UUID getUniqueID() {
