@@ -99,6 +99,14 @@ public interface IAsyncAPIHelper {
 
     void createWebUser(WebUser webUser);
 
+    void dispatchConsoleCommand(String commandLine);
+
+    void dispatchConsoleCommand(CharSequence commandLine);
+
+    CompletableFuture<String> dispatchConsoleCommandAndGetResult(String commandLine);
+
+    CompletableFuture<String> dispatchConsoleCommandAndGetResult(CharSequence commandLine);
+
     CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup);
 
     CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template);

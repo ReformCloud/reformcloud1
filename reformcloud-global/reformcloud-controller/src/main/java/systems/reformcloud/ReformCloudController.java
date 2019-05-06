@@ -17,6 +17,7 @@ import systems.reformcloud.api.save.SaveAPIImpl;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.ingame.IngameCommandManger;
 import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
@@ -82,7 +83,10 @@ import systems.reformcloud.web.ReformWebServer;
 import java.io.File;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -955,6 +959,46 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
             return;
 
         cloudConfiguration.createWebUser(webUser);
+    }
+
+    @Override
+    public void dispatchConsoleCommand(String commandLine) {
+        this.commandManager.dispatchCommand(commandLine);
+    }
+
+    @Override
+    public void dispatchConsoleCommand(CharSequence commandLine) {
+        this.dispatchConsoleCommand(String.valueOf(commandLine));
+    }
+
+    @Override
+    public String dispatchConsoleCommandAndGetResult(String commandLine) {
+        CompletableFuture<String> result = new CompletableFuture<>();
+        CommandSender commandSender = new CommandSender() {
+            @Override
+            public boolean hasPermission(String permission) {
+                return true;
+            }
+
+            @Override
+            public void sendMessage(String message) {
+                result.complete(message);
+            }
+        };
+        this.commandManager.dispatchCommand(commandSender, commandLine);
+        String resultAsMessage;
+        try {
+            resultAsMessage = result.get(2, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+            resultAsMessage = null;
+        }
+
+        return resultAsMessage;
+    }
+
+    @Override
+    public String dispatchConsoleCommandAndGetResult(CharSequence commandLine) {
+        return dispatchConsoleCommandAndGetResult(String.valueOf(commandLine));
     }
 
     @Override

@@ -501,6 +501,28 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
     }
 
     @Override
+    public void dispatchConsoleCommand(String commandLine) {
+        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutDispatchConsoleCommand(commandLine));
+    }
+
+    @Override
+    public void dispatchConsoleCommand(CharSequence commandLine) {
+        this.dispatchConsoleCommand(String.valueOf(commandLine));
+    }
+
+    @Override
+    public String dispatchConsoleCommandAndGetResult(String commandLine) {
+        return this.createPacketFuture(
+                new PacketOutExecuteCommandSilent(commandLine), "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+    }
+
+    @Override
+    public String dispatchConsoleCommandAndGetResult(CharSequence commandLine) {
+        return this.dispatchConsoleCommandAndGetResult(String.valueOf(commandLine));
+    }
+
+    @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup) {
         return this.createPacketFuture(
                 new PacketOutQueryStartQueuedProcess(serverGroup, "default", new Configuration()),
