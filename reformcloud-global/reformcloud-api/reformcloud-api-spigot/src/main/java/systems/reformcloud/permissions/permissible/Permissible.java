@@ -145,12 +145,8 @@ public final class Permissible extends PermissibleBase implements Serializable {
     }
 
     private void checkAvailable() {
-        if (!isAvailable())
+        if (permissionHolder == null)
             throw new IllegalStateException("PermissionHolder cannot be null");
-    }
-
-    private boolean isAvailable() {
-        return permissionHolder != null;
     }
 
     public PermissionHolder getPermissionHolder() {
