@@ -11,6 +11,7 @@ import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
@@ -283,11 +284,12 @@ public final class CommandProcess extends Command implements Serializable {
                             .values()
                             .stream()
                             .filter(client -> client.getClientInfo() != null)
-                            .forEach(client -> connectedClients.add(client));
+                            .forEach(connectedClients::add);
 
                     commandSender.sendMessage("The following Clients are connected: ");
                     connectedClients.forEach(e -> {
-                        commandSender.sendMessage("    - " + e.getName() + " | Host=" + e.getIp() + " | Memory-Usage=" + e.getClientInfo().getUsedMemory() + "MB/" + e.getClientInfo().getMaxMemory() + "MB | Processors: " + e.getClientInfo().getCpuCoresSystem() + " | CPU-Usage: " + decimalFormat.format(e.getClientInfo().getCpuUsage()) + "% | Started-Processes: " + (e.getClientInfo().getStartedProxies().size() + e.getClientInfo().getStartedServers().size()));
+                        ClientInfo clientInfo = ReformCloudController.getInstance().getClientInfos().get(e.getName());
+                        commandSender.sendMessage("    - " + e.getName() + " | Host=" + e.getIp() + " | Memory-Usage=" + clientInfo.getUsedMemory() + "MB/" + clientInfo.getMaxMemory() + "MB | Processors: " + clientInfo.getCpuCoresSystem() + " | CPU-Usage: " + decimalFormat.format(clientInfo.getCpuUsage()) + "% | Started-Processes: " + (clientInfo.getStartedProxies().size() + clientInfo.getStartedServers().size()));
                         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                         commandSender.sendMessage("The following proxies are started on \"" + e.getName() + "\": ");
                         ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredProxyProcesses().stream().filter(proxyInfo -> proxyInfo.getCloudProcess().getClient().equals(e.getName())).forEach(info -> {
