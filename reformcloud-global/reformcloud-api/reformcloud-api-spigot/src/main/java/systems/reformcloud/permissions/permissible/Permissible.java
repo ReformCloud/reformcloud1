@@ -48,6 +48,7 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public boolean hasPermission(String inName) {
+        checkAvailable();
         return this.permissionHolder.hasPermission(inName, this.getPermissionGroups());
     }
 
