@@ -73,7 +73,9 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public void recalculatePermissions() {
-        this.checkAvailable();
+        if (this.permissionHolder == null)
+            return;
+
         this.recalculatePermissions0();
     }
 
@@ -145,8 +147,12 @@ public final class Permissible extends PermissibleBase implements Serializable {
     }
 
     private void checkAvailable() {
-        if (permissionHolder == null)
+        if (!isAvailable())
             throw new IllegalStateException("PermissionHolder cannot be null");
+    }
+
+    private boolean isAvailable() {
+        return permissionHolder != null;
     }
 
     public PermissionHolder getPermissionHolder() {
