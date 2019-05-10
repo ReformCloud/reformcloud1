@@ -83,7 +83,6 @@ public final class PermissionHolder implements Serializable {
         }
 
         return permissions.containsKey("*") && permissions.get("*");
-
     }
 
     /**
@@ -172,7 +171,7 @@ public final class PermissionHolder implements Serializable {
      */
     public boolean isPermissionGroupPresent(String name) {
         for (Map.Entry<String, Long> s : this.permissionGroups.entrySet()) {
-            if (s.getKey().equals(name) && s.getValue() > System.currentTimeMillis())
+            if (s.getKey().equals(name) && (s.getValue() > System.currentTimeMillis() || s.getValue() == -1))
                 return true;
         }
 
