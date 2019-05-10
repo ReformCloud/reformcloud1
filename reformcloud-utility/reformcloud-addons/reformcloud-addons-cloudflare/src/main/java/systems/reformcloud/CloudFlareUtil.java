@@ -137,7 +137,6 @@ public final class CloudFlareUtil implements Serializable {
                     : httpURLConnection.getErrorStream()) {
                 JsonObject jsonObject = convertInputStreamToJson(inputStream);
                 if (jsonObject.get("success").getAsBoolean()) {
-                    System.out.println("DONE FOR " + dnsRecord.getName());
                     Result result = new Result(
                             jsonObject.get("result").getAsJsonObject().get("id").getAsString(),
                             this.cloudFlareConfig.getEmail(),
@@ -187,7 +186,6 @@ public final class CloudFlareUtil implements Serializable {
                     : httpURLConnection.getErrorStream()) {
                 JsonObject jsonObject = convertInputStreamToJson(inputStream);
                 if (jsonObject.get("success").getAsBoolean()) {
-                    System.out.println("DONE FOR " + dnsRecord.getName());
                     Result result = new Result(
                             jsonObject.get("result").getAsJsonObject().get("id").getAsString(),
                             this.cloudFlareConfig.getEmail(),
