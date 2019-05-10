@@ -243,7 +243,6 @@ public final class CloudFlareUtil implements Serializable {
                     : httpURLConnection.getErrorStream()) {
                 JsonObject jsonObject = convertInputStreamToJson(inputStream);
                 if (jsonObject.get("success").getAsBoolean()) {
-                    ReformCloudController.getInstance().getLoggerProvider().info("Successfully deleted cloudflare entry " + result.getId());
                     results.remove(result);
                 } else {
                     StringUtil.printError(
@@ -251,7 +250,6 @@ public final class CloudFlareUtil implements Serializable {
                             "An error occurred in cloudflare addon",
                             new IllegalStateException(jsonObject.toString())
                     );
-                    return;
                 }
             }
         } catch (final IOException ex) {

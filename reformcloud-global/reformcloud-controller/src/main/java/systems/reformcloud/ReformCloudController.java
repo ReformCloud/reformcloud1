@@ -483,6 +483,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
             this.reformWebServer.shutdown();
 
         this.nettySocketServer.close();
+        this.addonParallelLoader.disableAddons();
 
         ReformCloudLibraryService.sleep(1000);
     }
