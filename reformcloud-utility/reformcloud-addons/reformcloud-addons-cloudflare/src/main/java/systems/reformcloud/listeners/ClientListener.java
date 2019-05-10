@@ -18,12 +18,12 @@ import java.io.Serializable;
 
 public final class ClientListener implements Serializable, Listener {
     @Handler
-    public void handle(final ClientCreatedEvent event) {
+    public void handleCreate(final ClientCreatedEvent event) {
         CloudFlareUtil.getInstance().createClientEntry(event.getClient());
     }
 
     @Handler
-    public void handle(final ClientDeletedEvent event) {
+    public void handleDelete(final ClientDeletedEvent event) {
         CloudFlareUtil.getInstance().deleteClientEntry(event.getClient());
     }
 }

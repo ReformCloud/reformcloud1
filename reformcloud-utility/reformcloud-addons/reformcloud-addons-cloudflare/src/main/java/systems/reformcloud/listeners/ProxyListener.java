@@ -18,12 +18,12 @@ import java.io.Serializable;
 
 public final class ProxyListener implements Serializable, Listener {
     @Handler
-    public void handle(final ProxyStartedEvent event) {
+    public void handleStart(final ProxyStartedEvent event) {
         CloudFlareUtil.getInstance().createProxyEntry(event.getProxyInfo());
     }
 
     @Handler
-    public void handle(final ProxyStoppedEvent event) {
+    public void handleStop(final ProxyStoppedEvent event) {
         CloudFlareUtil.getInstance().deleteProxyEntry(event.getProxyInfo());
     }
 }
