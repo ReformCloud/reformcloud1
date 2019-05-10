@@ -101,7 +101,11 @@ public final class CloudFlareUtil implements Serializable {
                 }
             }
         } catch (final IOException ex) {
-            ex.printStackTrace();
+            StringUtil.printError(
+                    ReformCloudController.getInstance().getLoggerProvider(),
+                    "Error while opening connection",
+                    ex
+            );
         }
 
         return null;
@@ -156,7 +160,11 @@ public final class CloudFlareUtil implements Serializable {
 
             httpURLConnection.disconnect();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            StringUtil.printError(
+                    ReformCloudController.getInstance().getLoggerProvider(),
+                    "Error while opening connection",
+                    ex
+            );
         }
     }
 
@@ -205,7 +213,11 @@ public final class CloudFlareUtil implements Serializable {
 
             httpURLConnection.disconnect();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            StringUtil.printError(
+                    ReformCloudController.getInstance().getLoggerProvider(),
+                    "Error while opening connection",
+                    ex
+            );
         }
     }
 
@@ -243,7 +255,11 @@ public final class CloudFlareUtil implements Serializable {
                 }
             }
         } catch (final IOException ex) {
-            ex.printStackTrace();
+            StringUtil.printError(
+                    ReformCloudController.getInstance().getLoggerProvider(),
+                    "Error while opening connection",
+                    ex
+            );
         }
     }
 
