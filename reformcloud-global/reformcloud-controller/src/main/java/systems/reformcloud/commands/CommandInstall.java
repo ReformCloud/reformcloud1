@@ -24,21 +24,21 @@ public final class CommandInstall extends Command implements Serializable {
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("signs")) {
-                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/ReformCloudSigns.jar");
                 commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage().getDownload_success()
                 );
                 ReformCloudController.getInstance().reloadAllSave();
                 return;
             } else if (args[0].equalsIgnoreCase("discord")) {
-                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/DiscordBot.jar");
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/ReformCloudDiscordBot.jar");
                 commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage().getDownload_success()
                 );
                 ReformCloudController.getInstance().reloadAllSave();
                 return;
             } else if (args[0].equalsIgnoreCase("permissions")) {
-                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/ReformCloudPermissions.jar");
                 commandSender.sendMessage("Download was completed successfully");
                 ReformCloudController.getInstance().reloadAllSave();
                 return;
