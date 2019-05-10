@@ -22,18 +22,12 @@ import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.packets.PacketOutCommandExecute;
-import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
-import systems.reformcloud.player.permissions.group.PermissionGroup;
-import systems.reformcloud.player.permissions.player.PermissionHolder;
+import systems.reformcloud.permissions.PermissionUtil;
 import systems.reformcloud.player.version.SpigotVersion;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.map.maps.Double;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018
@@ -63,45 +57,7 @@ public final class CloudAddonsListener implements Listener {
         if (ReformCloudAPIBungee.getInstance().getPermissionCache() == null)
             return;
 
-        if (event.getSender() instanceof ProxiedPlayer) {
-            PermissionHolder permissionHolder = ReformCloudAPIBungee.getInstance()
-                    .getCachedPermissionHolders().get(((ProxiedPlayer) event.getSender()).getUniqueId());
-            if (permissionHolder == null) {
-                event.setHasPermission(false);
-                return;
-            }
-
-            Map<String, Long> copyOf = new HashMap<>(permissionHolder.getPermissionGroups());
-
-            copyOf.forEach((groupName, timeout) -> {
-                if (timeout != -1 && timeout <= System.currentTimeMillis())
-                    permissionHolder.getPermissionGroups().remove(groupName);
-            });
-
-            if (copyOf.size() != permissionHolder.getPermissionGroups().size()) {
-                if (permissionHolder.getPermissionGroups().size() == 0) {
-                    permissionHolder.getPermissionGroups().put(
-                            ReformCloudAPIBungee.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
-                    );
-                }
-
-                ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketSynchronized(
-                        "ReformCloudController", new PacketOutUpdatePermissionHolder(permissionHolder)
-                );
-            }
-
-            List<PermissionGroup> permissionGroups = ReformCloudAPIBungee.getInstance()
-                    .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> permissionHolder
-                            .getPermissionGroups().containsKey(e.getName()))
-                    .collect(Collectors.toList());
-            if (permissionHolder.getPermissionGroups().containsKey(ReformCloudAPIBungee.getInstance()
-                    .getPermissionCache().getDefaultGroup().getName())) {
-                permissionGroups.add(ReformCloudAPIBungee.getInstance().getPermissionCache().getDefaultGroup());
-            }
-
-            event.setHasPermission(permissionHolder.hasPermission(event.getPermission(), permissionGroups));
-        } else
-            event.setHasPermission(true);
+        event.setHasPermission(PermissionUtil.hasPermission(event.getSender(), event.getPermission()));
     }
 
     @EventHandler

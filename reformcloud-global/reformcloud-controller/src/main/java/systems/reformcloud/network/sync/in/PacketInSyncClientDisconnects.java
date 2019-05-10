@@ -6,6 +6,8 @@ package systems.reformcloud.network.sync.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.event.events.ProxyStoppedEvent;
+import systems.reformcloud.event.events.ServerStoppedEvent;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
@@ -44,6 +46,7 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                             e.getCloudProcess().getProcessUID(), e.getCloudProcess().getName(), e.getPort()
                     );
                     ReformCloudController.getInstance().getCloudProcessOfferService().unregisterID(e);
+                    ReformCloudController.getInstance().getEventManager().fire(new ServerStoppedEvent(e));
                 }
 
                 if (ReformCloudController.getInstance().getScreenSessionProvider().isInScreen(e.getCloudProcess().getName()))
@@ -56,6 +59,7 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                             e.getCloudProcess().getProcessUID(), e.getCloudProcess().getName(), e.getPort()
                     );
                     ReformCloudController.getInstance().getCloudProcessOfferService().unregisterProxyID(e);
+                    ReformCloudController.getInstance().getEventManager().fire(new ProxyStoppedEvent(e));
                 }
 
                 if (ReformCloudController.getInstance().getScreenSessionProvider().isInScreen(e.getCloudProcess().getName()))

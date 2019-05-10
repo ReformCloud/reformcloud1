@@ -31,6 +31,15 @@ public final class PermissionCache implements Serializable {
         this.defaultGroup = defaultGroup;
     }
 
+    public PermissionGroup getGroup(String name) {
+        for (PermissionGroup permissionGroup : this.getAllGroupsAndDefault()) {
+            if (permissionGroup.getName().equals(name))
+                return permissionGroup;
+        }
+
+        return null;
+    }
+
     public boolean isChatEnabled() {
         return this.chatEnabled;
     }

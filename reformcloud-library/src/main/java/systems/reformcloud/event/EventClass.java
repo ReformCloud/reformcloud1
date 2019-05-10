@@ -40,11 +40,16 @@ final class EventClass implements Serializable {
         method.invoke(listener, event);
     }
 
-    private Object getListener() {
+    public Object getListener() {
         return this.listener;
     }
 
-    private Method getMethod() {
+    public Method getMethod() {
         return this.method;
+    }
+
+    @Override
+    public String toString() {
+        return "Listener=" + listener + "/Method=" + method;
     }
 }

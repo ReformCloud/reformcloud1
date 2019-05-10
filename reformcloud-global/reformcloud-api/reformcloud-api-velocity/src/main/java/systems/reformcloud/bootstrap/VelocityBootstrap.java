@@ -41,8 +41,9 @@ import java.util.Optional;
         name = "ReformCloudAPIVelocity",
         version = "1.0",
         description = "Default ReformCloudAPI for Velocity",
-        authors = "_Klaro",
-        url = "https://reformcloud.systems")
+        authors = {"_Klaro"},
+        url = "https://reformcloud.systems"
+)
 public final class VelocityBootstrap implements Serializable {
     private static final LegacyChannelIdentifier LEGACY_BUNGEE_CHANNEL = new LegacyChannelIdentifier("BungeeCord");
     private static final MinecraftChannelIdentifier MODERN_BUNGEE_CHANNEL = MinecraftChannelIdentifier.create("bungeecord", "main");

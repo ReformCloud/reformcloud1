@@ -246,6 +246,31 @@ public final class IAsyncAPI implements Serializable, IAsyncAPIHelper {
     }
 
     @Override
+    public void dispatchConsoleCommand(String commandLine) {
+        checkAvailable();
+        CompletableFuture.runAsync(() -> IAPIService.instance.get().dispatchConsoleCommand(commandLine));
+    }
+
+    @Override
+    public void dispatchConsoleCommand(CharSequence commandLine) {
+        checkAvailable();
+        CompletableFuture.runAsync(() -> dispatchConsoleCommand(String.valueOf(commandLine)));
+    }
+
+    @Override
+    public CompletableFuture<String> dispatchConsoleCommandAndGetResult(String commandLine) {
+        checkAvailable(true);
+        CompletableFuture<String> completableFuture = new CompletableFuture<>();
+        CompletableFuture.runAsync(() -> completableFuture.complete(IAPIService.instance.get().dispatchConsoleCommandAndGetResult(commandLine)));
+        return completableFuture;
+    }
+
+    @Override
+    public CompletableFuture<String> dispatchConsoleCommandAndGetResult(CharSequence commandLine) {
+        return dispatchConsoleCommandAndGetResult(String.valueOf(commandLine));
+    }
+
+    @Override
     public CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup) {
         checkAvailable(true);
         CompletableFuture<DevProcess> completableFuture = new CompletableFuture<>();

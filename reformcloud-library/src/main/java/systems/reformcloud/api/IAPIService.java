@@ -337,6 +337,36 @@ public interface IAPIService {
     void createWebUser(WebUser webUser);
 
     /**
+     * Dispatches a console command to the controller
+     *
+     * @param commandLine The command which should be executed
+     */
+    void dispatchConsoleCommand(String commandLine);
+
+    /**
+     * Dispatches a console command to the controller
+     *
+     * @param commandLine The command which should be executed
+     */
+    void dispatchConsoleCommand(CharSequence commandLine);
+
+    /**
+     * Dispatches a console command to the controller
+     *
+     * @param commandLine The command which should be executed
+     * @return The first output line of the command in the controller console
+     */
+    String dispatchConsoleCommandAndGetResult(String commandLine);
+
+    /**
+     * Dispatches a console command to the controller
+     *
+     * @param commandLine The command which should be executed
+     * @return The first output line of the command in the controller console
+     */
+    String dispatchConsoleCommandAndGetResult(CharSequence commandLine);
+
+    /**
      * Starts a new queued process
      *
      * @param serverGroup       The server group of which the process should be started

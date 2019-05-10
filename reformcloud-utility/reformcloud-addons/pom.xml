@@ -5,7 +5,7 @@
     <parent>
         <artifactId>reformcloud-utility</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.6</version>
+        <version>1.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,13 +20,14 @@
         <module>reformcloud-addons-mobs</module>
         <module>reformcloud-addons-properties</module>
         <module>reformcloud-addons-autoicon</module>
+        <module>reformcloud-addons-cloudflare</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-controller</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

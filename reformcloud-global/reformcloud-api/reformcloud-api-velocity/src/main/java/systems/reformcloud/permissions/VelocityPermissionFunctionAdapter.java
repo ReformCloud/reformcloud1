@@ -38,6 +38,7 @@ public final class VelocityPermissionFunctionAdapter implements Serializable, Pe
 
     private UUID permissionSubject;
     private PermissionHolder permissionHolder;
+    private List<PermissionGroup> permissionGroups;
 
     @Override
     public Tristate getPermissionValue(String s) {
@@ -66,6 +67,13 @@ public final class VelocityPermissionFunctionAdapter implements Serializable, Pe
     }
 
     private List<PermissionGroup> getGroups(PermissionHolder permissionHolder) {
-        return permissionHolder.getAllPermissionGroups(ReformCloudAPIVelocity.getInstance().getPermissionCache());
+        if (this.permissionGroups == null)
+            this.calculatePermissions(permissionHolder);
+
+        return this.permissionGroups;
+    }
+
+    private void calculatePermissions(PermissionHolder permissionHolder) {
+        this.permissionGroups = permissionHolder.getAllPermissionGroups(ReformCloudAPIVelocity.getInstance().getPermissionCache());
     }
 }

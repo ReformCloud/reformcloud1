@@ -8,6 +8,8 @@ import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.api.events.ClientCreatedEvent;
+import systems.reformcloud.api.events.ClientDeletedEvent;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.language.LanguageManager;
@@ -51,8 +53,6 @@ public final class CloudConfiguration implements Serializable {
 
     /**
      * Prepares and loads ReformCloudController Configuration
-     *
-     * @throws Throwable
      */
     public CloudConfiguration() {
         for (File directory : new File[]{
@@ -147,14 +147,15 @@ public final class CloudConfiguration implements Serializable {
         loggerProvider.info(language.getSetup_load_default_addons());
         String addons = this.readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (addons.equalsIgnoreCase("yes")) {
-            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/SignAddon.jar");
-            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/DiscordBot.jar");
-            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/PermissionsAddon.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudSigns.jar", "reformcloud/addons/ReformCloudSigns.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar", "reformcloud/addons/ReformCloudDiscordBot.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar", "reformcloud/addons/ReformCloudPermissions.jar");
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProxy.jar", "reformcloud/addons/ReformCloudProxy.jar");
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudParameters.jar", "reformcloud/addons/ReformCloudParameters.jar");
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudAutoIcon.jar", "reformcloud/addons/ReformCloudAutoIcon.jar");
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudProperties.jar", "reformcloud/addons/ReformCloudProperties.jar");
             DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudMobs.jar", "reformcloud/addons/ReformCloudMobs.jar");
+            DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudCloudFlare.jar", "reformcloud/addons/ReformCloudCloudFlare.jar");
         }
 
         final String web = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
@@ -350,6 +351,7 @@ public final class CloudConfiguration implements Serializable {
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+        ReformCloudController.getInstance().getEventManager().fire(new ClientCreatedEvent(client));
     }
 
     public void createWebUser(final WebUser webUser) {
@@ -474,6 +476,7 @@ public final class CloudConfiguration implements Serializable {
         ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudController.getInstance().getInternalCloudNetwork());
 
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+        ReformCloudController.getInstance().getEventManager().fire(new ClientDeletedEvent(client));
     }
 
     public void deleteWebuser(final WebUser webUser) {
