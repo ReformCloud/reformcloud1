@@ -42,8 +42,14 @@ public final class CloudFlareUtil implements Serializable {
             this.zoneID = this.cloudFlareConfig.getCloudFlareZone().getZoneID();
         } else {
             String currentZoneID = getZoneID();
-            if (currentZoneID == null)
-                throw new IllegalStateException("Could not find zone id for given domain, please recheck");
+            if (currentZoneID == null) {
+                StringUtil.printError(
+                        ReformCloudController.getInstance().getLoggerProvider(),
+                        "An error occurred in cloudflare addon",
+                        new IllegalStateException("Could not find zone id for given domain, please recheck")
+                );
+                return;
+            }
 
             zoneID = currentZoneID;
         }
@@ -75,12 +81,24 @@ public final class CloudFlareUtil implements Serializable {
                 httpURLConnection.disconnect();
                 if (jsonObject.get("success").getAsBoolean()) {
                     JsonArray jsonArray = jsonObject.get("result").getAsJsonArray();
-                    if (jsonArray.size() == 0)
-                        throw new IllegalStateException("Domain could not be found");
+                    if (jsonArray.size() == 0) {
+                        StringUtil.printError(
+                                ReformCloudController.getInstance().getLoggerProvider(),
+                                "An error occurred in cloudflare addon",
+                                new IllegalStateException(jsonObject.toString())
+                        );
+                        return null;
+                    }
 
                     return jsonArray.get(0).getAsJsonObject().get("id").getAsString();
-                } else
-                    throw new IllegalStateException(jsonObject.toString());
+                } else {
+                    StringUtil.printError(
+                            ReformCloudController.getInstance().getLoggerProvider(),
+                            "An error occurred in cloudflare addon",
+                            new IllegalStateException("Could not find zone id for given domain, please recheck")
+                    );
+                    return null;
+                }
             }
         } catch (final IOException ex) {
             ex.printStackTrace();
@@ -127,8 +145,14 @@ public final class CloudFlareUtil implements Serializable {
                             proxyInfo.getCloudProcess().getName()
                     );
                     results.add(result);
-                } else
-                    throw new IllegalStateException(jsonObject.toString());
+                } else {
+                    StringUtil.printError(
+                            ReformCloudController.getInstance().getLoggerProvider(),
+                            "An error occurred in cloudflare addon",
+                            new IllegalStateException(jsonObject.toString())
+                    );
+                    return;
+                }
             }
 
             httpURLConnection.disconnect();
@@ -171,8 +195,14 @@ public final class CloudFlareUtil implements Serializable {
                             client.getName()
                     );
                     results.add(result);
-                } else
-                    throw new IllegalStateException(jsonObject.toString());
+                } else {
+                    StringUtil.printError(
+                            ReformCloudController.getInstance().getLoggerProvider(),
+                            "An error occurred in cloudflare addon",
+                            new IllegalStateException(jsonObject.toString())
+                    );
+                    return;
+                }
             }
 
             httpURLConnection.disconnect();
@@ -205,8 +235,14 @@ public final class CloudFlareUtil implements Serializable {
                 if (jsonObject.get("success").getAsBoolean()) {
                     ReformCloudController.getInstance().getLoggerProvider().info("Successfully deleted cloudflare entry " + result.getId());
                     results.remove(result);
-                } else
-                    throw new IllegalStateException(jsonObject.toString());
+                } else {
+                    StringUtil.printError(
+                            ReformCloudController.getInstance().getLoggerProvider(),
+                            "An error occurred in cloudflare addon",
+                            new IllegalStateException(jsonObject.toString())
+                    );
+                    return;
+                }
             }
         } catch (final IOException ex) {
             ex.printStackTrace();
