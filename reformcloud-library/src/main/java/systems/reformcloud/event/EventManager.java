@@ -27,6 +27,11 @@ public final class EventManager implements Serializable {
     protected Map<Class<?>, EventClass[]> handlers = ReformCloudLibraryService.concurrentHashMap();
 
     /**
+     * The registered listeners by their class loader
+     */
+    protected Map<ClassLoader, Class<?>> registeredListenersByClassLoader = ReformCloudLibraryService.concurrentHashMap();
+
+    /**
      * Consumer handel all fired events
      */
     private Consumer<Object> fireAndForget = this::callEvent;
@@ -70,6 +75,7 @@ public final class EventManager implements Serializable {
      * @param listener      The listener which should be registered
      */
     private void registerListener0(Object listener) {
+        this.registeredListenersByClassLoader.put(listener.getClass().getClassLoader(), listener.getClass());
         Map<Class<?>, Set<Method>> handling = this.getHandling(listener);
         List<EventClass> done = new ArrayList<>();
         for (Map.Entry<Class<?>, Set<Method>> methods : handling.entrySet()) {
@@ -125,5 +131,13 @@ public final class EventManager implements Serializable {
      */
     public void unregisterAll() {
         this.handlers.clear();
+    }
+
+    public void unregisterListenerByClassLoader(ClassLoader classLoader) {
+        Class<?> clazz = this.registeredListenersByClassLoader.get(classLoader);
+        if (clazz == null)
+            return;
+
+        this.handlers.remove(clazz);
     }
 }

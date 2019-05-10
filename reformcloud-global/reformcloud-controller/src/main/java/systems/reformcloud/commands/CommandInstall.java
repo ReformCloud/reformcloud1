@@ -77,9 +77,16 @@ public final class CommandInstall extends Command implements Serializable {
                 );
                 ReformCloudController.getInstance().reloadAllSave();
                 return;
+            } else if (args[0].equalsIgnoreCase("cloudflare")) {
+                DownloadManager.downloadSilentAndDisconnect("https://dl.reformcloud.systems/addons/ReformCloudCloudFlare.jar", "reformcloud/addons/ReformCloudCloudFlare.jar");
+                commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage().getDownload_success()
+                );
+                ReformCloudController.getInstance().reloadAllSave();
+                return;
             }
         }
 
-        commandSender.sendMessage("install <signs, discord, permissions, proxy, parameters, autoicon, properties, mobs>");
+        commandSender.sendMessage("install <signs, discord, permissions, proxy, parameters, autoicon, properties, mobs, cloudflare>");
     }
 }
