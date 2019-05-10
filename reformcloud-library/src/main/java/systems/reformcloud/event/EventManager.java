@@ -52,8 +52,8 @@ public final class EventManager implements Serializable {
             if (handler != null) {
                 Class<?>[] parameters = method.getParameterTypes();
                 if (parameters.length != 1) {
-                    AbstractLoggerProvider.defaultLogger().serve().accept("An handler tried to register a listener with"
-                            + parameters.length + "parameter(s)");
+                    AbstractLoggerProvider.defaultLogger().serve().accept("An handler tried to register a listener with "
+                            + parameters.length + " parameter(s)");
                     continue;
                 }
 

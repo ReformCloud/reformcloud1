@@ -37,9 +37,27 @@ public final class ListenerTest implements Serializable {
         }
     }
 
+    public class TestEvent1 extends Event {
+        boolean test;
+
+        @java.beans.ConstructorProperties({"test"})
+        public TestEvent1(boolean test) {
+            this.test = test;
+        }
+
+        public boolean isTest() {
+            return this.test;
+        }
+    }
+
     public class ListenerTest0 implements Listener {
         @Handler
         public void handle(TestEvent testEvent) {
+            System.out.println("THE EVENT SAYS: " + testEvent.isTest());
+        }
+
+        @Handler
+        public void handle(TestEvent1 testEvent) {
             System.out.println("THE EVENT SAYS: " + testEvent.isTest());
         }
 
