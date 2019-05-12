@@ -6,7 +6,7 @@
 
     <groupId>systems.reformcloud</groupId>
     <artifactId>reformcloud-parent</artifactId>
-    <version>1.7</version>
+    <version>1.8</version>
 
     <modules>
         <module>reformcloud-library</module>
@@ -39,7 +39,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 
-        <service.version>1.7</service.version>
+        <service.version>1.8</service.version>
         <service.type>BETA</service.type>
 
         <plugin.shade.version>3.2.1</plugin.shade.version>
@@ -61,6 +61,7 @@
         <dependency.jda.version>4.ALPHA.0_9</dependency.jda.version>
         <dependency.guava.version>27.1-jre</dependency.guava.version>
         <dependency.slf4j.version>1.7.26</dependency.slf4j.version>
+        <dependency.commons-net.version>3.6</dependency.commons-net.version>
     </properties>
 
     <build>

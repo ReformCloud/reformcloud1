@@ -48,19 +48,15 @@ public final class RestAPIUtility implements Serializable {
 
     private static boolean checkPermission(Map<String, Boolean> permissions, String permission) {
         for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
-            if (entry.getKey().equalsIgnoreCase("*") && entry.getValue())
-                return true;
-
             if (entry.getKey().endsWith("*") && entry.getKey().length() > 1
-                    && permission.startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))
-                    && entry.getValue()) {
-                return true;
+                    && permission.startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))) {
+                return entry.getValue();
             }
 
-            if (entry.getKey().equalsIgnoreCase(permission) && entry.getValue())
-                return true;
+            if (entry.getKey().equalsIgnoreCase(permission))
+                return entry.getValue();
         }
 
-        return false;
+        return permissions.containsKey("*") && permissions.get("*");
     }
 }

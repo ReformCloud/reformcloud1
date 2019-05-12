@@ -5,7 +5,7 @@
     <parent>
         <artifactId>reformcloud-parent</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.7</version>
+        <version>1.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-yaml</artifactId>
-            <version>1.7</version>
+            <version>1.8</version>
             <scope>provided</scope>
         </dependency>
 
@@ -66,6 +66,13 @@
             <artifactId>junit</artifactId>
             <version>${dependency.test.junit.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${dependency.commons-net.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

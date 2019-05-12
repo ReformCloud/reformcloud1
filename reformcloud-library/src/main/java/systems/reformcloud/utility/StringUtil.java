@@ -21,9 +21,9 @@ public final class StringUtil {
             SLASH = "/",
             BACK_SLASH = "\\",
     //API Names: Version Specification date time B(ungee) S(igot) V(elocity)
-    BUNGEE_API_DOWNLOAD = "17BETA10051452B",
-            SPIGOT_API_DOWNLOAD = "17BETA10051452S",
-            VELOCITY_API_DOWNLOAD = "17BETA10051452V",
+    BUNGEE_API_DOWNLOAD = "18BETA12051820B",
+            SPIGOT_API_DOWNLOAD = "18BETA12051820S",
+            VELOCITY_API_DOWNLOAD = "18BETA12051820V",
             NULL = "null",
             OS_NAME = System.getProperty("os.name"),
             OS_ARCH = System.getProperty("os.arch"),
