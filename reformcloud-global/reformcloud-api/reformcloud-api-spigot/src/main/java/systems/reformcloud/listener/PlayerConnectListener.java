@@ -90,21 +90,23 @@ public final class PlayerConnectListener implements Listener, Serializable {
                             ex.printStackTrace();
                         }
 
-                        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isMaintenance()
-                                && !event.getPlayer().hasPermission("reformcloud.join.server.maintenance")) {
-                            event.getPlayer().kickPlayer(
-                                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission")
-                            );
-                            return;
-                        }
+                        SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
+                            if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isMaintenance()
+                                    && !event.getPlayer().hasPermission("reformcloud.join.server.maintenance")) {
+                                event.getPlayer().kickPlayer(
+                                        ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission")
+                                );
+                                return;
+                            }
 
-                        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission() != null
-                                && !event.getPlayer().hasPermission(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission())) {
-                            event.getPlayer().kickPlayer(
-                                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission")
-                            );
-                            return;
-                        }
+                            if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission() != null
+                                    && !event.getPlayer().hasPermission(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission())) {
+                                event.getPlayer().kickPlayer(
+                                        ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission")
+                                );
+                                return;
+                            }
+                        });
 
                         event.allow();
                     }
