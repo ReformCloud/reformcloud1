@@ -29,6 +29,7 @@ public final class BackUpMaker implements Serializable {
     private static BackUpMaker instance;
 
     public BackUpMaker(FTPConfig ftpConfig) {
+        instance = this;
         this.ftpConfig = ftpConfig;
     }
 
@@ -51,13 +52,12 @@ public final class BackUpMaker implements Serializable {
                         );
                         FTPUtil.uploadDirectory(
                                 ftpClient,
-                                ClassLoader.getSystemClassLoader().getResource(".").getPath(),
-                                this.ftpConfig.getExcluded()
+                                "reformcloud",
+                                this.ftpConfig.getExcluded(),
+                                this.ftpConfig.isDeleteLocalBackupAfterUpload()
                         );
                         FTPUtil.closeConnection(ftpClient);
                     }
-
-
                 } catch (final IOException ex) {
                     StringUtil.printError(
                             ReformCloudController.getInstance().getLoggerProvider(),
@@ -66,7 +66,7 @@ public final class BackUpMaker implements Serializable {
                     );
                 }
 
-                ReformCloudLibraryService.sleep(TimeUnit.MINUTES, this.ftpConfig.getSaveIntervallInMinutes());
+                ReformCloudLibraryService.sleep(TimeUnit.MINUTES, this.ftpConfig.getSaveIntervalInMinutes());
             }
         });
     }

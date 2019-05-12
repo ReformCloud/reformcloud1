@@ -19,8 +19,11 @@ import java.util.zip.ZipOutputStream;
 
 final class ZipUtil implements Serializable {
     private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut, List<String> skip) throws IOException {
+        /*
         if (fileToZip.isHidden())
             return;
+
+         */
 
         if (fileToZip.isDirectory()) {
             File[] children = fileToZip.listFiles();

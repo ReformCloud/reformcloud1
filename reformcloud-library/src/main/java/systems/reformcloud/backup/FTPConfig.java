@@ -13,28 +13,33 @@ import java.util.List;
  */
 
 public final class FTPConfig implements Serializable {
-    private boolean useFTPS, saveController, saveClient;
+    private boolean useFTPS, deleteLocalBackupAfterUpload, saveController, saveClient;
     private String host, userName, password;
     private int port;
-    private int saveIntervallInMinutes;
+    private int saveIntervalInMinutes;
     private List<String> excluded;
 
-    @ConstructorProperties({"useFTPS", "saveController", "saveClient", "host", "userName", "password", "port", "saveIntervallInMinutes", "excluded"})
-    public FTPConfig(boolean useFTPS, boolean saveController, boolean saveClient, String host, String userName,
-                     String password, int port, int saveIntervallInMinutes, List<String> excluded) {
+    @ConstructorProperties({"useFTPS", "deleteLocalBackupAfterUpload", "saveController", "saveClient", "host", "userName", "password", "port", "saveIntervalInMinutes", "excluded"})
+    public FTPConfig(boolean useFTPS, boolean deleteLocalBackupAfterUpload, boolean saveController, boolean saveClient,
+                     String host, String userName, String password, int port, int saveIntervalInMinutes, List<String> excluded) {
         this.useFTPS = useFTPS;
+        this.deleteLocalBackupAfterUpload = deleteLocalBackupAfterUpload;
         this.saveController = saveController;
         this.saveClient = saveClient;
         this.host = host;
         this.userName = userName;
         this.password = password;
         this.port = port;
-        this.saveIntervallInMinutes = saveIntervallInMinutes;
+        this.saveIntervalInMinutes = saveIntervalInMinutes;
         this.excluded = excluded;
     }
 
     public boolean isUseFTPS() {
         return useFTPS;
+    }
+
+    public boolean isDeleteLocalBackupAfterUpload() {
+        return deleteLocalBackupAfterUpload;
     }
 
     public boolean isSaveController() {
@@ -61,8 +66,8 @@ public final class FTPConfig implements Serializable {
         return port;
     }
 
-    public int getSaveIntervallInMinutes() {
-        return saveIntervallInMinutes;
+    public int getSaveIntervalInMinutes() {
+        return saveIntervalInMinutes;
     }
 
     public List<String> getExcluded() {

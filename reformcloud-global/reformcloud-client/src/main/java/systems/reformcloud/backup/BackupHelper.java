@@ -46,8 +46,9 @@ public final class BackupHelper implements Serializable {
                         );
                         FTPUtil.uploadDirectory(
                                 ftpClient,
-                                ClassLoader.getSystemClassLoader().getResource(".").getPath(),
-                                this.ftpConfig.getExcluded()
+                                "reformcloud",
+                                this.ftpConfig.getExcluded(),
+                                this.ftpConfig.isDeleteLocalBackupAfterUpload()
                         );
                         FTPUtil.closeConnection(ftpClient);
                     }
@@ -59,7 +60,7 @@ public final class BackupHelper implements Serializable {
                     );
                 }
 
-                ReformCloudLibraryService.sleep(TimeUnit.MINUTES, this.ftpConfig.getSaveIntervallInMinutes());
+                ReformCloudLibraryService.sleep(TimeUnit.MINUTES, this.ftpConfig.getSaveIntervalInMinutes());
             }
         });
     }

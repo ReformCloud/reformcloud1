@@ -19,10 +19,6 @@ public final class BackupAddon extends ControllerAddonImpl implements Serializab
     private BackUpMaker backUpMaker;
 
     @Override
-    public void onAddonClazzPrepare() {
-    }
-
-    @Override
     public void onAddonLoading() {
         this.backUpMaker = new BackUpMaker(new FTPConfigLoader().load());
         this.backUpMaker.start();

@@ -21,9 +21,10 @@ import java.util.Collections;
 public final class FTPConfigLoader implements Serializable {
     public FTPConfigLoader() {
         if (!Files.exists(Paths.get("reformcloud/addons/backup/config.json"))) {
-            FileUtils.createDirectory(Paths.get("reformcloud/addons/backup/waiting"));
+            FileUtils.createDirectory(Paths.get("reformcloud/addons/backup"));
             new Configuration()
                     .addValue("config", new FTPConfig(
+                            true,
                                     true,
                                     true,
                                     false,

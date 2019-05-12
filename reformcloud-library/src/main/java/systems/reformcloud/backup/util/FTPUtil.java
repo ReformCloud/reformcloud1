@@ -20,14 +20,15 @@ import java.util.List;
  */
 
 public final class FTPUtil implements Serializable {
-    public static void uploadDirectory(FTPClient ftpClient, String dirPath, List<String> excluded) throws IOException {
+    public static void uploadDirectory(FTPClient ftpClient, String dirPath, List<String> excluded, boolean deleteOnOperationComplete) throws IOException {
         createDirectory();
         final String name = getCurrentFileName();
-        final String dir = "reformcloud/addons/backup/waiting/" + name;
+        final String dir = "temp/" + name;
         ZipUtil.zipDirectoryToFile(new File(dirPath), dir, excluded);
         ftpClient.makeDirectory(dirPath);
         uploadFile(ftpClient, dir, dirPath + "/" + name);
-        deleteFile(dir);
+        if (deleteOnOperationComplete)
+            deleteFile(name);
     }
 
     public static void uploadFile(FTPClient ftpClient, String zipPath, String remoteDir) throws IOException {
@@ -49,14 +50,23 @@ public final class FTPUtil implements Serializable {
     }
 
     private static void createDirectory() {
-        FileUtils.createDirectory(Paths.get("reformcloud/addons/backup/waiting"));
+        FileUtils.createDirectory(Paths.get("temp"));
     }
 
     private static void deleteFile(String name) {
-        FileUtils.deleteFileIfExists(name);
+        FileUtils.deleteFileIfExists("temp/" + name);
     }
 
     private static String getCurrentFileName() {
-        return "backup-" + System.currentTimeMillis() + ".zip";
+        return "backup-" + getRuntime() + System.currentTimeMillis() + ".zip";
+    }
+
+    private static String getRuntime() {
+        try {
+            Class.forName("systems.reformcloud.ReformCloudController");
+            return "controller-";
+        } catch (final Throwable throwable) {
+            return "client-";
+        }
     }
 }

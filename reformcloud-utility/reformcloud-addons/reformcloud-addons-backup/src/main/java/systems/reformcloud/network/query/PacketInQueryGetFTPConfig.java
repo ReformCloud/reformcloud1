@@ -25,7 +25,8 @@ public final class PacketInQueryGetFTPConfig implements Serializable, NetworkQue
                 configuration.getStringValue("from"),
                 new Packet(
                         StringUtil.NULL,
-                        new Configuration().addValue("config", BackUpMaker.getInstance().getFtpConfig())
+                        new Configuration().addValue("config", BackUpMaker.getInstance().getFtpConfig()),
+                        resultID
                 )
         );
     }
