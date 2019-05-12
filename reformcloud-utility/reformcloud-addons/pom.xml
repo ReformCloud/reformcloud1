@@ -21,6 +21,7 @@
         <module>reformcloud-addons-properties</module>
         <module>reformcloud-addons-autoicon</module>
         <module>reformcloud-addons-cloudflare</module>
+        <module>reformcloud-addons-backup</module>
     </modules>
 
     <dependencies>

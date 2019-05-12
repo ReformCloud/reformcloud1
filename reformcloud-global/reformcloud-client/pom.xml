@@ -42,6 +42,13 @@
         </dependency>
 
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${dependency.commons-net.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-yaml</artifactId>
             <version>1.7</version>

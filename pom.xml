@@ -61,6 +61,7 @@
         <dependency.jda.version>4.ALPHA.0_9</dependency.jda.version>
         <dependency.guava.version>27.1-jre</dependency.guava.version>
         <dependency.slf4j.version>1.7.26</dependency.slf4j.version>
+        <dependency.commons-net.version>3.6</dependency.commons-net.version>
     </properties>
 
     <build>

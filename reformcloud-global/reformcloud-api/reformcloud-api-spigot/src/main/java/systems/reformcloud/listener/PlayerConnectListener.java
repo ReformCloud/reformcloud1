@@ -43,14 +43,6 @@ public final class PlayerConnectListener implements Listener, Serializable {
             return;
         }
 
-        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isMaintenance()
-                && SpigotBootstrap.getInstance().getServer().getPlayer(event.getUniqueId()) != null
-                && !SpigotBootstrap.getInstance().getServer().getPlayer(event.getUniqueId()).hasPermission("reformcloud.join.server.maintenance")) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
-                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission"));
-            return;
-        }
-
         event.allow();
     }
 
@@ -97,6 +89,22 @@ public final class PlayerConnectListener implements Listener, Serializable {
                         } catch (final NoSuchFieldException | IllegalAccessException | ClassNotFoundException ex) {
                             ex.printStackTrace();
                         }
+
+                        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isMaintenance()
+                                && !event.getPlayer().hasPermission("reformcloud.join.server.maintenance")) {
+                            event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
+                                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission"));
+                            return;
+                        }
+
+                        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission() != null
+                                && !event.getPlayer().hasPermission(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission())) {
+                            event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
+                                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission"));
+                            return;
+                        }
+
+                        event.allow();
                     }
             );
         }

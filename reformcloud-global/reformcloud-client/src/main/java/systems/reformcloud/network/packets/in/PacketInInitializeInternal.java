@@ -7,6 +7,7 @@ package systems.reformcloud.network.packets.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.backup.StartSearch;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packet.Packet;
@@ -62,5 +63,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
                 (configuration2, resultId) -> {
                 }
         );
+
+        new StartSearch();
     }
 }
