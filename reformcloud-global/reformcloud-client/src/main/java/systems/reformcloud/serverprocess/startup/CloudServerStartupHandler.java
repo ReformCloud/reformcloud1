@@ -433,30 +433,39 @@ public final class CloudServerStartupHandler implements Serializable {
 
         toShutdown = true;
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().remove(this.serverStartupInfo.getName());
+        if (update)
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                    new PacketOutRemoveProcess(ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                            .getRegisteredServerByUID(this.serverStartupInfo.getUid()))
+            );
+
+        ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterServerProcess(this.serverStartupInfo.getName());
+        ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
+                this.serverStartupInfo.getUid(), this.serverStartupInfo.getName(), this.port
+        );
+
+        if (update)
+            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                    new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
 
         this.executeCommand("save-all");
-
-        ReformCloudLibraryService.sleep(2000);
-
+        ReformCloudLibraryService.sleep(500);
         this.executeCommand("stop");
-
-        ReformCloudLibraryService.sleep(1000);
+        ReformCloudLibraryService.sleep(500);
 
         try {
-            if (this.isAlive()) {
+            if (this.isAlive())
                 this.process.destroy();
-            }
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error on CloudServer shutdown", throwable);
+            return false;
         }
-
-        ReformCloudLibraryService.sleep(50);
 
         this.screenHandler.disableScreen();
 
-        if (this.serverStartupInfo.getServerGroup().isSave_logs()) {
-            FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/servers/logs/server_log_" + this.serverStartupInfo.getUid() + "-" + this.serverStartupInfo.getName() + ".log");
-        }
+        if (this.serverStartupInfo.getServerGroup().isSave_logs())
+            FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/servers/logs/server_log_" +
+                    this.serverStartupInfo.getUid() + "-" + this.serverStartupInfo.getName() + ".log");
 
         if (this.loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)
                 && !this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)) {
@@ -473,19 +482,6 @@ public final class CloudServerStartupHandler implements Serializable {
             FileUtils.deleteFullDirectory(path);
         else
             FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPISpigot.jar"));
-
-        if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                    new PacketOutRemoveProcess(ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(this.serverStartupInfo.getUid()))
-            );
-
-        ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterServerProcess(this.serverStartupInfo.getName());
-        ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
-                this.serverStartupInfo.getUid(), this.serverStartupInfo.getName(), this.port
-        );
-
-        if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
 
         try {
             this.finalize();
