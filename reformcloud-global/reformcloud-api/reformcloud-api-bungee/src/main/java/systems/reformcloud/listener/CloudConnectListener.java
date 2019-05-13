@@ -191,7 +191,7 @@ public final class CloudConnectListener implements Listener {
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getName() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));
-        BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> initTab(e));
+        BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(CloudConnectListener::initTab);
         ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
     }
 
