@@ -24,6 +24,10 @@ import java.util.regex.Pattern;
 public final class CommonLoader implements Serializable {
     private static String version;
 
+    static {
+        checkForJavaVersion();
+    }
+
     public static ClassLoader createClassLoader(List<URL> urls) {
         checkNonNull(urls);
         return createClassLoader(urls.toArray(new URL[0]));
@@ -77,5 +81,10 @@ public final class CommonLoader implements Serializable {
     private static void checkNonNull(Object x) {
         if (x == null)
             throw new IllegalStateException("Invocation with null parameters");
+    }
+
+    private static void checkForJavaVersion() {
+        if (Double.parseDouble(System.getProperty("java.class.version")) < 52D)
+            System.exit(2);
     }
 }

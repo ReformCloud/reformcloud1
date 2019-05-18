@@ -180,7 +180,7 @@ public final class CloudConnectListener {
                                                     ? event.getOriginalReason().get().insertion()
                                                     : "§cReason undefined")
                             ));
-                });
+                }).schedule();
             } else {
                 event.setResult(KickedFromServerEvent.DisconnectPlayer.create(
                         TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server"))

@@ -55,8 +55,6 @@ final class ReformCloudLauncher implements Serializable {
         if (Files.exists(Paths.get("reformcloud/logs")))
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));
 
-        //new LibraryLoader().loadJarFileAndInjectLibraries();
-
         final CommandManager commandManager = new CommandManager();
         final LoggerProvider loggerProvider = new LoggerProvider();
 

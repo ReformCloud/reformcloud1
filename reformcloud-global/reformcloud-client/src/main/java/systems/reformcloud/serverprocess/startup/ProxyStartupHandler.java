@@ -153,8 +153,8 @@ public final class ProxyStartupHandler implements Serializable {
         }
 
         if (!proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)) {
-            FileUtils.deleteFileIfExists(Paths.get(path + "/config.yml"));
-            FileUtils.copyCompiledFile("reformcloud/bungeecord/config/config.yml", path + "/config.yml");
+            if (!Files.exists(Paths.get(path + "/config.yml")))
+                FileUtils.copyCompiledFile("reformcloud/bungeecord/config/config.yml", path + "/config.yml");
 
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
@@ -197,8 +197,8 @@ public final class ProxyStartupHandler implements Serializable {
                 return false;
             }
         } else {
-            FileUtils.deleteFileIfExists(Paths.get(path + "/velocity.toml"));
-            FileUtils.copyCompiledFile("reformcloud/bungeecord/config/velocity.toml", path + "/velocity.toml");
+            if (!Files.exists(Paths.get(path + "/velocity.toml")))
+                FileUtils.copyCompiledFile("reformcloud/bungeecord/config/velocity.toml", path + "/velocity.toml");
 
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
