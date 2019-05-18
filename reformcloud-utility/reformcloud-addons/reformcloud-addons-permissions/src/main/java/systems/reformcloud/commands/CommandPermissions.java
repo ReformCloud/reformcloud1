@@ -341,7 +341,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            permissionGroup.setPrefix(args[2]);
+            permissionGroup.setPrefix(args[2].replace("_", " "));
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
 
@@ -360,7 +360,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            permissionGroup.setDisplay(args[2]);
+            permissionGroup.setDisplay(args[2].replace("_", " "));
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
             commandSender.sendMessage("Successfully set the display to " + permissionGroup.getDisplay());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("setsuffix")) {
@@ -372,7 +372,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 return;
             }
 
-            if (permissionGroup.getSuffix().equals(args[2])) {
+            if (permissionGroup.getSuffix().equals(args[2].replace("_", " "))) {
                 commandSender.sendMessage("The Group suffix equals the new suffix");
                 return;
             }
