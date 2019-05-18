@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -93,8 +94,8 @@ public final class LibraryPreLoader implements Serializable {
     }
 
     private static void prepareDependencies0(boolean installNetty) {
-        dependencies = Arrays.asList(new SnakeYaml(), new CommonsIO(), new JLine(), new ApacheCommonsNet(),
-                new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents());
+        dependencies = new LinkedList<>(Arrays.asList(new SnakeYaml(), new CommonsIO(), new JLine(), new ApacheCommonsNet(),
+                new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents()));
 
         if (installNetty)
             dependencies.add(new Netty());
