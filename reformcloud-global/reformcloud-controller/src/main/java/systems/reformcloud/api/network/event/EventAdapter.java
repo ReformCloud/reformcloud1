@@ -51,6 +51,10 @@ public final class EventAdapter implements Serializable, IEventHandler {
     @Override
     public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
         ReformCloudController.getInstance().getEventManager().fire(new ChannelDisconnectedEvent(channelHandlerContext));
+
+        final String serviceName = ReformCloudController.getInstance().getChannelHandler().getChannelNameByValue(channelHandlerContext);
+        if (serviceName != null)
+            ReformCloudController.getInstance().getChannelHandler().unregisterChannel(serviceName);
     }
 
     @Override
