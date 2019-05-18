@@ -49,7 +49,6 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             while (ReformCloudClient.RUNNING) {
-
                 if (!this.serverStartupInfo.isEmpty()) {
                     final ServerStartupInfo serverStartupInfo = this.serverStartupInfo.poll();
 

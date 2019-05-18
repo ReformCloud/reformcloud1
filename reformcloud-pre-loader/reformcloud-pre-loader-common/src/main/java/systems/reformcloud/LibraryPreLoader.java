@@ -31,10 +31,10 @@ public final class LibraryPreLoader implements Serializable {
     private LibraryPreLoader() {
     }
 
-    public static void prepareDependencies() {
+    public static void prepareDependencies(boolean installNetty) {
         prepareFolder();
         if (dependencies == null)
-            prepareDependencies0();
+            prepareDependencies0(installNetty);
     }
 
     public static List<URL> downloadDependencies() {
@@ -92,9 +92,12 @@ public final class LibraryPreLoader implements Serializable {
         }
     }
 
-    private static void prepareDependencies0() {
-        dependencies = Arrays.asList(new Netty(), new SnakeYaml(), new CommonsIO(), new JLine(), new ApacheCommonsNet(),
+    private static void prepareDependencies0(boolean installNetty) {
+        dependencies = Arrays.asList(new SnakeYaml(), new CommonsIO(), new JLine(), new ApacheCommonsNet(),
                 new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(), new ApacheHttpComponents());
+
+        if (installNetty)
+            dependencies.add(new Netty());
     }
 
     /**

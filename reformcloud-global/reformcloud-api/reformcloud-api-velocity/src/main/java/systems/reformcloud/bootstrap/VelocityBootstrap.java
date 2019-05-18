@@ -19,6 +19,8 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.netty.util.ResourceLeakDetector;
 import org.slf4j.Logger;
 import systems.reformcloud.ReformCloudAPIVelocity;
+import systems.reformcloud.addons.dependency.DependencyLoader;
+import systems.reformcloud.addons.dependency.util.DynamicDependency;
 import systems.reformcloud.commands.CommandHub;
 import systems.reformcloud.commands.CommandJumpto;
 import systems.reformcloud.commands.CommandReformCloud;
@@ -53,6 +55,22 @@ public final class VelocityBootstrap implements Serializable {
 
     @Inject
     public VelocityBootstrap(ProxyServer proxyServer, Logger logger) {
+        DependencyLoader.loadDependency(new DynamicDependency(null) {
+            @Override
+            public String getGroupID() {
+                return "io.netty";
+            }
+
+            @Override
+            public String getName() {
+                return "netty-all";
+            }
+
+            @Override
+            public String getVersion() {
+                return "4.1.36.Final";
+            }
+        });
         instance = this;
 
         this.proxy = proxyServer;

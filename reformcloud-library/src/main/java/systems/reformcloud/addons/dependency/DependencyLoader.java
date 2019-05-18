@@ -47,7 +47,7 @@ public final class DependencyLoader implements Serializable {
             }
 
             final String[] name = result.getFile().split("/");
-            AbstractLoggerProvider.defaultLogger().info().accept("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
+            System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
         } catch (final IOException ex) {
             StringUtil.printError(
                     AbstractLoggerProvider.defaultLogger(),
