@@ -110,4 +110,32 @@ public final class PermissionGroup implements Serializable {
     public Map<String, Boolean> getPermissions() {
         return this.permissions;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
+    }
+
+    public void setTabColorCode(String tabColorCode) {
+        this.tabColorCode = tabColorCode;
+    }
+
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
+    }
+
+    public void setPermissions(Map<String, Boolean> permissions) {
+        this.permissions = permissions;
+    }
 }

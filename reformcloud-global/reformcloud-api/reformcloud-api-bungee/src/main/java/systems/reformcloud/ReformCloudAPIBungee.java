@@ -140,6 +140,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 .registerHandler("EnableIcons", new PacketInEnableIcons())
                 .registerHandler("UpdateProxyConfig", new PacketInUpdateProxySettings())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
+                .registerHandler("UpdatePermissionGroup", new PacketInUpdatePermissionGroup())
                 .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
@@ -251,7 +252,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 41000,
                 true,
                 false,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions
@@ -287,7 +288,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 41000,
                 true,
                 false,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 SpigotVersions.SPIGOT_1_8_8
@@ -310,7 +311,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 41000,
                 true,
                 false,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions

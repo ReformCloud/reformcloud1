@@ -277,7 +277,8 @@ public final class ProxyStartupHandler implements Serializable {
         final String[] after = new String[]
                 {
                         StringUtil.JAVA_JAR,
-                        "BungeeCord.jar"
+                        "loader.jar",
+                        "--file=BungeeCord.jar"
                 };
 
         String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getCloudProcess().getGroup(), cmd, after)
@@ -286,6 +287,8 @@ public final class ProxyStartupHandler implements Serializable {
                 .replace("%name%", proxyStartupInfo.getName())
                 .replace("%group%", proxyStartupInfo.getProxyGroup().getName())
                 .replace("%template%", this.template.getName());
+
+        FileUtils.copyFile("reformcloud/files/ReformCloudProcess.jar", this.path + "/loader.jar");
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path.toString()));
@@ -341,7 +344,7 @@ public final class ProxyStartupHandler implements Serializable {
                 .getServerProcessManager().getRegisteredProxyByUID(this.proxyStartupInfo.getUid());
 
         if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
                     new PacketOutRemoveProcess(proxyInfo));
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterProxyProcess(this.proxyStartupInfo.getName());
@@ -349,8 +352,11 @@ public final class ProxyStartupHandler implements Serializable {
                 this.proxyStartupInfo.getUid(), this.proxyStartupInfo.getName(), this.port
         );
         if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
                     new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
+
+        if (update)
+            ReformCloudLibraryService.sleep(300);
 
         if (message == null)
             this.executeCommand("end ReformCloud restarting...");

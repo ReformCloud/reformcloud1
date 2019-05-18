@@ -11,16 +11,14 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.events.OutgoingPacketEvent;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.network.channel.queue.QueueWorker;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.AwaitingPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
@@ -45,16 +43,10 @@ public final class ChannelHandler implements Serializable {
     private final ExecutorService executorService = ReformCloudLibraryService.EXECUTOR_SERVICE;
 
     /**
-     * The queue of the waiting packets
-     */
-    private Queue<AwaitingPacket> packetQueue = new ConcurrentLinkedDeque<>();
-
-    /**
      * Creates a new instance of the channel handler
      */
     public ChannelHandler() {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
-        ReformCloudLibraryService.EXECUTOR_SERVICE.execute(new QueueWorker());
     }
 
     /**
@@ -151,26 +143,20 @@ public final class ChannelHandler implements Serializable {
     }
 
     private void sendPacket0(Packet packet, ChannelHandlerContext channelHandlerContext) {
-        AwaitingPacket awaitingPacket = new AwaitingPacket(channelHandlerContext, packet);
-        OutgoingPacketEvent outgoingPacketEvent = new OutgoingPacketEvent(awaitingPacket);
+        if (packet == null || channelHandlerContext == null)
+            return;
+
+        OutgoingPacketEvent outgoingPacketEvent = new OutgoingPacketEvent(packet, channelHandlerContext);
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(outgoingPacketEvent);
         if (outgoingPacketEvent.isCancelled())
             return;
 
-        this.packetQueue.offer(awaitingPacket);
-    }
-
-    /**
-     * Sends a packet into the network participant channel
-     *
-     * @param awaitingPacket        The packet which should be send
-     */
-    public void sendPacket1(AwaitingPacket awaitingPacket) {
-        if (awaitingPacket.getChannelHandlerContext().channel().eventLoop().inEventLoop()) {
-            awaitingPacket.getChannelHandlerContext().channel()
-                    .writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        if (channelHandlerContext.channel().eventLoop().inEventLoop()) {
+            channelHandlerContext.channel()
+                    .writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
         } else {
-            awaitingPacket.getChannelHandlerContext().channel().eventLoop().execute(() -> awaitingPacket.getChannelHandlerContext().channel()
-                    .writeAndFlush(awaitingPacket.getPacket()).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE));
+            channelHandlerContext.channel().eventLoop().execute(() -> channelHandlerContext.channel()
+                    .writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE));
         }
     }
 
@@ -194,12 +180,11 @@ public final class ChannelHandler implements Serializable {
      * @param to        The name of the network participant
      * @param packet    The packet which should be sent
      */
-    @Deprecated
     public void sendDirectPacket(String to, Packet packet) {
         if (!this.channelHandlerContextMap.containsKey(to))
             return;
 
-        this.sendPacket1(new AwaitingPacket(this.getChannel(to), packet));
+        this.sendPacket0(packet, this.channelHandlerContextMap.get(to));
     }
 
     /**
@@ -226,8 +211,10 @@ public final class ChannelHandler implements Serializable {
      * @return If the cloud could send the packet into the channel
      */
     public boolean sendPacketAsynchronous(final String channel, final Packet packet) {
-        if (this.channelHandlerContextMap.containsKey(channel))
-            this.sendPacket0(packet, this.channelHandlerContextMap.get(channel));
+        CompletableFuture.runAsync(() -> {
+            if (this.channelHandlerContextMap.containsKey(channel))
+                this.sendPacket0(packet, this.channelHandlerContextMap.get(channel));
+        });
 
         return this.channelHandlerContextMap.containsKey(channel);
     }
@@ -242,7 +229,7 @@ public final class ChannelHandler implements Serializable {
     public boolean sendPacketAsynchronous(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel))
             for (Packet packet : packets)
-                this.sendPacket0(packet, this.channelHandlerContextMap.get(channel));
+                this.sendPacketAsynchronous(channel, packet);
 
         return this.channelHandlerContextMap.containsKey(channel);
     }
@@ -337,7 +324,7 @@ public final class ChannelHandler implements Serializable {
      * @param packet    The packet which should be sent
      */
     public void sendToAllAsynchronous(Packet packet) {
-        this.channelHandlerContextMap.values().forEach((consumer -> this.sendPacket0(packet, consumer)));
+        CompletableFuture.runAsync(() -> this.channelHandlerContextMap.values().forEach(consumer -> this.sendPacket0(packet, consumer)));
     }
 
     /**
@@ -421,9 +408,5 @@ public final class ChannelHandler implements Serializable {
 
     public ExecutorService getExecutorService() {
         return this.executorService;
-    }
-
-    public Queue<AwaitingPacket> getPacketQueue() {
-        return this.packetQueue;
     }
 }

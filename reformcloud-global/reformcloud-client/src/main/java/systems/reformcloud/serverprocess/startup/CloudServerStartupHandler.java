@@ -366,7 +366,8 @@ public final class CloudServerStartupHandler implements Serializable {
         final String[] after = new String[]
                 {
                         StringUtil.JAVA_JAR,
-                        "spigot.jar",
+                        "loader.jar",
+                        "--file=spigot.jar",
                         "nogui"
                 };
 
@@ -376,6 +377,8 @@ public final class CloudServerStartupHandler implements Serializable {
                 .replace("%name%", serverStartupInfo.getName())
                 .replace("%group%", serverStartupInfo.getServerGroup().getName())
                 .replace("%template%", this.loaded.getName());
+
+        FileUtils.copyFile("reformcloud/files/ReformCloudProcess.jar", this.path + "/loader.jar");
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));
@@ -432,21 +435,25 @@ public final class CloudServerStartupHandler implements Serializable {
             return true;
 
         toShutdown = true;
+        ServerInfo serverInfo = ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                .getRegisteredServerByUID(this.serverStartupInfo.getUid());
         ReformCloudClient.getInstance().getClientInfo().getStartedServers().remove(this.serverStartupInfo.getName());
-        if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                    new PacketOutRemoveProcess(ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
-                            .getRegisteredServerByUID(this.serverStartupInfo.getUid()))
-            );
-
         ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterServerProcess(this.serverStartupInfo.getName());
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
                 this.serverStartupInfo.getUid(), this.serverStartupInfo.getName(), this.port
         );
 
         if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
+                    new PacketOutRemoveProcess(serverInfo)
+            );
+
+        if (update)
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
                     new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
+
+        if (update)
+            ReformCloudLibraryService.sleep(300);
 
         this.executeCommand("save-all");
         ReformCloudLibraryService.sleep(500);

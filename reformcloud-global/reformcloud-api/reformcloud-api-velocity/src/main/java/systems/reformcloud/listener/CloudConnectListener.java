@@ -168,6 +168,19 @@ public final class CloudConnectListener {
                 event.setResult(KickedFromServerEvent.RedirectPlayer.create(
                         VelocityBootstrap.getInstance().getProxyServer().getServer(serverInfo.getCloudProcess().getName()).get()
                 ));
+
+                VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
+                    event.getPlayer()
+                            .sendMessage(TextComponent.of(
+                                    ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage(
+                                            "internal-api-bungee-server-kick"
+                                    ).replace("%old_server%", event.getServer().getServerInfo().getName())
+                                            .replace("%new_server%", serverInfo.getCloudProcess().getName())
+                                            .replace("%reason%", event.getOriginalReason().isPresent() && event.getOriginalReason().get().insertion() != null
+                                                    ? event.getOriginalReason().get().insertion()
+                                                    : "§cReason undefined")
+                            ));
+                });
             } else {
                 event.setResult(KickedFromServerEvent.DisconnectPlayer.create(
                         TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-connect-hub-no-server"))

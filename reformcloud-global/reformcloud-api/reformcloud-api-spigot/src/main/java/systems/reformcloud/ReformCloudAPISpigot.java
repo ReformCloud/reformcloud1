@@ -132,6 +132,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 .registerHandler("CreateSign", new PacketInCreateSign())
                 .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
                 .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
+                .registerHandler("UpdatePermissionGroup", new PacketInUpdatePermissionGroup())
                 .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache());
 
         this.nettySocketClient = new NettySocketClient();
@@ -330,7 +331,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 new ArrayList<>(),
                 new ArrayList<>(),
                 proxyModeType,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
@@ -362,7 +363,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
@@ -386,7 +387,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 new ArrayList<>(templates),
                 new ArrayList<>(),
                 proxyModeType,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
@@ -410,7 +411,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 new ArrayList<>(templates),
                 new ArrayList<>(),
                 proxyModeType,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,

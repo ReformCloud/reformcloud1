@@ -235,6 +235,7 @@ public final class CommandPermissions extends Command implements Serializable, T
         commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> setdefault"));
         commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <CREATE/DELETE>"));
         commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>"));
     }
 
     @Override

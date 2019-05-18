@@ -185,7 +185,7 @@ public final class MobSelector implements Serializable {
         for (SelectorMobInventoryItem item : mobInventory.getItems()) {
             ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, item.getMaterialName()).isPresent()
                     ? Material.getMaterial(item.getMaterialName())
-                    : Material.GLASS_PANE, 1, item.getSubId());
+                    : Material.TORCH, 1, item.getSubId());
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta != null) {
                 itemMeta.setDisplayName(item.getName());

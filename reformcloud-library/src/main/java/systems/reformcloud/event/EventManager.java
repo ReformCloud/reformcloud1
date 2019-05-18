@@ -86,6 +86,7 @@ public final class EventManager implements Serializable {
 
             EventClass[] eventClasses = new EventClass[done.size()];
             this.handlers.put(methods.getKey(), done.toArray(eventClasses));
+            done.clear();
         }
     }
 

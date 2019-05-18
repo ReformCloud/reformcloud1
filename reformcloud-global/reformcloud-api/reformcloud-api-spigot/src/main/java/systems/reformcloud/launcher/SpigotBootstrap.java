@@ -10,7 +10,6 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.PlayerConnectListener;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
@@ -37,7 +36,6 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
     @Override
     public void onLoad() {
         this.start = System.currentTimeMillis();
-        new LibraryLoader().loadJarFileAndInjectLibraries();
         instance = this;
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);

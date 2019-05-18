@@ -27,7 +27,7 @@ public final class CommandCopy extends Command implements Serializable {
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        if (args.length == 1) {
+        if (args.length == 1 || args.length == 2) {
             if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[0]) != null) {
                 final ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[0]);
                 if (serverInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend().equals(TemplateBackend.CLIENT)) {
@@ -36,8 +36,13 @@ public final class CommandCopy extends Command implements Serializable {
                             new PacketOutExecuteCommand("save-all", "server", serverInfo.getCloudProcess().getName())
                     );
                     ReformCloudLibraryService.sleep(100);
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(),
-                            serverInfo.getCloudProcess().getName(), "server", serverInfo.getServerGroup().getName()));
+                    if (args.length == 2) {
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(),
+                                serverInfo.getCloudProcess().getName(), "server", serverInfo.getServerGroup().getName(), args[1]));
+                    } else {
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(),
+                                serverInfo.getCloudProcess().getName(), "server", serverInfo.getServerGroup().getName()));
+                    }
                     commandSender.sendMessage(
                             ReformCloudController.getInstance().getLoadedLanguage().getCommand_copy_try()
                     );
@@ -49,8 +54,13 @@ public final class CommandCopy extends Command implements Serializable {
             } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]) != null) {
                 final ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]);
                 if (proxyInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(proxyInfo.getCloudProcess().getName() + "-" + proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(),
-                            "proxy", proxyInfo.getProxyGroup().getName()));
+                    if (args.length == 2) {
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(proxyInfo.getCloudProcess().getName() + "-" + proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(),
+                                "proxy", proxyInfo.getProxyGroup().getName(), args[1]));
+                    } else {
+                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(proxyInfo.getCloudProcess().getName() + "-" + proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(),
+                                "proxy", proxyInfo.getProxyGroup().getName()));
+                    }
                     commandSender.sendMessage(
                             ReformCloudController.getInstance().getLoadedLanguage().getCommand_copy_try()
                     );
@@ -67,6 +77,7 @@ public final class CommandCopy extends Command implements Serializable {
             }
         } else {
             commandSender.sendMessage("copy <name>");
+            commandSender.sendMessage("copy <name> <file/directory>");
         }
     }
 }

@@ -9,6 +9,7 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.in.PacketInUpdatePermissionHolder;
 import systems.reformcloud.network.out.PacketOutUpdatePermissionCache;
+import systems.reformcloud.network.out.PacketOutUpdatePermissionGroup;
 import systems.reformcloud.network.out.PacketOutUpdatePermissionHolder;
 import systems.reformcloud.network.query.in.PacketInQueryGetPermissionCache;
 import systems.reformcloud.network.query.in.PacketInQueryGetPermissionHolder;
@@ -43,9 +44,9 @@ public final class PermissionDatabase implements Serializable {
             new Configuration().addValue("permissionConfig", new PermissionCache(false, false,
                     "%display% %player% &7|&r %message%",
                     Collections.singletonList(new PermissionGroup(
-                            "admin", null, null, null, "c", 999, Collections.singletonMap("*", true)
+                            "admin", null, null, null, "c", 100, Collections.singletonMap("*", true)
                     )),
-                    new PermissionGroup("default", null, null, null, "7", 100, new HashMap<>())
+                    new PermissionGroup("default", null, null, null, "7", 999, new HashMap<>())
             )).write(Paths.get("reformcloud/addons/permissions/config.json"));
         }
 
@@ -204,6 +205,10 @@ public final class PermissionDatabase implements Serializable {
                 this.permissionCache.getAllRegisteredGroups().remove(permissionGroup1);
         });
         this.permissionCache.getAllRegisteredGroups().add(permissionGroup);
+
+        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
+                new PacketOutUpdatePermissionGroup(permissionGroup)
+        );
     }
 
     public void addPermission(UUID holderUniqueID, String permission, boolean set) {

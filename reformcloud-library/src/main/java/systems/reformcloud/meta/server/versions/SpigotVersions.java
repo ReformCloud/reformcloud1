@@ -38,7 +38,9 @@ public enum SpigotVersions implements Serializable {
     SPIGOT_1_13("Spigot 1.13", "1.13", "https://mcmirror.io/files/Spigot/Spigot-1.13-fe3ab0d_1bc2433-20180815-2348.jar"),
     SPIGOT_1_13_1("Spigot 1.13.1", "1.13.1", "https://mcmirror.io/files/Spigot/Spigot-1.13.1-f6a273b_1ceee63-20180926-0919.jar"),
     SPIGOT_1_13_2("Spigot 1.13.2", "1.13.2", "https://mcmirror.io/files/Spigot/Spigot-1.13.2-0c02b0c-20190425-0538.jar"),
-    SPIGOT_1_14("Spigot 1.14", "1.14", "https://mcmirror.io/files/Spigot/Spigot-1.14-1eece4f-20190430-1146.jar"),
+    SPIGOT_1_14("Spigot 1.14", "1.14", "https://mcmirror.io/files/Spigot/Spigot-1.14-8043ebc-20190514-0000.jar"),
+    //TODO
+    SPIGOT_1_14_1("Spigot 1.14.1", "1.14.1", ""),
     /**
      * Paper Versions
      */
@@ -129,7 +131,8 @@ public enum SpigotVersions implements Serializable {
                         "1.13",
                         "1.13.1",
                         "1.13.2",
-                        "1.14"
+                        "1.14",
+                        "1.14.1"
                 ));
             }
         }

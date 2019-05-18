@@ -37,7 +37,7 @@ public class LobbyGroup extends ServerGroup implements Serializable {
                 41000,
                 false,
                 false,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 ServerModeType.LOBBY,
                 spigotVersions

@@ -4,7 +4,7 @@
 
 package systems.reformcloud.utility;
 
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 
 /**
  * @author _Klaro | Pasqual K. / created on 31.10.2018
@@ -52,7 +52,7 @@ public final class StringUtil {
      * @param whoIAm         Where the exception occur
      * @param cause          The throwable why the error occur
      */
-    public static void printError(final LoggerProvider loggerProvider, final String whoIAm, final Throwable cause) {
+    public static void printError(final AbstractLoggerProvider loggerProvider, final String whoIAm, final Throwable cause) {
         try {
             for (String s : StringUtil.unusedErrorComment)
                 loggerProvider.serve(s);

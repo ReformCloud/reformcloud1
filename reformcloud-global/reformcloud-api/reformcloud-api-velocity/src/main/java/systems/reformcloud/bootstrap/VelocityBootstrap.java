@@ -23,7 +23,6 @@ import systems.reformcloud.commands.CommandHub;
 import systems.reformcloud.commands.CommandJumpto;
 import systems.reformcloud.commands.CommandReformCloud;
 import systems.reformcloud.commands.CommandWhereIAm;
-import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.CloudConnectListener;
 import systems.reformcloud.listener.CloudProcessListener;
@@ -57,11 +56,7 @@ public final class VelocityBootstrap implements Serializable {
         instance = this;
 
         this.proxy = proxyServer;
-
-        new LibraryLoader().loadJarFileAndInjectLibraries();
-
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
-
         proxy.getConfiguration().getAttemptConnectionOrder().clear();
     }
 

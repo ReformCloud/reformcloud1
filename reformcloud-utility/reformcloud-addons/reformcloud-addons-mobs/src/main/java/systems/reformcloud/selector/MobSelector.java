@@ -68,15 +68,15 @@ public final class MobSelector implements Serializable {
                             "§7» §a%group_name%",
                             54,
                             Arrays.asList(
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 0, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 1, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 2, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 3, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 4, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 5, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 6, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 7, (short) 0),
-                                    new SelectorMobInventoryItem(" ", "GLASS_PANE", 8, (short) 0)
+                                    new SelectorMobInventoryItem(" ", "TORCH", 0, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 1, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 2, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 3, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 4, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 5, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 6, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 7, (short) 0),
+                                    new SelectorMobInventoryItem(" ", "TORCH", 8, (short) 0)
                             )
                     ), new SelectorsMobServerItem("§a%server_name%", "CAKE",
                     Collections.singletonList("§7%server_online_players%§8/§7%server_max_players%"), (short) 0)
