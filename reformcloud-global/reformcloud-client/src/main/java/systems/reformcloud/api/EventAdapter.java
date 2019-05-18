@@ -44,6 +44,7 @@ public final class EventAdapter implements Serializable, IEventHandler {
 
         ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerProcesses()
                 .forEach(cloudServerStartupHandler -> cloudServerStartupHandler.shutdown(false));
+        ReformCloudClient.getInstance().connect(ReformCloudClient.getInstance().isSsl());
     }
 
     @Override
