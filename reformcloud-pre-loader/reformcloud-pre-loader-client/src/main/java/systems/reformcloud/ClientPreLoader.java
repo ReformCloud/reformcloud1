@@ -190,7 +190,7 @@ public final class ClientPreLoader implements Serializable {
         if (version == null)
             return;
 
-        Matcher matcher = Pattern.compile("\\{\"version\": \"(.*)\"}").matcher(version);
+        Matcher matcher = Pattern.compile("\\{\"version\": \"(.*)\", \"oldVersion\": \"(.*)\"}").matcher(version);
         boolean newVersionAvailable = matcher.matches() && !matcher.group(1).equals(CommonLoader.getCurrentFallbackVersion());
         if (!newVersionAvailable)
             System.out.println("You're running on the ReformCloud Version " + CommonLoader.getCurrentFallbackVersion() + ". This is the newest version");

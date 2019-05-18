@@ -340,6 +340,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
      */
     public void connect(final boolean ssl) {
         this.nettySocketClient.setConnections(1);
+        this.nettySocketClient.close();
 
         while (this.nettySocketClient.getConnections() != -1 && !shutdown) {
             if (this.nettySocketClient.getConnections() == 8)
