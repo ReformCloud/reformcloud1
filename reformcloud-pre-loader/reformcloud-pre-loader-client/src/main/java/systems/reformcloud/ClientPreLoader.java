@@ -34,7 +34,7 @@ public final class ClientPreLoader implements Serializable {
         System.out.println("\nSuccessfully installed all necessary libraries");
 
         prepareFolder();
-        if (!Files.exists(Paths.get("version/ReformCloudClient-" + CommonLoader.getCurrentFallbackVersion() + ".jar")))
+        if (!Files.exists(Paths.get("configuration.properties")))
             downloadCloudVersion();
         else
             checkForNewVersion();
@@ -200,19 +200,19 @@ public final class ClientPreLoader implements Serializable {
                 .findFirst()
                 .orElse(null);
         if (file != null) {
-            Matcher matcher = Pattern.compile("ReformCloudClient-(.*).jar").matcher(file.getName());
-            fallback = matcher.matches() ? matcher.group(1) : null;
+            String[] split = file.getName().split("-");
+            fallback = split[1].replace(".jar", "");
         }
 
         Matcher matcher = Pattern.compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}").matcher(version);
-        boolean newVersionAvailable = matcher.matches() && !matcher.group(2).equals(fallback != null ? fallback : CommonLoader.getCurrentFallbackVersion());
+        boolean newVersionAvailable = matcher.matches() && !matcher.group(1).equals(fallback != null ? fallback : CommonLoader.getCurrentFallbackVersion());
         if (!newVersionAvailable)
             System.out.println("You're running on the ReformCloud Version " + CommonLoader.getCurrentFallbackVersion() + ". This is the newest version");
         else
-            downloadNewVersion(matcher.group(1));
+            downloadNewVersion(matcher.group(1), fallback);
     }
 
-    private static void downloadNewVersion(String newVersion) {
+    private static void downloadNewVersion(String newVersion, String oldVersion) {
         if (newVersion == null || newVersion.trim().isEmpty())
             return;
 
@@ -222,8 +222,10 @@ public final class ClientPreLoader implements Serializable {
             String line = bufferedReader.readLine();
             if (line.equalsIgnoreCase("y"))
                 downloadNewVersion0(newVersion);
-            else
+            else {
                 System.out.println("Please update the cloud manually later");
+                CommonLoader.setVersion(oldVersion);
+            }
         } catch (final IOException ex) {
             ex.printStackTrace();
         }

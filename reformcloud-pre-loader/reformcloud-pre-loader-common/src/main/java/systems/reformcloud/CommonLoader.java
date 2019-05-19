@@ -87,4 +87,8 @@ public final class CommonLoader implements Serializable {
         if (Double.parseDouble(System.getProperty("java.class.version")) < 52D)
             System.exit(2);
     }
+
+    public static void setVersion(String version) {
+        CommonLoader.version = version;
+    }
 }
