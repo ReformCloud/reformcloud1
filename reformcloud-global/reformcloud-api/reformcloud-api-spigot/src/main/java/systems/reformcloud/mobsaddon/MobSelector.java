@@ -358,7 +358,7 @@ public final class MobSelector implements Serializable {
         if (mob == null)
             return;
 
-        this.spawnedMobs.remove(mob.entity.getUniqueId()).despawn();
+        mob.despawn();
     }
 
     public SelectorMobConfig getSelectorMobConfig() {
@@ -506,6 +506,9 @@ public final class MobSelector implements Serializable {
 
         private void despawn() {
             SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
+                if (this.entity == null)
+                    return;
+
                 spawnedMobs.remove(this.entity.getUniqueId());
                 this.entity.remove();
                 this.entity = null;
