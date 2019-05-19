@@ -34,12 +34,12 @@ public final class CommandReformCloud implements Command {
 
         if (strings.length == 0) {
             commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
-            commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud copy <name> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud execute <server/proxy> <name> <command> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud process <start/stop> <group/name> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud reload \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud version"));
+            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
+            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
+            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
+            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <group/name> \n"));
+            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n"));
+            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"));
             return;
         }
 
@@ -129,12 +129,12 @@ public final class CommandReformCloud implements Command {
         }
 
         commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
-        commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud copy <name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud execute <server/proxy> <name> <command> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud process <start/stop> <group/name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud reload \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud version"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <group/name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"));
     }
 
     @Override

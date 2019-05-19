@@ -49,12 +49,12 @@ public final class CommandReformCloud extends Command implements Serializable, T
         if (strings.length == 0) {
             commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
             commandSender.sendMessage(
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud copy <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud process <start/stop> <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud reload \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud version"))
+                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <name> \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n")),
+                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"))
             );
             return;
         }
@@ -147,12 +147,12 @@ public final class CommandReformCloud extends Command implements Serializable, T
 
         commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
         commandSender.sendMessage(
-                new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud copy <name> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud process <start/stop> <name> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud reload \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + "§7/reformcloud version"))
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"))
         );
     }
 
