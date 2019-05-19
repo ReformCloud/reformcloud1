@@ -26,7 +26,7 @@ To run ReformCloud you need
 ## Built With
 
 * [Maven](https://maven.apache.org/) - Dependency Management
-* [JenkinsCI](https://ci.reformcloud.systems) - Build Management
+* [Bamboo](https://ci.reformcloud.systems/) - Build Management
 
 ## Contributing
 
