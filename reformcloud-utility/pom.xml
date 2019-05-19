@@ -12,7 +12,6 @@
     <artifactId>reformcloud-utility</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>reformcloud-examples</module>
         <module>reformcloud-addons</module>
     </modules>
 
