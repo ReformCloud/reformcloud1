@@ -4,7 +4,7 @@
 
 package systems.reformcloud.utility;
 
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 
 /**
  * @author _Klaro | Pasqual K. / created on 31.10.2018
@@ -21,9 +21,9 @@ public final class StringUtil {
             SLASH = "/",
             BACK_SLASH = "\\",
     //API Names: Version Specification date time B(ungee) S(igot) V(elocity)
-    BUNGEE_API_DOWNLOAD = "18BETA12051820B",
-            SPIGOT_API_DOWNLOAD = "18BETA12051820S",
-            VELOCITY_API_DOWNLOAD = "18BETA12051820V",
+    BUNGEE_API_DOWNLOAD = "19BETA19050018B",
+            SPIGOT_API_DOWNLOAD = "19BETA19050018S",
+            VELOCITY_API_DOWNLOAD = "19BETA19050018V",
             NULL = "null",
             OS_NAME = System.getProperty("os.name"),
             OS_ARCH = System.getProperty("os.arch"),
@@ -52,7 +52,7 @@ public final class StringUtil {
      * @param whoIAm         Where the exception occur
      * @param cause          The throwable why the error occur
      */
-    public static void printError(final LoggerProvider loggerProvider, final String whoIAm, final Throwable cause) {
+    public static void printError(final AbstractLoggerProvider loggerProvider, final String whoIAm, final Throwable cause) {
         try {
             for (String s : StringUtil.unusedErrorComment)
                 loggerProvider.serve(s);

@@ -185,7 +185,7 @@ public final class MobSelector implements Serializable {
         for (SelectorMobInventoryItem item : mobInventory.getItems()) {
             ItemStack itemStack = new ItemStack(Enums.getIfPresent(Material.class, item.getMaterialName()).isPresent()
                     ? Material.getMaterial(item.getMaterialName())
-                    : Material.GLASS_PANE, 1, item.getSubId());
+                    : Material.TORCH, 1, item.getSubId());
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta != null) {
                 itemMeta.setDisplayName(item.getName());
@@ -358,7 +358,7 @@ public final class MobSelector implements Serializable {
         if (mob == null)
             return;
 
-        this.spawnedMobs.remove(mob.entity.getUniqueId()).despawn();
+        mob.despawn();
     }
 
     public SelectorMobConfig getSelectorMobConfig() {
@@ -506,6 +506,9 @@ public final class MobSelector implements Serializable {
 
         private void despawn() {
             SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
+                if (this.entity == null)
+                    return;
+
                 spawnedMobs.remove(this.entity.getUniqueId());
                 this.entity.remove();
                 this.entity = null;

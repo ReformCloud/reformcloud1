@@ -6,8 +6,11 @@ package systems.reformcloud.utility.parameters;
 
 import systems.reformcloud.parameters.ParameterGroup;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.DownloadManager;
 
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -33,6 +36,7 @@ public final class ParameterManager implements Serializable {
     public String buildJavaCommand(String group, String[] before, String[] after) {
         StringBuilder stringBuilder = new StringBuilder();
         ParameterGroup parameterGroup = this.forGroup(group);
+        this.checkForLoader();
 
         if (parameterGroup != null)
             stringBuilder.append(parameterGroup.getJavaCommand()).append(StringUtil.SPACE);
@@ -59,5 +63,15 @@ public final class ParameterManager implements Serializable {
             return;
 
         this.parameterGroups = parameterGroups;
+    }
+
+    private void checkForLoader() {
+        if (Files.exists(Paths.get("reformcloud/files/ReformCloudProcess.jar")))
+            return;
+
+        DownloadManager.downloadSilentAndDisconnect(
+                "https://internal.reformcloud.systems/latest/ReformCloudProcess.jar",
+                "reformcloud/files/ReformCloudProcess.jar"
+        );
     }
 }

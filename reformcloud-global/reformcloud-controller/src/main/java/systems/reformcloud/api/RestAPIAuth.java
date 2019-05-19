@@ -33,6 +33,7 @@ public final class RestAPIAuth implements Serializable, WebHandler {
         if (!httpHeaders.contains("-XUser") || !httpHeaders.contains("-XPassword")) {
             answer.addValue("response", Arrays.asList("No -XUser or -XPassword provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
+            fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;
         }
 
@@ -46,12 +47,14 @@ public final class RestAPIAuth implements Serializable, WebHandler {
         if (webUser == null) {
             answer.addValue("response", Arrays.asList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
+            fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;
         }
 
         if (!webUser.getPassword().equals(StringEncrypt.encryptSHA512(httpHeaders.get("-XPassword")))) {
             answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
+            fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;
         }
 

@@ -140,6 +140,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 .registerHandler("EnableDebug", new PacketInEnableDebug())
                 .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
                 .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
+                .registerHandler("UpdatePermissionGroup", new PacketInUpdatePermissionGroup())
                 .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
@@ -326,7 +327,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 proxyModeType,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
@@ -358,7 +359,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
@@ -382,7 +383,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 new ArrayList<>(templates),
                 new ArrayList<>(),
                 proxyModeType,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,
@@ -406,7 +407,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 new ArrayList<>(templates),
                 new ArrayList<>(),
                 proxyModeType,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,

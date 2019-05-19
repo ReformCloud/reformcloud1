@@ -295,7 +295,6 @@ public final class CommandPermissions extends Command implements Serializable {
 
             commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
         } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
-        } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
             if (!this.isLong(args[3])) {
                 commandSender.sendMessage("The given time is not valid");
                 return;
@@ -328,6 +327,99 @@ public final class CommandPermissions extends Command implements Serializable {
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
 
             commandSender.sendMessage("Set " + args[0] + "'s group to " + permissionGroup.getName());
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("setprefix")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
+                return;
+            }
+
+            if (permissionGroup.getPrefix().equals(args[2])) {
+                commandSender.sendMessage("The Group prefix equals the new prefix");
+                return;
+            }
+
+            permissionGroup.setPrefix(args[2].replace("_", " "));
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
+            PermissionsAddon.getInstance().getPermissionDatabase().update();
+
+            commandSender.sendMessage("Successfully set the prefix to " + permissionGroup.getPrefix());
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("setdisplay")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
+                return;
+            }
+
+            if (permissionGroup.getDisplay().equals(args[2])) {
+                commandSender.sendMessage("The Group display equals the new display");
+                return;
+            }
+
+            permissionGroup.setDisplay(args[2].replace("_", " "));
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
+            commandSender.sendMessage("Successfully set the display to " + permissionGroup.getDisplay());
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("setsuffix")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
+                return;
+            }
+
+            if (permissionGroup.getSuffix().equals(args[2].replace("_", " "))) {
+                commandSender.sendMessage("The Group suffix equals the new suffix");
+                return;
+            }
+
+            permissionGroup.setSuffix(args[2]);
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
+            commandSender.sendMessage("Successfully set the suffix to " + permissionGroup.getSuffix());
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("settabcolorcode")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
+                return;
+            }
+
+            if (permissionGroup.getTabColorCode().equals(args[2])) {
+                commandSender.sendMessage("The Group color-code equals the new color-code");
+                return;
+            }
+
+            permissionGroup.setTabColorCode(args[2]);
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
+            commandSender.sendMessage("Successfully set the display to " + permissionGroup.getTabColorCode());
+        } else if (args.length == 3 && args[1].equalsIgnoreCase("setgroupid")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                    .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
+                    .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
+                return;
+            }
+
+            if (!ReformCloudLibraryService.checkIsInteger(args[2])) {
+                commandSender.sendMessage("Please provide an integer as argument");
+                return;
+            }
+
+            int groupID = Integer.parseInt(args[2]);
+            if (permissionGroup.getGroupID() == groupID) {
+                commandSender.sendMessage("The Group id equals the new id");
+                return;
+            }
+
+            permissionGroup.setGroupID(groupID);
+            PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
+            commandSender.sendMessage("Successfully set the group-id to " + groupID);
         } else {
             commandSender.sendMessage("perms list");
             commandSender.sendMessage("perms <USERNAME> list");
@@ -337,6 +429,7 @@ public final class CommandPermissions extends Command implements Serializable {
             commandSender.sendMessage("perms <GROUPNAME> setdefault");
             commandSender.sendMessage("perms <GROUPNAME> <CREATE/DELETE>");
             commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>");
+            commandSender.sendMessage("perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>");
         }
     }
 

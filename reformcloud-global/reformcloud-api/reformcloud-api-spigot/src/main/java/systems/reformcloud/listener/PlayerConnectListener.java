@@ -104,7 +104,6 @@ public final class PlayerConnectListener implements Listener, Serializable {
                                 event.getPlayer().kickPlayer(
                                         ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission")
                                 );
-                                return;
                             }
                         });
 

@@ -9,11 +9,12 @@ import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.addons.dependency.DependencyLoader;
+import systems.reformcloud.addons.dependency.util.DynamicDependency;
 import systems.reformcloud.commands.CommandHub;
 import systems.reformcloud.commands.CommandJumpto;
 import systems.reformcloud.commands.CommandReformCloud;
 import systems.reformcloud.commands.CommandWhereIAm;
-import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.CloudConnectListener;
 import systems.reformcloud.listener.CloudProcessListener;
@@ -37,7 +38,22 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
 
     @Override
     public void onLoad() {
-        new LibraryLoader().loadJarFileAndInjectLibraries();
+        DependencyLoader.loadDependency(new DynamicDependency(null) {
+            @Override
+            public String getGroupID() {
+                return "io.netty";
+            }
+
+            @Override
+            public String getName() {
+                return "netty-all";
+            }
+
+            @Override
+            public String getVersion() {
+                return "4.1.36.Final";
+            }
+        });
         instance = this;
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);

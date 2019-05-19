@@ -340,6 +340,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
      */
     public void connect(final boolean ssl) {
         this.nettySocketClient.setConnections(1);
+        this.nettySocketClient.close();
 
         while (this.nettySocketClient.getConnections() != -1 && !shutdown) {
             if (this.nettySocketClient.getConnections() == 8)
@@ -508,7 +509,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 41000,
                 true,
                 false,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 SpigotVersions.SPIGOT_1_8_8
@@ -531,7 +532,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 41000,
                 true,
                 false,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 serverModeType,
                 spigotVersions
@@ -548,7 +549,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 new ArrayList<>(),
                 new ArrayList<>(),
                 proxyModeType,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
                 new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
                 false,
                 true,

@@ -9,7 +9,6 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncExceptionThrown;
 import systems.reformcloud.utility.ExitUtil;
@@ -63,8 +62,6 @@ final class ReformCloudLauncher {
 
         System.out.println("Trying to startup ReformCloudClient...");
         System.out.println("Startup time: " + DateProvider.formatByDefaultFormat(current));
-
-        new LibraryLoader().loadJarFileAndInjectLibraries();
 
         if (Files.exists(Paths.get("reformcloud/logs")))
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));

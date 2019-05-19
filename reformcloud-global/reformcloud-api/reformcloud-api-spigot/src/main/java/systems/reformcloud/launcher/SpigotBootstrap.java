@@ -10,7 +10,8 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.libloader.LibraryLoader;
+import systems.reformcloud.addons.dependency.DependencyLoader;
+import systems.reformcloud.addons.dependency.util.DynamicDependency;
 import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.PlayerConnectListener;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
@@ -36,8 +37,23 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
     @Override
     public void onLoad() {
+        DependencyLoader.loadDependency(new DynamicDependency(null) {
+            @Override
+            public String getGroupID() {
+                return "io.netty";
+            }
+
+            @Override
+            public String getName() {
+                return "netty-all";
+            }
+
+            @Override
+            public String getVersion() {
+                return "4.1.36.Final";
+            }
+        });
         this.start = System.currentTimeMillis();
-        new LibraryLoader().loadJarFileAndInjectLibraries();
         instance = this;
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);

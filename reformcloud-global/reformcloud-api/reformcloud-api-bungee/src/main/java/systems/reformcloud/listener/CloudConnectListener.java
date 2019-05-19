@@ -5,7 +5,9 @@
 package systems.reformcloud.listener;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.*;
@@ -186,12 +188,15 @@ public final class CloudConnectListener implements Listener {
 
         proxyInfo.setOnline(proxyInfo.getOnline() - 1);
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController", new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));
+        ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket(
+                "ReformCloudController",
+                new PacketOutProxyInfoUpdate(proxyInfo)
+        );
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage("Player [Name=" + event.getPlayer().getName() + "/UUID=" +
                         event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer().getAddress().getAddress().getHostAddress() +
                         "] is now disconnected"));
-        BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> initTab(e));
+        BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(CloudConnectListener::initTab);
         ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
     }
 
@@ -206,7 +211,21 @@ public final class CloudConnectListener implements Listener {
             if (serverInfo != null) {
                 event.setCancelled(true);
                 event.setCancelServer(ProxyServer.getInstance().getServerInfo(serverInfo.getCloudProcess().getName()));
-                event.setKickReasonComponent(event.getKickReasonComponent());
+                BungeecordBootstrap.getInstance().getProxy().getScheduler().runAsync(BungeecordBootstrap.getInstance(), () -> {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (BaseComponent baseComponent : event.getKickReasonComponent()) {
+                        stringBuilder.append(baseComponent.toLegacyText()).append("\n");
+                    }
+
+                    event.getPlayer()
+                            .sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(
+                                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage(
+                                            "internal-api-bungee-server-kick"
+                                    ).replace("%old_server%", event.getKickedFrom().getName())
+                                            .replace("%new_server%", serverInfo.getCloudProcess().getName())
+                                            .replace("%reason%", stringBuilder.substring(0, stringBuilder.length() - 2))
+                            ));
+                });
             } else {
                 event.setCancelled(false);
                 event.setCancelServer(null);

@@ -153,8 +153,8 @@ public final class ProxyStartupHandler implements Serializable {
         }
 
         if (!proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)) {
-            FileUtils.deleteFileIfExists(Paths.get(path + "/config.yml"));
-            FileUtils.copyCompiledFile("reformcloud/bungeecord/config/config.yml", path + "/config.yml");
+            if (!Files.exists(Paths.get(path + "/config.yml")))
+                FileUtils.copyCompiledFile("reformcloud/bungeecord/config/config.yml", path + "/config.yml");
 
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
@@ -197,8 +197,8 @@ public final class ProxyStartupHandler implements Serializable {
                 return false;
             }
         } else {
-            FileUtils.deleteFileIfExists(Paths.get(path + "/velocity.toml"));
-            FileUtils.copyCompiledFile("reformcloud/bungeecord/config/velocity.toml", path + "/velocity.toml");
+            if (!Files.exists(Paths.get(path + "/velocity.toml")))
+                FileUtils.copyCompiledFile("reformcloud/bungeecord/config/velocity.toml", path + "/velocity.toml");
 
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions.getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
@@ -277,7 +277,8 @@ public final class ProxyStartupHandler implements Serializable {
         final String[] after = new String[]
                 {
                         StringUtil.JAVA_JAR,
-                        "BungeeCord.jar"
+                        "loader.jar",
+                        "--file=BungeeCord.jar"
                 };
 
         String command = ReformCloudClient.getInstance().getParameterManager().buildJavaCommand(proxyInfo.getCloudProcess().getGroup(), cmd, after)
@@ -286,6 +287,8 @@ public final class ProxyStartupHandler implements Serializable {
                 .replace("%name%", proxyStartupInfo.getName())
                 .replace("%group%", proxyStartupInfo.getProxyGroup().getName())
                 .replace("%template%", this.template.getName());
+
+        FileUtils.copyFile("reformcloud/files/ReformCloudProcess.jar", this.path + "/loader.jar");
 
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path.toString()));
@@ -337,6 +340,23 @@ public final class ProxyStartupHandler implements Serializable {
 
         toShutdown = true;
         ReformCloudClient.getInstance().getClientInfo().getStartedProxies().remove(this.proxyStartupInfo.getName());
+        final ProxyInfo proxyInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
+                .getServerProcessManager().getRegisteredProxyByUID(this.proxyStartupInfo.getUid());
+
+        if (update)
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
+                    new PacketOutRemoveProcess(proxyInfo));
+
+        ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterProxyProcess(this.proxyStartupInfo.getName());
+        ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterProxyProcess(
+                this.proxyStartupInfo.getUid(), this.proxyStartupInfo.getName(), this.port
+        );
+        if (update)
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket("ReformCloudController",
+                    new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
+
+        if (update)
+            ReformCloudLibraryService.sleep(300);
 
         if (message == null)
             this.executeCommand("end ReformCloud restarting...");
@@ -344,24 +364,23 @@ public final class ProxyStartupHandler implements Serializable {
             this.executeCommand(message.startsWith(" ") ? "end" + message : "end " + message);
 
         try {
-            if (this.isAlive()) {
+            if (this.isAlive())
                 this.process.destroy();
-            }
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error on Proxy shutdown", throwable);
         }
-
-        ReformCloudLibraryService.sleep(50);
 
         this.screenHandler.disableScreen();
 
         if (this.proxyStartupInfo.getProxyGroup().isSave_logs()) {
             if (this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.BUNGEECORD)
                     || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.HEXACORD)) {
-                FileUtils.copyFile(this.path + "/proxy.log.0", "reformcloud/saves/proxies/logs/server_log_" + this.proxyStartupInfo.getUid() + "-" + this.proxyStartupInfo.getName() + ".log");
+                FileUtils.copyFile(this.path + "/proxy.log.0", "reformcloud/saves/proxies/logs/server_log_" +
+                        this.proxyStartupInfo.getUid() + "-" + this.proxyStartupInfo.getName() + ".log");
             } else if (this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.TRAVERTINE)
                     || this.proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.WATERFALL)) {
-                FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/proxies/logs/server_log_" + this.proxyStartupInfo.getUid() + "-" + this.proxyStartupInfo.getName() + ".log");
+                FileUtils.copyFile(this.path + "/logs/latest.log", "reformcloud/saves/proxies/logs/server_log_" +
+                        this.proxyStartupInfo.getUid() + "-" + this.proxyStartupInfo.getName() + ".log");
             }
         }
 
@@ -381,20 +400,6 @@ public final class ProxyStartupHandler implements Serializable {
             FileUtils.deleteFileIfExists(proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)
                     ? path + "/plugins/ReformAPIVelocity.jar"
                     : path + "/plugins/ReformAPIBungee.jar");
-
-        final ProxyInfo proxyInfo = ReformCloudClient.getInstance().getInternalCloudNetwork()
-                .getServerProcessManager().getRegisteredProxyByUID(this.proxyStartupInfo.getUid());
-
-        if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
-                    new PacketOutRemoveProcess(proxyInfo));
-
-        ReformCloudClient.getInstance().getCloudProcessScreenService().unregisterProxyProcess(this.proxyStartupInfo.getName());
-        ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterProxyProcess(
-                this.proxyStartupInfo.getUid(), this.proxyStartupInfo.getName(), this.port
-        );
-        if (update)
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
 
         try {
             this.finalize();

@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -39,8 +38,10 @@ import systems.reformcloud.utility.StringUtil;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 /**
@@ -95,15 +96,15 @@ public final class ReformCloudLibraryService {
      * The executor service used by the cloud
      */
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder()
-                    .setDaemon(true)
-                    .setNameFormat("ReformCloud-PoolThread-%d")
-                    .setUncaughtExceptionHandler(((t, e) -> {
+            createThreadFactory(
+                    "ReformCloud-PoolThread-%d",
+                    (t, e) -> {
                         if (ReformCloudLibraryServiceProvider.getInstance() != null)
                             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error in thread group", e);
                         else
                             e.printStackTrace(System.err);
-                    })).build());
+                    })
+    );
 
     /**
      * The cache clearer of the cloud system
@@ -400,5 +401,17 @@ public final class ReformCloudLibraryService {
      */
     public static <K, V> Cache<K, V> newCache(long maxSize) {
         return new Cache<>(maxSize);
+    }
+
+    private static ThreadFactory createThreadFactory(String name, Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+        ThreadFactory threadFactory = Executors.defaultThreadFactory();
+        AtomicLong atomicLong = new AtomicLong(0);
+        return runnable -> {
+            Thread thread = threadFactory.newThread(runnable);
+            thread.setName(String.format(Locale.ROOT, name, atomicLong.getAndIncrement()));
+            thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
+            thread.setDaemon(true);
+            return thread;
+        };
     }
 }

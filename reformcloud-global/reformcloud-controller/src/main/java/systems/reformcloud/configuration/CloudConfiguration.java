@@ -265,6 +265,10 @@ public final class CloudConfiguration implements Serializable {
 
                     .addStringValue("internal-api-bungee-command-send-controller", "%prefix% The command was send to the controller")
 
+                    .addStringValue("internal-api-bungee-server-kick", "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r\n" +
+                            "§cThe server you were on (%old_server%) went down, and you have been connected to %new_server%§r\n" +
+                            "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r")
+
                     .addStringValue("internal-api-bungee-startup-server", "%prefix% §7ServerProcess §6%server-name% §7is starting...")
                     .addStringValue("internal-api-bungee-startup-proxy", "%prefix% §7ProxyProcess §6%proxy-name% §7is starting...")
                     .addStringValue("internal-api-bungee-remove-server", "%prefix% §7ServerProcess §6%server-name% §7is stopping...")
