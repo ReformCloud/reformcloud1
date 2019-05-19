@@ -29,6 +29,6 @@
     </dependencies>
 
     <build>
-        <finalName>ReformAPISpigot</finalName>
+        <finalName>ReformAPISpigot-${api.default.version}S</finalName>
     </build>
 </project>

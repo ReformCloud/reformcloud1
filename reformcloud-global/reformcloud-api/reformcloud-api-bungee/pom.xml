@@ -30,6 +30,6 @@
     </dependencies>
 
     <build>
-        <finalName>ReformAPIBungee</finalName>
+        <finalName>ReformAPIBungee-${api.default.version}B</finalName>
     </build>
 </project>

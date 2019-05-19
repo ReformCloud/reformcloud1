@@ -30,7 +30,7 @@
     </dependencies>
 
     <build>
-        <finalName>ReformAPIVelocity</finalName>
+        <finalName>ReformAPIVelocity-${api.default.version}V</finalName>
     </build>
 
 </project>

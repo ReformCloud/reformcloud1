@@ -43,6 +43,8 @@
         <service.version>1.9</service.version>
         <service.type>BETA</service.type>
 
+        <api.default.version>19BETA19050018</api.default.version>
+
         <plugin.shade.version>3.2.1</plugin.shade.version>
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
         <plugin.jar.version>3.1.2</plugin.jar.version>
