@@ -43,7 +43,7 @@
     </dependencies>
 
     <build>
-        <finalName>ReformController</finalName>
+        <finalName>ReformController-${service.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

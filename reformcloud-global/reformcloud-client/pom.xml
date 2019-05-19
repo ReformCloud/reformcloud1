@@ -57,7 +57,7 @@
     </dependencies>
 
     <build>
-        <finalName>ReformClient</finalName>
+        <finalName>ReformClient-${service.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
