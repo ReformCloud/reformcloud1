@@ -16,7 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -190,8 +192,20 @@ public final class ClientPreLoader implements Serializable {
         if (version == null)
             return;
 
+        String fallback = null;
+        File file = Arrays.stream(new File("version").listFiles())
+                .filter(Objects::nonNull)
+                .filter(e -> e.getName().contains("ReformCloudClient"))
+                .filter(e -> e.getName().endsWith(".jar"))
+                .findFirst()
+                .orElse(null);
+        if (file != null) {
+            Matcher matcher = Pattern.compile("ReformCloudClient-(.*).jar").matcher(file.getName());
+            fallback = matcher.matches() ? matcher.group(1) : null;
+        }
+
         Matcher matcher = Pattern.compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}").matcher(version);
-        boolean newVersionAvailable = matcher.matches() && !matcher.group(1).equals(CommonLoader.getCurrentFallbackVersion());
+        boolean newVersionAvailable = matcher.matches() && !matcher.group(2).equals(fallback != null ? fallback : CommonLoader.getCurrentFallbackVersion());
         if (!newVersionAvailable)
             System.out.println("You're running on the ReformCloud Version " + CommonLoader.getCurrentFallbackVersion() + ". This is the newest version");
         else

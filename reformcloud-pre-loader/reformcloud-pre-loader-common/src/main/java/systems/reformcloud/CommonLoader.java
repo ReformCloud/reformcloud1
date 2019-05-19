@@ -66,7 +66,7 @@ public final class CommonLoader implements Serializable {
 
             urlConnection.disconnect();
             Matcher matcher = Pattern.compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}").matcher(stringBuilder.substring(0));
-            version = matcher.matches() ? matcher.group(2) : CommonLoader.class.getPackage().getImplementationVersion();
+            version = matcher.matches() ? matcher.group(1) : CommonLoader.class.getPackage().getImplementationVersion();
         } catch (final IOException ex) {
             if (ex instanceof UnknownHostException) {
                 version = CommonLoader.class.getPackage().getImplementationVersion();
