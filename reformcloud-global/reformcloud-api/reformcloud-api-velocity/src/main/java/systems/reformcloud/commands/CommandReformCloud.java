@@ -35,6 +35,7 @@ public final class CommandReformCloud implements Command {
         if (strings.length == 0) {
             commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
             commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
+            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n"));
             commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
             commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
             commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <group/name> \n"));
@@ -61,8 +62,15 @@ public final class CommandReformCloud implements Command {
                 commandSource.sendMessage(TextComponent.of(
                         ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-send-controller")
                 ));
+            } else if (strings.length == 3) {
+                ReformCloudAPIVelocity.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous("ReformCloudController",
+                                new PacketOutDispatchConsoleCommand("copy " + strings[1] + " " + strings[2]));
+                commandSource.sendMessage(TextComponent.of(
+                        ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-send-controller")
+                ));
             } else
-                commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud copy <name>"));
+                commandSource.sendMessage(TextComponent.of(prefix + "/reformcloud copy <name> <file/dir>"));
 
             return;
         }
@@ -130,6 +138,7 @@ public final class CommandReformCloud implements Command {
 
         commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <group/name> \n"));
@@ -182,7 +191,7 @@ public final class CommandReformCloud implements Command {
             return Arrays.asList("start", "stop");
 
         if (strings.length == 3 && strings[0].equalsIgnoreCase("process"))
-            return registered();
+            return registeredGroups();
 
         return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
     }
@@ -209,6 +218,13 @@ public final class CommandReformCloud implements Command {
     private List<String> registeredProxies() {
         List<String> out = new LinkedList<>();
         ReformCloudAPIVelocity.getInstance().getAllRegisteredProxies().forEach(e -> out.add(e.getCloudProcess().getName()));
+        return out;
+    }
+
+    private List<String> registeredGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudAPIVelocity.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
+        ReformCloudAPIVelocity.getInstance().getAllServerGroups().forEach(e -> out.add(e.getName()));
         return out;
     }
 
