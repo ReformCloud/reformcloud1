@@ -76,14 +76,12 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
     @Override
     public void onDisable() {
-        Bukkit.getScheduler().runTask(this, () -> {
-            ReformCloudAPISpigot.getInstance().getTempServerStats().addOnlineTime(this.start);
-            ReformCloudAPISpigot.getInstance().updateTempStats();
-            ReformCloudLibraryService.sleep(1000);
-            ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutInternalProcessRemove(ReformCloudAPISpigot.getInstance().getServerStartupInfo().getUid(), AuthenticationType.SERVER));
-            this.getServer().getOnlinePlayers().forEach(player -> player.kickPlayer(this.getServer().getShutdownMessage()));
-            ReformCloudLibraryService.sleep(1000);
-        });
+        ReformCloudAPISpigot.getInstance().getTempServerStats().addOnlineTime(this.start);
+        ReformCloudAPISpigot.getInstance().updateTempStats();
+        ReformCloudLibraryService.sleep(1000);
+        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
+                new PacketOutInternalProcessRemove(ReformCloudAPISpigot.getInstance().getServerStartupInfo().getUid(), AuthenticationType.SERVER));
+        this.getServer().getOnlinePlayers().forEach(player -> player.kickPlayer(this.getServer().getShutdownMessage()));
         ReformCloudLibraryService.sleep(1000000000);
     }
 
