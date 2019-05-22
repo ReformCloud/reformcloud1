@@ -397,16 +397,15 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
             HttpResponse httpResponse = httpClient.execute(httpPost);
             final String result = EntityUtils.toString(httpResponse.getEntity());
             JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(result).getAsJsonObject();
-            if (httpResponse.getStatusLine().getStatusCode() != 201)
+            if (httpResponse.getStatusLine().getStatusCode() != 201 || jsonObject.has("message"))
                 return "The following error occurred: " + jsonObject.get("message").getAsString();
-
 
             return "https://paste.reformcloud.systems/" + jsonObject.get("key").getAsString();
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while uploading log", ex);
         }
 
-        return "Could not post log on \"paste.reformcloud.de\"!";
+        return "Could not post log on \"paste.reformcloud.systems\"!";
     }
 
     @Override
