@@ -13,6 +13,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +30,11 @@ public class LobbyGroup extends ServerGroup implements Serializable {
                 "ReformCloud",
                 null,
                 Collections.singletonList(client),
-                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
+                Arrays.asList(
+                        new Template("default", null, TemplateBackend.CLIENT),
+                        new Template("every", null, TemplateBackend.CLIENT
+                        )
+                ),
                 memory,
                 1,
                 -1,

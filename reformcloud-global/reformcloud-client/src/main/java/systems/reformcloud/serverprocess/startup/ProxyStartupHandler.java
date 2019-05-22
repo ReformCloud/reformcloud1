@@ -104,6 +104,16 @@ public final class ProxyStartupHandler implements Serializable {
                     return false;
                 }
             } else if (template.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                if (this.proxyStartupInfo.getProxyGroup().getTemplateOrElseNull("every") != null) {
+                    if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + this.proxyStartupInfo.getProxyGroup().getName() + "/every")))
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + this.proxyStartupInfo.getProxyGroup().getName() + "/every"));
+                    else
+                        FileUtils.copyAllFiles(
+                                Paths.get("reformcloud/templates/proxies/" + this.proxyStartupInfo.getProxyGroup().getName() + "/every"),
+                                this.path.toString()
+                        );
+                }
+
                 FileUtils.copyAllFiles(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/" + template.getName()), path + StringUtil.EMPTY);
             } else if (template.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
                 ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",

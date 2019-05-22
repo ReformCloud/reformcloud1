@@ -23,6 +23,8 @@ import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.MultithreadEventExecutorGroup;
 import systems.reformcloud.api.IAsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
@@ -198,7 +200,9 @@ public final class ReformCloudLibraryService {
      *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup
      */
     public static EventLoopGroup eventLoopGroup() {
-        return EPOLL ? new EpollEventLoopGroup() : KQUEUE ? new KQueueEventLoopGroup() : new NioEventLoopGroup();
+        return EPOLL ? new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(), createThreadFactory())
+                : KQUEUE ? new KQueueEventLoopGroup(Runtime.getRuntime().availableProcessors(), createThreadFactory())
+                : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(), createThreadFactory());
     }
 
     /**
@@ -208,7 +212,9 @@ public final class ReformCloudLibraryService {
      *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup with the given threads
      */
     public static EventLoopGroup eventLoopGroup(int threads) {
-        return EPOLL ? new EpollEventLoopGroup(threads) : KQUEUE ? new KQueueEventLoopGroup(threads) : new NioEventLoopGroup(threads);
+        return EPOLL ? new EpollEventLoopGroup(threads, createThreadFactory())
+                : KQUEUE ? new KQueueEventLoopGroup(threads, createThreadFactory())
+                : new NioEventLoopGroup(threads, createThreadFactory());
     }
 
     /**
@@ -413,5 +419,9 @@ public final class ReformCloudLibraryService {
             thread.setDaemon(true);
             return thread;
         };
+    }
+
+    private static ThreadFactory createThreadFactory() {
+        return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true, Thread.MIN_PRIORITY);
     }
 }

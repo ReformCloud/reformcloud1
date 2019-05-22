@@ -14,6 +14,7 @@ import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +30,11 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 "Proxy",
                 Collections.singletonList(client),
                 new ArrayList<>(),
-                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
+                Arrays.asList(
+                        new Template("default", null, TemplateBackend.CLIENT),
+                        new Template("every", null, TemplateBackend.CLIENT
+                        )
+                ),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
@@ -51,7 +56,11 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 name,
                 Collections.singletonList(client),
                 new ArrayList<>(),
-                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
+                Arrays.asList(
+                        new Template("default", null, TemplateBackend.CLIENT),
+                        new Template("every", null, TemplateBackend.CLIENT
+                        )
+                ),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
@@ -73,7 +82,11 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
                 name,
                 Collections.singletonList(client),
                 new ArrayList<>(),
-                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
+                Arrays.asList(
+                        new Template("default", null, TemplateBackend.CLIENT),
+                        new Template("every", null, TemplateBackend.CLIENT
+                        )
+                ),
                 new ArrayList<>(),
                 proxyModeType,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),

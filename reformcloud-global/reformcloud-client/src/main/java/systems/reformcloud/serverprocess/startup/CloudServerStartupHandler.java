@@ -108,6 +108,15 @@ public final class CloudServerStartupHandler implements Serializable {
                     return false;
                 }
             } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                if (this.serverStartupInfo.getServerGroup().getTemplateOrElseNull("every") != null) {
+                    if (!Files.exists(Paths.get("reformcloud/templates/servers/" + this.serverStartupInfo.getServerGroup().getName() + "/every")))
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + this.serverStartupInfo.getServerGroup().getName() + "/every"));
+                    else
+                        FileUtils.copyAllFiles(
+                                Paths.get("reformcloud/templates/servers/" + this.serverStartupInfo.getServerGroup().getName() + "/every"),
+                                this.path.toString()
+                        );
+                }
                 FileUtils.copyAllFiles(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName()), path + StringUtil.EMPTY);
             } else if (loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
                 ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
