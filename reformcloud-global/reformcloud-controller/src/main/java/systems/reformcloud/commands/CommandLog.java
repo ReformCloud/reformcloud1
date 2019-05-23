@@ -36,7 +36,7 @@ public final class CommandLog extends Command implements Serializable {
         if (args.length == 1 && args[0].equalsIgnoreCase("controller")) {
             StringBuilder stringBuilder = new StringBuilder();
             try {
-                Files.readAllLines(Paths.get("reformcloud/logs/CloudLog.0"), StandardCharsets.UTF_8)
+                Files.readAllLines(Paths.get("reformcloud/logs/latest.0"), StandardCharsets.UTF_8)
                         .forEach(s -> stringBuilder.append(s).append("\n"));
             } catch (final IOException ex) {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not read log", ex);
