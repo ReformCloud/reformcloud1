@@ -109,7 +109,8 @@ public final class English extends Language implements Serializable {
                 "The permission was removed successfully",
                 "The permission %perm% was added with the value %key%",
                 "The player %name% was added to %proxy% whitelist",
-                "The player %name% was removed from %proxy% whitelist"
+                "The player %name% was removed from %proxy% whitelist",
+                "No %type% could be created, because one already exists."
         );
     }
 }
