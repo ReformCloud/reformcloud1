@@ -269,14 +269,16 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
     @Override
     public LoggerProvider emptyLine() {
-        try {
-            this.consoleReader.println(" ");
-            this.complete();
+        out.add(() -> {
+            try {
+                this.consoleReader.println(String.valueOf(ConsoleReader.RESET_LINE));
+                this.complete();
 
-            this.handleAll("\n");
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
+                this.handleAll("\n");
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+            }
+        });
 
         return this;
     }
