@@ -435,6 +435,11 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         return this::exception;
     }
 
+    @Override
+    public ConsoleReader consoleReader() {
+        return this.consoleReader;
+    }
+
     public ConsoleReader getConsoleReader() {
         return this.consoleReader;
     }

@@ -14,6 +14,7 @@ import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.events.ReloadDoneEvent;
 import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
@@ -73,6 +74,8 @@ import java.net.ServerSocket;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -88,6 +91,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     private CommandManager commandManager;
 
     private boolean ssl;
+
+    private final Lock runtimeLock = new ReentrantLock();
 
     private ClientInfo clientInfo;
 
@@ -266,6 +271,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         RUNNING = true;
         this.loggerProvider.info(this.internalCloudNetwork.getLoaded().getGlobal_reload_done());
         this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientUpdateSuccess());
+        this.eventManager.fire(new ReloadDoneEvent());
     }
 
     private boolean shutdown = false;
@@ -1170,5 +1176,9 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     public void setInternalTime(long internalTime) {
         this.internalTime = internalTime;
+    }
+
+    public Lock getRuntimeLock() {
+        return runtimeLock;
     }
 }

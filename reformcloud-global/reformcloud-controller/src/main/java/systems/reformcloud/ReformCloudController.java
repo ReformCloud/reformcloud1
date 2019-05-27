@@ -27,6 +27,7 @@ import systems.reformcloud.database.player.PlayerDatabase;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.events.ProxyInfoUpdateEvent;
+import systems.reformcloud.event.events.ReloadDoneEvent;
 import systems.reformcloud.event.events.ServerInfoUpdateEvent;
 import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -449,6 +450,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.checkForUpdates();
 
         this.loggerProvider.info(this.getLoadedLanguage().getGlobal_reload_done());
+        this.eventManager.fire(new ReloadDoneEvent());
     }
 
     private void updateAllConnectedClients() {
