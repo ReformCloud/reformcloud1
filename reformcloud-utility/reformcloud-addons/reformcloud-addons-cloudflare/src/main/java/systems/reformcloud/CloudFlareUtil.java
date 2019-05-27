@@ -148,9 +148,9 @@ public final class CloudFlareUtil implements Serializable {
                             proxyInfo.getCloudProcess().getName()
                     );
                     results.add(result);
-                } else if(jsonObject.get("message").getAsString().equals("The record already exists.")) {
+                } else if(jsonObject.get("message").getAsString().contains("The record already exists.")) {
                     ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getCloudflare_record_exists().
-                            replace("%type%", "proxy record"));
+                            replace("%type%", "Proxy record"));
                     return;
                 } else {
                     StringUtil.printError(
@@ -205,9 +205,9 @@ public final class CloudFlareUtil implements Serializable {
                             client.getName()
                     );
                     results.add(result);
-                } else if(jsonObject.get("message").getAsString().equals("The record already exists.")) {
+                } else if(jsonObject.get("message").getAsString().contains("The record already exists.")) {
                     ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getCloudflare_record_exists().
-                            replace("%type%", "client record"));
+                            replace("%type%", "Client record"));
                     return;
                 } else {
                     StringUtil.printError(
