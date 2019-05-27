@@ -38,6 +38,7 @@ import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
 
+import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.Locale;
@@ -72,7 +73,7 @@ public final class ReformCloudLibraryService {
     /**
      * Get the reformcloud main thread name
      */
-    public static final String THREAD_MAIN_NAME;
+    private static final String THREAD_MAIN_NAME;
 
     /**
      * The cloud created gson instance
@@ -87,7 +88,7 @@ public final class ReformCloudLibraryService {
     /**
      * Netty booleans
      */
-    public static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
+    private static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
 
     /**
      * The current thread local random instance
@@ -99,7 +100,6 @@ public final class ReformCloudLibraryService {
      */
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
             createThreadFactory(
-                    "ReformCloud-PoolThread-%d",
                     (t, e) -> {
                         if (ReformCloudLibraryServiceProvider.getInstance() != null)
                             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error in thread group", e);
@@ -336,8 +336,17 @@ public final class ReformCloudLibraryService {
      *
      * @return The runtime mx bean of the current jvm
      */
-    public static RuntimeMXBean getRuntimeMXBean() {
+    private static RuntimeMXBean getRuntimeMXBean() {
         return ManagementFactory.getRuntimeMXBean();
+    }
+
+    /**
+     * Get the current class loading mx bean of the current jvm
+     *
+     * @return the current class loading mx bean of the current jvm
+     */
+    private static ClassLoadingMXBean getClassLoadingMXBean() {
+        return ManagementFactory.getClassLoadingMXBean();
     }
 
     /**
@@ -409,12 +418,12 @@ public final class ReformCloudLibraryService {
         return new Cache<>(maxSize);
     }
 
-    private static ThreadFactory createThreadFactory(String name, Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+    private static ThreadFactory createThreadFactory(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
         AtomicLong atomicLong = new AtomicLong(0);
         return runnable -> {
             Thread thread = threadFactory.newThread(runnable);
-            thread.setName(String.format(Locale.ROOT, name, atomicLong.getAndIncrement()));
+            thread.setName(String.format(Locale.ROOT, "ReformCloud-PoolThread-%d", atomicLong.getAndIncrement()));
             thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
             thread.setDaemon(true);
             return thread;

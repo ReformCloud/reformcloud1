@@ -69,7 +69,7 @@ import java.util.stream.Collectors;
  */
 
 public final class ReformCloudAPISpigot implements Listener, IAPIService, Serializable {
-    public static ReformCloudAPISpigot instance;
+    private static ReformCloudAPISpigot instance;
 
     private final NettySocketClient nettySocketClient;
     private final ChannelHandler channelHandler;
@@ -247,7 +247,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 "ReformCloud",
                 null,
                 new ArrayList<>(clients),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 512,
                 1,
                 -1,
@@ -273,7 +273,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
 
     @Override
     public void createServerGroup(String name) {
-        createServerGroup(name, ServerModeType.DYNAMIC, Arrays.asList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
     }
 
     @Override
@@ -360,7 +360,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
                 name,
                 new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
                 new ArrayList<>(),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),

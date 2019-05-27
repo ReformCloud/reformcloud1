@@ -75,7 +75,7 @@ public final class CommandJumpto implements Command {
         return iterable;
     }
 
-    public boolean isServerRegistered(String name) {
+    private boolean isServerRegistered(String name) {
         return VelocityBootstrap.getInstance().getProxyServer().getAllServers()
                 .stream()
                 .anyMatch(e -> e.getServerInfo().getName().equals(name));

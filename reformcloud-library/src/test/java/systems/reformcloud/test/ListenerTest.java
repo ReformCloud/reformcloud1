@@ -28,11 +28,11 @@ public final class ListenerTest implements Serializable {
         boolean test;
 
         @java.beans.ConstructorProperties({"test"})
-        public TestEvent(boolean test) {
+        TestEvent(boolean test) {
             this.test = test;
         }
 
-        public boolean isTest() {
+        boolean isTest() {
             return this.test;
         }
     }

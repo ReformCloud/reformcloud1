@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 09.05.2019
  */
 
-public class DNSRecord implements Serializable {
+class DNSRecord implements Serializable {
     private String type;
 
     private String name;
@@ -26,7 +26,7 @@ public class DNSRecord implements Serializable {
     private JsonObject data;
 
     @java.beans.ConstructorProperties({"type", "name", "content", "ttl", "proxied", "data"})
-    public DNSRecord(String type, String name, String content, int ttl, boolean proxied, JsonObject data) {
+    DNSRecord(String type, String name, String content, int ttl, boolean proxied, JsonObject data) {
         this.type = type;
         this.name = name;
         this.content = content;

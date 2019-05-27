@@ -30,7 +30,7 @@ import java.util.Arrays;
  */
 
 public final class BungeecordBootstrap extends Plugin implements Serializable {
-    public static BungeecordBootstrap instance;
+    private static BungeecordBootstrap instance;
 
     public static BungeecordBootstrap getInstance() {
         return BungeecordBootstrap.instance;

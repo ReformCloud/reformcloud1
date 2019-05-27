@@ -1,4 +1,4 @@
 name: ReformCloudAPIBungee
-version: 2.0
+version: '2.0'
 author: ReformCloud
 main: systems.reformcloud.launcher.BungeecordBootstrap

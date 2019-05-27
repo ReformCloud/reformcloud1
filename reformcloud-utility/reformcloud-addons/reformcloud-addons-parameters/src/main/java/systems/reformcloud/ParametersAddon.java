@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 
 public final class ParametersAddon extends ControllerAddonImpl implements Serializable {
-    public static ParametersAddon instance;
+    private static ParametersAddon instance;
 
     private ParametersConfiguration parametersConfiguration;
 

@@ -30,7 +30,8 @@ public final class AuthenticationHandler implements AuthenticationManager {
     public void handleAuth(AuthenticationType authenticationType, Packet packet, ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler) {
         String name = packet.getConfiguration().getStringValue("name");
         switch (authenticationType) {
-            case SERVER: {
+            case SERVER:
+            case INTERNAL: {
                 if (ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()), packet.getConfiguration().getStringValue("key"))) {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
@@ -44,19 +45,6 @@ public final class AuthenticationHandler implements AuthenticationManager {
             }
             case PROXY: {
                 if (ReformCloudLibraryServiceProvider.getInstance().getKey().equals(packet.getConfiguration().getStringValue("key"))) {
-                    channelHandler.registerChannel(name, channelHandlerContext);
-
-                    channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addValue("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
-                    ));
-                } else {
-                    channelHandlerContext.channel().close();
-                }
-                break;
-            }
-            case INTERNAL: {
-                if (ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()),
-                        packet.getConfiguration().getStringValue("key"))) {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(

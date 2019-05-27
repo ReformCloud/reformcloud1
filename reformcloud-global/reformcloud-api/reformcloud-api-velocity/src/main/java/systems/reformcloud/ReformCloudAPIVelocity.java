@@ -72,7 +72,7 @@ import java.util.stream.Collectors;
  */
 
 public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
-    public static ReformCloudAPIVelocity instance;
+    private static ReformCloudAPIVelocity instance;
 
     private final NettySocketClient nettySocketClient;
     private final ChannelHandler channelHandler;
@@ -243,7 +243,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 "ReformCloud",
                 null,
                 new ArrayList<>(clients),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 512,
                 1,
                 -1,
@@ -269,7 +269,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
 
     @Override
     public void createServerGroup(String name) {
-        createServerGroup(name, ServerModeType.DYNAMIC, Arrays.asList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
     }
 
     @Override
@@ -356,7 +356,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
                 name,
                 new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
                 new ArrayList<>(),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
@@ -1103,7 +1103,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
         return atomicInteger.get();
     }
 
-    public NettySocketClient getNettySocketClient() {
+    private NettySocketClient getNettySocketClient() {
         return this.nettySocketClient;
     }
 
@@ -1115,7 +1115,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
         return this.proxySettings;
     }
 
-    public ProxyStartupInfo getProxyStartupInfo() {
+    private ProxyStartupInfo getProxyStartupInfo() {
         return this.proxyStartupInfo;
     }
 
@@ -1139,11 +1139,11 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
         return this.cachedPermissionHolders;
     }
 
-    public List<IngameCommand> getRegisteredIngameCommands() {
+    private List<IngameCommand> getRegisteredIngameCommands() {
         return this.registeredIngameCommands;
     }
 
-    public long getInternalTime() {
+    private long getInternalTime() {
         return this.internalTime;
     }
 
@@ -1175,7 +1175,7 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
         this.cachedPermissionHolders = cachedPermissionHolders;
     }
 
-    public void setRegisteredIngameCommands(List<IngameCommand> registeredIngameCommands) {
+    private void setRegisteredIngameCommands(List<IngameCommand> registeredIngameCommands) {
         this.registeredIngameCommands = registeredIngameCommands;
     }
 
@@ -1189,42 +1189,42 @@ public final class ReformCloudAPIVelocity implements Serializable, IAPIService {
         final ReformCloudAPIVelocity other = (ReformCloudAPIVelocity) o;
         final Object this$nettySocketClient = this.getNettySocketClient();
         final Object other$nettySocketClient = other.getNettySocketClient();
-        if (this$nettySocketClient == null ? other$nettySocketClient != null : !this$nettySocketClient.equals(other$nettySocketClient))
+        if (!Objects.equals(this$nettySocketClient, other$nettySocketClient))
             return false;
         final Object this$channelHandler = this.getChannelHandler();
         final Object other$channelHandler = other.getChannelHandler();
-        if (this$channelHandler == null ? other$channelHandler != null : !this$channelHandler.equals(other$channelHandler))
+        if (!Objects.equals(this$channelHandler, other$channelHandler))
             return false;
         final Object this$proxySettings = this.getProxySettings();
         final Object other$proxySettings = other.getProxySettings();
-        if (this$proxySettings == null ? other$proxySettings != null : !this$proxySettings.equals(other$proxySettings))
+        if (!Objects.equals(this$proxySettings, other$proxySettings))
             return false;
         final Object this$proxyStartupInfo = this.getProxyStartupInfo();
         final Object other$proxyStartupInfo = other.getProxyStartupInfo();
-        if (this$proxyStartupInfo == null ? other$proxyStartupInfo != null : !this$proxyStartupInfo.equals(other$proxyStartupInfo))
+        if (!Objects.equals(this$proxyStartupInfo, other$proxyStartupInfo))
             return false;
         final Object this$proxyInfo = this.getProxyInfo();
         final Object other$proxyInfo = other.getProxyInfo();
-        if (this$proxyInfo == null ? other$proxyInfo != null : !this$proxyInfo.equals(other$proxyInfo)) return false;
+        if (!Objects.equals(this$proxyInfo, other$proxyInfo)) return false;
         final Object this$internalCloudNetwork = this.getInternalCloudNetwork();
         final Object other$internalCloudNetwork = other.getInternalCloudNetwork();
-        if (this$internalCloudNetwork == null ? other$internalCloudNetwork != null : !this$internalCloudNetwork.equals(other$internalCloudNetwork))
+        if (!Objects.equals(this$internalCloudNetwork, other$internalCloudNetwork))
             return false;
         final Object this$permissionCache = this.getPermissionCache();
         final Object other$permissionCache = other.getPermissionCache();
-        if (this$permissionCache == null ? other$permissionCache != null : !this$permissionCache.equals(other$permissionCache))
+        if (!Objects.equals(this$permissionCache, other$permissionCache))
             return false;
         final Object this$onlinePlayers = this.getOnlinePlayers();
         final Object other$onlinePlayers = other.getOnlinePlayers();
-        if (this$onlinePlayers == null ? other$onlinePlayers != null : !this$onlinePlayers.equals(other$onlinePlayers))
+        if (!Objects.equals(this$onlinePlayers, other$onlinePlayers))
             return false;
         final Object this$cachedPermissionHolders = this.getCachedPermissionHolders();
         final Object other$cachedPermissionHolders = other.getCachedPermissionHolders();
-        if (this$cachedPermissionHolders == null ? other$cachedPermissionHolders != null : !this$cachedPermissionHolders.equals(other$cachedPermissionHolders))
+        if (!Objects.equals(this$cachedPermissionHolders, other$cachedPermissionHolders))
             return false;
         final Object this$registeredIngameCommands = this.getRegisteredIngameCommands();
         final Object other$registeredIngameCommands = other.getRegisteredIngameCommands();
-        if (this$registeredIngameCommands == null ? other$registeredIngameCommands != null : !this$registeredIngameCommands.equals(other$registeredIngameCommands))
+        if (!Objects.equals(this$registeredIngameCommands, other$registeredIngameCommands))
             return false;
         if (this.getInternalTime() != other.getInternalTime()) return false;
         return true;

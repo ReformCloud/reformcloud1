@@ -75,7 +75,7 @@ import java.util.stream.Collectors;
  */
 
 public final class ReformCloudAPIBungee implements IAPIService, Serializable {
-    public static ReformCloudAPIBungee instance;
+    private static ReformCloudAPIBungee instance;
 
     private final NettySocketClient nettySocketClient;
     private final ChannelHandler channelHandler;
@@ -244,7 +244,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 "ReformCloud",
                 null,
                 new ArrayList<>(clients),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 512,
                 1,
                 -1,
@@ -270,7 +270,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
 
     @Override
     public void createServerGroup(String name) {
-        createServerGroup(name, ServerModeType.DYNAMIC, Arrays.asList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
     }
 
     @Override
@@ -357,7 +357,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 name,
                 new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
                 new ArrayList<>(),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
@@ -1193,7 +1193,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
         this.cachedPermissionHolders = cachedPermissionHolders;
     }
 
-    public void setRegisteredIngameCommands(List<IngameCommand> registeredIngameCommands) {
+    private void setRegisteredIngameCommands(List<IngameCommand> registeredIngameCommands) {
         this.registeredIngameCommands = registeredIngameCommands;
     }
 

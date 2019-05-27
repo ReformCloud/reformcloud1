@@ -128,8 +128,8 @@ public final class CloudConfiguration implements Serializable {
         loggerProvider.info(language.getSetup_ram_of_default_group());
         int lobbyMemory = this.readInt(loggerProvider, integer -> integer >= 50);
         loggerProvider.info(language.getSetup_choose_minecraft_version());
-        SpigotVersions.AVAILABLE_VERSIONS.forEach(e -> loggerProvider.info(e));
-        String version = this.readString(loggerProvider, s -> SpigotVersions.AVAILABLE_VERSIONS.contains(s));
+        SpigotVersions.AVAILABLE_VERSIONS.forEach(loggerProvider::info);
+        String version = this.readString(loggerProvider, SpigotVersions.AVAILABLE_VERSIONS::contains);
         loggerProvider.info(language.getSetup_choose_spigot_version());
         SpigotVersions.sortedByVersion(version).values().forEach(e -> loggerProvider.info("   " + e.name()));
         String provider = this.readString(loggerProvider, s -> SpigotVersions.getByName(s) != null);

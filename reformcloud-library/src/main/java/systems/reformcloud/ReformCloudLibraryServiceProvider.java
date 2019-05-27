@@ -14,6 +14,8 @@ import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.threading.TaskScheduler;
 
+import java.util.Objects;
+
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
@@ -32,7 +34,7 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * The loaded language which should be used
      */
-    public Language loaded;
+    private Language loaded;
 
     /**
      * The EventManager of the cloud system
@@ -105,7 +107,7 @@ public final class ReformCloudLibraryServiceProvider {
         return this.eventManager;
     }
 
-    public ChannelHandler getChannelHandler() {
+    private ChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 
@@ -167,37 +169,37 @@ public final class ReformCloudLibraryServiceProvider {
         final ReformCloudLibraryServiceProvider other = (ReformCloudLibraryServiceProvider) o;
         final Object this$internalCloudNetwork = this.getInternalCloudNetwork();
         final Object other$internalCloudNetwork = other.getInternalCloudNetwork();
-        if (this$internalCloudNetwork == null ? other$internalCloudNetwork != null : !this$internalCloudNetwork.equals(other$internalCloudNetwork))
+        if (!Objects.equals(this$internalCloudNetwork, other$internalCloudNetwork))
             return false;
         final Object this$loaded = this.getLoaded();
         final Object other$loaded = other.getLoaded();
-        if (this$loaded == null ? other$loaded != null : !this$loaded.equals(other$loaded)) return false;
+        if (!Objects.equals(this$loaded, other$loaded)) return false;
         final Object this$eventManager = this.getEventManager();
         final Object other$eventManager = other.getEventManager();
-        if (this$eventManager == null ? other$eventManager != null : !this$eventManager.equals(other$eventManager))
+        if (!Objects.equals(this$eventManager, other$eventManager))
             return false;
         final Object this$channelHandler = this.getChannelHandler();
         final Object other$channelHandler = other.getChannelHandler();
-        if (this$channelHandler == null ? other$channelHandler != null : !this$channelHandler.equals(other$channelHandler))
+        if (!Objects.equals(this$channelHandler, other$channelHandler))
             return false;
         final Object this$loggerProvider = this.getLoggerProvider();
         final Object other$loggerProvider = other.getLoggerProvider();
-        if (this$loggerProvider == null ? other$loggerProvider != null : !this$loggerProvider.equals(other$loggerProvider))
+        if (!Objects.equals(this$loggerProvider, other$loggerProvider))
             return false;
         final Object this$key = this.getKey();
         final Object other$key = other.getKey();
-        if (this$key == null ? other$key != null : !this$key.equals(other$key)) return false;
+        if (!Objects.equals(this$key, other$key)) return false;
         final Object this$controllerIP = this.getControllerIP();
         final Object other$controllerIP = other.getControllerIP();
-        if (this$controllerIP == null ? other$controllerIP != null : !this$controllerIP.equals(other$controllerIP))
+        if (!Objects.equals(this$controllerIP, other$controllerIP))
             return false;
         final Object this$nettyHandler = this.getNettyHandler();
         final Object other$nettyHandler = other.getNettyHandler();
-        if (this$nettyHandler == null ? other$nettyHandler != null : !this$nettyHandler.equals(other$nettyHandler))
+        if (!Objects.equals(this$nettyHandler, other$nettyHandler))
             return false;
         final Object this$taskScheduler = this.getTaskScheduler();
         final Object other$taskScheduler = other.getTaskScheduler();
-        if (this$taskScheduler == null ? other$taskScheduler != null : !this$taskScheduler.equals(other$taskScheduler))
+        if (!Objects.equals(this$taskScheduler, other$taskScheduler))
             return false;
         return true;
     }

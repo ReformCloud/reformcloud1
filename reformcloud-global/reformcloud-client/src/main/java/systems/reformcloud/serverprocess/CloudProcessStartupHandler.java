@@ -116,16 +116,14 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
     }
 
     public void removeServerProcess(final String name) {
-        final Queue<ServerStartupInfo> infos = this.serverStartupInfo;
-        infos.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
+        this.serverStartupInfo.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
             this.serverStartupInfo.remove(e);
             ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSendControllerConsoleMessage("ServerProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3" + ReformCloudClient.getInstance().getCloudConfiguration().getClientName() + "§r queue"));
         });
     }
 
     public void removeProxyProcess(final String name) {
-        final Queue<ProxyStartupInfo> infos = this.proxyStartupInfo;
-        infos.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
+        this.proxyStartupInfo.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
             this.proxyStartupInfo.remove(e);
             ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSendControllerConsoleMessage("ProxyProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3" + ReformCloudClient.getInstance().getCloudConfiguration().getClientName() + "§r queue"));
         });

@@ -87,7 +87,7 @@ public final class InternalCloudNetwork implements Serializable {
      */
     private Map<String, Client> clients = ReformCloudLibraryService.concurrentHashMap();
 
-    public int getWebPort() {
+    private int getWebPort() {
         return this.webPort;
     }
 
@@ -153,42 +153,6 @@ public final class InternalCloudNetwork implements Serializable {
 
     public void setClients(Map<String, Client> clients) {
         this.clients = clients;
-    }
-
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof InternalCloudNetwork)) return false;
-        final InternalCloudNetwork other = (InternalCloudNetwork) o;
-        if (this.getWebPort() != other.getWebPort()) return false;
-        final Object this$internalWebUser = this.getInternalWebUser();
-        final Object other$internalWebUser = other.getInternalWebUser();
-        if (this$internalWebUser == null ? other$internalWebUser != null : !this$internalWebUser.equals(other$internalWebUser))
-            return false;
-        final Object this$messages = this.getMessages();
-        final Object other$messages = other.getMessages();
-        if (this$messages == null ? other$messages != null : !this$messages.equals(other$messages)) return false;
-        final Object this$loaded = this.getLoaded();
-        final Object other$loaded = other.getLoaded();
-        if (this$loaded == null ? other$loaded != null : !this$loaded.equals(other$loaded)) return false;
-        final Object this$prefix = this.getPrefix();
-        final Object other$prefix = other.getPrefix();
-        if (this$prefix == null ? other$prefix != null : !this$prefix.equals(other$prefix)) return false;
-        final Object this$serverProcessManager = this.getServerProcessManager();
-        final Object other$serverProcessManager = other.getServerProcessManager();
-        if (this$serverProcessManager == null ? other$serverProcessManager != null : !this$serverProcessManager.equals(other$serverProcessManager))
-            return false;
-        final Object this$serverGroups = this.getServerGroups();
-        final Object other$serverGroups = other.getServerGroups();
-        if (this$serverGroups == null ? other$serverGroups != null : !this$serverGroups.equals(other$serverGroups))
-            return false;
-        final Object this$proxyGroups = this.getProxyGroups();
-        final Object other$proxyGroups = other.getProxyGroups();
-        if (this$proxyGroups == null ? other$proxyGroups != null : !this$proxyGroups.equals(other$proxyGroups))
-            return false;
-        final Object this$clients = this.getClients();
-        final Object other$clients = other.getClients();
-        if (this$clients == null ? other$clients != null : !this$clients.equals(other$clients)) return false;
-        return true;
     }
 
     public int hashCode() {

@@ -64,18 +64,16 @@ public final class ProxyAddonConfiguration implements Serializable {
         ReformCloudController.getInstance().getNettyHandler().registerQueryHandler(
                 "GetProxyConfig", new PacketInGetProxyConfig()
         );
-        this.proxySettings.forEach(e -> {
-            ReformCloudController.getInstance()
-                    .getInternalCloudNetwork()
-                    .getServerProcessManager()
-                    .getAllRegisteredProxyProcesses()
-                    .stream()
-                    .filter(e1 -> e1.getCloudProcess().getGroup().equals(e.getTargetProxyGroup()))
-                    .forEach(e2 -> ReformCloudController.getInstance().sendPacketSync(
-                            e2.getCloudProcess().getName(),
-                            new PacketOutUpdateProxyConfig(Optional.of(e))
-                    ));
-        });
+        this.proxySettings.forEach(e -> ReformCloudController.getInstance()
+                .getInternalCloudNetwork()
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(e1 -> e1.getCloudProcess().getGroup().equals(e.getTargetProxyGroup()))
+                .forEach(e2 -> ReformCloudController.getInstance().sendPacketSync(
+                        e2.getCloudProcess().getName(),
+                        new PacketOutUpdateProxyConfig(Optional.of(e))
+                )));
     }
 
     public Optional<ProxySettings> getForProxy(String name) {
@@ -133,17 +131,15 @@ public final class ProxyAddonConfiguration implements Serializable {
                 .getValue("config", new TypeToken<List<ProxySettings>>() {
                 }.getType());
 
-        this.proxySettings.forEach(e -> {
-            ReformCloudController.getInstance()
-                    .getInternalCloudNetwork()
-                    .getServerProcessManager()
-                    .getAllRegisteredProxyProcesses()
-                    .stream()
-                    .filter(e1 -> e1.getCloudProcess().getGroup().equals(e.getTargetProxyGroup()))
-                    .forEach(e2 -> ReformCloudController.getInstance().sendPacketSync(
-                            e2.getCloudProcess().getName(),
-                            new PacketOutUpdateProxyConfig(Optional.of(e))
-                    ));
-        });
+        this.proxySettings.forEach(e -> ReformCloudController.getInstance()
+                .getInternalCloudNetwork()
+                .getServerProcessManager()
+                .getAllRegisteredProxyProcesses()
+                .stream()
+                .filter(e1 -> e1.getCloudProcess().getGroup().equals(e.getTargetProxyGroup()))
+                .forEach(e2 -> ReformCloudController.getInstance().sendPacketSync(
+                        e2.getCloudProcess().getName(),
+                        new PacketOutUpdateProxyConfig(Optional.of(e))
+                )));
     }
 }

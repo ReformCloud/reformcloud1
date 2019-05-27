@@ -13,8 +13,8 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 25.04.2019
  */
 
-public abstract class DefaultCloudEvent extends Event implements Serializable {
-    public DefaultCloudEvent() {
+abstract class DefaultCloudEvent extends Event implements Serializable {
+    DefaultCloudEvent() {
         super(!Bukkit.getServer().isPrimaryThread());
     }
 }

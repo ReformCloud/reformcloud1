@@ -17,7 +17,7 @@ public enum RequestMethod implements Serializable {
 
     private String stringValue;
 
-    private RequestMethod(String value) {
+    RequestMethod(String value) {
         this.stringValue = value;
     }
 

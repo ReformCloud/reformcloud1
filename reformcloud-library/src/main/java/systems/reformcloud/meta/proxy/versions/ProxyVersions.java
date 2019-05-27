@@ -20,7 +20,7 @@ public enum ProxyVersions implements Serializable {
     VELOCITY("Velocity", "https://ci.velocitypowered.com/job/velocity/lastSuccessfulBuild/artifact/proxy/build/libs/velocity-proxy-1.0.0-SNAPSHOT-all.jar"),
     TRAVERTINE("Travertine", "https://papermc.io/ci/job/Travertine/lastSuccessfulBuild/artifact/Travertine-Proxy/launcher/target/Travertine.jar");
 
-    public static Map<String, ProxyVersions> PROVIDERS = new ConcurrentHashMap<>();
+    private static Map<String, ProxyVersions> PROVIDERS = new ConcurrentHashMap<>();
 
     static {
         for (ProxyVersions proxyProviders : values())

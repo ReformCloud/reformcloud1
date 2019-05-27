@@ -22,7 +22,7 @@ public abstract class Command implements Serializable {
     private String[] aliases;
 
     @java.beans.ConstructorProperties({"name", "description", "permission", "aliases"})
-    public Command(String name, String description, String permission, String[] aliases) {
+    protected Command(String name, String description, String permission, String[] aliases) {
         this.name = name;
         this.description = description;
         this.permission = permission;

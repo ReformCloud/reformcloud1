@@ -26,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 
 public final class SpigotBootstrap extends JavaPlugin implements Serializable {
-    public static SpigotBootstrap instance;
+    private static SpigotBootstrap instance;
 
     @Deprecated
     private long start;

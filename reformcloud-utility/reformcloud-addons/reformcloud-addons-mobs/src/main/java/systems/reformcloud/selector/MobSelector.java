@@ -61,7 +61,7 @@ public final class MobSelector implements Serializable {
         }
     }
 
-    public void reload() {
+    private void reload() {
         if (!Files.exists(Paths.get(directory + "/config.json"))) {
             new Configuration().addValue("config", new SelectorMobConfig(
                     new SelectorMobInventory(
@@ -104,7 +104,7 @@ public final class MobSelector implements Serializable {
         );
     }
 
-    public void saveDatabase() {
+    private void saveDatabase() {
         new Configuration()
                 .addValue("database", this.mobs == null ? new HashMap<>() : this.mobs)
                 .write(databaseDir + "/database.json");

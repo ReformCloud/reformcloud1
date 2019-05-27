@@ -29,7 +29,7 @@ public final class ParameterManager implements Serializable {
         return this.parameterGroups.stream().anyMatch(e -> e.getGroupName().equals(name));
     }
 
-    public ParameterGroup forGroup(String name) {
+    private ParameterGroup forGroup(String name) {
         return this.parameterGroups.stream().filter(e -> e.getGroupName().equals(name)).findFirst().orElse(null);
     }
 

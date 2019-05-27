@@ -156,19 +156,19 @@ public final class Permissible extends PermissibleBase implements Serializable {
         return permissionHolder != null;
     }
 
-    public PermissionHolder getPermissionHolder() {
+    private PermissionHolder getPermissionHolder() {
         checkAvailable();
         return permissionHolder;
     }
 
-    public Set<PermissionAttachmentInfo> getPermissionAttachmentInfos() {
+    private Set<PermissionAttachmentInfo> getPermissionAttachmentInfos() {
         if (this.permissionAttachmentInfos == null)
             this.getPermissionAttachmentInfos0();
 
         return permissionAttachmentInfos;
     }
 
-    public List<PermissionGroup> getPermissionGroups() {
+    private List<PermissionGroup> getPermissionGroups() {
         if (this.permissionGroups == null)
             this.recalculatePermissions();
 

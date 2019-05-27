@@ -9,12 +9,14 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
 
+import java.util.Objects;
+
 /**
  * @author _Klaro | Pasqual K. / created on 10.12.2018
  */
 
 public abstract class JavaAddon<E> {
-    public JavaAddon() {
+    protected JavaAddon() {
     }
 
     /**
@@ -72,7 +74,7 @@ public abstract class JavaAddon<E> {
         return this.addonClassConfig;
     }
 
-    public AddonMainClassLoader getAddonMainClassLoader() {
+    private AddonMainClassLoader getAddonMainClassLoader() {
         return this.addonMainClassLoader;
     }
 
@@ -88,19 +90,19 @@ public abstract class JavaAddon<E> {
         if (o == this) return true;
         if (!(o instanceof JavaAddon)) return false;
         final JavaAddon<?> other = (JavaAddon<?>) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$addonClassConfig = this.getAddonClassConfig();
         final Object other$addonClassConfig = other.getAddonClassConfig();
-        if (this$addonClassConfig == null ? other$addonClassConfig != null : !this$addonClassConfig.equals(other$addonClassConfig))
+        if (!Objects.equals(this$addonClassConfig, other$addonClassConfig))
             return false;
         final Object this$addonMainClassLoader = this.getAddonMainClassLoader();
         final Object other$addonMainClassLoader = other.getAddonMainClassLoader();
-        if (this$addonMainClassLoader == null ? other$addonMainClassLoader != null : !this$addonMainClassLoader.equals(other$addonMainClassLoader))
+        if (!Objects.equals(this$addonMainClassLoader, other$addonMainClassLoader))
             return false;
         return true;
     }
 
-    protected boolean canEqual(final Object other) {
+    private boolean canEqual(final Object other) {
         return other instanceof JavaAddon;
     }
 

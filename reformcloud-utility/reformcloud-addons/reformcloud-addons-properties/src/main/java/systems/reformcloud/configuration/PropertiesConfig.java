@@ -58,7 +58,7 @@ public final class PropertiesConfig implements Serializable {
         ReformCloudController.getInstance().getNettyHandler().registerQueryHandler("RequestProperties", new PacketInRequestProperties());
     }
 
-    public Properties defaults() {
+    private Properties defaults() {
         Properties properties = new Properties();
         properties.setProperty("force-gamemode", "false");
         properties.setProperty("pvp", "true");

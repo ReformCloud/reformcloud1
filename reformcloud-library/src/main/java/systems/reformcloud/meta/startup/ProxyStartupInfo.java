@@ -8,6 +8,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -85,29 +86,29 @@ public class ProxyStartupInfo implements Serializable {
         if (o == this) return true;
         if (!(o instanceof ProxyStartupInfo)) return false;
         final ProxyStartupInfo other = (ProxyStartupInfo) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$uid = this.getUid();
         final Object other$uid = other.getUid();
-        if (this$uid == null ? other$uid != null : !this$uid.equals(other$uid)) return false;
+        if (!Objects.equals(this$uid, other$uid)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (!Objects.equals(this$name, other$name)) return false;
         final Object this$template = this.getTemplate();
         final Object other$template = other.getTemplate();
-        if (this$template == null ? other$template != null : !this$template.equals(other$template)) return false;
+        if (!Objects.equals(this$template, other$template)) return false;
         final Object this$proxyGroup = this.getProxyGroup();
         final Object other$proxyGroup = other.getProxyGroup();
-        if (this$proxyGroup == null ? other$proxyGroup != null : !this$proxyGroup.equals(other$proxyGroup))
+        if (!Objects.equals(this$proxyGroup, other$proxyGroup))
             return false;
         final Object this$configuration = this.getConfiguration();
         final Object other$configuration = other.getConfiguration();
-        if (this$configuration == null ? other$configuration != null : !this$configuration.equals(other$configuration))
+        if (!Objects.equals(this$configuration, other$configuration))
             return false;
         if (this.getId() != other.getId()) return false;
         return true;
     }
 
-    protected boolean canEqual(final Object other) {
+    private boolean canEqual(final Object other) {
         return other instanceof ProxyStartupInfo;
     }
 

@@ -7,6 +7,7 @@ package systems.reformcloud.utility.map.maps;
 import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
@@ -76,13 +77,13 @@ public final class Trio<F, S, T> implements Serializable {
         final Trio<?, ?, ?> other = (Trio<?, ?, ?>) o;
         final Object this$first = this.getFirst();
         final Object other$first = other.getFirst();
-        if (this$first == null ? other$first != null : !this$first.equals(other$first)) return false;
+        if (!Objects.equals(this$first, other$first)) return false;
         final Object this$second = this.getSecond();
         final Object other$second = other.getSecond();
-        if (this$second == null ? other$second != null : !this$second.equals(other$second)) return false;
+        if (!Objects.equals(this$second, other$second)) return false;
         final Object this$third = this.getThird();
         final Object other$third = other.getThird();
-        if (this$third == null ? other$third != null : !this$third.equals(other$third)) return false;
+        if (!Objects.equals(this$third, other$third)) return false;
         return true;
     }
 

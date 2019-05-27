@@ -5,6 +5,7 @@
 package systems.reformcloud.signs;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.12.2018
@@ -75,7 +76,7 @@ public final class SignLayout implements Serializable {
         if (!java.util.Arrays.deepEquals(this.getLines(), other.getLines())) return false;
         final Object this$materialName = this.getMaterialName();
         final Object other$materialName = other.getMaterialName();
-        if (this$materialName == null ? other$materialName != null : !this$materialName.equals(other$materialName))
+        if (!Objects.equals(this$materialName, other$materialName))
             return false;
         if (this.getMaterialData() != other.getMaterialData()) return false;
         return true;
@@ -137,11 +138,11 @@ public final class SignLayout implements Serializable {
             return this.perSecondAnimation;
         }
 
-        public int getCurrentAnimation() {
+        int getCurrentAnimation() {
             return this.currentAnimation;
         }
 
-        public SignLayout[] getLayouts() {
+        SignLayout[] getLayouts() {
             return this.layouts;
         }
 
@@ -161,13 +162,13 @@ public final class SignLayout implements Serializable {
             if (o == this) return true;
             if (!(o instanceof LoadingLayout)) return false;
             final LoadingLayout other = (LoadingLayout) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual(this)) return false;
             if (this.getPerSecondAnimation() != other.getPerSecondAnimation()) return false;
             if (!java.util.Arrays.deepEquals(this.getLayouts(), other.getLayouts())) return false;
             return true;
         }
 
-        protected boolean canEqual(final Object other) {
+        boolean canEqual(final Object other) {
             return other instanceof LoadingLayout;
         }
 
@@ -234,27 +235,27 @@ public final class SignLayout implements Serializable {
             if (o == this) return true;
             if (!(o instanceof GroupLayout)) return false;
             final GroupLayout other = (GroupLayout) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual(this)) return false;
             final Object this$maintenanceLayout = this.getMaintenanceLayout();
             final Object other$maintenanceLayout = other.getMaintenanceLayout();
-            if (this$maintenanceLayout == null ? other$maintenanceLayout != null : !this$maintenanceLayout.equals(other$maintenanceLayout))
+            if (!Objects.equals(this$maintenanceLayout, other$maintenanceLayout))
                 return false;
             final Object this$emptyLayout = this.getEmptyLayout();
             final Object other$emptyLayout = other.getEmptyLayout();
-            if (this$emptyLayout == null ? other$emptyLayout != null : !this$emptyLayout.equals(other$emptyLayout))
+            if (!Objects.equals(this$emptyLayout, other$emptyLayout))
                 return false;
             final Object this$fullLayout = this.getFullLayout();
             final Object other$fullLayout = other.getFullLayout();
-            if (this$fullLayout == null ? other$fullLayout != null : !this$fullLayout.equals(other$fullLayout))
+            if (!Objects.equals(this$fullLayout, other$fullLayout))
                 return false;
             final Object this$onlineLayout = this.getOnlineLayout();
             final Object other$onlineLayout = other.getOnlineLayout();
-            if (this$onlineLayout == null ? other$onlineLayout != null : !this$onlineLayout.equals(other$onlineLayout))
+            if (!Objects.equals(this$onlineLayout, other$onlineLayout))
                 return false;
             return true;
         }
 
-        protected boolean canEqual(final Object other) {
+        boolean canEqual(final Object other) {
             return other instanceof GroupLayout;
         }
 
@@ -318,23 +319,23 @@ public final class SignLayout implements Serializable {
             if (o == this) return true;
             if (!(o instanceof TemplateLayout)) return false;
             final TemplateLayout other = (TemplateLayout) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual(this)) return false;
             final Object this$emptyLayout = this.getEmptyLayout();
             final Object other$emptyLayout = other.getEmptyLayout();
-            if (this$emptyLayout == null ? other$emptyLayout != null : !this$emptyLayout.equals(other$emptyLayout))
+            if (!Objects.equals(this$emptyLayout, other$emptyLayout))
                 return false;
             final Object this$fullLayout = this.getFullLayout();
             final Object other$fullLayout = other.getFullLayout();
-            if (this$fullLayout == null ? other$fullLayout != null : !this$fullLayout.equals(other$fullLayout))
+            if (!Objects.equals(this$fullLayout, other$fullLayout))
                 return false;
             final Object this$onlineLayout = this.getOnlineLayout();
             final Object other$onlineLayout = other.getOnlineLayout();
-            if (this$onlineLayout == null ? other$onlineLayout != null : !this$onlineLayout.equals(other$onlineLayout))
+            if (!Objects.equals(this$onlineLayout, other$onlineLayout))
                 return false;
             return true;
         }
 
-        protected boolean canEqual(final Object other) {
+        boolean canEqual(final Object other) {
             return other instanceof TemplateLayout;
         }
 

@@ -145,7 +145,7 @@ public interface IngameCommandSender {
     /**
      * The main hand enum to get the main hand side
      */
-    public enum MainHand {
+    enum MainHand {
         LEFT,
         RIGHT
     }
@@ -153,7 +153,7 @@ public interface IngameCommandSender {
     /**
      * The chat modes
      */
-    public enum ChatMode {
+    enum ChatMode {
         SHOWN,
         COMMANDS_ONLY,
         HIDDEN

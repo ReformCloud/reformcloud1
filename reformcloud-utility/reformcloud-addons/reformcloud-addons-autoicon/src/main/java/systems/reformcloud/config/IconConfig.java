@@ -11,13 +11,13 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 23.04.2019
  */
 
-public final class IconConfig implements Serializable {
+final class IconConfig implements Serializable {
     private String targetGroup;
     private int updateTimeInSeconds;
     private List<String> iconPaths;
 
     @java.beans.ConstructorProperties({"targetGroup", "updateTimeInSeconds", "iconPaths"})
-    public IconConfig(String targetGroup, int updateTimeInSeconds, List<String> iconPaths) {
+    IconConfig(String targetGroup, int updateTimeInSeconds, List<String> iconPaths) {
         this.targetGroup = targetGroup;
         this.updateTimeInSeconds = updateTimeInSeconds;
         this.iconPaths = iconPaths;

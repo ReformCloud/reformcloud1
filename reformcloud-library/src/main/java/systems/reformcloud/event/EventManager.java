@@ -29,7 +29,7 @@ public final class EventManager implements Serializable {
     /**
      * The registered listeners by their class loader
      */
-    protected Map<ClassLoader, Class<?>> registeredListenersByClassLoader = ReformCloudLibraryService.concurrentHashMap();
+    private Map<ClassLoader, Class<?>> registeredListenersByClassLoader = ReformCloudLibraryService.concurrentHashMap();
 
     /**
      * Consumer handel all fired events

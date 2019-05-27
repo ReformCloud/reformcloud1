@@ -513,7 +513,7 @@ public final class CloudServerStartupHandler implements Serializable {
         return true;
     }
 
-    public void overrideEula() {
+    private void overrideEula() {
         FileUtils.deleteFileIfExists(Paths.get(path + "/eula.txt"));
         FileUtils.copyCompiledFile("reformcloud/eula/eula.txt", path + "/eula.txt");
     }

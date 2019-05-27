@@ -26,7 +26,7 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 14.05.2019
  */
 
-public final class LibraryPreLoader implements Serializable {
+final class LibraryPreLoader implements Serializable {
     private static List<Dependency> dependencies;
 
     private LibraryPreLoader() {

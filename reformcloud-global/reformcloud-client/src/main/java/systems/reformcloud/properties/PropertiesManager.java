@@ -17,7 +17,7 @@ public final class PropertiesManager implements Serializable {
 
     public static boolean available = false;
 
-    public static PropertiesManager instance;
+    private static PropertiesManager instance;
 
     public PropertiesManager(PropertiesConfig propertiesConfig) {
         available = true;

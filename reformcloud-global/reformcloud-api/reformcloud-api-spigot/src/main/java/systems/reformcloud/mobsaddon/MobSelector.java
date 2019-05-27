@@ -115,7 +115,7 @@ public final class MobSelector implements Serializable {
         return MobSelector.instance;
     }
 
-    public Location toLocation(SelectorMobPosition selectorMobPosition) {
+    private Location toLocation(SelectorMobPosition selectorMobPosition) {
         return new Location(
                 Bukkit.getWorld(selectorMobPosition.getWorld()),
                 selectorMobPosition.getX(),
@@ -197,7 +197,7 @@ public final class MobSelector implements Serializable {
         return inventory;
     }
 
-    public void clearInventory(Inventory inventory) {
+    private void clearInventory(Inventory inventory) {
         if (inventory == null)
             return;
 
@@ -279,7 +279,7 @@ public final class MobSelector implements Serializable {
         return output;
     }
 
-    public Mob findMobByInventory(Inventory inventory) {
+    private Mob findMobByInventory(Inventory inventory) {
         return this.spawnedMobs
                 .values()
                 .stream()
@@ -288,7 +288,7 @@ public final class MobSelector implements Serializable {
                 .orElse(null);
     }
 
-    public Collection<Mob> findMobsByGroup(String group) {
+    private Collection<Mob> findMobsByGroup(String group) {
         return this.spawnedMobs
                 .values()
                 .stream()
@@ -335,15 +335,15 @@ public final class MobSelector implements Serializable {
         return deleted;
     }
 
-    public void handleServerAdd(Collection<Mob> mobs, ServerInfo serverInfo) {
+    private void handleServerAdd(Collection<Mob> mobs, ServerInfo serverInfo) {
         mobs.forEach(e -> e.addServer(serverInfo));
     }
 
-    public void handleServerDelete(Collection<Mob> mobs, ServerInfo serverInfo) {
+    private void handleServerDelete(Collection<Mob> mobs, ServerInfo serverInfo) {
         mobs.forEach(e -> e.removeServer(serverInfo));
     }
 
-    public void handleServerInfoUpdate(Collection<Mob> mobs, ServerInfo serverInfo) {
+    private void handleServerInfoUpdate(Collection<Mob> mobs, ServerInfo serverInfo) {
         mobs.forEach(e -> e.updateServerInfo(serverInfo));
     }
 

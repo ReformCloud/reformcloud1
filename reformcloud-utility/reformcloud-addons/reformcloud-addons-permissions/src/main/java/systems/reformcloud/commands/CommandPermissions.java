@@ -263,7 +263,7 @@ public final class CommandPermissions extends Command implements Serializable {
 
             commandSender.sendMessage("Successfully set the default group to " + permissionGroup.getName());
         } else if (args.length == 4 && args[1].equalsIgnoreCase("addgroup")) {
-            if (!this.isLong(args[3])) {
+            if (this.isNoLong(args[3])) {
                 commandSender.sendMessage("The given time is not valid");
                 return;
             }
@@ -295,7 +295,7 @@ public final class CommandPermissions extends Command implements Serializable {
 
             commandSender.sendMessage("The User " + args[0] + " is now in group " + permissionGroup.getName());
         } else if (args.length == 4 && args[1].equalsIgnoreCase("setgroup")) {
-            if (!this.isLong(args[3])) {
+            if (this.isNoLong(args[3])) {
                 commandSender.sendMessage("The given time is not valid");
                 return;
             }
@@ -433,12 +433,12 @@ public final class CommandPermissions extends Command implements Serializable {
         }
     }
 
-    private boolean isLong(String in) {
+    private boolean isNoLong(String in) {
         try {
             Long.parseLong(in);
-            return true;
-        } catch (final Throwable throwable) {
             return false;
+        } catch (final Throwable throwable) {
+            return true;
         }
     }
 }

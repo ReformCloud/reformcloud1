@@ -292,14 +292,10 @@ public final class CommandProcess extends Command implements Serializable {
                         commandSender.sendMessage("    - " + e.getName() + " | Host=" + e.getIp() + " | Memory-Usage=" + clientInfo.getUsedMemory() + "MB/" + clientInfo.getMaxMemory() + "MB | Processors: " + clientInfo.getCpuCoresSystem() + " | CPU-Usage: " + decimalFormat.format(clientInfo.getCpuUsage()) + "% | Started-Processes: " + (clientInfo.getStartedProxies().size() + clientInfo.getStartedServers().size()));
                         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                         commandSender.sendMessage("The following proxies are started on \"" + e.getName() + "\": ");
-                        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredProxyProcesses().stream().filter(proxyInfo -> proxyInfo.getCloudProcess().getClient().equals(e.getName())).forEach(info -> {
-                            commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | Player=" + info.getOnline() + "/" + info.getProxyGroup().getMaxPlayers());
-                        });
+                        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredProxyProcesses().stream().filter(proxyInfo -> proxyInfo.getCloudProcess().getClient().equals(e.getName())).forEach(info -> commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | Player=" + info.getOnline() + "/" + info.getProxyGroup().getMaxPlayers()));
                         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                         commandSender.sendMessage("The following cloud-servers are started on \"" + e.getName() + "\": ");
-                        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().stream().filter(serverInfo -> serverInfo.getCloudProcess().getClient().equals(e.getName())).forEach(info -> {
-                            commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | State=" + info.getServerState() + " | Player=" + info.getOnline() + "/" + info.getServerGroup().getMaxPlayers());
-                        });
+                        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().stream().filter(serverInfo -> serverInfo.getCloudProcess().getClient().equals(e.getName())).forEach(info -> commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | State=" + info.getServerState() + " | Player=" + info.getOnline() + "/" + info.getServerGroup().getMaxPlayers()));
                         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                     });
                 } else {
@@ -311,7 +307,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     .getServerProcessManager()
                                     .getAllRegisteredServerProcesses()
                                     .stream().filter(e -> e.getServerGroup().getName().equalsIgnoreCase(args[2]))
-                                    .forEach(e -> connected.add(e));
+                                    .forEach(connected::add);
                             commandSender.sendMessage("The following servers of the group \"" + args[2] + "\" are connected");
                             connected.forEach(info -> commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | Player=" + info.getOnline() + "/" + info.getServerGroup().getMaxPlayers()));
                             break;
@@ -323,7 +319,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     .getServerProcessManager()
                                     .getAllRegisteredProxyProcesses()
                                     .stream().filter(e -> e.getProxyGroup().getName().equalsIgnoreCase(args[2]))
-                                    .forEach(e -> connected.add(e));
+                                    .forEach(connected::add);
                             commandSender.sendMessage("The following proxies of the group \"" + args[2] + "\" are connected");
                             connected.forEach(info -> commandSender.sendMessage("    - " + info.getCloudProcess().getName() + " | Player=" + info.getOnline() + "/" + info.getProxyGroup().getMaxPlayers()));
                             break;

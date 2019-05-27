@@ -14,7 +14,7 @@ import java.util.List;
 public final class ClientInfo implements Serializable {
     private static final long serialVersionUID = 588638903114905632L;
 
-    public int maxMemory, cpuCoresSystem;
+    private int maxMemory, cpuCoresSystem;
 
     private boolean ready;
 

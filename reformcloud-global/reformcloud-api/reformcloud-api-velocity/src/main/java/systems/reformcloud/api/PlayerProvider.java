@@ -90,7 +90,7 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
      * @return The player which is connected on a proxy server
      * or {@code null}
      */
-    public ProxyInfo findPlayer(UUID toFind) {
+    private ProxyInfo findPlayer(UUID toFind) {
         return ReformCloudAPIVelocity.getInstance()
                 .getInternalCloudNetwork()
                 .getServerProcessManager()

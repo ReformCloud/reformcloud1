@@ -17,7 +17,7 @@ import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -32,7 +32,7 @@ public final class RestAPIGetOfflinePlayer implements Serializable, WebHandler {
 
         final HttpHeaders httpHeaders = httpRequest.headers();
         if (!httpHeaders.contains("-XUser") || !httpHeaders.contains("-XPassword") || !httpHeaders.contains("-XUniqueID")) {
-            answer.addValue("response", Arrays.asList("No -XUser, -XPassword or -XUniqueID provided"));
+            answer.addValue("response", Collections.singletonList("No -XUser, -XPassword or -XUniqueID provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -45,19 +45,19 @@ public final class RestAPIGetOfflinePlayer implements Serializable, WebHandler {
                 .findFirst()
                 .orElse(null);
         if (webUser == null) {
-            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Collections.singletonList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!webUser.getPassword().equals(StringEncrypt.encryptSHA512(httpHeaders.get("-XPassword")))) {
-            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Collections.singletonList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!this.isUUID(httpHeaders.get("-XUniqueID"))) {
-            answer.addValue("response", Arrays.asList("Given UUID is invalid"));
+            answer.addValue("response", Collections.singletonList("Given UUID is invalid"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -65,7 +65,7 @@ public final class RestAPIGetOfflinePlayer implements Serializable, WebHandler {
         UUID uuid = UUID.fromString(httpHeaders.get("-XUniqueID"));
         OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getPlayerDatabase().getOfflinePlayer(uuid);
         if (offlinePlayer == null) {
-            answer.addValue("response", Arrays.asList("Player by given uuid not found"));
+            answer.addValue("response", Collections.singletonList("Player by given uuid not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }

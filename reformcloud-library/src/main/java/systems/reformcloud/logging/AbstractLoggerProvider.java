@@ -18,7 +18,7 @@ public abstract class AbstractLoggerProvider implements Serializable {
     /**
      * The global logging instance
      */
-    public static final AtomicReference<AbstractLoggerProvider> globalInstance = new AtomicReference<>();
+    static final AtomicReference<AbstractLoggerProvider> globalInstance = new AtomicReference<>();
 
     /**
      * Infos a message to the console

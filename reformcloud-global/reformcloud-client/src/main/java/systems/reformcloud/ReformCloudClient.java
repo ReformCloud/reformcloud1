@@ -68,7 +68,8 @@ import systems.reformcloud.versioneering.VersionController;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.Socket;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -361,18 +362,13 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     public boolean isPortUseable(final int port) {
-        boolean useable = false;
-        try {
-            Socket socket = new Socket(this.cloudConfiguration.getStartIP(), port);
-            if (socket.isClosed() && !socket.isConnected())
-                useable = true;
-
-            socket.close();
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(new InetSocketAddress(port));
+            return true;
         } catch (final IOException ignored) {
-            useable = true;
         }
 
-        return useable;
+        return false;
     }
 
     public void updateInternalTime(final long controller) {
@@ -465,7 +461,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 "ReformCloud",
                 null,
                 new ArrayList<>(clients),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 512,
                 1,
                 -1,
@@ -491,7 +487,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public void createServerGroup(String name) {
-        createServerGroup(name, ServerModeType.DYNAMIC, Arrays.asList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
     }
 
     @Override
@@ -578,7 +574,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 name,
                 new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
                 new ArrayList<>(),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),

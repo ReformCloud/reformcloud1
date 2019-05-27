@@ -61,12 +61,12 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     /**
      * The debug log file
      */
-    protected final File debugLogFile = new File("reformcloud/logs/debug-" + System.currentTimeMillis() + ".log");
+    private final File debugLogFile = new File("reformcloud/logs/debug-" + System.currentTimeMillis() + ".log");
 
     /**
      * The logger handler of the cloud
      */
-    protected final LoggerHandler loggerHandler = new LoggerHandler();
+    private final LoggerHandler loggerHandler = new LoggerHandler();
 
     /**
      * The current controller time
@@ -227,11 +227,11 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
         int framesInCommon = trace.length - 1 - m;
 
-        stringBuilder.append(prefix + caption + cause);
+        stringBuilder.append(prefix).append(caption).append(cause);
         for (int i = 0; i <= m; i++)
-            stringBuilder.append(prefix + "\tat " + trace[i]);
+            stringBuilder.append(prefix).append("\tat ").append(trace[i]);
         if (framesInCommon != 0)
-            stringBuilder.append(prefix + "\t... " + framesInCommon + " more");
+            stringBuilder.append(prefix).append("\t... ").append(framesInCommon).append(" more");
 
         for (Throwable se : cause.getSuppressed())
             suppressedException(se, cause.getStackTrace(), "", "\t", stringBuilder);
@@ -315,7 +315,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                     debugLogFile.createNewFile();
 
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(debugLogFile, true));
-                bufferedWriter.append(msg + "\n");
+                bufferedWriter.append(msg).append("\n");
                 bufferedWriter.flush();
                 bufferedWriter.close();
             } catch (final IOException ex) {

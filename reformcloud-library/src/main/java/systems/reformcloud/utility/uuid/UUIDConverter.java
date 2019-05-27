@@ -43,7 +43,7 @@ public final class UUIDConverter implements Serializable {
     /**
      * The cache in which all uuid are cached
      */
-    static Cache<String, UUID> uuids = ReformCloudLibraryService.newCache(300);
+    private static Cache<String, UUID> uuids = ReformCloudLibraryService.newCache(300);
 
     /**
      * Gets a uuid from the given name

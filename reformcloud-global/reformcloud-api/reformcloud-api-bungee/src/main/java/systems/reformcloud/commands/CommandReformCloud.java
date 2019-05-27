@@ -48,15 +48,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
 
         if (strings.length == 0) {
             commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
-            commandSender.sendMessage(
-                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <name> \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n")),
-                    new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"))
-            );
+            sendHelp(commandSender, prefix);
             return;
         }
 
@@ -154,15 +146,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
         }
 
         commandSender.sendMessage(TextComponent.fromLegacyText(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
-        commandSender.sendMessage(
-                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <name> \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n")),
-                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"))
-        );
+        sendHelp(commandSender, prefix);
     }
 
     @Override
@@ -246,5 +230,17 @@ public final class CommandReformCloud extends Command implements Serializable, T
         Collection<String> out = new LinkedList<>();
         BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(e -> out.add(e.getName()));
         return out;
+    }
+
+    private void sendHelp(CommandSender commandSender, String prefix) {
+        commandSender.sendMessage(
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <name> \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n")),
+                new TextComponent(TextComponent.fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"))
+        );
     }
 }

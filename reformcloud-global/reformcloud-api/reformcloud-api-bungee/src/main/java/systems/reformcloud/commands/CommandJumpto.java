@@ -57,7 +57,7 @@ public final class CommandJumpto extends Command implements TabExecutor {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        Arrays.stream(strings).forEach(s -> stringBuilder.append(s));
+        Arrays.stream(strings).forEach(stringBuilder::append);
 
         LinkedList<String> iterable = new LinkedList<>();
         ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerNameProcesses().stream().filter(e -> e.startsWith(stringBuilder.substring(0))).forEach(iterable::add);

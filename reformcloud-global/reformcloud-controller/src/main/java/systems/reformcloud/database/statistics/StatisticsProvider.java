@@ -114,7 +114,7 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
             this.stats.setServerOnlineTime(this.stats.getServerOnlineTime() + tempServerStats.onlineTime);
     }
 
-    public void setLastShutdown() {
+    private void setLastShutdown() {
         if (!checkAvailable())
             return;
 
@@ -134,7 +134,7 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
         private long firstStartup, lastStartup, lastShutdown, serverOnlineTime, walkedDistance, blocksPlaced;
 
         @java.beans.ConstructorProperties({"startup", "rootStartup", "login", "consoleCommands", "ingameCommands", "firstStartup", "lastStartup", "lastShutdown", "serverOnlineTime", "walkedDistance", "blocksPlaced"})
-        public Stats(int startup, int rootStartup, int login, int consoleCommands, int ingameCommands, long firstStartup, long lastStartup, long lastShutdown, long serverOnlineTime, long walkedDistance, long blocksPlaced) {
+        Stats(int startup, int rootStartup, int login, int consoleCommands, int ingameCommands, long firstStartup, long lastStartup, long lastShutdown, long serverOnlineTime, long walkedDistance, long blocksPlaced) {
             this.startup = startup;
             this.rootStartup = rootStartup;
             this.login = login;
@@ -200,23 +200,23 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
             return this.blocksPlaced;
         }
 
-        public void setStartup(int startup) {
+        void setStartup(int startup) {
             this.startup = startup;
         }
 
-        public void setRootStartup(int rootStartup) {
+        void setRootStartup(int rootStartup) {
             this.rootStartup = rootStartup;
         }
 
-        public void setLogin(int login) {
+        void setLogin(int login) {
             this.login = login;
         }
 
-        public void setConsoleCommands(int consoleCommands) {
+        void setConsoleCommands(int consoleCommands) {
             this.consoleCommands = consoleCommands;
         }
 
-        public void setIngameCommands(int ingameCommands) {
+        void setIngameCommands(int ingameCommands) {
             this.ingameCommands = ingameCommands;
         }
 
@@ -224,23 +224,23 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
             this.firstStartup = firstStartup;
         }
 
-        public void setLastStartup(long lastStartup) {
+        void setLastStartup(long lastStartup) {
             this.lastStartup = lastStartup;
         }
 
-        public void setLastShutdown(long lastShutdown) {
+        void setLastShutdown(long lastShutdown) {
             this.lastShutdown = lastShutdown;
         }
 
-        public void setServerOnlineTime(long serverOnlineTime) {
+        void setServerOnlineTime(long serverOnlineTime) {
             this.serverOnlineTime = serverOnlineTime;
         }
 
-        public void setWalkedDistance(long walkedDistance) {
+        void setWalkedDistance(long walkedDistance) {
             this.walkedDistance = walkedDistance;
         }
 
-        public void setBlocksPlaced(long blocksPlaced) {
+        void setBlocksPlaced(long blocksPlaced) {
             this.blocksPlaced = blocksPlaced;
         }
     }

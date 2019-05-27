@@ -92,7 +92,7 @@ public final class PacketFuture implements Serializable {
      * @param inboundHandler        The new failure network handler
      * @return The current instance of this class
      */
-    public PacketFuture onFailure(final NetworkQueryInboundHandler inboundHandler) {
+    private PacketFuture onFailure(final NetworkQueryInboundHandler inboundHandler) {
         this.onFailure = inboundHandler;
         return this;
     }

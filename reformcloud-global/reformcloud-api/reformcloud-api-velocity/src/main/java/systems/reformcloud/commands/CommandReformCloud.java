@@ -34,13 +34,7 @@ public final class CommandReformCloud implements Command {
 
         if (strings.length == 0) {
             commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
-            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <group/name> \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n"));
-            commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"));
+            sendHelp(commandSource, prefix);
             return;
         }
 
@@ -137,13 +131,7 @@ public final class CommandReformCloud implements Command {
         }
 
         commandSource.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <group/name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"));
+        sendHelp(commandSource, prefix);
     }
 
     @Override
@@ -232,5 +220,15 @@ public final class CommandReformCloud implements Command {
         List<String> out = new LinkedList<>();
         VelocityBootstrap.getInstance().getProxy().getAllPlayers().forEach(e -> out.add(e.getUsername()));
         return out;
+    }
+
+    private void sendHelp(CommandSource commandSource, String prefix) {
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> <file/dir> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud process <start/stop> <group/name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"));
     }
 }

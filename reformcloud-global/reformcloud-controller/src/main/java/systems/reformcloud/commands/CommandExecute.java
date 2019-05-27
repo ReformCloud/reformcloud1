@@ -42,9 +42,7 @@ public final class CommandExecute extends Command implements Serializable {
                     for (short i = 2; i < args.length; i++)
                         stringBuilder.append(args[i]).append(StringUtil.SPACE);
 
-                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
-                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(e.getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), e.getCloudProcess().getName()));
-                    });
+                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(e.getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), e.getCloudProcess().getName())));
 
                     commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_execute_success());
                 } else
@@ -65,9 +63,7 @@ public final class CommandExecute extends Command implements Serializable {
                     for (short i = 2; i < args.length; i++)
                         stringBuilder.append(args[i]).append(StringUtil.SPACE);
 
-                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> {
-                        ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(e.getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), e.getCloudProcess().getName()));
-                    });
+                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(e.getCloudProcess().getClient(), new PacketOutExecuteCommand(stringBuilder.substring(0, stringBuilder.length() - 1), args[0].toLowerCase(), e.getCloudProcess().getName())));
 
                     commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_execute_success());
                 } else

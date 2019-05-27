@@ -31,7 +31,7 @@ public final class FTPUtil implements Serializable {
             deleteFile(name);
     }
 
-    public static void uploadFile(FTPClient ftpClient, String zipPath, String remoteDir) throws IOException {
+    private static void uploadFile(FTPClient ftpClient, String zipPath, String remoteDir) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(new File(zipPath));
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         ftpClient.storeFile(remoteDir, fileInputStream);

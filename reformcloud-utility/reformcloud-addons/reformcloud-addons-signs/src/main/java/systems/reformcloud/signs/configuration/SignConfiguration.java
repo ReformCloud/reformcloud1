@@ -116,7 +116,7 @@ public class SignConfiguration {
     /**
      * Loads all signs
      */
-    public void loadSigns() {
+    private void loadSigns() {
         if (!Files.exists(Paths.get("reformcloud/database/signs/database.json")))
             new Configuration().addValue("signs", new ArrayList<>()).write(Paths.get("reformcloud/database/signs/database.json"));
 

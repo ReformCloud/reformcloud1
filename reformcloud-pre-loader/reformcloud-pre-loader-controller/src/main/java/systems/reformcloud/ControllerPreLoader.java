@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * @author _Klaro | Pasqual K. / created on 14.05.2019
  */
 
-public final class ControllerPreLoader implements Serializable {
+final class ControllerPreLoader implements Serializable {
     public static synchronized void main(String[] args) throws IOException {
         LibraryPreLoader.prepareDependencies(true);
         List<URL> libs = LibraryPreLoader.downloadDependencies();

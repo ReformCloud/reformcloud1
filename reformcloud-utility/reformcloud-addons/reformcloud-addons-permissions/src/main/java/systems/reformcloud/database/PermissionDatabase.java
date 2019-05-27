@@ -169,7 +169,7 @@ public final class PermissionDatabase implements Serializable {
         return null;
     }
 
-    public PermissionHolder createPermissionHolder(PermissionHolder permissionHolder) {
+    private PermissionHolder createPermissionHolder(PermissionHolder permissionHolder) {
         new Configuration().addValue("holder", permissionHolder)
                 .write(Paths.get(playerDir.getPath() + "/" + permissionHolder.getUniqueID() + ".json"));
         this.cachedPermissionHolders.put(permissionHolder.getUniqueID(), permissionHolder);
@@ -228,7 +228,7 @@ public final class PermissionDatabase implements Serializable {
         );
     }
 
-    public PermissionGroup getPermissionGroup(String name) {
+    private PermissionGroup getPermissionGroup(String name) {
         return this.getAllGroups().stream().filter(e -> e.getName().startsWith(name)).findFirst().orElse(null);
     }
 

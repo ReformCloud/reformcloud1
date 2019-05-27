@@ -17,7 +17,7 @@ import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.02.2019
@@ -31,7 +31,7 @@ public final class RestAPIProxyList implements Serializable, WebHandler {
 
         final HttpHeaders httpHeaders = httpRequest.headers();
         if (!httpHeaders.contains("-XUser") || !httpHeaders.contains("-XPassword")) {
-            answer.addValue("response", Arrays.asList("No -XUser or -XPassword provided"));
+            answer.addValue("response", Collections.singletonList("No -XUser or -XPassword provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -44,19 +44,19 @@ public final class RestAPIProxyList implements Serializable, WebHandler {
                 .findFirst()
                 .orElse(null);
         if (webUser == null) {
-            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Collections.singletonList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!webUser.getPassword().equals(StringEncrypt.encryptSHA512(httpHeaders.get("-XPassword")))) {
-            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Collections.singletonList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!RestAPIUtility.hasPermission(webUser, "web.api.list.proxies")) {
-            answer.addValue("response", Arrays.asList("Permission denied"));
+            answer.addValue("response", Collections.singletonList("Permission denied"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
