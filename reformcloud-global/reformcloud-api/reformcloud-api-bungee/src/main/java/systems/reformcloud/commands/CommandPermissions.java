@@ -224,6 +224,76 @@ public final class CommandPermissions extends Command implements Serializable, T
                 commandSender.sendMessage(TextComponent.fromLegacyText("§7" + result));
             });
             return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setprefix")) {
+            BungeecordBootstrap.getInstance().getProxy().getScheduler().runAsync(BungeecordBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIBungee.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setprefix " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSender.sendMessage(TextComponent.fromLegacyText("§cAn error occurred"));
+                    return;
+                }
+
+                commandSender.sendMessage(TextComponent.fromLegacyText("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setsuffix")) {
+            BungeecordBootstrap.getInstance().getProxy().getScheduler().runAsync(BungeecordBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIBungee.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setsuffix " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSender.sendMessage(TextComponent.fromLegacyText("§cAn error occurred"));
+                    return;
+                }
+
+                commandSender.sendMessage(TextComponent.fromLegacyText("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setdisplay")) {
+            BungeecordBootstrap.getInstance().getProxy().getScheduler().runAsync(BungeecordBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIBungee.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setdisplay " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSender.sendMessage(TextComponent.fromLegacyText("§cAn error occurred"));
+                    return;
+                }
+
+                commandSender.sendMessage(TextComponent.fromLegacyText("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("settabcolorcode")) {
+            BungeecordBootstrap.getInstance().getProxy().getScheduler().runAsync(BungeecordBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIBungee.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " settabcolorcode " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSender.sendMessage(TextComponent.fromLegacyText("§cAn error occurred"));
+                    return;
+                }
+
+                commandSender.sendMessage(TextComponent.fromLegacyText("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setgroupid")) {
+            BungeecordBootstrap.getInstance().getProxy().getScheduler().runAsync(BungeecordBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIBungee.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setgroupid " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSender.sendMessage(TextComponent.fromLegacyText("§cAn error occurred"));
+                    return;
+                }
+
+                commandSender.sendMessage(TextComponent.fromLegacyText("§7" + result));
+            });
+            return;
         }
 
         String prefix = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix();
@@ -244,7 +314,7 @@ public final class CommandPermissions extends Command implements Serializable, T
             return new LinkedList<>();
 
         if (strings.length == 2) {
-            return Arrays.asList("list", "addperm", "removeperm", "addgroup", "removegroup", "setgroup", "setdefault", "create", "delete", "add", "remove");
+            return Arrays.asList("list", "addperm", "removeperm", "addgroup", "removegroup", "setgroup", "setdefault", "create", "delete", "add", "remove", "setprefix", "setsuffix", "setdisplay", "settabcolorcode", "setgroupid");
         }
 
         if (strings.length == 3
