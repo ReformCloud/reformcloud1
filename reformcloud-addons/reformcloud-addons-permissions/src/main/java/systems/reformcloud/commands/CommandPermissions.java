@@ -395,7 +395,7 @@ public final class CommandPermissions extends Command implements Serializable {
 
             permissionGroup.setTabColorCode(args[2]);
             PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionGroup(permissionGroup);
-            commandSender.sendMessage("Successfully set the display to " + permissionGroup.getTabColorCode());
+            commandSender.sendMessage("Successfully set the tabcolorcode to " + permissionGroup.getTabColorCode());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("setgroupid")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
                     .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
