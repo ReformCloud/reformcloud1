@@ -1,0 +1,7 @@
+systems\reformcloud\configuration\PropertiesConfig.class
+systems\reformcloud\network\out\PacketOutSendProperties.class
+systems\reformcloud\network\out\PacketOutEnableProperties.class
+systems\reformcloud\network\in\PacketInRequestProperties.class
+systems\reformcloud\network\out\PacketOutDisableProperties.class
+systems\reformcloud\configuration\PropertiesConfig$1.class
+systems\reformcloud\PropertiesAddon.class

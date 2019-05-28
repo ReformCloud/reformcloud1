@@ -1,0 +1,6 @@
+systems\reformcloud\utility\ConsoleWriter.class
+systems\reformcloud\configuration\DiscordConfig.class
+systems\reformcloud\configuration\DiscordInformation.class
+systems\reformcloud\utility\ConsoleInputHandler.class
+systems\reformcloud\configuration\DiscordConfig$1.class
+systems\reformcloud\DiscordAddon.class

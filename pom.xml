@@ -11,7 +11,7 @@
     <modules>
         <module>reformcloud-library</module>
         <module>reformcloud-global</module>
-        <module>reformcloud-utility</module>
+        <module>reformcloud-addons</module>
         <module>reformcloud-common</module>
         <module>reformcloud-pre-loader</module>
     </modules>
