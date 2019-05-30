@@ -4,27 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.meta.CloudProcess;
-import systems.reformcloud.meta.Template;
-import systems.reformcloud.meta.enums.TemplateBackend;
-import systems.reformcloud.meta.info.ProxyInfo;
-import systems.reformcloud.meta.proxy.versions.ProxyVersions;
-import systems.reformcloud.meta.startup.ProxyStartupInfo;
-import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.network.packets.out.*;
-import systems.reformcloud.serverprocess.screen.ScreenHandler;
-import systems.reformcloud.template.TemplatePreparer;
-import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.files.DownloadManager;
-import systems.reformcloud.utility.files.FileUtils;
-import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
-import systems.reformcloud.utility.startup.IServiceAble;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +15,32 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
+import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.enums.TemplateBackend;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.proxy.versions.ProxyVersions;
+import systems.reformcloud.meta.startup.ProxyStartupInfo;
+import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
+import systems.reformcloud.network.packets.out.PacketOutAddProcess;
+import systems.reformcloud.network.packets.out.PacketOutGetControllerTemplate;
+import systems.reformcloud.network.packets.out.PacketOutIconSizeIncorrect;
+import systems.reformcloud.network.packets.out.PacketOutRemoveProcess;
+import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
+import systems.reformcloud.network.packets.out.PacketOutUpdateControllerTemplate;
+import systems.reformcloud.network.packets.out.PacketOutUpdateInternalCloudNetwork;
+import systems.reformcloud.serverprocess.screen.ScreenHandler;
+import systems.reformcloud.template.TemplatePreparer;
+import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.DownloadManager;
+import systems.reformcloud.utility.files.FileUtils;
+import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
+import systems.reformcloud.utility.startup.IServiceAble;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -352,7 +357,7 @@ public final class ProxyStartupHandler implements Serializable, IServiceAble {
             ReformCloudClient.getInstance().getRuntimeLock().lock();
             shutdown0(null, update);
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            ReformCloudClient.getInstance().getRuntimeLock().unlock();
         }
     }
 
@@ -361,7 +366,7 @@ public final class ProxyStartupHandler implements Serializable, IServiceAble {
             ReformCloudClient.getInstance().getRuntimeLock().lock();
             shutdown0(message, update);
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            ReformCloudClient.getInstance().getRuntimeLock().unlock();
         }
     }
 
