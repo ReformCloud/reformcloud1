@@ -226,6 +226,76 @@ public final class CommandPermissions implements Serializable, Command {
                 commandSource.sendMessage(TextComponent.of("§7" + result));
             }).schedule();
             return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setprefix")) {
+            VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIVelocity.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setprefix " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSource.sendMessage(TextComponent.of("§cAn error occurred"));
+                    return;
+                }
+
+                commandSource.sendMessage(TextComponent.of("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setsuffix")) {
+            VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIVelocity.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setsuffix " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSource.sendMessage(TextComponent.of("§cAn error occurred"));
+                    return;
+                }
+
+                commandSource.sendMessage(TextComponent.of("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setdisplay")) {
+            VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIVelocity.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setdisplay " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSource.sendMessage(TextComponent.of("§cAn error occurred"));
+                    return;
+                }
+
+                commandSource.sendMessage(TextComponent.of("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("settabcolorcode")) {
+            VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIVelocity.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " settabcolorcode " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSource.sendMessage(TextComponent.of("§cAn error occurred"));
+                    return;
+                }
+
+                commandSource.sendMessage(TextComponent.of("§7" + result));
+            });
+            return;
+        } else if (strings.length == 3 && strings[1].equalsIgnoreCase("setgroupid")) {
+            VelocityBootstrap.getInstance().getProxy().getScheduler().buildTask(VelocityBootstrap.getInstance(), () -> {
+                String result = ReformCloudAPIVelocity.getInstance().createPacketFuture(
+                        new PacketOutExecuteCommandSilent("perms " + strings[0] + " setgroupid " + strings[2]),
+                        "ReformCloudController"
+                ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
+                if (result == null) {
+                    commandSource.sendMessage(TextComponent.of("§cAn error occurred"));
+                    return;
+                }
+
+                commandSource.sendMessage(TextComponent.of("§7" + result));
+            });
+            return;
         }
 
         String prefix = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix();
@@ -237,6 +307,7 @@ public final class CommandPermissions implements Serializable, Command {
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> setdefault"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <CREATE/DELETE>"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
+        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>"));
     }
 
     @Override
@@ -248,7 +319,7 @@ public final class CommandPermissions implements Serializable, Command {
             return new LinkedList<>();
 
         if (strings.length == 2) {
-            return Arrays.asList("list", "addperm", "removeperm", "addgroup", "removegroup", "setgroup", "setdefault", "create", "delete", "add", "remove");
+            return Arrays.asList("list", "addperm", "removeperm", "addgroup", "removegroup", "setgroup", "setdefault", "create", "delete", "add", "remove", "setprefix", "setsuffix", "setdisplay", "settabcolorcode", "setgroupid");
         }
 
         if (strings.length == 3
