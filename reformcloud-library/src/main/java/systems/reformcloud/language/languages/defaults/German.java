@@ -86,7 +86,7 @@ public final class German extends Language implements Serializable {
                 "Bitte gib den Namen des ersten Clients an",
                 "Wie viel Ram soll die default Lobby Gruppe haben? (in MB)",
                 "Wie viel Ram soll die default Proxy Gruppe haben? (in MB)",
-                "Möchtest du die standart Addons herunterladen? (Du kannst diese auch später herunterladen) [\"yes\" (Empfohlen), \"no\"]",
+                "Möchtest du die standard Addons herunterladen? (Du kannst diese auch später herunterladen) [\"yes\" (Empfohlen), \"no\"]",
                 "Der default WebUser \"administrator\" wurde mit dem Passwort \"%password%\" erstellt",
                 "Ein Fehler ist aufgetreten: %message%",
                 "Der WebUser %name% wurde mit dem Passwort \"%password%\" erstellt",
