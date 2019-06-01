@@ -23,20 +23,20 @@ import java.util.Random;
 public class ServerGroup implements Serializable {
     private static final long serialVersionUID = -6849497313084944255L;
 
-    protected String name, motd, join_permission;
+    private String name, motd, join_permission;
 
     protected List<String> clients;
     protected List<Template> templates;
 
-    protected int memory, minOnline, maxOnline, maxPlayers, startPort;
+    private int memory, minOnline, maxOnline, maxPlayers, startPort;
 
-    protected boolean maintenance, save_logs;
-    protected ServerModeType serverModeType;
+    private boolean maintenance, save_logs;
+    private ServerModeType serverModeType;
 
     private AutoStart autoStart;
     private AutoStop autoStop;
 
-    protected SpigotVersions spigotVersions;
+    private SpigotVersions spigotVersions;
 
     @java.beans.ConstructorProperties({"name", "motd", "join_permission", "clients", "templates", "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "save_logs", "autoStart", "autoStop", "serverModeType", "spigotVersions"})
     public ServerGroup(String name, String motd, String join_permission, List<String> clients, List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers, int startPort, boolean maintenance, boolean save_logs, AutoStart autoStart, AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions) {

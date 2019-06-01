@@ -6,12 +6,12 @@
 
     <groupId>systems.reformcloud</groupId>
     <artifactId>reformcloud-parent</artifactId>
-    <version>1.9</version>
+    <version>1.10</version>
 
     <modules>
         <module>reformcloud-library</module>
         <module>reformcloud-global</module>
-        <module>reformcloud-utility</module>
+        <module>reformcloud-addons</module>
         <module>reformcloud-common</module>
         <module>reformcloud-pre-loader</module>
     </modules>
@@ -40,16 +40,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 
-        <service.version>1.9</service.version>
-        <service.type>BETA</service.type>
+        <service.version>1.10</service.version>
+        <service.type>PRE-STABLE</service.type>
 
-        <api.default.version>19BETA19050018</api.default.version>
+        <api.default.version>110PRESTABLE20042405</api.default.version>
 
         <plugin.shade.version>3.2.1</plugin.shade.version>
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
         <plugin.jar.version>3.1.2</plugin.jar.version>
         <plugin.antrun.version>1.8</plugin.antrun.version>
-        <plugin.maven-source.version>3.0.1</plugin.maven-source.version>
+        <plugin.maven-source.version>3.1.0</plugin.maven-source.version>
 
         <dependency.test.junit.version>4.12</dependency.test.junit.version>
 
@@ -61,7 +61,7 @@
         <dependency.spigot.version>1.13</dependency.spigot.version>
         <dependency.snakeyaml.version>1.24</dependency.snakeyaml.version>
         <dependency.commons-io.version>2.6</dependency.commons-io.version>
-        <dependency.jda.version>4.ALPHA.0_9</dependency.jda.version>
+        <dependency.jda.version>4.ALPHA.0_91</dependency.jda.version>
         <dependency.slf4j.version>1.7.26</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
     </properties>

@@ -17,7 +17,7 @@ import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author _Klaro | Pasqual K. / created on 08.02.2019
@@ -31,7 +31,7 @@ public final class RestAPIPermissionCheck implements Serializable, WebHandler {
 
         final HttpHeaders httpHeaders = httpRequest.headers();
         if (!httpHeaders.contains("-XUser") || !httpHeaders.contains("-XPassword") || !httpHeaders.contains("-XPermission")) {
-            answer.addValue("response", Arrays.asList("No -XUser, -XPassword or -XPermission provided"));
+            answer.addValue("response", Collections.singletonList("No -XUser, -XPassword or -XPermission provided"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
@@ -44,25 +44,25 @@ public final class RestAPIPermissionCheck implements Serializable, WebHandler {
                 .findFirst()
                 .orElse(null);
         if (webUser == null) {
-            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Collections.singletonList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!webUser.getPassword().equals(StringEncrypt.encryptSHA512(httpHeaders.get("-XPassword")))) {
-            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Collections.singletonList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (RestAPIUtility.hasPermission(webUser, httpHeaders.get("-XPermission"))) {
-            answer.addValue("success", true).addValue("response", Arrays.asList("Permission is set"));
+            answer.addValue("success", true).addValue("response", Collections.singletonList("Permission is set"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
             return fullHttpResponse;
         }
 
-        answer.addValue("success", true).addValue("response", Arrays.asList("Permission isn't set"));
+        answer.addValue("success", true).addValue("response", Collections.singletonList("Permission isn't set"));
         fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
         return fullHttpResponse;
     }

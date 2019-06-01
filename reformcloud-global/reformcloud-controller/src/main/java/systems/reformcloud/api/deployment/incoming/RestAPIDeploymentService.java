@@ -16,7 +16,7 @@ import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -36,13 +36,13 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
 
         InternalWebUser internalWebUser = ReformCloudController.getInstance().getInternalCloudNetwork().getInternalWebUser();
         if (internalWebUser == null || !internalWebUser.getName().equals(httpHeaders.get("-XUser"))) {
-            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
+            answer.addValue("response", Collections.singletonList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!internalWebUser.getPassword().equals(httpHeaders.get("-XPassword"))) {
-            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response", Collections.singletonList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }

@@ -154,8 +154,8 @@ public final class Configuration {
     }
 
     public short getShort(String path, short def) {
-        Object val = get(path, def);
-        return (val instanceof Number) ? ((Number) val).shortValue() : def;
+        Number val = get(path, def);
+        return (val != null) ? val.shortValue() : def;
     }
 
     public List<Short> getShortList(String path) {

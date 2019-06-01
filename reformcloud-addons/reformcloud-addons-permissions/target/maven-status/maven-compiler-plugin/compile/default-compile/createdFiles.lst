@@ -1,0 +1,12 @@
+systems\reformcloud\network\query\out\PacketOutQueryGetPermissionCache.class
+systems\reformcloud\commands\CommandPermissions.class
+systems\reformcloud\PermissionsAddon.class
+systems\reformcloud\listener\PlayerDisconnectedListener.class
+systems\reformcloud\network\in\PacketInUpdatePermissionHolder.class
+systems\reformcloud\network\query\in\PacketInQueryGetPermissionHolder.class
+systems\reformcloud\network\out\PacketOutUpdatePermissionHolder.class
+systems\reformcloud\network\out\PacketOutUpdatePermissionGroup.class
+systems\reformcloud\network\out\PacketOutUpdatePermissionCache.class
+systems\reformcloud\network\query\out\PacketOutQueryGetPermissionHolder.class
+systems\reformcloud\network\query\in\PacketInQueryGetPermissionCache.class
+systems\reformcloud\database\PermissionDatabase.class

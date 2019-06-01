@@ -8,6 +8,7 @@ import systems.reformcloud.utility.map.maps.Double;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 06.04.2019
@@ -147,21 +148,21 @@ public final class ProxySettings implements Serializable {
         final ProxySettings other = (ProxySettings) o;
         final Object this$targetProxyGroup = this.getTargetProxyGroup();
         final Object other$targetProxyGroup = other.getTargetProxyGroup();
-        if (this$targetProxyGroup == null ? other$targetProxyGroup != null : !this$targetProxyGroup.equals(other$targetProxyGroup))
+        if (!Objects.equals(this$targetProxyGroup, other$targetProxyGroup))
             return false;
         final Object this$tabHeader = this.getTabHeader();
         final Object other$tabHeader = other.getTabHeader();
-        if (this$tabHeader == null ? other$tabHeader != null : !this$tabHeader.equals(other$tabHeader)) return false;
+        if (!Objects.equals(this$tabHeader, other$tabHeader)) return false;
         final Object this$tabFooter = this.getTabFooter();
         final Object other$tabFooter = other.getTabFooter();
-        if (this$tabFooter == null ? other$tabFooter != null : !this$tabFooter.equals(other$tabFooter)) return false;
+        if (!Objects.equals(this$tabFooter, other$tabFooter)) return false;
         final Object this$maintenanceProtocol = this.getMaintenanceProtocol();
         final Object other$maintenanceProtocol = other.getMaintenanceProtocol();
-        if (this$maintenanceProtocol == null ? other$maintenanceProtocol != null : !this$maintenanceProtocol.equals(other$maintenanceProtocol))
+        if (!Objects.equals(this$maintenanceProtocol, other$maintenanceProtocol))
             return false;
         final Object this$protocol = this.getProtocol();
         final Object other$protocol = other.getProtocol();
-        if (this$protocol == null ? other$protocol != null : !this$protocol.equals(other$protocol)) return false;
+        if (!Objects.equals(this$protocol, other$protocol)) return false;
         if (!java.util.Arrays.deepEquals(this.getPlayerInfo(), other.getPlayerInfo())) return false;
         if (this.isProtocolEnabled() != other.isProtocolEnabled()) return false;
         if (this.isTabEnabled() != other.isTabEnabled()) return false;
@@ -170,11 +171,11 @@ public final class ProxySettings implements Serializable {
         if (this.getMoreSlots() != other.getMoreSlots()) return false;
         final Object this$normalMotd = this.getNormalMotd();
         final Object other$normalMotd = other.getNormalMotd();
-        if (this$normalMotd == null ? other$normalMotd != null : !this$normalMotd.equals(other$normalMotd))
+        if (!Objects.equals(this$normalMotd, other$normalMotd))
             return false;
         final Object this$maintenanceMotd = this.getMaintenanceMotd();
         final Object other$maintenanceMotd = other.getMaintenanceMotd();
-        if (this$maintenanceMotd == null ? other$maintenanceMotd != null : !this$maintenanceMotd.equals(other$maintenanceMotd))
+        if (!Objects.equals(this$maintenanceMotd, other$maintenanceMotd))
             return false;
         return true;
     }

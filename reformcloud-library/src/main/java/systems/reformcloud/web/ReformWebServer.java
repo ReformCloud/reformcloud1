@@ -33,12 +33,12 @@ public final class ReformWebServer implements Serializable {
     /**
      * The boss group of the web server
      */
-    protected EventLoopGroup bossGroup = ReformCloudLibraryService.eventLoopGroup();
+    private EventLoopGroup bossGroup = ReformCloudLibraryService.eventLoopGroup();
 
     /**
      * The worker group of the web server
      */
-    protected EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup();
+    private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup();
 
     /**
      * The created server bootstrap

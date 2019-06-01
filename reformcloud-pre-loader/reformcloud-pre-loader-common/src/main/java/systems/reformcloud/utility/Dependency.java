@@ -19,6 +19,13 @@ public abstract class Dependency implements Serializable {
     public String download_url = "http://central.maven.org/maven2/";
 
     /**
+     * Initializes the dependency using the default url
+     */
+    protected Dependency() {
+        this(null);
+    }
+
+    /**
      * Creates a new constructor of the dependency
      *
      * @param url       The download url of the dependency or {@code null} if the cloud should use the default url

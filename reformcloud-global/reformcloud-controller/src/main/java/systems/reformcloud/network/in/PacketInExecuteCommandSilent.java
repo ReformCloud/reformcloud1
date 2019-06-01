@@ -32,7 +32,7 @@ public final class PacketInExecuteCommandSilent implements Serializable, Network
 
         private boolean sent = false;
 
-        public CommandSenderImpl(Configuration in, UUID resultID) {
+        CommandSenderImpl(Configuration in, UUID resultID) {
             this.in = in;
             this.resultID = resultID;
         }

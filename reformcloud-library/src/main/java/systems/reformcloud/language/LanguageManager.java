@@ -26,7 +26,7 @@ public final class LanguageManager implements Serializable {
     /**
      * The currently loaded language
      */
-    public final Language loaded;
+    private final Language loaded;
 
     /**
      * Loads the language

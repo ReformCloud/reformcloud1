@@ -6,6 +6,7 @@ package systems.reformcloud.meta.web;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -52,21 +53,21 @@ public class WebUser implements Serializable {
         if (o == this) return true;
         if (!(o instanceof WebUser)) return false;
         final WebUser other = (WebUser) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$user = this.getUser();
         final Object other$user = other.getUser();
-        if (this$user == null ? other$user != null : !this$user.equals(other$user)) return false;
+        if (!Objects.equals(this$user, other$user)) return false;
         final Object this$password = this.getPassword();
         final Object other$password = other.getPassword();
-        if (this$password == null ? other$password != null : !this$password.equals(other$password)) return false;
+        if (!Objects.equals(this$password, other$password)) return false;
         final Object this$permissions = this.getPermissions();
         final Object other$permissions = other.getPermissions();
-        if (this$permissions == null ? other$permissions != null : !this$permissions.equals(other$permissions))
+        if (!Objects.equals(this$permissions, other$permissions))
             return false;
         return true;
     }
 
-    protected boolean canEqual(final Object other) {
+    private boolean canEqual(final Object other) {
         return other instanceof WebUser;
     }
 

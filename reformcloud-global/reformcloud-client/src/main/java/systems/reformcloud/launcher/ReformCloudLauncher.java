@@ -7,9 +7,10 @@ package systems.reformcloud.launcher;
 import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.CommandManager;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.console.InfinitySleeper;
+import systems.reformcloud.logging.console.ReformAsyncConsole;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncExceptionThrown;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
@@ -49,6 +50,8 @@ final class ReformCloudLauncher {
 
         final long current = System.currentTimeMillis();
 
+        final InfinitySleeper infinitySleeper = new InfinitySleeper();
+
         Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
             if (t instanceof ThreadDeath)
                 return;
@@ -79,26 +82,8 @@ final class ReformCloudLauncher {
         new ReformCloudClient(loggerProvider, commandManager, options.contains("--ssl"), current);
 
         loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getHelp_default());
+        new ReformAsyncConsole(loggerProvider, commandManager, "Client");
 
-        String line;
-        try {
-            while (true) {
-                loggerProvider.getConsoleReader().setPrompt("");
-                loggerProvider.getConsoleReader().resetPromptLine("", "", 0);
-
-                while ((line = loggerProvider.getConsoleReader().readLine(StringUtil.REFORM_VERSION + "-" + StringUtil.REFORM_SPECIFICATION + "@ReformCloudClient > ")) != null && !line.trim().isEmpty() && ReformCloudClient.RUNNING) {
-                    loggerProvider.getConsoleReader().setPrompt("");
-
-                    try {
-                        if (!commandManager.dispatchCommand(line))
-                            loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getHelp_command_not_found());
-                    } catch (final Throwable throwable) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while handling command line input", throwable);
-                    }
-                }
-            }
-        } catch (final Throwable throwable) {
-            StringUtil.printError(loggerProvider, "Error while reading command line", throwable);
-        }
+        infinitySleeper.sleep();
     }
 }

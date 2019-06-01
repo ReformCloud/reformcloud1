@@ -23,6 +23,8 @@ import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.MultithreadEventExecutorGroup;
 import systems.reformcloud.api.IAsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
@@ -36,6 +38,7 @@ import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
 
+import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.Locale;
@@ -70,7 +73,7 @@ public final class ReformCloudLibraryService {
     /**
      * Get the reformcloud main thread name
      */
-    public static final String THREAD_MAIN_NAME;
+    private static final String THREAD_MAIN_NAME;
 
     /**
      * The cloud created gson instance
@@ -85,7 +88,7 @@ public final class ReformCloudLibraryService {
     /**
      * Netty booleans
      */
-    public static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
+    private static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
 
     /**
      * The current thread local random instance
@@ -97,7 +100,6 @@ public final class ReformCloudLibraryService {
      */
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
             createThreadFactory(
-                    "ReformCloud-PoolThread-%d",
                     (t, e) -> {
                         if (ReformCloudLibraryServiceProvider.getInstance() != null)
                             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error in thread group", e);
@@ -198,7 +200,9 @@ public final class ReformCloudLibraryService {
      *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup
      */
     public static EventLoopGroup eventLoopGroup() {
-        return EPOLL ? new EpollEventLoopGroup() : KQUEUE ? new KQueueEventLoopGroup() : new NioEventLoopGroup();
+        return EPOLL ? new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(), createThreadFactory())
+                : KQUEUE ? new KQueueEventLoopGroup(Runtime.getRuntime().availableProcessors(), createThreadFactory())
+                : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(), createThreadFactory());
     }
 
     /**
@@ -208,7 +212,9 @@ public final class ReformCloudLibraryService {
      *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup with the given threads
      */
     public static EventLoopGroup eventLoopGroup(int threads) {
-        return EPOLL ? new EpollEventLoopGroup(threads) : KQUEUE ? new KQueueEventLoopGroup(threads) : new NioEventLoopGroup(threads);
+        return EPOLL ? new EpollEventLoopGroup(threads, createThreadFactory())
+                : KQUEUE ? new KQueueEventLoopGroup(threads, createThreadFactory())
+                : new NioEventLoopGroup(threads, createThreadFactory());
     }
 
     /**
@@ -330,8 +336,17 @@ public final class ReformCloudLibraryService {
      *
      * @return The runtime mx bean of the current jvm
      */
-    public static RuntimeMXBean getRuntimeMXBean() {
+    private static RuntimeMXBean getRuntimeMXBean() {
         return ManagementFactory.getRuntimeMXBean();
+    }
+
+    /**
+     * Get the current class loading mx bean of the current jvm
+     *
+     * @return the current class loading mx bean of the current jvm
+     */
+    private static ClassLoadingMXBean getClassLoadingMXBean() {
+        return ManagementFactory.getClassLoadingMXBean();
     }
 
     /**
@@ -403,15 +418,19 @@ public final class ReformCloudLibraryService {
         return new Cache<>(maxSize);
     }
 
-    private static ThreadFactory createThreadFactory(String name, Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+    private static ThreadFactory createThreadFactory(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
         AtomicLong atomicLong = new AtomicLong(0);
         return runnable -> {
             Thread thread = threadFactory.newThread(runnable);
-            thread.setName(String.format(Locale.ROOT, name, atomicLong.getAndIncrement()));
+            thread.setName(String.format(Locale.ROOT, "ReformCloud-PoolThread-%d", atomicLong.getAndIncrement()));
             thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
             thread.setDaemon(true);
             return thread;
         };
+    }
+
+    private static ThreadFactory createThreadFactory() {
+        return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true, Thread.MIN_PRIORITY);
     }
 }

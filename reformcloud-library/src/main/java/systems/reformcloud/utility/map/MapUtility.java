@@ -45,7 +45,7 @@ public final class MapUtility implements Serializable {
      * @return The created trio
      */
 
-    public static <F, S, T> Trio<F, S, T> newTrio(F f, S s, T t) {
+    private static <F, S, T> Trio<F, S, T> newTrio(F f, S s, T t) {
         return new Trio<>(f, s, t);
     }
 
@@ -103,7 +103,7 @@ public final class MapUtility implements Serializable {
      * @return The created map
      */
 
-    public static <F, S> Map<F, S> convert(Double<F, S> in) {
+    private static <F, S> Map<F, S> convert(Double<F, S> in) {
         Map<F, S> out = new HashMap<>();
         out.put(in.getFirst(), in.getSecond());
         return out;
@@ -191,19 +191,6 @@ public final class MapUtility implements Serializable {
             run.onCall(t);
     }
 
-    /**
-     * Runs over a list
-     *
-     * @param list The list which should be work through
-     * @param run  The callbacks which should be called
-     * @param <T>  The type of the list parameters
-     */
-    public static <T> void iterator(T[] list, Callback<T>... run) {
-        for (T t : list)
-            for (Callback callback : run)
-                callback.onCall(t);
-    }
-
     public static <T> T filter(Collection<T> collection, Predicate<T> checkable) {
         for (T t : collection)
             if (checkable.test(t))
@@ -238,6 +225,7 @@ public final class MapUtility implements Serializable {
         return out;
     }
 
+    @SafeVarargs
     public static <T> Collection<T> connect(Collection<T>... collections) {
         Collection<T> out = new LinkedList<>();
         for (Collection<T> collection : collections)

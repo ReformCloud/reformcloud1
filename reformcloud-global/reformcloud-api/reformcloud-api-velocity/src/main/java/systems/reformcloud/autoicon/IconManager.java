@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class IconManager implements Serializable {
-    public static IconManager instance;
+    private static IconManager instance;
 
     private IconData iconData;
 

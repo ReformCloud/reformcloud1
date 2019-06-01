@@ -14,6 +14,7 @@ import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.events.ReloadDoneEvent;
 import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
@@ -68,10 +69,13 @@ import systems.reformcloud.versioneering.VersionController;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.Socket;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -87,6 +91,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     private CommandManager commandManager;
 
     private boolean ssl;
+
+    private final Lock runtimeLock = new ReentrantLock();
 
     private ClientInfo clientInfo;
 
@@ -265,6 +271,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         RUNNING = true;
         this.loggerProvider.info(this.internalCloudNetwork.getLoaded().getGlobal_reload_done());
         this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientUpdateSuccess());
+        this.eventManager.fire(new ReloadDoneEvent());
     }
 
     private boolean shutdown = false;
@@ -361,18 +368,13 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     public boolean isPortUseable(final int port) {
-        boolean useable = false;
-        try {
-            Socket socket = new Socket(this.cloudConfiguration.getStartIP(), port);
-            if (socket.isClosed() && !socket.isConnected())
-                useable = true;
-
-            socket.close();
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(new InetSocketAddress(port));
+            return true;
         } catch (final IOException ignored) {
-            useable = true;
         }
 
-        return useable;
+        return false;
     }
 
     public void updateInternalTime(final long controller) {
@@ -465,7 +467,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 "ReformCloud",
                 null,
                 new ArrayList<>(clients),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 512,
                 1,
                 -1,
@@ -491,7 +493,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public void createServerGroup(String name) {
-        createServerGroup(name, ServerModeType.DYNAMIC, Arrays.asList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
     }
 
     @Override
@@ -578,7 +580,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 name,
                 new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
                 new ArrayList<>(),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
@@ -1174,5 +1176,9 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     public void setInternalTime(long internalTime) {
         this.internalTime = internalTime;
+    }
+
+    public Lock getRuntimeLock() {
+        return runtimeLock;
     }
 }

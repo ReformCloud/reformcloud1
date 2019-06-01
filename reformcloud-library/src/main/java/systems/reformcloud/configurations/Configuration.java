@@ -31,7 +31,7 @@ public final class Configuration {
     /**
      * The json object of the configuration
      */
-    protected JsonObject jsonObject;
+    private JsonObject jsonObject;
 
     /**
      * Creates a new configuration
@@ -371,28 +371,5 @@ public final class Configuration {
 
     public void setJsonObject(JsonObject jsonObject) {
         this.jsonObject = jsonObject;
-    }
-
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Configuration)) return false;
-        final Configuration other = (Configuration) o;
-        final Object this$jsonObject = this.getJsonObject();
-        final Object other$jsonObject = other.getJsonObject();
-        if (this$jsonObject == null ? other$jsonObject != null : !this$jsonObject.equals(other$jsonObject))
-            return false;
-        return true;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $jsonObject = this.getJsonObject();
-        result = result * PRIME + ($jsonObject == null ? 43 : $jsonObject.hashCode());
-        return result;
-    }
-
-    public String toString() {
-        return getJsonString();
     }
 }

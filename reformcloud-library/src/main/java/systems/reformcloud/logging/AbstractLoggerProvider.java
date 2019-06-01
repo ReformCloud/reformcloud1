@@ -4,6 +4,7 @@
 
 package systems.reformcloud.logging;
 
+import jline.console.ConsoleReader;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 
 import java.io.Serializable;
@@ -18,7 +19,7 @@ public abstract class AbstractLoggerProvider implements Serializable {
     /**
      * The global logging instance
      */
-    public static final AtomicReference<AbstractLoggerProvider> globalInstance = new AtomicReference<>();
+    static final AtomicReference<AbstractLoggerProvider> globalInstance = new AtomicReference<>();
 
     /**
      * Infos a message to the console
@@ -159,6 +160,13 @@ public abstract class AbstractLoggerProvider implements Serializable {
      * @return A consumer for the exception method
      */
     public abstract Consumer<Throwable> exception();
+
+    /**
+     * Get the current console reader of the cloud
+     *
+     * @return the current console reader of the cloud
+     */
+    public abstract ConsoleReader consoleReader();
 
     /**
      * Creates a new logger

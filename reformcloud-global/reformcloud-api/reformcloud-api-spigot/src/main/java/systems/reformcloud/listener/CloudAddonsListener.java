@@ -48,7 +48,7 @@ public final class CloudAddonsListener implements Serializable, Listener {
                                     .replace("%suffix%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()))
                                     .replace("%display%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()))
                                     .replace("%id%", Integer.toString(permissionGroup.getGroupID()))
-                                    .replace("%message%", event.getPlayer().hasPermission("chat.color") ?
+                                    .replace("%message%", event.getPlayer().hasPermission("reformcloud.chat.color") ?
                                             ChatColor.translateAlternateColorCodes('&', event.getMessage().replace("%", "%%"))
                                             :
                                             ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', event.getMessage().replace("%", "%%"))))

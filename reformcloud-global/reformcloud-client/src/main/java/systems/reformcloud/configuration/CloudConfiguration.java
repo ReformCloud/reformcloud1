@@ -10,12 +10,15 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.logging.LoggerProvider;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.annotiations.ForRemoval;
+import systems.reformcloud.utility.annotiations.ReplacedBy;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.FileUtils;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Predicate;
 
@@ -113,7 +116,7 @@ public final class CloudConfiguration implements Serializable {
         return true;
     }
 
-    public void clearServerTemp() {
+    private void clearServerTemp() {
         final File dir = new File("reformcloud/temp/servers");
 
         if (dir.isDirectory()) {
@@ -125,7 +128,7 @@ public final class CloudConfiguration implements Serializable {
         }
     }
 
-    public void clearProxyTemp() {
+    private void clearProxyTemp() {
         final File dir = new File("reformcloud/temp/proxies");
 
         if (dir.isDirectory()) {
@@ -203,7 +206,14 @@ public final class CloudConfiguration implements Serializable {
         return this.memory;
     }
 
-    public int getControllerPort() {
+    @Deprecated
+    @ForRemoval
+    @ReplacedBy("controllerPort")
+    private int getControllerPort() {
+        return this.controllerPort;
+    }
+
+    public int controllerPort() {
         return this.controllerPort;
     }
 
@@ -269,19 +279,19 @@ public final class CloudConfiguration implements Serializable {
         final CloudConfiguration other = (CloudConfiguration) o;
         final Object this$controllerKey = this.getControllerKey();
         final Object other$controllerKey = other.getControllerKey();
-        if (this$controllerKey == null ? other$controllerKey != null : !this$controllerKey.equals(other$controllerKey))
+        if (!Objects.equals(this$controllerKey, other$controllerKey))
             return false;
         final Object this$controllerIP = this.getControllerIP();
         final Object other$controllerIP = other.getControllerIP();
-        if (this$controllerIP == null ? other$controllerIP != null : !this$controllerIP.equals(other$controllerIP))
+        if (!Objects.equals(this$controllerIP, other$controllerIP))
             return false;
         final Object this$clientName = this.getClientName();
         final Object other$clientName = other.getClientName();
-        if (this$clientName == null ? other$clientName != null : !this$clientName.equals(other$clientName))
+        if (!Objects.equals(this$clientName, other$clientName))
             return false;
         final Object this$startIP = this.getStartIP();
         final Object other$startIP = other.getStartIP();
-        if (this$startIP == null ? other$startIP != null : !this$startIP.equals(other$startIP)) return false;
+        if (!Objects.equals(this$startIP, other$startIP)) return false;
         if (this.getMemory() != other.getMemory()) return false;
         if (this.getControllerPort() != other.getControllerPort()) return false;
         if (this.getControllerWebPort() != other.getControllerWebPort()) return false;
@@ -289,7 +299,7 @@ public final class CloudConfiguration implements Serializable {
         if (Double.compare(this.getCpu(), other.getCpu()) != 0) return false;
         final Object this$ethernetAddress = this.getEthernetAddress();
         final Object other$ethernetAddress = other.getEthernetAddress();
-        if (this$ethernetAddress == null ? other$ethernetAddress != null : !this$ethernetAddress.equals(other$ethernetAddress))
+        if (!Objects.equals(this$ethernetAddress, other$ethernetAddress))
             return false;
         return true;
     }

@@ -21,20 +21,20 @@ import java.util.*;
 public class ProxyGroup implements Serializable {
     private static final long serialVersionUID = 4196459006374952552L;
 
-    protected String name;
+    private String name;
 
-    protected List<String> clients, disabledServerGroups;
-    protected List<Template> templates;
-    protected Collection<UUID> whitelist;
+    private List<String> clients, disabledServerGroups;
+    private List<Template> templates;
+    private Collection<UUID> whitelist;
 
-    protected AutoStart autoStart;
-    protected AutoStop autoStop;
+    private AutoStart autoStart;
+    private AutoStop autoStop;
 
-    protected ProxyModeType proxyModeType;
+    private ProxyModeType proxyModeType;
 
-    protected boolean controllerCommandLogging, maintenance, save_logs;
+    private boolean controllerCommandLogging, maintenance, save_logs;
 
-    protected int startPort, minOnline, maxOnline, maxPlayers, memory;
+    private int startPort, minOnline, maxOnline, maxPlayers, memory;
 
     protected ProxyVersions proxyVersions;
 
@@ -224,26 +224,26 @@ public class ProxyGroup implements Serializable {
         if (o == this) return true;
         if (!(o instanceof ProxyGroup)) return false;
         final ProxyGroup other = (ProxyGroup) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual(this)) return false;
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (!Objects.equals(this$name, other$name)) return false;
         final Object this$clients = this.getClients();
         final Object other$clients = other.getClients();
-        if (this$clients == null ? other$clients != null : !this$clients.equals(other$clients)) return false;
+        if (!Objects.equals(this$clients, other$clients)) return false;
         final Object this$disabledServerGroups = this.getDisabledServerGroups();
         final Object other$disabledServerGroups = other.getDisabledServerGroups();
-        if (this$disabledServerGroups == null ? other$disabledServerGroups != null : !this$disabledServerGroups.equals(other$disabledServerGroups))
+        if (!Objects.equals(this$disabledServerGroups, other$disabledServerGroups))
             return false;
         final Object this$templates = this.getTemplates();
         final Object other$templates = other.getTemplates();
-        if (this$templates == null ? other$templates != null : !this$templates.equals(other$templates)) return false;
+        if (!Objects.equals(this$templates, other$templates)) return false;
         final Object this$whitelist = this.getWhitelist();
         final Object other$whitelist = other.getWhitelist();
-        if (this$whitelist == null ? other$whitelist != null : !this$whitelist.equals(other$whitelist)) return false;
+        if (!Objects.equals(this$whitelist, other$whitelist)) return false;
         final Object this$proxyModeType = this.getProxyModeType();
         final Object other$proxyModeType = other.getProxyModeType();
-        if (this$proxyModeType == null ? other$proxyModeType != null : !this$proxyModeType.equals(other$proxyModeType))
+        if (!Objects.equals(this$proxyModeType, other$proxyModeType))
             return false;
         if (this.isControllerCommandLogging() != other.isControllerCommandLogging()) return false;
         if (this.isMaintenance() != other.isMaintenance()) return false;
@@ -255,7 +255,7 @@ public class ProxyGroup implements Serializable {
         if (this.getMemory() != other.getMemory()) return false;
         final Object this$proxyVersions = this.getProxyVersions();
         final Object other$proxyVersions = other.getProxyVersions();
-        if (this$proxyVersions == null ? other$proxyVersions != null : !this$proxyVersions.equals(other$proxyVersions))
+        if (!Objects.equals(this$proxyVersions, other$proxyVersions))
             return false;
         return true;
     }

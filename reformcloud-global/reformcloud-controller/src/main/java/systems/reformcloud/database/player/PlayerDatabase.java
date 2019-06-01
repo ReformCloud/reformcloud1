@@ -136,7 +136,7 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
             this.cachedOfflinePlayers.add(offlinePlayer.getUniqueID(), offlinePlayer);
     }
 
-    public void cacheOnlinePlayer(OnlinePlayer onlinePlayer) {
+    private void cacheOnlinePlayer(OnlinePlayer onlinePlayer) {
         if (!this.cachedOnlinePlayers.containsKey(onlinePlayer.getUniqueID()))
             this.cachedOnlinePlayers.put(onlinePlayer.getUniqueID(), onlinePlayer);
     }

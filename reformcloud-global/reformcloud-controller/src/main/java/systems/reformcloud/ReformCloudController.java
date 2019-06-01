@@ -27,6 +27,7 @@ import systems.reformcloud.database.player.PlayerDatabase;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.events.ProxyInfoUpdateEvent;
+import systems.reformcloud.event.events.ReloadDoneEvent;
 import systems.reformcloud.event.events.ServerInfoUpdateEvent;
 import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -449,6 +450,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.checkForUpdates();
 
         this.loggerProvider.info(this.getLoadedLanguage().getGlobal_reload_done());
+        this.eventManager.fire(new ReloadDoneEvent());
     }
 
     private void updateAllConnectedClients() {
@@ -467,15 +469,11 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     public void shutdownAll() {
         RUNNING = false;
 
-        this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
-            this.loggerProvider.info(this.getLoadedLanguage().getController_servprocess_stopped()
-                    .replace("%name%", e.getCloudProcess().getName()));
-        });
+        this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> this.loggerProvider.info(this.getLoadedLanguage().getController_servprocess_stopped()
+                .replace("%name%", e.getCloudProcess().getName())));
 
-        this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> {
-            this.loggerProvider.info(this.getLoadedLanguage().getController_proxyprocess_stopped()
-                    .replace("%name%", e.getCloudProcess().getName()));
-        });
+        this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> this.loggerProvider.info(this.getLoadedLanguage().getController_proxyprocess_stopped()
+                .replace("%name%", e.getCloudProcess().getName())));
 
         this.loggerProvider.info(this.getLoadedLanguage().getWaiting_for_tasks());
 
@@ -701,7 +699,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 "ReformCloud",
                 null,
                 new ArrayList<>(clients),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 512,
                 1,
                 -1,
@@ -727,7 +725,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     @Override
     public void createServerGroup(String name) {
-        createServerGroup(name, ServerModeType.DYNAMIC, Arrays.asList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
     }
 
     @Override
@@ -814,7 +812,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 name,
                 new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
                 new ArrayList<>(),
-                Arrays.asList(new Template("default", null, TemplateBackend.CLIENT)),
+                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
                 new ArrayList<>(),
                 ProxyModeType.DYNAMIC,
                 new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),

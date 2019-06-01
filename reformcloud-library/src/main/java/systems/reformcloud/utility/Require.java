@@ -29,7 +29,7 @@ public final class Require implements Serializable {
      * @param <T>           The type of the given parameter
      * @return The parameter or throws an exception when the parameter is null
      */
-    public static <T> T requireNotNullOrThrow(T t, Throwable exception) {
+    private static <T> T requireNotNullOrThrow(T t, Throwable exception) {
         if (t == null)
             throw new IllegalStateException(exception);
 
@@ -54,6 +54,7 @@ public final class Require implements Serializable {
      * @param t             The given parameters which should be checked
      * @param <T>           The type of the given parameters
      */
+    @SafeVarargs
     public static <T> void requiresNotNull(T... t) {
         for (T check : t) {
             if (check == null)

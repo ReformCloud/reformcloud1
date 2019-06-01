@@ -27,6 +27,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
+import systems.reformcloud.utility.startup.IServiceAble;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -41,7 +42,7 @@ import java.util.Properties;
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public final class CloudServerStartupHandler implements Serializable {
+public final class CloudServerStartupHandler implements Serializable, IServiceAble {
     private Path path;
     private ServerStartupInfo serverStartupInfo;
     private Process process;
@@ -80,12 +81,27 @@ public final class CloudServerStartupHandler implements Serializable {
     }
 
     /**
-     * Starts the SpigotServer
+     * Locks the runtime lock and starts the service
      *
-     * @return {@code true} if the Client could start the SpigotServer
-     * or {@code false} if the Client couldn't start the SpigotServer
+     * @return If the server could start or not
      */
+    @Override
     public boolean bootstrap() {
+        try {
+            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            this.bootstrap0();
+        } finally {
+            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+        }
+
+        return true;
+    }
+
+    /**
+     * Starts the SpigotServer
+     */
+    @Override
+    public void bootstrap0() {
         if (this.serverStartupInfo.getTemplate() != null)
             loaded = this.serverStartupInfo.getServerGroup().getTemplate(this.serverStartupInfo.getTemplate());
         else
@@ -105,9 +121,18 @@ public final class CloudServerStartupHandler implements Serializable {
                     ZoneInformationProtocolUtility.unZip(new File(path + "/loaded.zip"), path + "");
                 } catch (final Exception ex) {
                     ex.printStackTrace();
-                    return false;
+                    return;
                 }
             } else if (loaded.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                if (this.serverStartupInfo.getServerGroup().getTemplateOrElseNull("every") != null) {
+                    if (!Files.exists(Paths.get("reformcloud/templates/servers/" + this.serverStartupInfo.getServerGroup().getName() + "/every")))
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + this.serverStartupInfo.getServerGroup().getName() + "/every"));
+                    else
+                        FileUtils.copyAllFiles(
+                                Paths.get("reformcloud/templates/servers/" + this.serverStartupInfo.getServerGroup().getName() + "/every"),
+                                this.path.toString()
+                        );
+                }
                 FileUtils.copyAllFiles(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/" + this.loaded.getName()), path + StringUtil.EMPTY);
             } else if (loaded.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
                 ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
@@ -119,7 +144,7 @@ public final class CloudServerStartupHandler implements Serializable {
                 );
                 ReformCloudLibraryService.sleep(50);
             } else
-                return false;
+                return;
         }
 
         FileUtils.copyAllFiles(Paths.get("libraries"), path + "/libraries");
@@ -148,7 +173,7 @@ public final class CloudServerStartupHandler implements Serializable {
                         .replace("bungeecord=false", "bungeecord=true");
                 org.apache.commons.io.FileUtils.write(file, conf, StandardCharsets.UTF_8);
             } catch (final IOException ex) {
-                return false;
+                return;
             }
         }
 
@@ -169,7 +194,7 @@ public final class CloudServerStartupHandler implements Serializable {
                         .replace("bungeecord=false", "bungeecord=true");
                 org.apache.commons.io.FileUtils.write(file, conf, StandardCharsets.UTF_8);
             } catch (final IOException ex) {
-                return false;
+                return;
             }
         }
 
@@ -212,7 +237,7 @@ public final class CloudServerStartupHandler implements Serializable {
                 properties.load(inputStreamReader);
             } catch (final IOException ex) {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
-                return false;
+                return;
             }
         } else if (serverStartupInfo.getServerGroup().getSpigotVersions().equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/config/glowstone.yml")), StandardCharsets.UTF_8)) {
@@ -236,14 +261,14 @@ public final class CloudServerStartupHandler implements Serializable {
             } catch (final IOException ex) {
                 StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
                         "Error while reading glowstone config", ex);
-                return false;
+                return;
             }
         } else {
             try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get(path + "/server.properties")))) {
                 properties.load(inputStreamReader);
             } catch (final IOException ex) {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load server.properties", ex);
-                return false;
+                return;
             }
         }
 
@@ -261,14 +286,14 @@ public final class CloudServerStartupHandler implements Serializable {
                     properties.store(outputStream, "");
                 } catch (final IOException ex) {
                     StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
-                    return false;
+                    return;
                 }
             } else {
                 try (OutputStream outputStream = Files.newOutputStream(Paths.get(path + "/server.properties"))) {
                     properties.store(outputStream, "");
                 } catch (final IOException ex) {
                     StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Cannot store server.properties", ex);
-                    return false;
+                    return;
                 }
             }
         }
@@ -301,7 +326,7 @@ public final class CloudServerStartupHandler implements Serializable {
                                 "reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup().getSpigotVersions().getVersion()
                         );
                     } catch (final Throwable throwable) {
-                        return false;
+                        return;
                     }
                 }
 
@@ -390,7 +415,7 @@ public final class CloudServerStartupHandler implements Serializable {
             this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Could not launch ServerStartup", ex);
-            return false;
+            return;
         }
 
         if (this.serverStartupInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
@@ -411,7 +436,6 @@ public final class CloudServerStartupHandler implements Serializable {
         this.finishedTime = System.currentTimeMillis();
 
         this.processStartupStage = ProcessStartupStage.DONE;
-        return true;
     }
 
     /**
@@ -421,6 +445,7 @@ public final class CloudServerStartupHandler implements Serializable {
      * @see Process#isAlive()
      * @see Process#getInputStream()
      */
+    @Override
     public boolean isAlive() {
         try {
             return process != null && process.getInputStream().available() != -1 && process.isAlive();
@@ -429,16 +454,24 @@ public final class CloudServerStartupHandler implements Serializable {
         }
     }
 
+    @Override
+    public void shutdown(boolean update) {
+        try {
+            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            shutdown0(update);
+        } finally {
+            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+        }
+    }
+
     /**
      * Stops the ServerProcess
      *
-     * @return {@code true} if the Client could stop the SpigotProcess or
-     * {@code false} if the Client couldn't stop the SpigotProcess
      * @see CloudServerStartupHandler#isAlive()
      */
-    public boolean shutdown(final boolean update) {
+    private void shutdown0(final boolean update) {
         if (toShutdown)
-            return true;
+            return;
 
         toShutdown = true;
         ServerInfo serverInfo = ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
@@ -471,7 +504,7 @@ public final class CloudServerStartupHandler implements Serializable {
                 this.process.destroy();
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error on CloudServer shutdown", throwable);
-            return false;
+            return;
         }
 
         this.screenHandler.disableScreen();
@@ -501,10 +534,9 @@ public final class CloudServerStartupHandler implements Serializable {
         } catch (final Throwable ignored) {
         }
 
-        return true;
     }
 
-    public void overrideEula() {
+    private void overrideEula() {
         FileUtils.deleteFileIfExists(Paths.get(path + "/eula.txt"));
         FileUtils.copyCompiledFile("reformcloud/eula/eula.txt", path + "/eula.txt");
     }
@@ -516,8 +548,10 @@ public final class CloudServerStartupHandler implements Serializable {
      * @see Process#getOutputStream()
      * @see OutputStream#write(byte[])
      */
+    @Override
     public void executeCommand(String command) {
-        if (!this.isAlive()) return;
+        if (!this.isAlive())
+            return;
 
         try {
             process.getOutputStream().write((command + "\n").getBytes());
@@ -537,6 +571,7 @@ public final class CloudServerStartupHandler implements Serializable {
         ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutSendControllerConsoleMessage(message));
     }
 
+    @Override
     public String uploadLog() throws IOException {
         if (!this.isAlive())
             return null;
@@ -545,6 +580,11 @@ public final class CloudServerStartupHandler implements Serializable {
         Files.readAllLines(Paths.get(this.path + "/logs/latest.log"), StandardCharsets.UTF_8).forEach(e -> stringBuilder.append(e).append("\n"));
 
         return ReformCloudClient.getInstance().getLoggerProvider().uploadLog(stringBuilder.substring(0));
+    }
+
+    @Override
+    public void shutdown() {
+        shutdown(true);
     }
 
     public boolean isForge() {

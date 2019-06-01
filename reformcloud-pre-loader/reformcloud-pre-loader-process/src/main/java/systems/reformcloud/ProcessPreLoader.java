@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @author _Klaro | Pasqual K. / created on 15.05.2019
  */
 
-public final class ProcessPreLoader implements Serializable {
+final class ProcessPreLoader implements Serializable {
     public static synchronized void main(String[] args) {
         String preFileToLoad = Arrays.stream(args)
                 .filter(e -> e.startsWith("--file=") && e.endsWith(".jar"))
@@ -138,8 +138,6 @@ public final class ProcessPreLoader implements Serializable {
     }
 
     private static List<String> asList(String[] args) {
-        List<String> out = new LinkedList<>();
-        out.addAll(Arrays.asList(args));
-        return out;
+        return new LinkedList<>(Arrays.asList(args));
     }
 }

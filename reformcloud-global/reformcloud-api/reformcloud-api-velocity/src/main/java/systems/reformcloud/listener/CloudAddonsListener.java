@@ -9,14 +9,9 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.permission.PermissionsSetupEvent;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.event.proxy.ProxyPingEvent;
-import com.velocitypowered.api.permission.PermissionFunction;
-import com.velocitypowered.api.permission.PermissionProvider;
-import com.velocitypowered.api.permission.PermissionSubject;
-import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import net.kyori.text.TextComponent;
-import org.checkerframework.checker.optional.qual.MaybePresent;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.autoicon.IconManager;
@@ -26,15 +21,10 @@ import systems.reformcloud.events.CloudProxyInfoUpdateEvent;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.packets.PacketOutCommandExecute;
-import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
-import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
-import systems.reformcloud.player.permissions.group.PermissionGroup;
-import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.player.version.SpigotVersion;
-import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.map.maps.Double;
 
-import java.util.*;
+import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 07.11.2018

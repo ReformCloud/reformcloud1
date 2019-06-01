@@ -72,7 +72,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
      * @param destDir           The path where the file should be unzipped to
      * @throws Exception        If any exception occurs
      */
-    public static void unZip(byte[] zippedBytes, File destDir) throws Exception {
+    private static void unZip(byte[] zippedBytes, File destDir) throws Exception {
         String destinationPath = destDir.toString();
         if (!destDir.exists())
             destDir.mkdir();
@@ -117,7 +117,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
      * @param zip       The byte array of the file
      * @param to        The target directory of the file
      */
-    public static void toZip(byte[] zip, Path to) {
+    private static void toZip(byte[] zip, Path to) {
         try {
             Files.write(to, zip);
         } catch (final IOException ex) {
@@ -178,7 +178,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
      * @param file      The file which should be zipped
      * @return The byte array of the file
      */
-    public static byte[] zipDirectoryToBytes(File file) {
+    private static byte[] zipDirectoryToBytes(File file) {
         try {
             if (!file.exists())
                 file.mkdirs();
@@ -225,7 +225,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
      * @param excluded  The excluded files which should not be zipped
      * @return The byte array of the file
      */
-    public static byte[] zipDirectoryToBytes(File file, List<String> excluded) {
+    private static byte[] zipDirectoryToBytes(File file, List<String> excluded) {
         try {
             if (!file.exists())
                 file.mkdirs();
@@ -328,7 +328,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
      * @param path                  The path of the file which should be zipped
      * @param destinationPath       The path where the zipped file should be saved to
      */
-    public static void zipDirectoryToFile(File path, String destinationPath) {
+    private static void zipDirectoryToFile(File path, String destinationPath) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(destinationPath);
             ZipOutputStream zipOut = new ZipOutputStream(fileOutputStream);

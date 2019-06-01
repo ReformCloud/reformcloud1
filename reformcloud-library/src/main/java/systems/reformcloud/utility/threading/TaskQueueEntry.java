@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 25.04.2019
  */
 
-public final class TaskQueueEntry implements Serializable {
+final class TaskQueueEntry implements Serializable {
     private Runnable prepared, run;
     private long repeats, sleepPerRepeat;
 

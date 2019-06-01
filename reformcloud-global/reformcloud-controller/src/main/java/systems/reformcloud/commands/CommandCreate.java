@@ -50,8 +50,8 @@ public final class CommandCreate extends Command implements Serializable {
             String client = cloudConfiguration.readString(loggerProvider, s -> ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s) != null);
 
             loggerProvider.info(language.getSetup_choose_minecraft_version());
-            SpigotVersions.AVAILABLE_VERSIONS.forEach(e -> loggerProvider.info(e));
-            String version = cloudConfiguration.readString(loggerProvider, s -> SpigotVersions.AVAILABLE_VERSIONS.contains(s));
+            SpigotVersions.AVAILABLE_VERSIONS.forEach(loggerProvider::info);
+            String version = cloudConfiguration.readString(loggerProvider, SpigotVersions.AVAILABLE_VERSIONS::contains);
             loggerProvider.info(language.getSetup_choose_spigot_version());
             SpigotVersions.sortedByVersion(version).values().forEach(e -> loggerProvider.info("   " + e.name()));
             String provider = cloudConfiguration.readString(loggerProvider, s -> SpigotVersions.getByName(s) != null);

@@ -19,7 +19,6 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
-import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
@@ -33,6 +32,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import java.util.logging.*;
 
@@ -61,12 +61,12 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     /**
      * The debug log file
      */
-    protected final File debugLogFile = new File("reformcloud/logs/debug-" + System.currentTimeMillis() + ".log");
+    private final File debugLogFile = new File("reformcloud/logs/debug-" + System.currentTimeMillis() + ".log");
 
     /**
      * The logger handler of the cloud
      */
-    protected final LoggerHandler loggerHandler = new LoggerHandler();
+    private final LoggerHandler loggerHandler = new LoggerHandler();
 
     /**
      * The current controller time
@@ -91,8 +91,8 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     public LoggerProvider() throws IOException {
         instance = Optional.of(this);
         AbstractLoggerProvider.globalInstance.set(this);
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "ERROR");
 
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "ERROR");
         System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
 
         try {
@@ -109,15 +109,18 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
         AnsiConsole.systemInstall();
 
         final File file = new File("reformcloud/", "logs/");
-        final SimpleFormatter simpleFormatter = new SimpleFormatter();
+        Formatter formatter = new FormatterImpl();
 
-        FileHandler fileHandler = new FileHandler(file.getCanonicalPath() + "/CloudLog", 5242880, 100, false);
+        Handler fileHandler = new FileHandler(file.getCanonicalPath() + "/latest", Integer.MAX_VALUE, 8, true);
         fileHandler.setEncoding(StandardCharsets.UTF_8.name());
         fileHandler.setLevel(Level.ALL);
-        fileHandler.setFormatter(simpleFormatter);
-
+        fileHandler.setFormatter(formatter);
         loggerHandler.addHandler(fileHandler);
+
+        new Worker();
     }
+
+    private final LinkedBlockingQueue<Runnable> out = new LinkedBlockingQueue<>();
 
     public static AbstractLoggerProvider newSaveLogger() {
         try {
@@ -129,75 +132,85 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
     @Override
     public void info(String message) {
-        loggerHandler.log(Level.INFO, AnsiColourHandler.stripColor(message));
-        try {
-            this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_INFO.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
-            this.complete();
+        out.add(() -> {
+            loggerHandler.log(Level.INFO, AnsiColourHandler.stripColor(message));
+            try {
+                this.consoleReader.println(Ansi.ansi().eraseLine(
+                        Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_INFO.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
+                this.complete();
 
-            this.handleAll(AnsiColourHandler.stripColor(message));
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
+                this.handleAll(AnsiColourHandler.stripColor(message));
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+            }
+        });
     }
 
     @Override
     public void warn(String message) {
-        loggerHandler.log(Level.WARNING, AnsiColourHandler.stripColor(message));
-        try {
-            this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
-            this.complete();
+        out.add(() -> {
+            loggerHandler.log(Level.WARNING, AnsiColourHandler.stripColor(message));
+            try {
+                this.consoleReader.println(Ansi.ansi().eraseLine(
+                        Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_WARN.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
+                this.complete();
 
-            this.handleAll(AnsiColourHandler.stripColor(message));
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
+                this.handleAll(AnsiColourHandler.stripColor(message));
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+            }
+        });
     }
 
     @Override
     public void serve(String message) {
-        loggerHandler.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
-        try {
-            this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_ERR.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
-            this.complete();
+        out.add(() -> {
+            loggerHandler.log(Level.SEVERE, AnsiColourHandler.stripColor(message));
+            try {
+                this.consoleReader.println(Ansi.ansi().eraseLine(
+                        Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(StringUtil.LOGGER_ERR.replace("%date%", dateFormat.format(controllerTime)) + message) + Ansi.ansi().reset().toString());
+                this.complete();
 
-            this.handleAll(AnsiColourHandler.stripColor(message));
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
+                this.handleAll(AnsiColourHandler.stripColor(message));
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+            }
+        });
     }
 
     @Override
     public void coloured(String message) {
-        loggerHandler.log(Level.INFO, AnsiColourHandler.stripColor(message));
-        try {
-            this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(message) + Ansi.ansi().reset().toString());
-            this.complete();
+        out.add(() -> {
+            loggerHandler.log(Level.INFO, AnsiColourHandler.stripColor(message));
+            try {
+                this.consoleReader.println(Ansi.ansi().eraseLine(
+                        Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(message) + Ansi.ansi().reset().toString());
+                this.complete();
 
-            this.handleAll(AnsiColourHandler.stripColor(message));
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
+                this.handleAll(AnsiColourHandler.stripColor(message));
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+            }
+        });
     }
 
     @Override
     public void exception(Throwable cause) {
-        StringBuilder stringBuilder = new StringBuilder();
+        out.add(() -> {
+            StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(cause).append("\n");
-        for (StackTraceElement stackTraceElement : cause.getStackTrace())
-            stringBuilder.append("    at ").append(stackTraceElement).append("\n");
+            stringBuilder.append(cause).append("\n");
+            for (StackTraceElement stackTraceElement : cause.getStackTrace())
+                stringBuilder.append("    at ").append(stackTraceElement).append("\n");
 
-        for (Throwable suppressed : cause.getSuppressed())
-            this.suppressedException(suppressed, cause.getStackTrace(), "Suppressed: ", "\t", stringBuilder);
+            for (Throwable suppressed : cause.getSuppressed())
+                this.suppressedException(suppressed, cause.getStackTrace(), "Suppressed: ", "\t", stringBuilder);
 
-        String exception = stringBuilder.substring(0, stringBuilder.length() - 2);
+            String exception = stringBuilder.substring(0, stringBuilder.length() - 2);
 
-        this.serve(exception);
-        this.handleAll(exception);
+            this.serve(exception);
+            this.handleAll(exception);
+        });
     }
 
     private void suppressedException(Throwable cause,
@@ -214,11 +227,11 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
         int framesInCommon = trace.length - 1 - m;
 
-        stringBuilder.append(prefix + caption + cause);
+        stringBuilder.append(prefix).append(caption).append(cause);
         for (int i = 0; i <= m; i++)
-            stringBuilder.append(prefix + "\tat " + trace[i]);
+            stringBuilder.append(prefix).append("\tat ").append(trace[i]);
         if (framesInCommon != 0)
-            stringBuilder.append(prefix + "\t... " + framesInCommon + " more");
+            stringBuilder.append(prefix).append("\t... ").append(framesInCommon).append(" more");
 
         for (Throwable se : cause.getSuppressed())
             suppressedException(se, cause.getStackTrace(), "", "\t", stringBuilder);
@@ -256,53 +269,59 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
     @Override
     public LoggerProvider emptyLine() {
-        try {
-            this.consoleReader.println(" ");
-            this.complete();
+        out.add(() -> {
+            try {
+                this.consoleReader.println(String.valueOf(ConsoleReader.RESET_LINE));
+                this.complete();
 
-            this.handleAll("\n");
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
+                this.handleAll("\n");
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+            }
+        });
 
         return this;
     }
 
     @Override
     public void write(String text) {
-        try {
-            text = AnsiColourHandler.toColouredString(text);
-            this.consoleReader.println(Ansi.ansi().eraseLine(
-                    Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler.toColouredString(text) + Ansi.ansi().reset().toString());
-            this.complete();
-        } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
-        }
+        out.add(() -> {
+            try {
+                String newText = AnsiColourHandler.toColouredString(text);
+                this.consoleReader.println(Ansi.ansi().eraseLine(
+                        Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + newText + Ansi.ansi().reset().toString());
+                this.complete();
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while printing logging line", ex);
+            }
+        });
     }
 
     @Override
     public void debug(String msg) {
-        try {
-            if (this.debug) {
-                this.consoleReader.println(Ansi.ansi().eraseLine(
-                        Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler
-                        .toColouredString("[§6" + this.dateFormat.format(this.controllerTime) + "§r] " + msg)
-                        + Ansi.ansi().reset().toString());
-                this.complete();
+        out.add(() -> {
+            try {
+                if (this.debug) {
+                    this.consoleReader.println(Ansi.ansi().eraseLine(
+                            Ansi.Erase.ALL).toString() + ConsoleReader.RESET_LINE + AnsiColourHandler
+                            .toColouredString("[§6" + this.dateFormat.format(this.controllerTime) + "§r] " + msg)
+                            + Ansi.ansi().reset().toString());
+                    this.complete();
 
-                this.handleAll(AnsiColourHandler.stripColor(msg));
+                    this.handleAll(AnsiColourHandler.stripColor(msg));
+                }
+
+                if (!debugLogFile.exists())
+                    debugLogFile.createNewFile();
+
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(debugLogFile, true));
+                bufferedWriter.append(msg).append("\n");
+                bufferedWriter.flush();
+                bufferedWriter.close();
+            } catch (final IOException ex) {
+                StringUtil.printError(this, "Error while writing to debug log", ex);
             }
-
-            if (!debugLogFile.exists())
-                debugLogFile.createNewFile();
-
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(debugLogFile, true));
-            bufferedWriter.append(msg + "\n");
-            bufferedWriter.flush();
-            bufferedWriter.close();
-        } catch (final IOException ex) {
-            StringUtil.printError(this, "Error while writing to debug log", ex);
-        }
+        });
     }
 
     @Override
@@ -380,16 +399,15 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
             HttpResponse httpResponse = httpClient.execute(httpPost);
             final String result = EntityUtils.toString(httpResponse.getEntity());
             JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(result).getAsJsonObject();
-            if (httpResponse.getStatusLine().getStatusCode() != 201)
+            if (httpResponse.getStatusLine().getStatusCode() != 201 || jsonObject.has("message"))
                 return "The following error occurred: " + jsonObject.get("message").getAsString();
-
 
             return "https://paste.reformcloud.systems/" + jsonObject.get("key").getAsString();
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while uploading log", ex);
         }
 
-        return "Could not post log on \"paste.reformcloud.de\"!";
+        return "Could not post log on \"paste.reformcloud.systems\"!";
     }
 
     @Override
@@ -415,6 +433,11 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     @Override
     public Consumer<Throwable> exception() {
         return this::exception;
+    }
+
+    @Override
+    public ConsoleReader consoleReader() {
+        return this.consoleReader;
     }
 
     public ConsoleReader getConsoleReader() {
@@ -459,10 +482,46 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
             setLevel(Level.ALL);
             setUseParentHandlers(false);
         }
+    }
 
-        private void addHandler(FileHandler fileHandler) {
-            Require.requireNotNull(fileHandler, "FileHandler must be non-null");
-            super.addHandler(fileHandler);
+    private class FormatterImpl extends Formatter {
+        @Override
+        public String format(LogRecord record) {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (record.getThrown() != null) {
+                StringWriter stringWriter = new StringWriter();
+                record.getThrown().printStackTrace(new PrintWriter(stringWriter));
+                stringBuilder.append(stringWriter).append("\n");
+            }
+
+            return ConsoleReader.RESET_LINE +
+                    "[" +
+                    dateFormat.format(record.getMillis()) +
+                    "] " +
+                    record.getLevel().getName() +
+                    ": " +
+                    formatMessage(record) +
+                    "\n" +
+                    stringBuilder.toString();
+        }
+    }
+
+    private class Worker extends Thread {
+        Worker() {
+            setDaemon(true);
+            setPriority(Thread.MIN_PRIORITY);
+            start();
+        }
+
+        @Override
+        public void run() {
+            while (!isInterrupted()) {
+                try {
+                    out.take().run();
+                } catch (final InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ package systems.reformcloud.network.packets;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.utility.annotiations.ForRemoval;
 
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
  */
 
 public final class PacketOutInternalProcessRemove extends Packet {
+    @ForRemoval
     public PacketOutInternalProcessRemove(final UUID processUID, final AuthenticationType authenticationType) {
         super("InternalProcessRemove", new Configuration().addValue("uid", processUID).addStringValue("type", authenticationType.name()));
     }

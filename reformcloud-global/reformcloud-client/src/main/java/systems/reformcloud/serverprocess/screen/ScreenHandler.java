@@ -50,7 +50,7 @@ public class ScreenHandler implements Serializable {
         this.enabled = false;
     }
 
-    public void sendLine(final String line) {
+    private void sendLine(final String line) {
         if (line == null || line.trim().isEmpty())
             return;
 

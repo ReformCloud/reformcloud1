@@ -4,26 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.meta.CloudProcess;
-import systems.reformcloud.meta.Template;
-import systems.reformcloud.meta.enums.TemplateBackend;
-import systems.reformcloud.meta.info.ProxyInfo;
-import systems.reformcloud.meta.proxy.versions.ProxyVersions;
-import systems.reformcloud.meta.startup.ProxyStartupInfo;
-import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.network.packets.out.*;
-import systems.reformcloud.serverprocess.screen.ScreenHandler;
-import systems.reformcloud.template.TemplatePreparer;
-import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.files.DownloadManager;
-import systems.reformcloud.utility.files.FileUtils;
-import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,12 +15,38 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
+import systems.reformcloud.ReformCloudClient;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.Template;
+import systems.reformcloud.meta.enums.TemplateBackend;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.proxy.versions.ProxyVersions;
+import systems.reformcloud.meta.startup.ProxyStartupInfo;
+import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
+import systems.reformcloud.network.packets.out.PacketOutAddProcess;
+import systems.reformcloud.network.packets.out.PacketOutGetControllerTemplate;
+import systems.reformcloud.network.packets.out.PacketOutIconSizeIncorrect;
+import systems.reformcloud.network.packets.out.PacketOutRemoveProcess;
+import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
+import systems.reformcloud.network.packets.out.PacketOutUpdateControllerTemplate;
+import systems.reformcloud.network.packets.out.PacketOutUpdateInternalCloudNetwork;
+import systems.reformcloud.serverprocess.screen.ScreenHandler;
+import systems.reformcloud.template.TemplatePreparer;
+import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.DownloadManager;
+import systems.reformcloud.utility.files.FileUtils;
+import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
+import systems.reformcloud.utility.startup.IServiceAble;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public final class ProxyStartupHandler implements Serializable {
+public final class ProxyStartupHandler implements Serializable, IServiceAble {
     private ProxyStartupInfo proxyStartupInfo;
     private Path path;
     private Process process;
@@ -75,13 +81,22 @@ public final class ProxyStartupHandler implements Serializable {
         }
     }
 
+    @Override
+    public boolean bootstrap() {
+        try {
+            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            bootstrap0();
+        } finally {
+            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+        }
+
+        return true;
+    }
+
     /**
      * Starts the BungeeCord
-     *
-     * @return {@code true} if the Client could start the BungeeCord
-     * or {@code false} if the Client couldn't start the BungeeCord
      */
-    public boolean bootstrap() {
+    public void bootstrap0() {
         if (!this.proxyStartupInfo.getProxyGroup().isStatic())
             FileUtils.deleteFullDirectory(path);
 
@@ -101,9 +116,19 @@ public final class ProxyStartupHandler implements Serializable {
                     ZoneInformationProtocolUtility.unZip(new File(path + "/template.zip"), path + "");
                 } catch (final Exception ex) {
                     ex.printStackTrace();
-                    return false;
+                    return;
                 }
             } else if (template.getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+                if (this.proxyStartupInfo.getProxyGroup().getTemplateOrElseNull("every") != null) {
+                    if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + this.proxyStartupInfo.getProxyGroup().getName() + "/every")))
+                        FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + this.proxyStartupInfo.getProxyGroup().getName() + "/every"));
+                    else
+                        FileUtils.copyAllFiles(
+                                Paths.get("reformcloud/templates/proxies/" + this.proxyStartupInfo.getProxyGroup().getName() + "/every"),
+                                this.path.toString()
+                        );
+                }
+
                 FileUtils.copyAllFiles(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/" + template.getName()), path + StringUtil.EMPTY);
             } else if (template.getTemplateBackend().equals(TemplateBackend.CONTROLLER)) {
                 ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController",
@@ -115,7 +140,7 @@ public final class ProxyStartupHandler implements Serializable {
                 );
                 ReformCloudLibraryService.sleep(50);
             } else {
-                return false;
+                return;
             }
         }
 
@@ -149,7 +174,7 @@ public final class ProxyStartupHandler implements Serializable {
             }
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Error while reading image", ex);
-            return false;
+            return;
         }
 
         if (!proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)) {
@@ -194,7 +219,7 @@ public final class ProxyStartupHandler implements Serializable {
                         ReformCloudClient.getInstance().getCloudConfiguration().getStartIP() + ":" + port + "\"");
             } catch (final Throwable throwable) {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while preparing proxy configuration, break", throwable);
-                return false;
+                return;
             }
         } else {
             if (!Files.exists(Paths.get(path + "/velocity.toml")))
@@ -216,7 +241,7 @@ public final class ProxyStartupHandler implements Serializable {
                 this.prepareConfiguration(new File(path + "/velocity.toml"), ReformCloudClient.getInstance().getCloudConfiguration().getStartIP() + ":" + port);
             } catch (Throwable throwable) {
                 StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while starting proxy process", throwable);
-                return false;
+                return;
             }
 
             if (!Files.exists(Paths.get("reformcloud/apis/ReformAPIVelocity-" + StringUtil.VELOCITY_API_DOWNLOAD + ".jar"))) {
@@ -294,7 +319,7 @@ public final class ProxyStartupHandler implements Serializable {
             this.process = Runtime.getRuntime().exec(command, null, new File(path.toString()));
         } catch (final IOException ex) {
             StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while starting proxy process", ex);
-            return false;
+            return;
         }
 
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().registerProxyProcess(
@@ -308,7 +333,6 @@ public final class ProxyStartupHandler implements Serializable {
         this.finishedTime = System.currentTimeMillis();
 
         this.processStartupStage = ProcessStartupStage.DONE;
-        return true;
     }
 
     /**
@@ -318,6 +342,7 @@ public final class ProxyStartupHandler implements Serializable {
      * @see Process#isAlive()
      * @see Process#getInputStream()
      */
+    @Override
     public boolean isAlive() {
         try {
             return process != null && process.getInputStream().available() != -1 && process.isAlive();
@@ -326,17 +351,39 @@ public final class ProxyStartupHandler implements Serializable {
         }
     }
 
+    @Override
+    public void shutdown(boolean update) {
+        try {
+            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            shutdown0(null, update);
+        } finally {
+            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+        }
+    }
+
+    public void shutdown(String message, boolean update) {
+        try {
+            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            shutdown0(message, update);
+        } finally {
+            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        shutdown(true);
+    }
+
     /**
      * Stops the Process
      *
      * @param message
-     * @return {@code true} if the Client could stop the Process or
-     * {@code false} if the Client couldn't stop the Process
      * @see ProxyStartupHandler#isAlive()
      */
-    public boolean shutdown(final String message, final boolean update) {
+    private void shutdown0(final String message, final boolean update) {
         if (toShutdown)
-            return true;
+            return;
 
         toShutdown = true;
         ReformCloudClient.getInstance().getClientInfo().getStartedProxies().remove(this.proxyStartupInfo.getName());
@@ -406,7 +453,6 @@ public final class ProxyStartupHandler implements Serializable {
         } catch (final Throwable ignored) {
         }
 
-        return true;
     }
 
     /**
@@ -416,8 +462,10 @@ public final class ProxyStartupHandler implements Serializable {
      * @see Process#getOutputStream()
      * @see OutputStream#write(byte[])
      */
+    @Override
     public void executeCommand(String command) {
-        if (!this.isAlive()) return;
+        if (!this.isAlive())
+            return;
 
         try {
             process.getOutputStream().write((command + "\n").getBytes());
@@ -450,6 +498,7 @@ public final class ProxyStartupHandler implements Serializable {
         ReformCloudClient.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutSendControllerConsoleMessage(message));
     }
 
+    @Override
     public String uploadLog() throws IOException {
         if (!this.isAlive())
             return null;

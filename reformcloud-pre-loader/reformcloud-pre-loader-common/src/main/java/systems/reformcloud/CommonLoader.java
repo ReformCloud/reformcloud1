@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * @author _Klaro | Pasqual K. / created on 14.05.2019
  */
 
-public final class CommonLoader implements Serializable {
+final class CommonLoader implements Serializable {
     private static String version;
 
     static {
@@ -86,5 +86,9 @@ public final class CommonLoader implements Serializable {
     private static void checkForJavaVersion() {
         if (Double.parseDouble(System.getProperty("java.class.version")) < 52D)
             System.exit(2);
+    }
+
+    public static void setVersion(String version) {
+        CommonLoader.version = version;
     }
 }

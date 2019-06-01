@@ -5,6 +5,7 @@
 package systems.reformcloud.cache;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -37,7 +38,8 @@ public final class Cache<K, V> implements Serializable {
      * @param k                     The key of the cached item
      * @return The cached item or {@code null} when the cache don't contains the item
      */
-    public V get(K k) {
+    @MayNotBePresent
+    private V get(K k) {
         return cache.get(k);
     }
 

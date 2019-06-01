@@ -7,9 +7,10 @@ package systems.reformcloud.launcher;
 import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.CommandManager;
 import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.console.InfinitySleeper;
+import systems.reformcloud.logging.console.ReformAsyncConsole;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
@@ -49,6 +50,8 @@ final class ReformCloudLauncher implements Serializable {
 
         final long current = System.currentTimeMillis();
 
+        final InfinitySleeper infinitySleeper = new InfinitySleeper();
+
         System.out.println("\nTrying to startup ReformCloudController...");
         System.out.println("Startup time: " + DateProvider.formatByDefaultFormat(current) + "\n");
 
@@ -66,31 +69,8 @@ final class ReformCloudLauncher implements Serializable {
         new ReformCloudController(loggerProvider, commandManager, options.contains("--ssl"), current);
 
         loggerProvider.info(ReformCloudController.getInstance().getLoadedLanguage().getHelp_default());
+        new ReformAsyncConsole(loggerProvider, commandManager, "Controller");
 
-        String line;
-        try {
-            while (true) {
-                loggerProvider.getConsoleReader().setPrompt("");
-                loggerProvider.getConsoleReader().resetPromptLine("", "", 0);
-
-                while ((line = loggerProvider.getConsoleReader().readLine(StringUtil.REFORM_VERSION +
-                        "-" + StringUtil.REFORM_SPECIFICATION + "@ReformCloudController > ")) != null
-                        && !line.trim().isEmpty() && ReformCloudController.RUNNING) {
-                    loggerProvider.getConsoleReader().setPrompt("");
-
-                    try {
-                        if (!commandManager.dispatchCommand(line))
-                            loggerProvider.info(ReformCloudController.getInstance().getLoadedLanguage().getHelp_command_not_found());
-                        else
-                            ReformCloudController.getInstance().getStatisticsProvider().addConsoleCommand();
-                    } catch (final Throwable throwable) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
-                                "Error while handling command input", throwable);
-                    }
-                }
-            }
-        } catch (final Throwable throwable) {
-            StringUtil.printError(loggerProvider, "Error while reading command line", throwable);
-        }
+        infinitySleeper.sleep();
     }
 }

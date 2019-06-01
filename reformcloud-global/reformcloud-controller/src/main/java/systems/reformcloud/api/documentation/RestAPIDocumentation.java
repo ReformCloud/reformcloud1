@@ -34,7 +34,7 @@ public final class RestAPIDocumentation implements Serializable, WebHandler {
                 .getWebHandlerMap()
                 .keySet();
         StringBuilder stringBuilder = new StringBuilder();
-        webHandlers.forEach(e -> stringBuilder.append("- Handler: " + e + "  "));
+        webHandlers.forEach(e -> stringBuilder.append("- Handler: ").append(e).append("  "));
         fullHttpResponse.content().writeBytes(answer
                 .addBooleanValue("success", true)
                 .addValue("answer", Collections.singletonList(stringBuilder.substring(0)))
