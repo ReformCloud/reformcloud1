@@ -5,9 +5,6 @@
 package systems.reformcloud.utility.uuid;
 
 import com.google.gson.stream.JsonReader;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.cache.Cache;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -15,6 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.cache.Cache;
 
 /**
  * @author _Klaro | Pasqual K. / created on 01.01.2019
@@ -65,7 +64,12 @@ public final class UUIDConverter implements Serializable {
 
             String in;
             try (JsonReader jsonReader = new JsonReader(new InputStreamReader(httpURLConnection.getInputStream()))) {
-                in = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject().get("id").getAsString();
+                try {
+                    in = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
+                        .get("id").getAsString();
+                } catch (final Throwable throwable) {
+                    return null;
+                }
             }
 
             StringBuilder stringBuilder = new StringBuilder();
