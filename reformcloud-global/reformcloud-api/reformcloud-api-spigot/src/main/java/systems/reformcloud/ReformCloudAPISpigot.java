@@ -22,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import systems.reformcloud.api.IAPIService;
 import systems.reformcloud.api.IDefaultPlayerProvider;
 import systems.reformcloud.api.IEventHandler;
@@ -964,6 +965,11 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
         if (!event.isCancelled()) {
             this.tempServerStats.addPlacedBlock();
         }
+    }
+
+    @EventHandler
+    public void handle(final WorldLoadEvent event) {
+        event.getWorld().setAutoSave(false);
     }
 
     public static ReformCloudAPISpigot getInstance() {

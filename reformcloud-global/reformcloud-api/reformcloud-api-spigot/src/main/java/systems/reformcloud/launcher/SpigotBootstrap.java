@@ -75,6 +75,8 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
             throwable.printStackTrace();
             this.onDisable();
         }
+
+        this.getServer().getWorlds().forEach(world -> world.setAutoSave(false));
     }
 
     @Override
