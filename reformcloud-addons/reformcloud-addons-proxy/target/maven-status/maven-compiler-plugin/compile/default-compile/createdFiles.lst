@@ -1,8 +1,0 @@
-systems\reformcloud\commands\ProxyCommand.class
-systems\reformcloud\ProxyAddon.class
-systems\reformcloud\network\out\PacketOutGetProxyConfig.class
-systems\reformcloud\configuration\ProxyAddonConfiguration.class
-systems\reformcloud\network\in\PacketInGetProxyConfig.class
-systems\reformcloud\configuration\ProxyAddonConfiguration$1.class
-systems\reformcloud\configuration\ProxyAddonConfiguration$2.class
-systems\reformcloud\network\out\PacketOutUpdateProxyConfig.class

@@ -5,6 +5,28 @@
 package systems.reformcloud.logging;
 
 import com.google.gson.JsonObject;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import jline.console.ConsoleReader;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -23,18 +45,6 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.time.DateProvider;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Consumer;
-import java.util.logging.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
@@ -309,15 +319,17 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                     this.complete();
 
                     this.handleAll(AnsiColourHandler.stripColor(msg));
+
+                    if (!debugLogFile.exists()) {
+                        debugLogFile.createNewFile();
+                    }
+
+                    BufferedWriter bufferedWriter = new BufferedWriter(
+                        new FileWriter(debugLogFile, true));
+                    bufferedWriter.append(msg).append("\n");
+                    bufferedWriter.flush();
+                    bufferedWriter.close();
                 }
-
-                if (!debugLogFile.exists())
-                    debugLogFile.createNewFile();
-
-                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(debugLogFile, true));
-                bufferedWriter.append(msg).append("\n");
-                bufferedWriter.flush();
-                bufferedWriter.close();
             } catch (final IOException ex) {
                 StringUtil.printError(this, "Error while writing to debug log", ex);
             }

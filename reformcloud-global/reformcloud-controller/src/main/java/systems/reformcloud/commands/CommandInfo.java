@@ -4,15 +4,14 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.utility.StringUtil;
-
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -29,7 +28,7 @@ public final class CommandInfo extends Command implements Serializable {
     public void executeCommand(CommandSender commandSender, String[] args) {
         final StatisticsProvider.Stats stats = ReformCloudController.getInstance().getStatisticsProvider().getStats();
 
-        commandSender.sendMessage("ReformCloud version " + StringUtil.REFORM_VERSION + "@" + StringUtil.REFORM_SPECIFICATION);
+        commandSender.sendMessage("ReformCloud version " + StringUtil.REFORM_VERSION);
         commandSender.sendMessage("Main developer: _Klaro");
         commandSender.sendMessage("All startup: " + stats.getStartup());
         commandSender.sendMessage("Root startup: " + stats.getRootStartup());

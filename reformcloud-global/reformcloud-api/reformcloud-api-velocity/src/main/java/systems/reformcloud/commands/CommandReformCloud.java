@@ -6,6 +6,9 @@ package systems.reformcloud.commands;
 
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import net.kyori.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.optional.qual.MaybePresent;
@@ -13,10 +16,6 @@ import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -44,7 +43,8 @@ public final class CommandReformCloud implements Command {
         }
 
         if (strings[0].equalsIgnoreCase("version")) {
-            commandSource.sendMessage(TextComponent.of("You are using the ReformCloud V" + StringUtil.REFORM_VERSION + "@" + StringUtil.REFORM_SPECIFICATION));
+            commandSource.sendMessage(
+                TextComponent.of("You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
             return;
         }
 

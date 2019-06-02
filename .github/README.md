@@ -1,4 +1,4 @@
-# ReformCloud 1.10
+# ReformCloud 1.11
 
 Official Cloud System
 
@@ -14,7 +14,8 @@ Official Cloud System
 ![STARS](https://img.shields.io/github/stars/reformcloudproject/reformcloud.svg)
 ![CHAT](https://img.shields.io/discord/499666347337449472.svg)
 
-> <b>IMPORTANT NOTE:</b> ReformCloud is still in development. No stable version is available. The Full System is in beta support
+> <b>IMPORTANT NOTE:</b> ReformCloud is still in development. The current 
+releases are only pre-stable releases.
 
 ### Prerequisites
 

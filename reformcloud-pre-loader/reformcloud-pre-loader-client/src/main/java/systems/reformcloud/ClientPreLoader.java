@@ -4,7 +4,12 @@
 
 package systems.reformcloud;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -93,6 +98,9 @@ final class ClientPreLoader implements Serializable {
     private static synchronized void run2(String[] args, ClassLoader classLoader, Method main) {
         main.setAccessible(true);
         Thread.currentThread().setContextClassLoader(classLoader);
+
+        CommonLoader.finishStartup();
+
         try {
             main.invoke(null, (Object) args);
         } catch (final IllegalAccessException | InvocationTargetException ex) {
