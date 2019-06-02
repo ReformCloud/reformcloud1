@@ -94,6 +94,8 @@ final class ProcessPreLoader implements Serializable {
             return;
         }
 
+        CommonLoader.finishStartup();
+
         JarFile jarFile = null;
         try {
             jarFile = new JarFile(target);

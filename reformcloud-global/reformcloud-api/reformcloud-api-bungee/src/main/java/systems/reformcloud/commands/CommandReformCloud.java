@@ -4,6 +4,10 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
@@ -12,11 +16,6 @@ import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -58,7 +57,8 @@ public final class CommandReformCloud extends Command implements Serializable, T
         }
 
         if (strings[0].equalsIgnoreCase("version")) {
-            commandSender.sendMessage(TextComponent.fromLegacyText("§7You are using the ReformCloud V" + StringUtil.REFORM_VERSION + "@" + StringUtil.REFORM_SPECIFICATION));
+            commandSender.sendMessage(TextComponent
+                .fromLegacyText("§7You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
             return;
         }
 

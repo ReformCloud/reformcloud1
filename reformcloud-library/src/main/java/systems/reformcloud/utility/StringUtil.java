@@ -30,8 +30,7 @@ public final class StringUtil {
             OS_VERSION = System.getProperty("os.version"),
             USER_NAME = System.getProperty("user.name"),
             JAVA_VERSION = System.getProperty("java.version"),
-            REFORM_SPECIFICATION = StringUtil.class.getPackage().getSpecificationVersion(),
-            REFORM_VERSION = StringUtil.class.getPackage().getImplementationVersion(),
+        REFORM_VERSION = System.getProperty("reformcloud.version"),
             LOGGER_INFO = "[§a%date%§r] ",
             LOGGER_WARN = "[§e%date%§r] ",
             LOGGER_ERR = "[§c%date%§r] ";
@@ -66,7 +65,6 @@ public final class StringUtil {
         loggerProvider.serve("If you are unsure or still think that this is a ReformCloud Bug, please visit and report to https://discord.gg/uskXdVZ");
         loggerProvider.serve("Be sure to include ALL relevant console errors and Log files");
         loggerProvider.serve("Reform Version: " + REFORM_VERSION);
-        loggerProvider.serve("Reform Specification: " + REFORM_SPECIFICATION);
         loggerProvider.emptyLine();
         loggerProvider.exception(cause);
         loggerProvider.emptyLine().serve("---------------------------------------------------");
