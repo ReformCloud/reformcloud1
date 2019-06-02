@@ -4,6 +4,9 @@
 
 package systems.reformcloud.meta.server;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
@@ -11,16 +14,12 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
 public class ServerGroup implements Serializable {
+
     private static final long serialVersionUID = -6849497313084944255L;
 
     private String name, motd, join_permission;
@@ -38,8 +37,13 @@ public class ServerGroup implements Serializable {
 
     private SpigotVersions spigotVersions;
 
-    @java.beans.ConstructorProperties({"name", "motd", "join_permission", "clients", "templates", "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "save_logs", "autoStart", "autoStop", "serverModeType", "spigotVersions"})
-    public ServerGroup(String name, String motd, String join_permission, List<String> clients, List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers, int startPort, boolean maintenance, boolean save_logs, AutoStart autoStart, AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions) {
+    @java.beans.ConstructorProperties({"name", "motd", "join_permission", "clients", "templates",
+        "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "save_logs",
+        "autoStart", "autoStop", "serverModeType", "spigotVersions"})
+    public ServerGroup(String name, String motd, String join_permission, List<String> clients,
+        List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers,
+        int startPort, boolean maintenance, boolean save_logs, AutoStart autoStart,
+        AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions) {
         this.name = name;
         this.motd = motd;
         this.join_permission = join_permission;
@@ -59,11 +63,13 @@ public class ServerGroup implements Serializable {
     }
 
     public Template getTemplate(final String name) {
-        return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(randomTemplate());
+        return this.templates.stream().filter(template -> template.getName().equals(name))
+            .findFirst().orElse(randomTemplate());
     }
 
     public Template getTemplateOrElseNull(final String name) {
-        return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(null);
+        return this.templates.stream().filter(template -> template.getName().equals(name))
+            .findFirst().orElse(null);
     }
 
     public Template randomTemplate() {
@@ -71,12 +77,21 @@ public class ServerGroup implements Serializable {
             return new Template("default", null, TemplateBackend.CLIENT);
         }
 
-        return this.templates.get(new Random().nextInt(this.templates.size()));
+        for (Template template : this.templates) {
+            if (template.getName().equals("every")) {
+                continue;
+            }
+
+            return template;
+        }
+
+        return new Template("default", null, TemplateBackend.CLIENT);
     }
 
     public void deleteTemplate(String name) {
         List<Template> copyOf = new ArrayList<>(this.templates);
-        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst().ifPresent(template -> this.templates.remove(template));
+        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst()
+            .ifPresent(template -> this.templates.remove(template));
     }
 
     public String getName() {

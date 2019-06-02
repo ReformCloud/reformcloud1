@@ -12,6 +12,7 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutProcessAdd;
+import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 /**
@@ -19,38 +20,74 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
  */
 
 public final class PacketInAddProcess implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
-            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+            final ServerInfo serverInfo = configuration
+                .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
-            if (serverInfo == null)
+            if (serverInfo == null) {
                 return;
+            }
 
-            ReformCloudController.getInstance().getEventManager().fire(new ServerStartedEvent(serverInfo));
+            ReformCloudController.getInstance().getEventManager()
+                .fire(new ServerStartedEvent(serverInfo));
 
-            ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
+            ReformCloudController.getInstance().getLoggerProvider().info(
+                ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
                     .replace("%name%", serverInfo.getCloudProcess().getName())
                     .replace("%uid%", serverInfo.getCloudProcess().getProcessUID() + "")
                     .replace("%client%", serverInfo.getCloudProcess().getClient()));
 
-            ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting().remove(serverInfo.getCloudProcess().getName());
-            ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient().remove(serverInfo.getCloudProcess().getName());
-            ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessAdd(serverInfo));
-        } else {
-            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-            if (proxyInfo == null)
-                return;
+            ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                .registerServerProcess(
+                    serverInfo.getCloudProcess().getProcessUID(),
+                    serverInfo.getCloudProcess().getName(),
+                    serverInfo,
+                    serverInfo.getPort()
+                );
 
-            ReformCloudController.getInstance().getEventManager().fire(new ProxyStartedEvent(proxyInfo));
-            ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
+            ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting()
+                .remove(serverInfo.getCloudProcess().getName());
+            ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient()
+                .remove(serverInfo.getCloudProcess().getName());
+            ReformCloudController.getInstance().getChannelHandler()
+                .sendToAllAsynchronous(new PacketOutProcessAdd(serverInfo),
+                    new PacketOutUpdateAll(
+                        ReformCloudController.getInstance().getInternalCloudNetwork()));
+        } else {
+            final ProxyInfo proxyInfo = configuration
+                .getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
+
+            if (proxyInfo == null) {
+                return;
+            }
+
+            ReformCloudController.getInstance().getEventManager()
+                .fire(new ProxyStartedEvent(proxyInfo));
+            ReformCloudController.getInstance().getLoggerProvider().info(
+                ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
                     .replace("%name%", proxyInfo.getCloudProcess().getName())
                     .replace("%uid%", proxyInfo.getCloudProcess().getProcessUID() + "")
                     .replace("%client%", proxyInfo.getCloudProcess().getClient()));
 
-            ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting().remove(proxyInfo.getCloudProcess().getName());
-            ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient().remove(proxyInfo.getCloudProcess().getName());
-            ReformCloudController.getInstance().getChannelHandler().sendToAllAsynchronous(new PacketOutProcessAdd(proxyInfo));
+            ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                .registerProxyProcess(
+                    proxyInfo.getCloudProcess().getProcessUID(),
+                    proxyInfo.getCloudProcess().getName(),
+                    proxyInfo,
+                    proxyInfo.getPort()
+                );
+
+            ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting()
+                .remove(proxyInfo.getCloudProcess().getName());
+            ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient()
+                .remove(proxyInfo.getCloudProcess().getName());
+            ReformCloudController.getInstance().getChannelHandler()
+                .sendToAllAsynchronous(new PacketOutProcessAdd(proxyInfo),
+                    new PacketOutUpdateAll(
+                        ReformCloudController.getInstance().getInternalCloudNetwork()));
         }
     }
 }
