@@ -8,6 +8,12 @@ import com.google.common.base.Enums;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.reflect.TypeToken;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -42,13 +48,6 @@ import systems.reformcloud.signs.SignPosition;
 import systems.reformcloud.signs.map.TemplateMap;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.map.MapUtility;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.12.2018
@@ -470,7 +469,11 @@ public final class SignSelector {
             if ((event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
                     && event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof org.bukkit.block.Sign) {
                 final Sign sign = getSign(event.getClickedBlock().getLocation());
-                if (sign != null && sign.getServerInfo() != null && !sign.getServerInfo().getServerGroup().isMaintenance()) {
+                if (sign != null
+                    && sign.getServerInfo() != null
+                    && !sign.getServerInfo().getServerGroup().isMaintenance()
+                    && sign.getServerInfo().getServerState().isJoineable()
+                    && !sign.getServerInfo().getServerState().equals(ServerState.HIDDEN)) {
                     ByteArrayDataOutput byteArrayDataOutput = ByteStreams.newDataOutput();
                     byteArrayDataOutput.writeUTF("Connect");
                     byteArrayDataOutput.writeUTF(sign.getServerInfo().getCloudProcess().getName());
