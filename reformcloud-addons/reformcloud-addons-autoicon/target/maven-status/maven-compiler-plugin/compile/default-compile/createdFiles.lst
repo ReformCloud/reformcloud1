@@ -1,7 +1,0 @@
-systems\reformcloud\AutoIcon.class
-systems\reformcloud\network\out\PacketOutDisableIcons.class
-systems\reformcloud\network\out\PacketOutEnableIcons.class
-systems\reformcloud\network\in\PacketInGetConfig.class
-systems\reformcloud\config\AutoIconConfig$1.class
-systems\reformcloud\config\AutoIconConfig.class
-systems\reformcloud\config\IconConfig.class
