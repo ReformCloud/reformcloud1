@@ -14,10 +14,11 @@ import java.io.Serializable;
  */
 
 public final class PacketOutRemoveServerQueueProcess extends Packet implements Serializable {
+
     public PacketOutRemoveServerQueueProcess(final String name) {
         super(
-                "RemoveServerQueueProcess",
-                new Configuration().addStringValue("name", name)
+            "RemoveServerQueueProcess",
+            new Configuration().addStringValue("name", name)
         );
     }
 }

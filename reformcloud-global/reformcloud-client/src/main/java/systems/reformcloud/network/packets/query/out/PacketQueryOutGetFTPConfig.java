@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketQueryOutGetFTPConfig extends Packet implements Serializable {
+
     public PacketQueryOutGetFTPConfig() {
         super("GetFTPConfig", new Configuration());
     }

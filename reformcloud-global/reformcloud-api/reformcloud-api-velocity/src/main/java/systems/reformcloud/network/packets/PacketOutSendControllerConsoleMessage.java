@@ -12,12 +12,15 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutSendControllerConsoleMessage extends Packet {
+
     public PacketOutSendControllerConsoleMessage(final String message) {
-        super("SendControllerConsoleMessage", new Configuration().addStringValue("message", message));
+        super("SendControllerConsoleMessage",
+            new Configuration().addStringValue("message", message));
     }
 
     public PacketOutSendControllerConsoleMessage(final String... messages) {
-        for (String message : messages)
+        for (String message : messages) {
             new PacketOutSendControllerConsoleMessage(message);
+        }
     }
 }

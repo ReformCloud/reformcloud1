@@ -22,8 +22,11 @@ import java.util.Set;
  */
 
 public final class Permissible extends PermissibleBase implements Serializable {
+
     private PermissionHolder permissionHolder;
+
     private List<PermissionGroup> permissionGroups;
+
     private Set<PermissionAttachmentInfo> permissionAttachmentInfos;
 
     public Permissible(Player player, PermissionHolder permissionHolder) {
@@ -74,8 +77,9 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public void recalculatePermissions() {
-        if (this.permissionHolder == null)
+        if (this.permissionHolder == null) {
             return;
+        }
 
         this.recalculatePermissions0();
     }
@@ -99,7 +103,8 @@ public final class Permissible extends PermissibleBase implements Serializable {
     }
 
     @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
+        int ticks) {
         return new PermissionAttachment(plugin, this);
     }
 
@@ -109,47 +114,54 @@ public final class Permissible extends PermissibleBase implements Serializable {
     }
 
     private void recalculatePermissions0() {
-        if (this.permissionGroups != null && !this.permissionGroups.isEmpty())
+        if (this.permissionGroups != null && !this.permissionGroups.isEmpty()) {
             this.permissionGroups.clear();
+        }
 
         this.recalculatePermissions1();
     }
 
     private void recalculatePermissions1() {
-        this.permissionGroups = permissionHolder.getAllPermissionGroups(ReformCloudAPISpigot.getInstance().getPermissionCache());
+        this.permissionGroups = permissionHolder
+            .getAllPermissionGroups(ReformCloudAPISpigot.getInstance().getPermissionCache());
     }
 
     private void getPermissionAttachmentInfos0() {
-        if (this.permissionAttachmentInfos != null && !this.permissionAttachmentInfos.isEmpty())
+        if (this.permissionAttachmentInfos != null && !this.permissionAttachmentInfos.isEmpty()) {
             this.permissionAttachmentInfos.clear();
+        }
 
         this.getPermissionAttachmentInfos1();
     }
 
     private void getPermissionAttachmentInfos1() {
         Set<PermissionAttachmentInfo> infos = new HashSet<>();
-        final Map<String, Boolean> playerDirectPermissions = this.getPermissionHolder().getPlayerPermissions();
+        final Map<String, Boolean> playerDirectPermissions = this.getPermissionHolder()
+            .getPlayerPermissions();
         playerDirectPermissions.forEach((k, v) -> {
-            PermissionAttachmentInfo permissionAttachmentInfo = new PermissionAttachmentInfo(this, k, null, v);
+            PermissionAttachmentInfo permissionAttachmentInfo = new PermissionAttachmentInfo(this,
+                k, null, v);
             infos.add(permissionAttachmentInfo);
         });
 
         this.getPermissionGroups()
-                .stream()
-                .filter(e -> permissionHolder.isPermissionGroupPresent(e.getName()))
-                .forEach(group ->
-                        group.getPermissions().forEach((k, v) -> {
-                            PermissionAttachmentInfo permissionAttachmentInfo = new PermissionAttachmentInfo(this, k, null, v);
-                            infos.add(permissionAttachmentInfo);
-                        })
-                );
+            .stream()
+            .filter(e -> permissionHolder.isPermissionGroupPresent(e.getName()))
+            .forEach(group ->
+                group.getPermissions().forEach((k, v) -> {
+                    PermissionAttachmentInfo permissionAttachmentInfo = new PermissionAttachmentInfo(
+                        this, k, null, v);
+                    infos.add(permissionAttachmentInfo);
+                })
+            );
 
         this.permissionAttachmentInfos = infos;
     }
 
     private void checkAvailable() {
-        if (!isAvailable())
+        if (!isAvailable()) {
             throw new IllegalStateException("PermissionHolder cannot be null");
+        }
     }
 
     private boolean isAvailable() {
@@ -162,15 +174,17 @@ public final class Permissible extends PermissibleBase implements Serializable {
     }
 
     private Set<PermissionAttachmentInfo> getPermissionAttachmentInfos() {
-        if (this.permissionAttachmentInfos == null)
+        if (this.permissionAttachmentInfos == null) {
             this.getPermissionAttachmentInfos0();
+        }
 
         return permissionAttachmentInfos;
     }
 
     private List<PermissionGroup> getPermissionGroups() {
-        if (this.permissionGroups == null)
+        if (this.permissionGroups == null) {
             this.recalculatePermissions();
+        }
 
         return permissionGroups;
     }

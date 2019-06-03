@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class ClientCreatedEvent extends Event implements Serializable {
+
     private Client client;
 
     @ConstructorProperties({"client"})

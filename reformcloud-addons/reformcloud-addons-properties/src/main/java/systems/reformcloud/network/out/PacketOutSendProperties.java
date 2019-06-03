@@ -16,11 +16,13 @@ import systems.reformcloud.utility.StringUtil;
  */
 
 public final class PacketOutSendProperties extends Packet implements Serializable {
+
     public PacketOutSendProperties(UUID result) {
         super(
-                StringUtil.NULL,
-                new Configuration().addValue("config", PropertiesConfig.getInstance().getPropertiesConfig()),
-                result
+            StringUtil.NULL,
+            new Configuration()
+                .addValue("config", PropertiesConfig.getInstance().getPropertiesConfig()),
+            result
         );
     }
 }

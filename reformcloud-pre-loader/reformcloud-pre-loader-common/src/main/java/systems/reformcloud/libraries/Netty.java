@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class Netty extends Dependency implements Serializable {
+
     private static final long serialVersionUID = 5273979933426169372L;
 
     public Netty() {

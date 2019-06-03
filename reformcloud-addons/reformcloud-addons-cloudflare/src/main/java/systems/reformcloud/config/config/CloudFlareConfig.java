@@ -13,12 +13,20 @@ import java.util.List;
  */
 
 public final class CloudFlareConfig implements Serializable {
-    private String email, apiToken, domain;
+
+    private String email;
+
+    private String apiToken;
+
+    private String domain;
+
     private CloudFlareZone cloudFlareZone;
+
     private List<CloudFlareGroup> cloudFlareGroups;
 
     @ConstructorProperties({"email", "apiToken", "domain", "cloudFlareZone", "cloudFlareGroups"})
-    public CloudFlareConfig(String email, String apiToken, String domain, CloudFlareZone cloudFlareZone, List<CloudFlareGroup> cloudFlareGroups) {
+    public CloudFlareConfig(String email, String apiToken, String domain,
+        CloudFlareZone cloudFlareZone, List<CloudFlareGroup> cloudFlareGroups) {
         this.email = email;
         this.apiToken = apiToken;
         this.domain = domain;
@@ -47,6 +55,7 @@ public final class CloudFlareConfig implements Serializable {
     }
 
     public static class CloudFlareZone implements Serializable {
+
         private boolean useOwn;
         private String zoneID;
 
@@ -66,6 +75,7 @@ public final class CloudFlareConfig implements Serializable {
     }
 
     public static class CloudFlareGroup implements Serializable {
+
         private String targetProxyGroup, subDomain;
 
         @ConstructorProperties({"targetProxyGroup", "subDomain"})

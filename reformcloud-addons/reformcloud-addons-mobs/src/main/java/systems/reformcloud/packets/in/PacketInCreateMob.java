@@ -16,6 +16,7 @@ import systems.reformcloud.selector.MobSelector;
  */
 
 public final class PacketInCreateMob implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         SelectorMob selectorMob = configuration.getValue("mob", new TypeToken<SelectorMob>() {

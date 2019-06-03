@@ -13,6 +13,7 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class MobsAddon extends ControllerAddonImpl implements Serializable {
+
     @Override
     public void onAddonClazzPrepare() {
     }
@@ -24,8 +25,9 @@ public final class MobsAddon extends ControllerAddonImpl implements Serializable
 
     @Override
     public void onAddonReadyToClose() {
-        if (MobSelector.getInstance() == null)
+        if (MobSelector.getInstance() == null) {
             return;
+        }
 
         MobSelector.getInstance().close();
     }

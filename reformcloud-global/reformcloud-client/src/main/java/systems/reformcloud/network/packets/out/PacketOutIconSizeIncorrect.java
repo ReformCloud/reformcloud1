@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutIconSizeIncorrect extends Packet implements Serializable {
+
     public PacketOutIconSizeIncorrect(final String name) {
         super("IconSizeIncorrect", new Configuration().addStringValue("proxy", name));
     }

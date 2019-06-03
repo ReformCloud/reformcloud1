@@ -18,15 +18,18 @@ import systems.reformcloud.utility.StringUtil;
  */
 
 public final class CommandInfo extends Command implements Serializable {
+
     public CommandInfo() {
-        super("info", "Prints the Cloud info", null, new String[]{"whoami", "whoiam", "me", "about"});
+        super("info", "Prints the Cloud info", null,
+            new String[]{"whoami", "whoiam", "me", "about"});
     }
 
     private final SimpleDateFormat dataFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        final StatisticsProvider.Stats stats = ReformCloudController.getInstance().getStatisticsProvider().getStats();
+        final StatisticsProvider.Stats stats = ReformCloudController.getInstance()
+            .getStatisticsProvider().getStats();
 
         commandSender.sendMessage("ReformCloud version " + StringUtil.REFORM_VERSION);
         commandSender.sendMessage("Main developer: _Klaro");
@@ -34,18 +37,22 @@ public final class CommandInfo extends Command implements Serializable {
         commandSender.sendMessage("Root startup: " + stats.getRootStartup());
         commandSender.sendMessage("First startup: " + stats.getFirstStartup());
         commandSender.sendMessage("Last startup: " + stats.getLastStartup());
-        commandSender.sendMessage("Last shutdown: " + (stats.hasShutdown() ? stats.getLastShutdown() : "never"));
+        commandSender.sendMessage(
+            "Last shutdown: " + (stats.hasShutdown() ? stats.getLastShutdown() : "never"));
         commandSender.sendMessage("Player login: " + stats.getLogin());
         commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
         commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
         commandSender.sendMessage("JVM start time: " +
-                ReformCloudController.getInstance().getLoggerProvider().getDateFormat().format(ReformCloudLibraryService.systemStartTime()));
+            ReformCloudController.getInstance().getLoggerProvider().getDateFormat()
+                .format(ReformCloudLibraryService.systemStartTime()));
         commandSender.sendMessage("JVM uptime: " +
-                dataFormat.format(ReformCloudLibraryService.systemUpTime()));
+            dataFormat.format(ReformCloudLibraryService.systemUpTime()));
         commandSender.sendMessage("GameServer online time: " +
-                (stats.getServerOnlineTime() == 0 ? "00:00:00.000" : this.dataFormat.format(stats.getServerOnlineTime())));
+            (stats.getServerOnlineTime() == 0 ? "00:00:00.000"
+                : this.dataFormat.format(stats.getServerOnlineTime())));
         commandSender.sendMessage("GameServer walked distance: " + stats.getWalkedDistance());
         commandSender.sendMessage("GameServer placed blocks: " + stats.getBlocksPlaced());
-        commandSender.sendMessage("For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
+        commandSender.sendMessage(
+            "For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
     }
 }

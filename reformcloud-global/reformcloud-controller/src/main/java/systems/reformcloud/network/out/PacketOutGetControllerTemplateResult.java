@@ -15,14 +15,16 @@ import java.util.UUID;
  */
 
 public final class PacketOutGetControllerTemplateResult extends Packet implements Serializable {
-    public PacketOutGetControllerTemplateResult(String encoded, String name, UUID processUID, String type, String group) {
+
+    public PacketOutGetControllerTemplateResult(String encoded, String name, UUID processUID,
+        String type, String group) {
         super("GetControllerTemplateResult",
-                new Configuration()
-                        .addStringValue("encode", encoded)
-                        .addStringValue("name", name)
-                        .addStringValue("group", group)
-                        .addStringValue("type", type)
-                        .addValue("uuid", processUID)
+            new Configuration()
+                .addStringValue("encode", encoded)
+                .addStringValue("name", name)
+                .addStringValue("group", group)
+                .addStringValue("type", type)
+                .addValue("uuid", processUID)
         );
     }
 }

@@ -24,13 +24,13 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 
 public final class CloudProcessStartupHandler implements Runnable, Serializable {
+
     private final Queue<ServerStartupInfo> serverStartupInfo = new ConcurrentLinkedDeque<>();
+
     private final Queue<ProxyStartupInfo> proxyStartupInfo = new ConcurrentLinkedDeque<>();
 
     /**
      * Offers a serverProcess
-     *
-     * @param serverStartupInfo
      */
     public void offerServerProcess(ServerStartupInfo serverStartupInfo) {
         this.serverStartupInfo.add(serverStartupInfo);
@@ -38,8 +38,6 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
 
     /**
      * Offers a proxyProcess
-     *
-     * @param proxyStartupInfo
      */
     public void offerProxyProcess(ProxyStartupInfo proxyStartupInfo) {
         this.proxyStartupInfo.add(proxyStartupInfo);
@@ -53,45 +51,72 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
                     final ServerStartupInfo serverStartupInfo = this.serverStartupInfo.poll();
 
                     boolean firstStart = false;
-                    if (!Files.exists(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/default"))) {
-                        FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + serverStartupInfo.getServerGroup().getName() + "/default/plugins"));
+                    if (!Files.exists(Paths.get(
+                        "reformcloud/templates/servers/" + serverStartupInfo.getServerGroup()
+                            .getName() + "/default"))) {
+                        FileUtils.createDirectory(Paths.get(
+                            "reformcloud/templates/servers/" + serverStartupInfo.getServerGroup()
+                                .getName() + "/default/plugins"));
                         firstStart = true;
                     }
 
-                    if (!ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().isNameServerProcessRegistered(serverStartupInfo.getName())
-                            && (ReformCloudClient.getInstance().getMemory() + serverStartupInfo.getServerGroup().getMemory()) <
-                            ReformCloudClient.getInstance().getCloudConfiguration().getMemory()
-                            && (ReformCloudClient.getInstance().getCloudConfiguration().getCpu() == 0D
-                            || ReformCloudLibraryService.cpuUsage() <= ReformCloudClient.getInstance().getCloudConfiguration().getCpu())) {
-                        this.send(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_wait_start()
+                    if (!ReformCloudClient.getInstance().getInternalCloudNetwork()
+                        .getServerProcessManager()
+                        .isNameServerProcessRegistered(serverStartupInfo.getName())
+                        && (ReformCloudClient.getInstance().getMemory() + serverStartupInfo
+                        .getServerGroup().getMemory()) <
+                        ReformCloudClient.getInstance().getCloudConfiguration().getMemory()
+                        && (ReformCloudClient.getInstance().getCloudConfiguration().getCpu() == 0D
+                        || ReformCloudLibraryService.cpuUsage() <= ReformCloudClient.getInstance()
+                        .getCloudConfiguration().getCpu())) {
+                        this.send(
+                            ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
+                                .getClient_wait_start()
                                 .replace("%name%", serverStartupInfo.getName())
                                 .replace("%uid%", String.valueOf(serverStartupInfo.getUid()))
                                 .replace("%group%", serverStartupInfo.getServerGroup().getName())
                                 .replace("%type%", "CloudServer"));
 
-                        if (!new CloudServerStartupHandler(serverStartupInfo, firstStart).bootstrap())
+                        if (!new CloudServerStartupHandler(serverStartupInfo, firstStart)
+                            .bootstrap()) {
                             this.serverStartupInfo.add(serverStartupInfo);
-                    } else
+                        }
+                    } else {
                         this.serverStartupInfo.add(serverStartupInfo);
+                    }
                 }
 
                 if (!proxyStartupInfo.isEmpty()) {
                     final ProxyStartupInfo proxyStartupInfo = this.proxyStartupInfo.poll();
 
-                    if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/default")))
-                        FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup().getName() + "/default/plugins"));
+                    if (!Files.exists(Paths.get(
+                        "reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup()
+                            .getName() + "/default"))) {
+                        FileUtils.createDirectory(Paths.get(
+                            "reformcloud/templates/proxies/" + proxyStartupInfo.getProxyGroup()
+                                .getName() + "/default/plugins"));
+                    }
 
-                    if (!ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager().isNameProxyProcessRegistered(proxyStartupInfo.getName())
-                            && (ReformCloudClient.getInstance().getMemory() + proxyStartupInfo.getProxyGroup().getMemory()) <
-                            ReformCloudClient.getInstance().getCloudConfiguration().getMemory() && (ReformCloudClient.getInstance().getCloudConfiguration().getCpu() == 0D || ReformCloudLibraryService.cpuUsage() <= ReformCloudClient.getInstance().getCloudConfiguration().getCpu())) {
-                        this.send(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getClient_wait_start()
+                    if (!ReformCloudClient.getInstance().getInternalCloudNetwork()
+                        .getServerProcessManager()
+                        .isNameProxyProcessRegistered(proxyStartupInfo.getName())
+                        && (ReformCloudClient.getInstance().getMemory() + proxyStartupInfo
+                        .getProxyGroup().getMemory()) <
+                        ReformCloudClient.getInstance().getCloudConfiguration().getMemory() && (
+                        ReformCloudClient.getInstance().getCloudConfiguration().getCpu() == 0D
+                            || ReformCloudLibraryService.cpuUsage() <= ReformCloudClient
+                            .getInstance().getCloudConfiguration().getCpu())) {
+                        this.send(
+                            ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
+                                .getClient_wait_start()
                                 .replace("%name%", proxyStartupInfo.getName())
                                 .replace("%uid%", String.valueOf(proxyStartupInfo.getUid()))
                                 .replace("%group%", proxyStartupInfo.getProxyGroup().getName())
                                 .replace("%type%", "Proxy"));
 
-                        if (!new ProxyStartupHandler(proxyStartupInfo).bootstrap())
+                        if (!new ProxyStartupHandler(proxyStartupInfo).bootstrap()) {
                             this.proxyStartupInfo.add(proxyStartupInfo);
+                        }
                     } else {
                         this.proxyStartupInfo.add(proxyStartupInfo);
                     }
@@ -108,7 +133,6 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
     /**
      * Sends a message to ReformCloudController and to Client Console
      *
-     * @param message
      * @see PacketOutSendControllerConsoleMessage
      */
     private void send(String message) {
@@ -118,14 +142,24 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
     public void removeServerProcess(final String name) {
         this.serverStartupInfo.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
             this.serverStartupInfo.remove(e);
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSendControllerConsoleMessage("ServerProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3" + ReformCloudClient.getInstance().getCloudConfiguration().getClientName() + "§r queue"));
+            ReformCloudClient.getInstance().getChannelHandler()
+                .sendPacketAsynchronous("ReformCloudController",
+                    new PacketOutSendControllerConsoleMessage(
+                        "ServerProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3"
+                            + ReformCloudClient.getInstance().getCloudConfiguration()
+                            .getClientName() + "§r queue"));
         });
     }
 
     public void removeProxyProcess(final String name) {
         this.proxyStartupInfo.stream().filter(e -> e.getName().equals(name)).forEach(e -> {
             this.proxyStartupInfo.remove(e);
-            ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSendControllerConsoleMessage("ProxyProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3" + ReformCloudClient.getInstance().getCloudConfiguration().getClientName() + "§r queue"));
+            ReformCloudClient.getInstance().getChannelHandler()
+                .sendPacketAsynchronous("ReformCloudController",
+                    new PacketOutSendControllerConsoleMessage(
+                        "ProxyProcess §e" + e.getUid() + "§r was §cremoved§r out of the §3"
+                            + ReformCloudClient.getInstance().getCloudConfiguration()
+                            .getClientName() + "§r queue"));
         });
     }
 

@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class ApacheHttpComponents extends Dependency implements Serializable {
+
     private static final long serialVersionUID = -2104235898343838977L;
 
     public ApacheHttpComponents() {

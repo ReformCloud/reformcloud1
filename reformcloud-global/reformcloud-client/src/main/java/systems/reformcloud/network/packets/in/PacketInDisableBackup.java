@@ -15,9 +15,11 @@ import java.io.Serializable;
  */
 
 public final class PacketInDisableBackup implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        if (BackupHelper.getInstance() != null)
+        if (BackupHelper.getInstance() != null) {
             BackupHelper.getInstance().close();
+        }
     }
 }

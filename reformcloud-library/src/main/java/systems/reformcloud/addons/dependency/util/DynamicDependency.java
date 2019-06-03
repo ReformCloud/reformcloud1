@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public abstract class DynamicDependency implements Serializable {
+
     private static final long serialVersionUID = 697761527505608255L;
 
     /**
@@ -28,11 +29,13 @@ public abstract class DynamicDependency implements Serializable {
     /**
      * Creates a new constructor of the dependency
      *
-     * @param url The download url of the dependency or {@code null} if the cloud should use the default url
+     * @param url The download url of the dependency or {@code null} if the cloud should use the
+     * default url
      */
     protected DynamicDependency(final String url) {
-        if (url != null)
+        if (url != null) {
             this.download_url = url.endsWith("/") ? url : url + "/";
+        }
     }
 
     /**

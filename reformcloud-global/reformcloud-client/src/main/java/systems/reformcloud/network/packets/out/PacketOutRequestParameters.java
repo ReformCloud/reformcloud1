@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutRequestParameters extends Packet implements Serializable {
+
     public PacketOutRequestParameters() {
         super("RequestParameters", new Configuration());
     }

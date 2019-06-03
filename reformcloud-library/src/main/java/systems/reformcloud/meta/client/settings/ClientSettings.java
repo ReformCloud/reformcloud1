@@ -24,7 +24,7 @@ public enum ClientSettings implements Serializable {
     /**
      * Creates a new client setting
      *
-     * @param configString      The config string of the setting
+     * @param configString The config string of the setting
      */
     ClientSettings(String configString) {
         this.configString = configString;
@@ -33,7 +33,7 @@ public enum ClientSettings implements Serializable {
     /**
      * Get a setting by the name
      *
-     * @param in    The name of the setting
+     * @param in The name of the setting
      * @return The setting found by the name
      */
     public static ClientSettings getSettingByName(String in) {

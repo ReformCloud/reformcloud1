@@ -15,6 +15,7 @@ import systems.reformcloud.player.permissions.player.PermissionHolder;
  */
 
 public final class PacketOutQueryGetPermissionHolder extends Packet implements Serializable {
+
     public PacketOutQueryGetPermissionHolder(PermissionHolder permissionHolder, UUID resultID) {
         super("undefined", new Configuration().addValue("holder", permissionHolder));
         super.setResult(resultID);

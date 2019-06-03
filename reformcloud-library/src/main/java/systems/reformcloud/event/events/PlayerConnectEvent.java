@@ -14,6 +14,7 @@ import java.util.UUID;
  */
 
 public final class PlayerConnectEvent extends Event implements Serializable {
+
     private UUID onlinePlayer;
 
     @java.beans.ConstructorProperties({"onlinePlayer"})

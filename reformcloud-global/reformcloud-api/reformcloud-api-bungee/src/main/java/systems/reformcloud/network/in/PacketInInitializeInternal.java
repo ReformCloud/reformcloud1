@@ -30,64 +30,77 @@ import java.util.Optional;
  */
 
 public final class PacketInInitializeInternal implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
 
-        BungeecordBootstrap.getInstance().getProxy().getPluginManager().callEvent(new CloudNetworkInitializeEvent(
+        BungeecordBootstrap.getInstance().getProxy().getPluginManager()
+            .callEvent(new CloudNetworkInitializeEvent(
                 ReformCloudAPIBungee.getInstance().getInternalCloudNetwork())
-        );
+            );
 
-        final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
-        if (proxyGroup == null)
+        final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+            .getProxyGroups()
+            .get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
+        if (proxyGroup == null) {
             return;
+        }
 
         new IconManager();
 
-        ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new Packet(
-                "AuthSuccess", new Configuration().addStringValue("name", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
-        ));
-        ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(
-                process -> {
-                    if (proxyGroup.getDisabledServerGroups().contains(process.getServerGroup().getName()))
-                        return;
-
-                    ProxyServer.getInstance().getServers().put(
-                            process.getCloudProcess().getName(),
-                            ProxyServer.getInstance().constructServerInfo(
-                                    process.getCloudProcess().getName(),
-                                    new InetSocketAddress(process.getHost(), process.getPort()),
-                                    "ReformCloudServer",
-                                    false
-                            ));
-
-                    if (process.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
-                        ProxyServer.getInstance().getConfig().getListeners().forEach(listener ->
-                                listener.getServerPriority().add(process.getCloudProcess().getName())
-                        );
-                    }
+        ReformCloudAPIBungee.getInstance().getChannelHandler()
+            .sendPacketAsynchronous("ReformCloudController", new Packet(
+                "AuthSuccess", new Configuration().addStringValue("name",
+                ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
+            ));
+        ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager()
+            .getAllRegisteredServerProcesses().forEach(
+            process -> {
+                if (proxyGroup.getDisabledServerGroups()
+                    .contains(process.getServerGroup().getName())) {
+                    return;
                 }
-        );
 
-        ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) -> {
-                    ReformCloudAPIBungee.getInstance().setPermissionCache(configuration1.getValue("cache",
-                            TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                ProxyServer.getInstance().getServers().put(
+                    process.getCloudProcess().getName(),
+                    ProxyServer.getInstance().constructServerInfo(
+                        process.getCloudProcess().getName(),
+                        new InetSocketAddress(process.getHost(), process.getPort()),
+                        "ReformCloudServer",
+                        false
+                    ));
+
+                if (process.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
+                    ProxyServer.getInstance().getConfig().getListeners().forEach(listener ->
+                        listener.getServerPriority().add(process.getCloudProcess().getName())
                     );
-                    if (ReformCloudAPIBungee.getInstance().getPermissionCache() != null) {
-                        BungeecordBootstrap.getInstance().getProxy().getPluginManager().registerCommand(
-                                BungeecordBootstrap.getInstance(), new CommandPermissions()
-                        );
-                    }
                 }
+            }
         );
 
         ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutGetProxySettings(), (configuration1, resultID) -> {
-                    Optional<ProxySettings> proxySettings = configuration1.getValue("settings", new TypeToken<Optional<ProxySettings>>() {
-                    }.getType());
-                    ReformCloudAPIBungee.getInstance().setProxySettings(proxySettings.orElse(null));
+            new PacketOutQueryGetPermissionCache(), (configuration1, resultID) -> {
+                ReformCloudAPIBungee.getInstance()
+                    .setPermissionCache(configuration1.getValue("cache",
+                        TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                    );
+                if (ReformCloudAPIBungee.getInstance().getPermissionCache() != null) {
+                    BungeecordBootstrap.getInstance().getProxy().getPluginManager().registerCommand(
+                        BungeecordBootstrap.getInstance(), new CommandPermissions()
+                    );
                 }
+            }
+        );
+
+        ReformCloudAPIBungee.getInstance().sendPacketQuery("ReformCloudController",
+            new PacketOutGetProxySettings(), (configuration1, resultID) -> {
+                Optional<ProxySettings> proxySettings = configuration1
+                    .getValue("settings", new TypeToken<Optional<ProxySettings>>() {
+                    }.getType());
+                ReformCloudAPIBungee.getInstance().setProxySettings(proxySettings.orElse(null));
+            }
         );
     }
 }

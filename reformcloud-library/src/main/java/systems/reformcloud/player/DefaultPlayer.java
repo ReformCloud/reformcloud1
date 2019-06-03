@@ -15,19 +15,23 @@ import java.util.UUID;
  */
 
 public class DefaultPlayer implements Serializable {
+
     private static final long serialVersionUID = -6988920422303669100L;
 
     private String name;
 
     private UUID uniqueID;
+
     private Map<String, Object> playerMeta;
 
     private long lastLogin;
 
     private SpigotVersion spigotVersion;
 
-    @java.beans.ConstructorProperties({"name", "uniqueID", "playerMeta", "lastLogin", "spigotVersion"})
-    public DefaultPlayer(String name, UUID uniqueID, Map<String, Object> playerMeta, long lastLogin, SpigotVersion spigotVersion) {
+    @java.beans.ConstructorProperties({"name", "uniqueID", "playerMeta", "lastLogin",
+        "spigotVersion"})
+    public DefaultPlayer(String name, UUID uniqueID, Map<String, Object> playerMeta, long lastLogin,
+        SpigotVersion spigotVersion) {
         this.name = name;
         this.uniqueID = uniqueID;
         this.playerMeta = playerMeta;

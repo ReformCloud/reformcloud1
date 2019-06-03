@@ -18,6 +18,7 @@ import java.io.Serializable;
  */
 
 public final class IncomingPacketEvent extends Event implements Serializable, Cancellable {
+
     /**
      * The current cancel status
      */
@@ -26,7 +27,7 @@ public final class IncomingPacketEvent extends Event implements Serializable, Ca
     /**
      * Sets the cancel status
      *
-     * @param cancelled     The new cancel status
+     * @param cancelled The new cancel status
      */
     @Override
     public void setCancelled(boolean cancelled) {
@@ -46,8 +47,8 @@ public final class IncomingPacketEvent extends Event implements Serializable, Ca
     /**
      * Creates a new event
      *
-     * @param in                        The incoming packet
-     * @param channelHandlerContext     The channel handler context of the channel the packet come from
+     * @param in The incoming packet
+     * @param channelHandlerContext The channel handler context of the channel the packet come from
      */
     public IncomingPacketEvent(Packet in, ChannelHandlerContext channelHandlerContext) {
         this.in = in;

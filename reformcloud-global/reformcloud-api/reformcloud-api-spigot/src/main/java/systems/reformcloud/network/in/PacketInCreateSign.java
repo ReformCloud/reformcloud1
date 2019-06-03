@@ -17,11 +17,13 @@ import java.io.Serializable;
  */
 
 public final class PacketInCreateSign implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
         if (SignSelector.getInstance() != null) {
-            SignSelector.getInstance().handleCreateSign(configuration.getValue("sign", new TypeToken<Sign>() {
-            }.getType()));
+            SignSelector.getInstance()
+                .handleCreateSign(configuration.getValue("sign", new TypeToken<Sign>() {
+                }.getType()));
         }
     }
 }

@@ -9,17 +9,18 @@ package systems.reformcloud.event.utility;
  */
 
 public interface Cancellable {
+
     /**
      * Set if the event is cancelled or not
      *
-     * @param cancelled     The new cancel status
+     * @param cancelled The new cancel status
      */
     void setCancelled(boolean cancelled);
 
     /**
      * Gets the current cancel status
      *
-     * @return      If the current event is cancelled
+     * @return If the current event is cancelled
      */
     default boolean isCancelled() {
         return false;

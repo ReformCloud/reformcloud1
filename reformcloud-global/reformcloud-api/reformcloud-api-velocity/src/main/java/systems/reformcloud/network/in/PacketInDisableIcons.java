@@ -15,9 +15,11 @@ import java.io.Serializable;
  */
 
 public final class PacketInDisableIcons implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        if (IconManager.getInstance() != null)
+        if (IconManager.getInstance() != null) {
             IconManager.getInstance().delete();
+        }
     }
 }

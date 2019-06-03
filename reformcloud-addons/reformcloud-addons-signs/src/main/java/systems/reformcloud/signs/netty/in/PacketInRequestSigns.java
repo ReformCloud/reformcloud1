@@ -16,11 +16,13 @@ import systems.reformcloud.signs.netty.packets.PacketOutSendSigns;
  */
 
 public final class PacketInRequestSigns implements NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         ReformCloudController.getInstance().getChannelHandler()
-                .sendDirectPacket(configuration.getStringValue("from"),
-                        new PacketOutSendSigns(SignSelector.getInstance().getSignConfiguration()
-                                .getSignLayoutConfiguration(), SignSelector.getInstance().getSignConfiguration().getSignMap(), resultID));
+            .sendDirectPacket(configuration.getStringValue("from"),
+                new PacketOutSendSigns(SignSelector.getInstance().getSignConfiguration()
+                    .getSignLayoutConfiguration(),
+                    SignSelector.getInstance().getSignConfiguration().getSignMap(), resultID));
     }
 }

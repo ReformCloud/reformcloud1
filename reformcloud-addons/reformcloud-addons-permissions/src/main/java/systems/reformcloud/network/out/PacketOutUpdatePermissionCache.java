@@ -14,8 +14,9 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutUpdatePermissionCache extends Packet implements Serializable {
+
     public PacketOutUpdatePermissionCache() {
         super("UpdatePermissionCache", new Configuration().addValue("cache",
-                PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache()));
+            PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache()));
     }
 }

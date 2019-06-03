@@ -15,8 +15,10 @@ import java.io.Serializable;
  */
 
 public final class CommandUpdate extends Command implements Serializable {
+
     public CommandUpdate() {
-        super("update", "Updates the CloudSystem", "reformcloud.command.update", new String[]{"upgrade"});
+        super("update", "Updates the CloudSystem", "reformcloud.command.update",
+            new String[]{"upgrade"});
     }
 
     @Override

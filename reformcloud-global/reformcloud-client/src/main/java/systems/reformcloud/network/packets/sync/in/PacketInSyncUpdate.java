@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncUpdate implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = -2435825653441303885L;
 
     @Override

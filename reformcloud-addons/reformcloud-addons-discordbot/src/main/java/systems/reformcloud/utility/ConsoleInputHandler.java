@@ -15,13 +15,17 @@ import systems.reformcloud.ReformCloudController;
  */
 
 public final class ConsoleInputHandler extends ListenerAdapter implements Serializable {
+
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         if (!event.getChannel().getId().equals(DiscordAddon.getInstance().getTextChannel().getId())
-                || event.getAuthor().isBot())
+            || event.getAuthor().isBot()) {
             return;
+        }
 
-        if (ReformCloudController.getInstance().getCommandManager().dispatchCommand(event.getMessage().getContentRaw()))
+        if (ReformCloudController.getInstance().getCommandManager()
+            .dispatchCommand(event.getMessage().getContentRaw())) {
             ReformCloudController.getInstance().getStatisticsProvider().addConsoleCommand();
+        }
     }
 }

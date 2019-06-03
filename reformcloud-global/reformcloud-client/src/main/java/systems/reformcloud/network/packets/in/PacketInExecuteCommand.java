@@ -13,11 +13,17 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
  */
 
 public final class PacketInExecuteCommand implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        if (configuration.getStringValue("type").equalsIgnoreCase("proxy"))
-            ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredProxyHandler(configuration.getStringValue("target")).executeCommand(configuration.getStringValue("command"));
-        else
-            ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerHandler(configuration.getStringValue("target")).executeCommand(configuration.getStringValue("command"));
+        if (configuration.getStringValue("type").equalsIgnoreCase("proxy")) {
+            ReformCloudClient.getInstance().getCloudProcessScreenService()
+                .getRegisteredProxyHandler(configuration.getStringValue("target"))
+                .executeCommand(configuration.getStringValue("command"));
+        } else {
+            ReformCloudClient.getInstance().getCloudProcessScreenService()
+                .getRegisteredServerHandler(configuration.getStringValue("target"))
+                .executeCommand(configuration.getStringValue("command"));
+        }
     }
 }

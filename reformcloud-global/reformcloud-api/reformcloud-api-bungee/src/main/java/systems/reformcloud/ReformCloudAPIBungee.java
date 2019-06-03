@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import systems.reformcloud.api.IAPIService;
-import systems.reformcloud.api.IDefaultPlayerProvider;
-import systems.reformcloud.api.IEventHandler;
+import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.DefaultPlayerProvider;
+import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.api.SaveAPIImpl;
-import systems.reformcloud.api.save.ISaveAPIService;
+import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
 import systems.reformcloud.configurations.Configuration;
@@ -43,6 +43,7 @@ import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.dev.DevProcess;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.ServerModeType;
+import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
@@ -112,23 +113,28 @@ import systems.reformcloud.utility.defaults.DefaultCloudService;
  * @author _Klaro | Pasqual K. / created on 01.11.2018
  */
 
-public final class ReformCloudAPIBungee implements IAPIService, Serializable {
+public final class ReformCloudAPIBungee implements APIService, Serializable {
 
     private static ReformCloudAPIBungee instance;
 
     private final NettySocketClient nettySocketClient;
+
     private final ChannelHandler channelHandler;
 
     private ProxySettings proxySettings;
 
     private final ProxyStartupInfo proxyStartupInfo;
+
     private ProxyInfo proxyInfo;
+
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private PermissionCache permissionCache;
 
     private Map<UUID, OnlinePlayer> onlinePlayers = new HashMap<>();
+
     private Map<UUID, PermissionHolder> cachedPermissionHolders = new HashMap<>();
+
     private List<IngameCommand> registeredIngameCommands = new ArrayList<>();
 
     private long internalTime = System.currentTimeMillis();
@@ -145,10 +151,10 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
 
         ReformCloudLibraryService.sendHeader();
 
-        ISaveAPIService.instance.set(new SaveAPIImpl());
-        IAPIService.instance.set(this);
+        SaveAPIService.instance.set(new SaveAPIImpl());
+        APIService.instance.set(this);
         new DefaultCloudService(this);
-        IDefaultPlayerProvider.instance.set(new PlayerProvider());
+        DefaultPlayerProvider.instance.set(new PlayerProvider());
 
         Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
 
@@ -166,7 +172,7 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
             .getValue("startupInfo", TypeTokenAdaptor.getPROXY_STARTUP_INFO_TYPE());
         this.proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());
 
-        IEventHandler.instance.set(new NetworkEventAdapter());
+        EventHandler.instance.set(new NetworkEventAdapter());
 
         this.getNettyHandler()
             .registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
@@ -938,11 +944,17 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 continue;
             }
 
-            if (serverInfo.getServerGroup().getJoin_permission() == null
+            if (!serverInfo.getServerState().isJoineable() || serverInfo.getServerState().equals(
+                ServerState.HIDDEN)) {
+                continue;
+            }
+
+            if (serverInfo.getServerGroup().getJoinPermission() != null
+                && proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoinPermission())
                 && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
                 .getMaxPlayers()) {
                 return serverInfo;
-            } else if (proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoin_permission())
+            } else if (serverInfo.getServerGroup().getJoinPermission() == null
                 && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
                 .getMaxPlayers()) {
                 return serverInfo;
@@ -964,11 +976,17 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
                 continue;
             }
 
-            if (serverInfo.getServerGroup().getJoin_permission() == null
+            if (!serverInfo.getServerState().isJoineable() || serverInfo.getServerState().equals(
+                ServerState.HIDDEN)) {
+                continue;
+            }
+
+            if (serverInfo.getServerGroup().getJoinPermission() != null
+                && proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoinPermission())
                 && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
                 .getMaxPlayers()) {
                 return serverInfo;
-            } else if (proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoin_permission())
+            } else if (serverInfo.getServerGroup().getJoinPermission() == null
                 && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
                 .getMaxPlayers()) {
                 return serverInfo;
@@ -993,8 +1011,8 @@ public final class ReformCloudAPIBungee implements IAPIService, Serializable {
     }
 
     @Override
-    public Optional<ISaveAPIService> getAPISave() {
-        return Optional.ofNullable(ISaveAPIService.instance.get());
+    public Optional<SaveAPIService> getAPISave() {
+        return Optional.ofNullable(SaveAPIService.instance.get());
     }
 
     public void updateIngameCommands(List<IngameCommand> newIngameCommands) {

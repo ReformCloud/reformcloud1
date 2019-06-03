@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class JLine extends Dependency implements Serializable {
+
     private static final long serialVersionUID = -5341268101711897840L;
 
     public JLine() {

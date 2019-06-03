@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class InternalCloudNetworkUpdateEvent extends Event implements Serializable {
+
     private InternalCloudNetwork internalCloudNetwork;
 
     @java.beans.ConstructorProperties({"internalCloudNetwork"})

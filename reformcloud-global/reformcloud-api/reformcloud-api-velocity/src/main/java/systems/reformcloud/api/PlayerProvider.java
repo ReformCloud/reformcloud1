@@ -21,23 +21,28 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 14.03.2019
  */
 
-public final class PlayerProvider implements Serializable, IDefaultPlayerProvider {
+public final class PlayerProvider implements Serializable, DefaultPlayerProvider {
+
     @Override
     public void sendPlayer(UUID uniqueID, String name) {
-        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).orElse(null) != null) {
-            Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).get();
-            proxiedPlayer.createConnectionRequest(VelocityBootstrap.getInstance().getProxyServer().getServer(name).get()).connect();
+        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).orElse(null)
+            != null) {
+            Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer()
+                .getPlayer(uniqueID).get();
+            proxiedPlayer.createConnectionRequest(
+                VelocityBootstrap.getInstance().getProxyServer().getServer(name).get()).connect();
             return;
         }
 
         ProxyInfo proxyInfo = this.findPlayer(uniqueID);
-        if (proxyInfo == null)
+        if (proxyInfo == null) {
             return;
+        }
 
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
-                "ReformCloudController", new PacketOutConnectPlayer(
-                        uniqueID, name, proxyInfo.getCloudProcess().getName()
-                )
+            "ReformCloudController", new PacketOutConnectPlayer(
+                uniqueID, name, proxyInfo.getCloudProcess().getName()
+            )
         );
     }
 
@@ -48,56 +53,61 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
 
     @Override
     public void sendMessage(UUID uniqueID, String message) {
-        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).orElse(null) != null) {
-            Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).get();
+        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).orElse(null)
+            != null) {
+            Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer()
+                .getPlayer(uniqueID).get();
             proxiedPlayer.sendMessage(TextComponent.of(message));
             return;
         }
 
         ProxyInfo proxyInfo = this.findPlayer(uniqueID);
-        if (proxyInfo == null)
+        if (proxyInfo == null) {
             return;
+        }
 
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
-                "ReformCloudController", new PacketOutSendMessage(
-                        uniqueID, message, proxyInfo.getCloudProcess().getName()
-                )
+            "ReformCloudController", new PacketOutSendMessage(
+                uniqueID, message, proxyInfo.getCloudProcess().getName()
+            )
         );
     }
 
     @Override
     public void kickPlayer(UUID uniqueID, String reason) {
-        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).orElse(null) != null) {
-            Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).get();
+        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).orElse(null)
+            != null) {
+            Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer()
+                .getPlayer(uniqueID).get();
             proxiedPlayer.disconnect(reason == null ? TextComponent.of("§cNo reason defined")
-                    : TextComponent.of(reason));
+                : TextComponent.of(reason));
             return;
         }
 
         ProxyInfo proxyInfo = this.findPlayer(uniqueID);
-        if (proxyInfo == null)
+        if (proxyInfo == null) {
             return;
+        }
 
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketSynchronized(
-                "ReformCloudController", new PacketOutKickPlayer(
-                        uniqueID, reason, proxyInfo.getCloudProcess().getName()
-                )
+            "ReformCloudController", new PacketOutKickPlayer(
+                uniqueID, reason, proxyInfo.getCloudProcess().getName()
+            )
         );
     }
 
     /**
      * @param toFind The uuid of the player which should be found
-     * @return The player which is connected on a proxy server
-     * or {@code null}
+     * @return The player which is connected on a proxy server or {@code null}
      */
     private ProxyInfo findPlayer(UUID toFind) {
         return ReformCloudAPIVelocity.getInstance()
-                .getInternalCloudNetwork()
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .stream()
-                .filter(e -> e.getOnlinePlayers().contains(toFind))
-                .findFirst()
-                .orElse(null);
+            .getInternalCloudNetwork()
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .stream()
+            .filter(e -> e.getOnlinePlayers().contains(toFind))
+            .findFirst()
+            .orElse(null);
     }
 }

@@ -15,6 +15,7 @@ import systems.reformcloud.selector.MobSelector;
  */
 
 public final class PacketInDeleteMob implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         UUID mob = configuration.getValue("mob", UUID.class);

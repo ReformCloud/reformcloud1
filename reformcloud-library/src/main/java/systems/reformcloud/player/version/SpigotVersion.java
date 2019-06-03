@@ -9,6 +9,7 @@ import java.util.Map;
  */
 
 public enum SpigotVersion implements Serializable {
+    V1_14_2(485),
     V1_14_1(480),
     V1_14(477),
     V1_13_2(404),
@@ -56,14 +57,17 @@ public enum SpigotVersion implements Serializable {
     private static final Map<Integer, SpigotVersion> BY_PROTOCOL_ID = new HashMap<>();
 
     static {
-        for (SpigotVersion version : values())
-            if (!BY_PROTOCOL_ID.containsKey(version.protocolId))
+        for (SpigotVersion version : values()) {
+            if (!BY_PROTOCOL_ID.containsKey(version.protocolId)) {
                 BY_PROTOCOL_ID.put(version.protocolId, version);
+            }
+        }
     }
 
     public static SpigotVersion getByProtocolId(int protocolId) {
-        if (protocolId < 4)
+        if (protocolId < 4) {
             return V1_13_2;
+        }
 
         return BY_PROTOCOL_ID.get(protocolId);
     }

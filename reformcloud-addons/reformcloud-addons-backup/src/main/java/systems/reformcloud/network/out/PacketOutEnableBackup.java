@@ -14,6 +14,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutEnableBackup extends Packet implements Serializable {
+
     public PacketOutEnableBackup(FTPConfig ftpConfig) {
         super("EnableBackup", new Configuration().addValue("config", ftpConfig));
     }

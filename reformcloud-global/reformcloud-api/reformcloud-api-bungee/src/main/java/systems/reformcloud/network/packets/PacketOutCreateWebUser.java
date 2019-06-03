@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutCreateWebUser extends Packet implements Serializable {
+
     public PacketOutCreateWebUser(WebUser webUser) {
         super("CreateWebUser", new Configuration().addValue("user", webUser));
     }

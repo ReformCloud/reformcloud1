@@ -13,15 +13,33 @@ import java.util.List;
  */
 
 public final class FTPConfig implements Serializable {
-    private boolean useFTPS, deleteLocalBackupAfterUpload, saveController, saveClient;
-    private String host, userName, password;
+
+    private boolean useFTPS;
+
+    private boolean deleteLocalBackupAfterUpload;
+
+    private boolean saveController;
+
+    private boolean saveClient;
+
+    private String host;
+
+    private String userName;
+
+    private String password;
+
     private int port;
+
     private int saveIntervalInMinutes;
+
     private List<String> excluded;
 
-    @ConstructorProperties({"useFTPS", "deleteLocalBackupAfterUpload", "saveController", "saveClient", "host", "userName", "password", "port", "saveIntervalInMinutes", "excluded"})
-    public FTPConfig(boolean useFTPS, boolean deleteLocalBackupAfterUpload, boolean saveController, boolean saveClient,
-                     String host, String userName, String password, int port, int saveIntervalInMinutes, List<String> excluded) {
+    @ConstructorProperties({"useFTPS", "deleteLocalBackupAfterUpload", "saveController",
+        "saveClient", "host", "userName", "password", "port", "saveIntervalInMinutes", "excluded"})
+    public FTPConfig(boolean useFTPS, boolean deleteLocalBackupAfterUpload, boolean saveController,
+        boolean saveClient,
+        String host, String userName, String password, int port, int saveIntervalInMinutes,
+        List<String> excluded) {
         this.useFTPS = useFTPS;
         this.deleteLocalBackupAfterUpload = deleteLocalBackupAfterUpload;
         this.saveController = saveController;

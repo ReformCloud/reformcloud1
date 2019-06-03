@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateOfflinePlayer extends Packet implements Serializable {
+
     public PacketOutUpdateOfflinePlayer(OfflinePlayer offlinePlayer) {
         super("UpdateOnlinePlayer", new Configuration().addValue("player", offlinePlayer));
     }

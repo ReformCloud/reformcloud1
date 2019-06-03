@@ -17,11 +17,13 @@ import java.io.Serializable;
  */
 
 public final class PacketInEnableBackup implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         FTPConfig ftpConfig = configuration.getValue("config", new TypeToken<FTPConfig>() {
         });
-        if (ftpConfig != null && BackupHelper.getInstance() == null)
+        if (ftpConfig != null && BackupHelper.getInstance() == null) {
             new BackupHelper(ftpConfig);
+        }
     }
 }

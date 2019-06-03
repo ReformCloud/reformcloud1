@@ -15,6 +15,7 @@ import java.util.Map;
  */
 
 public final class WebHandlerAdapter implements Serializable {
+
     /**
      * The map of all web handler
      */
@@ -23,8 +24,8 @@ public final class WebHandlerAdapter implements Serializable {
     /**
      * Registers a web Handler
      *
-     * @param path          The path where the web handler should be called from
-     * @param webHandler    The web handler which should handle the requests
+     * @param path The path where the web handler should be called from
+     * @param webHandler The web handler which should handle the requests
      * @return The current class instance
      */
     public WebHandlerAdapter registerHandler(final String path, final WebHandler webHandler) {
@@ -37,7 +38,7 @@ public final class WebHandlerAdapter implements Serializable {
     /**
      * Unregisters a web Handler
      *
-     * @param path      The path where the web handler is called from
+     * @param path The path where the web handler is called from
      * @return The current class instance
      */
     public WebHandlerAdapter unregisterHandler(final String path) {
@@ -59,7 +60,7 @@ public final class WebHandlerAdapter implements Serializable {
     /**
      * Checks if a handler is registered
      *
-     * @param path          The path where the web handler should be called from
+     * @param path The path where the web handler should be called from
      * @return if a handler id registered
      */
     public boolean isHandlerRegistered(final String path) {
@@ -70,7 +71,7 @@ public final class WebHandlerAdapter implements Serializable {
     /**
      * Gets a specific web Handler by the given name
      *
-     * @param path          The path where the web handler should be called from
+     * @param path The path where the web handler should be called from
      * @return a specific web Handler by the given name
      */
     public WebHandler getHandler(final String path) {

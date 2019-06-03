@@ -24,14 +24,26 @@ import java.util.regex.Pattern;
  */
 
 final class ProcessPreLoader implements Serializable {
+
     public static synchronized void main(String[] args) {
         String preFileToLoad = Arrays.stream(args)
-                .filter(e -> e.startsWith("--file=") && e.endsWith(".jar"))
-                .findFirst().orElse(null);
+            .filter(e -> e.startsWith("--file=") && e.endsWith(".jar"))
+            .findFirst().orElse(null);
         if (preFileToLoad == null) {
             System.exit(1);
             return;
         }
+
+        String version = Arrays.stream(args)
+            .filter(e -> e.startsWith("--version="))
+            .findFirst().orElse(null);
+        if (version == null) {
+            version = CommonLoader.getCurrentFallbackVersion();
+        } else {
+            version = version.split("=")[1];
+        }
+
+        CommonLoader.setVersion(version);
 
         Matcher matcher = Pattern.compile("--file=(.*)").matcher(preFileToLoad);
         String file = matcher.matches() ? matcher.group(1) : null;
@@ -42,6 +54,7 @@ final class ProcessPreLoader implements Serializable {
 
         List<String> argsList = asList(args);
         argsList.remove(preFileToLoad);
+        argsList.remove(version);
         args = argsList.toArray(new String[0]);
 
         File target = new File(file);

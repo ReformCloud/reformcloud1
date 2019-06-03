@@ -18,9 +18,12 @@ import java.util.UUID;
  */
 
 public final class PacketOutQueryGetPlayer extends Packet implements Serializable {
-    public PacketOutQueryGetPlayer(final UUID uuid, final SpigotVersion spigotVersion, String name) {
+
+    public PacketOutQueryGetPlayer(final UUID uuid, final SpigotVersion spigotVersion,
+        String name) {
         super("QueryGetPlayer", new Configuration().addValue("player",
-                new DefaultPlayer(name, uuid, new HashMap<>(), System.currentTimeMillis(), spigotVersion)));
+            new DefaultPlayer(name, uuid, new HashMap<>(), System.currentTimeMillis(),
+                spigotVersion)));
     }
 
     public PacketOutQueryGetPlayer(final UUID uuid) {

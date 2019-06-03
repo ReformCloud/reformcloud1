@@ -13,6 +13,7 @@ import systems.reformcloud.meta.info.ProxyInfo;
  */
 
 public final class CloudProxyRemoveEvent {
+
     private ProxyInfo proxyInfo;
 
     @java.beans.ConstructorProperties({"proxyInfo"})

@@ -22,25 +22,32 @@ import java.util.stream.Collectors;
  */
 
 public final class PacketInUpdatePermissionGroup implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        PermissionGroup permissionGroup = configuration.getValue("group", new TypeToken<PermissionGroup>() {
-        });
+        PermissionGroup permissionGroup = configuration
+            .getValue("group", new TypeToken<PermissionGroup>() {
+            });
         List<PermissionHolder> permissionHolders = ReformCloudAPIBungee.getInstance()
-                .getCachedPermissionHolders()
-                .values()
-                .stream()
-                .filter(e -> BungeecordBootstrap.getInstance().getProxy().getPlayer(e.getUniqueID()) != null)
-                .filter(e -> e.getPermissionGroups().containsKey(permissionGroup.getName()))
-                .filter(e -> e.isPermissionGroupPresent(permissionGroup.getName()))
-                .collect(Collectors.toList());
-        if (permissionHolders.isEmpty())
+            .getCachedPermissionHolders()
+            .values()
+            .stream()
+            .filter(e -> BungeecordBootstrap.getInstance().getProxy().getPlayer(e.getUniqueID())
+                != null)
+            .filter(e -> e.getPermissionGroups().containsKey(permissionGroup.getName()))
+            .filter(e -> e.isPermissionGroupPresent(permissionGroup.getName()))
+            .collect(Collectors.toList());
+        if (permissionHolders.isEmpty()) {
             return;
+        }
 
         permissionHolders.forEach(permissionHolder -> {
-            ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().remove(permissionHolder.getUniqueID());
-            ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
-            BungeecordBootstrap.getInstance().getProxy().getPluginManager().callEvent(new PermissionHolderUpdateEvent(permissionHolder));
+            ReformCloudAPIBungee.getInstance().getCachedPermissionHolders()
+                .remove(permissionHolder.getUniqueID());
+            ReformCloudAPIBungee.getInstance().getCachedPermissionHolders()
+                .put(permissionHolder.getUniqueID(), permissionHolder);
+            BungeecordBootstrap.getInstance().getProxy().getPluginManager()
+                .callEvent(new PermissionHolderUpdateEvent(permissionHolder));
         });
     }
 }

@@ -22,48 +22,57 @@ import java.util.UUID;
  */
 
 public final class PermissionUtil implements Serializable {
-    public static boolean hasPermission(CommandSender commandSender, String permission) {
-        if (permission == null)
-            return false;
 
-        if (commandSender instanceof ProxiedPlayer)
+    public static boolean hasPermission(CommandSender commandSender, String permission) {
+        if (permission == null) {
+            return false;
+        }
+
+        if (commandSender instanceof ProxiedPlayer) {
             return hasPermission0((ProxiedPlayer) commandSender, permission);
+        }
 
         return commandSender instanceof ConsoleCommandSender;
     }
 
     private static boolean hasPermission0(ProxiedPlayer proxiedPlayer, String permission) {
-        if (proxiedPlayer == null)
+        if (proxiedPlayer == null) {
             return false;
+        }
 
         return hasPermission1(proxiedPlayer.getUniqueId(), permission);
     }
 
     private static boolean hasPermission1(UUID uniqueID, String permission) {
-        if (uniqueID == null)
+        if (uniqueID == null) {
             return false;
+        }
 
-        PermissionHolder permissionHolder = ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().get(uniqueID);
+        PermissionHolder permissionHolder = ReformCloudAPIBungee.getInstance()
+            .getCachedPermissionHolders().get(uniqueID);
         return hasPermission2(permissionHolder, permission);
     }
 
     private static boolean hasPermission2(PermissionHolder permissionHolder, String permission) {
-        if (permissionHolder == null)
+        if (permissionHolder == null) {
             return false;
+        }
 
         List<PermissionGroup> permissionGroups = new ArrayList<>();
         permissionHolder.getPermissionGroups().keySet()
-                .stream()
-                .filter(permissionHolder::isPermissionGroupPresent)
-                .map(g -> ReformCloudAPIBungee.getInstance().getPermissionCache().getGroup(g))
-                .filter(Objects::nonNull)
-                .forEach(permissionGroups::add);
+            .stream()
+            .filter(permissionHolder::isPermissionGroupPresent)
+            .map(g -> ReformCloudAPIBungee.getInstance().getPermissionCache().getGroup(g))
+            .filter(Objects::nonNull)
+            .forEach(permissionGroups::add);
         return hasPermission3(permissionHolder, permissionGroups, permission);
     }
 
-    private static boolean hasPermission3(PermissionHolder permissionHolder, List<PermissionGroup> permissionGroups, String permission) {
-        if (permissionGroups == null || permissionGroups.isEmpty())
+    private static boolean hasPermission3(PermissionHolder permissionHolder,
+        List<PermissionGroup> permissionGroups, String permission) {
+        if (permissionGroups == null || permissionGroups.isEmpty()) {
             return false;
+        }
 
         return permissionHolder.hasPermission(permission, permissionGroups);
     }

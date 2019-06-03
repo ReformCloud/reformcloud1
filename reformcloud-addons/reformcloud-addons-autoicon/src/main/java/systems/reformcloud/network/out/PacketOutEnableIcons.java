@@ -13,6 +13,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutEnableIcons extends Packet implements Serializable {
+
     public PacketOutEnableIcons() {
         super("EnableIcons", new Configuration());
     }

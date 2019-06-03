@@ -13,6 +13,7 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
  */
 
 public final class PacketOutUpdateAll extends Packet {
+
     public PacketOutUpdateAll(final InternalCloudNetwork internalCloudNetwork) {
         super("UpdateAll", new Configuration().addValue("networkProperties", internalCloudNetwork));
     }

@@ -15,10 +15,13 @@ import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
-public final class PacketInQueryGetPermissionCache implements Serializable, NetworkQueryInboundHandler {
+public final class PacketInQueryGetPermissionCache implements Serializable,
+    NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
-        ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(configuration.getStringValue("from"),
+        ReformCloudController.getInstance().getChannelHandler()
+            .sendDirectPacket(configuration.getStringValue("from"),
                 new PacketOutQueryGetPermissionCache(resultID));
     }
 }

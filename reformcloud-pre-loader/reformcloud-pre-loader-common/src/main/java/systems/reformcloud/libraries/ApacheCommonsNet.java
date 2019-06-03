@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class ApacheCommonsNet extends Dependency implements Serializable {
+
     public ApacheCommonsNet() {
         super(null);
     }

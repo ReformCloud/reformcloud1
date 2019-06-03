@@ -15,15 +15,21 @@ import java.util.List;
  */
 
 public final class PermissionCache implements Serializable {
-    private boolean chatEnabled, tabEnabled;
+
+    private boolean chatEnabled;
+
+    private boolean tabEnabled;
+
     private String chatFormat;
 
     private List<PermissionGroup> allRegisteredGroups;
 
     private PermissionGroup defaultGroup;
 
-    @java.beans.ConstructorProperties({"chatEnabled", "tabEnabled", "chatFormat", "allRegisteredGroups", "defaultGroup"})
-    public PermissionCache(boolean chatEnabled, boolean tabEnabled, String chatFormat, List<PermissionGroup> allRegisteredGroups, PermissionGroup defaultGroup) {
+    @java.beans.ConstructorProperties({"chatEnabled", "tabEnabled", "chatFormat",
+        "allRegisteredGroups", "defaultGroup"})
+    public PermissionCache(boolean chatEnabled, boolean tabEnabled, String chatFormat,
+        List<PermissionGroup> allRegisteredGroups, PermissionGroup defaultGroup) {
         this.chatEnabled = chatEnabled;
         this.tabEnabled = tabEnabled;
         this.chatFormat = chatFormat;
@@ -33,8 +39,9 @@ public final class PermissionCache implements Serializable {
 
     public PermissionGroup getGroup(String name) {
         for (PermissionGroup permissionGroup : this.getAllGroupsAndDefault()) {
-            if (permissionGroup.getName().equals(name))
+            if (permissionGroup.getName().equals(name)) {
                 return permissionGroup;
+            }
         }
 
         return null;

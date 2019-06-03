@@ -25,10 +25,12 @@ import java.nio.file.Paths;
  */
 
 public final class CommandLog extends Command implements Serializable {
+
     private static final long serialVersionUID = 8869467720046339074L;
 
     public CommandLog() {
-        super("log", "Uploads a log of a specific server/proxy/client", "reformcloud.command.log", new String[0]);
+        super("log", "Uploads a log of a specific server/proxy/client", "reformcloud.command.log",
+            new String[0]);
     }
 
     @Override
@@ -37,13 +39,17 @@ public final class CommandLog extends Command implements Serializable {
             StringBuilder stringBuilder = new StringBuilder();
             try {
                 Files.readAllLines(Paths.get("reformcloud/logs/latest.0"), StandardCharsets.UTF_8)
-                        .forEach(s -> stringBuilder.append(s).append("\n"));
+                    .forEach(s -> stringBuilder.append(s).append("\n"));
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not read log", ex);
+                StringUtil
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                        "Could not read log", ex);
             }
 
-            final String url = ReformCloudController.getInstance().getLoggerProvider().uploadLog(stringBuilder.substring(0));
-            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_log_success()
+            final String url = ReformCloudController.getInstance().getLoggerProvider()
+                .uploadLog(stringBuilder.substring(0));
+            commandSender.sendMessage(
+                ReformCloudController.getInstance().getLoadedLanguage().getCommand_log_success()
                     .replace("%type%", "Controller")
                     .replace("%url%", url));
             return;
@@ -57,39 +63,56 @@ public final class CommandLog extends Command implements Serializable {
 
         switch (args[0].toLowerCase()) {
             case "client": {
-                Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(args[1]);
+                Client client = ReformCloudController.getInstance().getInternalCloudNetwork()
+                    .getClients().get(args[1]);
                 if (client != null) {
-                    if (!ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                    if (!ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(client.getName(),
                             new PacketOutUploadLog(client.getName(), "client"))) {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        commandSender.sendMessage(
+                            ReformCloudController.getInstance().getLoadedLanguage()
+                                .getCommand_error_occurred()
                                 .replace("%message%", "The client isn't connected"));
                     }
                 } else {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The client doesn't exists"));
                 }
                 break;
             }
 
             case "server": {
-                ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[1]);
+                ServerInfo serverInfo = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getServerProcessManager()
+                    .getRegisteredServerByName(args[1]);
                 if (serverInfo != null) {
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
-                            new PacketOutUploadLog(serverInfo.getCloudProcess().getName(), "spigot"));
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
+                            new PacketOutUploadLog(serverInfo.getCloudProcess().getName(),
+                                "spigot"));
                 } else {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The server doesn't exists"));
                 }
                 break;
             }
 
             case "proxy": {
-                ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[1]);
+                ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork()
+                    .getServerProcessManager().getRegisteredProxyByName(args[1]);
                 if (proxyInfo != null) {
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
-                            new PacketOutUploadLog(proxyInfo.getCloudProcess().getName(), "bungee"));
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
+                            new PacketOutUploadLog(proxyInfo.getCloudProcess().getName(),
+                                "bungee"));
                 } else {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The proxy doesn't exists"));
                 }
                 break;

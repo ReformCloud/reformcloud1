@@ -17,10 +17,12 @@ import java.nio.file.Paths;
  */
 
 public final class PacketInUpdateClientAddon implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        FileUtils.deleteFileIfExists(Paths.get("addons/" + configuration.getStringValue("name") + ".jar"));
+        FileUtils.deleteFileIfExists(
+            Paths.get("addons/" + configuration.getStringValue("name") + ".jar"));
         DownloadManager.downloadAndDisconnect("clientAddon", configuration.getStringValue("url"),
-                "addons/" + configuration.getStringValue("name") + ".jar");
+            "addons/" + configuration.getStringValue("name") + ".jar");
     }
 }

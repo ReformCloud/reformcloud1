@@ -22,30 +22,32 @@ import systems.reformcloud.utility.files.FileUtils;
  */
 
 public final class PropertiesConfig implements Serializable {
+
     private static PropertiesConfig instance;
 
     private systems.reformcloud.properties.PropertiesConfig propertiesConfig;
 
     public PropertiesConfig() {
-        if (instance != null)
+        if (instance != null) {
             throw new InstanceAlreadyExistsException();
+        }
 
         instance = this;
 
         if (!Files.exists(Paths.get("reformcloud/addons/properties"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/properties"));
             new Configuration()
-                    .addValue("config", new systems.reformcloud.properties.PropertiesConfig(
-                            Collections.singletonList(new PropertiesGroup(
-                                    "Lobby",
-                                    this.defaults()
-                            ))
-                    )).write(Paths.get("reformcloud/addons/properties/config.json"));
+                .addValue("config", new systems.reformcloud.properties.PropertiesConfig(
+                    Collections.singletonList(new PropertiesGroup(
+                        "Lobby",
+                        this.defaults()
+                    ))
+                )).write(Paths.get("reformcloud/addons/properties/config.json"));
         }
 
         this.propertiesConfig = Configuration.parse("reformcloud/addons/properties/config.json")
-                .getValue("config", new TypeToken<systems.reformcloud.properties.PropertiesConfig>() {
-                });
+            .getValue("config", new TypeToken<systems.reformcloud.properties.PropertiesConfig>() {
+            });
         this.registerNetworkHandlers();
     }
 
@@ -54,7 +56,8 @@ public final class PropertiesConfig implements Serializable {
     }
 
     private void registerNetworkHandlers() {
-        ReformCloudController.getInstance().getNettyHandler().registerQueryHandler("RequestProperties", new PacketInRequestProperties());
+        ReformCloudController.getInstance().getNettyHandler()
+            .registerQueryHandler("RequestProperties", new PacketInRequestProperties());
     }
 
     private Properties defaults() {

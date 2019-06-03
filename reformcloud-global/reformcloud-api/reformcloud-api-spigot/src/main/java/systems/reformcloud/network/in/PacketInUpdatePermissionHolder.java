@@ -24,23 +24,30 @@ import java.lang.reflect.Field;
  */
 
 public final class PacketInUpdatePermissionHolder implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+        PermissionHolder permissionHolder = configuration
+            .getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
         Player player = Bukkit.getPlayer(permissionHolder.getUniqueID());
-        if (player == null)
+        if (player == null) {
             return;
+        }
 
-        ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
-        SpigotBootstrap.getInstance().getServer().getPluginManager().callEvent(new PermissionHolderUpdateEvent(permissionHolder));
+        ReformCloudAPISpigot.getInstance().getCachedPermissionHolders()
+            .put(permissionHolder.getUniqueID(), permissionHolder);
+        SpigotBootstrap.getInstance().getServer().getPluginManager()
+            .callEvent(new PermissionHolderUpdateEvent(permissionHolder));
         Field field;
         try {
             Class<?> clazz = ReflectionUtil.reflectClazz(".entity.CraftHumanEntity");
 
-            if (clazz != null)
+            if (clazz != null) {
                 field = clazz.getDeclaredField("perm");
-            else
-                field = Class.forName("net.glowstone.entity.GlowHumanEntity").getDeclaredField("permissions");
+            } else {
+                field = Class.forName("net.glowstone.entity.GlowHumanEntity")
+                    .getDeclaredField("permissions");
+            }
 
             field.setAccessible(true);
             field.set(player, new Permissible(player, permissionHolder));

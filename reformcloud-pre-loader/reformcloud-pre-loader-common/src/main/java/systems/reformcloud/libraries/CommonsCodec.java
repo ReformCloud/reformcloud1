@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class CommonsCodec extends Dependency implements Serializable {
+
     public CommonsCodec() {
         super(null);
     }

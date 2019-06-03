@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class ServerInfoUpdateEvent extends Event implements Serializable {
+
     private ServerInfo serverInfo;
 
     @java.beans.ConstructorProperties({"serverInfo"})

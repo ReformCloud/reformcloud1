@@ -17,12 +17,13 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutUpdateMobs extends Packet implements Serializable {
+
     public PacketOutUpdateMobs(Map<UUID, SelectorMob> mobs, SelectorMobConfig selectorMobConfig) {
         super(
-                "UpdateMobs",
-                new Configuration()
-                        .addValue("mobs", mobs)
-                        .addValue("config", selectorMobConfig)
+            "UpdateMobs",
+            new Configuration()
+                .addValue("mobs", mobs)
+                .addValue("config", selectorMobConfig)
         );
     }
 }

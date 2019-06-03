@@ -9,6 +9,7 @@ package systems.reformcloud.utility.runtime;
  */
 
 public interface Reload {
+
     /**
      * This method get called to reload something
      *

@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutEnableDebug extends Packet implements Serializable {
+
     public PacketOutEnableDebug(boolean enabled) {
         super("EnableDebug", new Configuration().addBooleanValue("enabled", enabled));
     }

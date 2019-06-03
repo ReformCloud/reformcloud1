@@ -25,25 +25,33 @@ import java.util.stream.Collectors;
  */
 
 public final class PacketInUpdatePermissionGroup implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        PermissionGroup permissionGroup = configuration.getValue("group", new TypeToken<PermissionGroup>() {
-        });
+        PermissionGroup permissionGroup = configuration
+            .getValue("group", new TypeToken<PermissionGroup>() {
+            });
         List<PermissionHolder> permissionHolders = ReformCloudAPIVelocity.getInstance()
-                .getCachedPermissionHolders()
-                .values()
-                .stream()
-                .filter(e -> VelocityBootstrap.getInstance().getProxy().getPlayer(e.getUniqueID()).orElse(null) != null)
-                .filter(e -> e.getPermissionGroups().containsKey(permissionGroup.getName()))
-                .filter(e -> e.isPermissionGroupPresent(permissionGroup.getName()))
-                .collect(Collectors.toList());
-        if (permissionHolders.isEmpty())
+            .getCachedPermissionHolders()
+            .values()
+            .stream()
+            .filter(e ->
+                VelocityBootstrap.getInstance().getProxy().getPlayer(e.getUniqueID()).orElse(null)
+                    != null)
+            .filter(e -> e.getPermissionGroups().containsKey(permissionGroup.getName()))
+            .filter(e -> e.isPermissionGroupPresent(permissionGroup.getName()))
+            .collect(Collectors.toList());
+        if (permissionHolders.isEmpty()) {
             return;
+        }
 
         permissionHolders.forEach(permissionHolder -> {
-            Player player = VelocityBootstrap.getInstance().getProxy().getPlayer(permissionHolder.getUniqueID()).get();
-            VelocityBootstrap.getInstance().getProxy().getEventManager().fire(new PermissionHolderUpdateEvent(permissionHolder));
-            ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+            Player player = VelocityBootstrap.getInstance().getProxy()
+                .getPlayer(permissionHolder.getUniqueID()).get();
+            VelocityBootstrap.getInstance().getProxy().getEventManager()
+                .fire(new PermissionHolderUpdateEvent(permissionHolder));
+            ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders()
+                .put(permissionHolder.getUniqueID(), permissionHolder);
             try {
                 Field field = player.getClass().getDeclaredField("permissionFunction");
                 field.setAccessible(true);

@@ -16,8 +16,11 @@ import systems.reformcloud.signs.SignLayoutConfiguration;
  */
 
 public final class PacketOutSendSigns extends Packet {
-    public PacketOutSendSigns(final SignLayoutConfiguration signLayoutConfiguration, final Map<UUID, Sign> signs, UUID result) {
-        super("undefined", new Configuration().addValue("signConfig", signLayoutConfiguration).addValue("signMap", signs));
+
+    public PacketOutSendSigns(final SignLayoutConfiguration signLayoutConfiguration,
+        final Map<UUID, Sign> signs, UUID result) {
+        super("undefined", new Configuration().addValue("signConfig", signLayoutConfiguration)
+            .addValue("signMap", signs));
         super.setResult(result);
     }
 }

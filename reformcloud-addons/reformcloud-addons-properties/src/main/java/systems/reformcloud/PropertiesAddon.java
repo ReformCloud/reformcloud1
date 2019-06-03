@@ -15,6 +15,7 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class PropertiesAddon extends ControllerAddonImpl implements Serializable {
+
     @Override
     public void onAddonClazzPrepare() {
     }
@@ -28,6 +29,7 @@ public final class PropertiesAddon extends ControllerAddonImpl implements Serial
     @Override
     public void onAddonReadyToClose() {
         ReformCloudController.getInstance().sendPacketToAll(new PacketOutDisableProperties());
-        ReformCloudController.getInstance().getNettyHandler().unregisterQueryHandler("RequestProperties");
+        ReformCloudController.getInstance().getNettyHandler()
+            .unregisterQueryHandler("RequestProperties");
     }
 }

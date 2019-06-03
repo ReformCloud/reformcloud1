@@ -18,17 +18,16 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-import systems.reformcloud.api.IAPIService;
-import systems.reformcloud.api.IDefaultPlayerProvider;
-import systems.reformcloud.api.IEventHandler;
+import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.DefaultPlayerProvider;
+import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.api.PlayerProvider;
 import systems.reformcloud.api.SaveAPImpl;
-import systems.reformcloud.api.save.ISaveAPIService;
+import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.event.EventManager;
@@ -109,15 +108,18 @@ import systems.reformcloud.utility.defaults.DefaultCloudService;
  * @author _Klaro | Pasqual K. / created on 09.12.2018
  */
 
-public final class ReformCloudAPISpigot implements Listener, IAPIService, Serializable {
+public final class ReformCloudAPISpigot implements Listener, APIService, Serializable {
 
     private static ReformCloudAPISpigot instance;
 
     private final NettySocketClient nettySocketClient;
+
     private final ChannelHandler channelHandler;
 
     private final ServerStartupInfo serverStartupInfo;
+
     private ServerInfo serverInfo;
+
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private final TempServerStats tempServerStats = new TempServerStats();
@@ -140,10 +142,10 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
 
         ReformCloudLibraryService.sendHeader();
 
-        ISaveAPIService.instance.set(new SaveAPImpl());
-        IAPIService.instance.set(this);
+        SaveAPIService.instance.set(new SaveAPImpl());
+        APIService.instance.set(this);
         new DefaultCloudService(this);
-        IDefaultPlayerProvider.instance.set(new PlayerProvider());
+        DefaultPlayerProvider.instance.set(new PlayerProvider());
 
         SpigotBootstrap.getInstance().getServer().getPluginManager()
             .registerEvents(this, SpigotBootstrap.getInstance());
@@ -164,7 +166,7 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
             .getValue("startupInfo", TypeTokenAdaptor.getSERVER_STARTUP_INFO_TYPE());
         this.serverInfo = configuration.getValue("info", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
-        IEventHandler.instance.set(new NetworkEventHandler());
+        EventHandler.instance.set(new NetworkEventHandler());
 
         this.getNettyHandler()
             .registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
@@ -949,25 +951,25 @@ public final class ReformCloudAPISpigot implements Listener, IAPIService, Serial
     }
 
     @Override
-    public Optional<ISaveAPIService> getAPISave() {
-        return Optional.ofNullable(ISaveAPIService.instance.get());
+    public Optional<SaveAPIService> getAPISave() {
+        return Optional.ofNullable(SaveAPIService.instance.get());
     }
 
-    @EventHandler
+    @org.bukkit.event.EventHandler
     public void handle(final PlayerMoveEvent event) {
         if (!event.isCancelled()) {
             this.tempServerStats.addWalkedDistance(event.getFrom().distance(event.getTo()));
         }
     }
 
-    @EventHandler
+    @org.bukkit.event.EventHandler
     public void handle(final BlockPlaceEvent event) {
         if (!event.isCancelled()) {
             this.tempServerStats.addPlacedBlock();
         }
     }
 
-    @EventHandler
+    @org.bukkit.event.EventHandler
     public void handle(final WorldLoadEvent event) {
         event.getWorld().setAutoSave(false);
     }

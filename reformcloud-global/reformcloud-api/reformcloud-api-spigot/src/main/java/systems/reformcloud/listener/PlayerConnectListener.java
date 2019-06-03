@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class PlayerConnectListener implements Listener, Serializable {
+
     private boolean started = false;
 
     @EventHandler(priority = EventPriority.LOW)
@@ -49,66 +50,83 @@ public final class PlayerConnectListener implements Listener, Serializable {
     @EventHandler
     public void handle(final PlayerLoginEvent event) {
         boolean ok = ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync(
-                "ReformCloudController",
-                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
-                new PacketOutCheckPlayer(event.getPlayer().getUniqueId())
+            "ReformCloudController",
+            ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
+            new PacketOutCheckPlayer(event.getPlayer().getUniqueId())
         ).sendOnCurrentThread("ReformCloudController")
-                .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration().getBooleanValue("checked");
+            .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration()
+            .getBooleanValue("checked");
         if (!ok) {
             event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-only-proxy"));
+                ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
+                    .getMessage("internal-api-spigot-connect-only-proxy"));
             return;
         }
 
         if (ReformCloudAPISpigot.getInstance().getPermissionCache() != null) {
             ReformCloudAPISpigot.getInstance().sendPacketQuery(
-                    "ReformCloudController",
-                    new PacketOutQueryGetPermissionHolder(
-                            new PermissionHolder(event.getPlayer().getUniqueId(), Collections.singletonMap(
-                                    ReformCloudAPISpigot.getInstance().getPermissionCache().getDefaultGroup().getName(), -1L
-                            ), new HashMap<>())
-                    ), (configuration, resultID) -> {
-                        PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-                        if (permissionHolder == null)
-                            return;
+                "ReformCloudController",
+                new PacketOutQueryGetPermissionHolder(
+                    new PermissionHolder(event.getPlayer().getUniqueId(), Collections.singletonMap(
+                        ReformCloudAPISpigot.getInstance().getPermissionCache().getDefaultGroup()
+                            .getName(), -1L
+                    ), new HashMap<>())
+                ), (configuration, resultID) -> {
+                    PermissionHolder permissionHolder = configuration
+                        .getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+                    if (permissionHolder == null) {
+                        return;
+                    }
 
-                        ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().put(event.getPlayer().getUniqueId(), permissionHolder);
+                    ReformCloudAPISpigot.getInstance().getCachedPermissionHolders()
+                        .put(event.getPlayer().getUniqueId(), permissionHolder);
 
-                        Field field;
+                    Field field;
 
-                        try {
-                            Class<?> clazz = ReflectionUtil.reflectClazz(".entity.CraftHumanEntity");
+                    try {
+                        Class<?> clazz = ReflectionUtil.reflectClazz(".entity.CraftHumanEntity");
 
-                            if (clazz != null)
-                                field = clazz.getDeclaredField("perm");
-                            else
-                                field = Class.forName("net.glowstone.entity.GlowHumanEntity").getDeclaredField("permissions");
-
-                            field.setAccessible(true);
-                            field.set(event.getPlayer(), new Permissible(event.getPlayer(), permissionHolder));
-                        } catch (final NoSuchFieldException | IllegalAccessException | ClassNotFoundException ex) {
-                            ex.printStackTrace();
+                        if (clazz != null) {
+                            field = clazz.getDeclaredField("perm");
+                        } else {
+                            field = Class.forName("net.glowstone.entity.GlowHumanEntity")
+                                .getDeclaredField("permissions");
                         }
 
-                        SpigotBootstrap.getInstance().getServer().getScheduler().runTask(SpigotBootstrap.getInstance(), () -> {
-                            if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isMaintenance()
-                                    && !event.getPlayer().hasPermission("reformcloud.join.server.maintenance")) {
+                        field.setAccessible(true);
+                        field.set(event.getPlayer(),
+                            new Permissible(event.getPlayer(), permissionHolder));
+                    } catch (final NoSuchFieldException | IllegalAccessException | ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    SpigotBootstrap.getInstance().getServer().getScheduler()
+                        .runTask(SpigotBootstrap.getInstance(), () -> {
+                            if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup()
+                                .isMaintenance()
+                                && !event.getPlayer()
+                                .hasPermission("reformcloud.join.server.maintenance")) {
                                 event.getPlayer().kickPlayer(
-                                        ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission")
+                                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
+                                        .getMessage("internal-api-spigot-connect-no-permission")
                                 );
                                 return;
                             }
 
-                            if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission() != null
-                                    && !event.getPlayer().hasPermission(ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getJoin_permission())) {
+                            if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup()
+                                .getJoinPermission() != null
+                                && !event.getPlayer().hasPermission(
+                                ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup()
+                                    .getJoinPermission())) {
                                 event.getPlayer().kickPlayer(
-                                        ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getMessage("internal-api-spigot-connect-no-permission")
+                                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
+                                        .getMessage("internal-api-spigot-connect-no-permission")
                                 );
                             }
                         });
 
-                        event.allow();
-                    }
+                    event.allow();
+                }
             );
         }
     }
@@ -131,33 +149,45 @@ public final class PlayerConnectListener implements Listener, Serializable {
             serverInfo.setFull(false);
         }
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
+        ReformCloudAPISpigot.getInstance().getChannelHandler()
+            .sendPacketSynchronized("ReformCloudController",
+                new PacketOutServerInfoUpdate(serverInfo));
         if (!started && serverInfo.getServerGroup().getAutoStart().isEnabled()
-                && Bukkit.getServer().getOnlinePlayers().size() >= serverInfo.getServerGroup().getAutoStart().getPlayerMax()) {
+            && Bukkit.getServer().getOnlinePlayers().size() >= serverInfo.getServerGroup()
+            .getAutoStart().getPlayerMax()) {
             started = true;
             ReformCloudAPISpigot.getInstance().startQueuedProcess(serverInfo.getServerGroup());
-            SpigotBootstrap.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(SpigotBootstrap.getInstance(), () -> {
-                started = false;
-            }, TimeUnit.SECONDS.toMillis(serverInfo.getServerGroup().getAutoStart().getAllowAutoStartEverySeconds()));
+            SpigotBootstrap.getInstance().getServer().getScheduler()
+                .runTaskLaterAsynchronously(SpigotBootstrap.getInstance(), () -> {
+                    started = false;
+                }, TimeUnit.SECONDS.toMillis(
+                    serverInfo.getServerGroup().getAutoStart().getAllowAutoStartEverySeconds()));
         }
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void handle(final PlayerQuitEvent event) {
-        ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().remove(event.getPlayer().getUniqueId());
+        ReformCloudAPISpigot.getInstance().getCachedPermissionHolders()
+            .remove(event.getPlayer().getUniqueId());
 
-        final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
-        serverInfo.getOnlinePlayers().remove(event.getPlayer().getUniqueId());
+        SpigotBootstrap.getInstance().getServer().getScheduler()
+            .runTaskLaterAsynchronously(SpigotBootstrap.getInstance(), () -> {
+                final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
+                serverInfo.getOnlinePlayers().remove(event.getPlayer().getUniqueId());
 
-        serverInfo.setOnline(serverInfo.getOnline() - 1);
+                serverInfo.setOnline(serverInfo.getOnline() - 1);
 
-        if (serverInfo.getOnline() >= serverInfo.getServerGroup().getMaxPlayers()) {
-            serverInfo.setFull(true);
-        } else {
-            serverInfo.setFull(false);
-        }
+                if (serverInfo.getOnline() >= serverInfo.getServerGroup().getMaxPlayers()) {
+                    serverInfo.setFull(true);
+                } else {
+                    serverInfo.setFull(false);
+                }
 
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketSynchronized("ReformCloudController", new PacketOutServerInfoUpdate(serverInfo));
+                ReformCloudAPISpigot.getInstance().getChannelHandler()
+                    .sendPacketSynchronized("ReformCloudController",
+                        new PacketOutServerInfoUpdate(serverInfo));
+            }, 20L);
+
         ReformCloudAPISpigot.getInstance().updateTempStats();
     }
 }

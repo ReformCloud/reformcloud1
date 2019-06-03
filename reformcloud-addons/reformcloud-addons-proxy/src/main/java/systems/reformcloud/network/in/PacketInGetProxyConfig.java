@@ -17,12 +17,16 @@ import systems.reformcloud.network.out.PacketOutGetProxyConfig;
  */
 
 public final class PacketInGetProxyConfig implements Serializable, NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
-                configuration.getStringValue("from"),
-                new PacketOutGetProxyConfig(resultID, ProxyAddon.getInstance().getProxyAddonConfiguration().getForProxy(
-                        ReformCloudController.getInstance().getProxyInfo(configuration.getStringValue("from")).getCloudProcess().getGroup()
+            configuration.getStringValue("from"),
+            new PacketOutGetProxyConfig(resultID,
+                ProxyAddon.getInstance().getProxyAddonConfiguration().getForProxy(
+                    ReformCloudController.getInstance()
+                        .getProxyInfo(configuration.getStringValue("from")).getCloudProcess()
+                        .getGroup()
                 ))
         );
     }

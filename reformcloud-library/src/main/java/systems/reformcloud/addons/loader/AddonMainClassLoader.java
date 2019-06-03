@@ -17,6 +17,7 @@ import java.net.URLClassLoader;
  */
 
 public class AddonMainClassLoader extends URLClassLoader implements ModulePreLoader {
+
     /**
      * The class config of the addon
      */
@@ -25,10 +26,11 @@ public class AddonMainClassLoader extends URLClassLoader implements ModulePreLoa
     /**
      * Loads the Addon Main Class
      *
-     * @param addonClassConfig          The class config of the addon
-     * @throws MalformedURLException    The exception will be thrown if the config cannot be found
+     * @param addonClassConfig The class config of the addon
+     * @throws MalformedURLException The exception will be thrown if the config cannot be found
      */
-    public AddonMainClassLoader(final AddonClassConfig addonClassConfig) throws MalformedURLException {
+    public AddonMainClassLoader(final AddonClassConfig addonClassConfig)
+        throws MalformedURLException {
         super(new URL[]{addonClassConfig.getFile().toURI().toURL()});
         this.addonClassConfig = addonClassConfig;
     }
@@ -37,11 +39,12 @@ public class AddonMainClassLoader extends URLClassLoader implements ModulePreLoa
      * Loads the Addon main class and creates a new instance
      *
      * @return The loaded java addon
-     * @throws Throwable    The exception will be thrown if any error occurs while loading the addon
+     * @throws Throwable The exception will be thrown if any error occurs while loading the addon
      */
     @Override
     public JavaAddon loadAddon() throws Throwable {
-        JavaAddon javaAddon = (JavaAddon) loadClass(addonClassConfig.getMain()).getDeclaredConstructor().newInstance();
+        JavaAddon javaAddon = (JavaAddon) loadClass(addonClassConfig.getMain())
+            .getDeclaredConstructor().newInstance();
 
         javaAddon.setAddonClassConfig(this.addonClassConfig);
         javaAddon.onAddonClazzPrepare();

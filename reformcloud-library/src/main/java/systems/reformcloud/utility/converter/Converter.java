@@ -9,5 +9,6 @@ package systems.reformcloud.utility.converter;
  */
 
 public interface Converter<E, V> {
+
     V convert(E e);
 }

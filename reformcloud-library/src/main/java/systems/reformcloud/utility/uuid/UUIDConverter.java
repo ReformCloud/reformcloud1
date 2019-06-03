@@ -20,22 +20,25 @@ import systems.reformcloud.cache.Cache;
  */
 
 public final class UUIDConverter implements Serializable {
+
     private static final long serialVersionUID = 5547714493710676047L;
 
     /**
      * From https://stackoverflow.com/a/47238049/10939910
      */
-    private static final Pattern PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
+    private static final Pattern PATTERN = Pattern
+        .compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
     /**
      * Converts a uuid string without dashes to a uuid object
      *
-     * @param rawUuid       The raw uuid without dashes
+     * @param rawUuid The raw uuid without dashes
      * @return The final uuid
      */
     public static UUID toUUID(String rawUuid) {
-        if (rawUuid.length() != 32)
+        if (rawUuid.length() != 32) {
             throw new IllegalArgumentException("The rawuuid must be 32 char long.");
+        }
         return UUID.fromString(UUIDConverter.PATTERN.matcher(rawUuid).replaceAll("$1-$2-$3-$4-$5"));
     }
 
@@ -56,14 +59,17 @@ public final class UUIDConverter implements Serializable {
         }
 
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL("https://api.mojang.com/users/profiles/minecraft/" + name).openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
+                "https://api.mojang.com/users/profiles/minecraft/" + name).openConnection();
             httpURLConnection.setDoOutput(false);
-            httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            httpURLConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             httpURLConnection.setUseCaches(true);
             httpURLConnection.connect();
 
             String in;
-            try (JsonReader jsonReader = new JsonReader(new InputStreamReader(httpURLConnection.getInputStream()))) {
+            try (JsonReader jsonReader = new JsonReader(
+                new InputStreamReader(httpURLConnection.getInputStream()))) {
                 try {
                     in = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
                         .get("id").getAsString();
@@ -75,8 +81,9 @@ public final class UUIDConverter implements Serializable {
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i <= 31; i++) {
                 stringBuilder.append(in.charAt(i));
-                if (i == 7 || i == 11 || i == 15 || i == 19)
+                if (i == 7 || i == 11 || i == 15 || i == 19) {
                     stringBuilder.append("-");
+                }
             }
 
             UUID uuid = UUID.fromString(stringBuilder.substring(0));

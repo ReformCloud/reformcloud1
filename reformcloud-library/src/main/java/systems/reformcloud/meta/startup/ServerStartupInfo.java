@@ -15,16 +15,25 @@ import java.util.UUID;
  */
 
 public class ServerStartupInfo implements Serializable {
+
     private static final long serialVersionUID = 3276684735275715610L;
 
     private UUID uid;
-    private String name, template;
+
+    private String name;
+
+    private String template;
+
     private ServerGroup serverGroup;
+
     private Configuration configuration;
+
     private int id;
 
-    @java.beans.ConstructorProperties({"uid", "name", "template", "serverGroup", "configuration", "id"})
-    public ServerStartupInfo(UUID uid, String name, String template, ServerGroup serverGroup, Configuration configuration, int id) {
+    @java.beans.ConstructorProperties({"uid", "name", "template", "serverGroup", "configuration",
+        "id"})
+    public ServerStartupInfo(UUID uid, String name, String template, ServerGroup serverGroup,
+        Configuration configuration, int id) {
         this.uid = uid;
         this.name = name;
         this.template = template;

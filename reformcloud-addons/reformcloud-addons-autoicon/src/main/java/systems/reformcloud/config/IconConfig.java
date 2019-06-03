@@ -12,8 +12,11 @@ import java.util.List;
  */
 
 final class IconConfig implements Serializable {
+
     private String targetGroup;
+
     private int updateTimeInSeconds;
+
     private List<String> iconPaths;
 
     @java.beans.ConstructorProperties({"targetGroup", "updateTimeInSeconds", "iconPaths"})

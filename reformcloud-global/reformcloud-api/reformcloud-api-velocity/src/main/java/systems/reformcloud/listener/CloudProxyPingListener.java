@@ -18,24 +18,31 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
  */
 
 public final class CloudProxyPingListener {
+
     @Subscribe(order = PostOrder.LATE)
     public void handle(final ProxyPingEvent event) {
-        if (ReformCloudAPIVelocity.getInstance().getProxySettings() != null)
+        if (ReformCloudAPIVelocity.getInstance().getProxySettings() != null) {
             return;
+        }
 
         ServerPing serverPing = event.getPing();
 
-        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null)
-            serverPing = serverPing.asBuilder().favicon(IconManager.getInstance().getCurrent()).build();
+        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null) {
+            serverPing = serverPing.asBuilder().favicon(IconManager.getInstance().getCurrent())
+                .build();
+        }
 
-        final ProxyGroup proxyGroup = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getProxyGroups().get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());
-        if (proxyGroup == null)
+        final ProxyGroup proxyGroup = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+            .getProxyGroups()
+            .get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());
+        if (proxyGroup == null) {
             return;
+        }
 
         event.setPing(serverPing.asBuilder()
-                .maximumPlayers(proxyGroup.getMaxPlayers())
-                .onlinePlayers(VelocityBootstrap.getInstance().getProxyServer().getPlayerCount())
-                .build()
+            .maximumPlayers(proxyGroup.getMaxPlayers())
+            .onlinePlayers(VelocityBootstrap.getInstance().getProxyServer().getPlayerCount())
+            .build()
         );
     }
 }

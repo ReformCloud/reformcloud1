@@ -11,7 +11,13 @@ import java.io.Serializable;
  */
 
 public final class TempServerStats implements Serializable {
-    public long blocksPlaced = 0L, distanceWalked = 0L, onlineTime = 0L;
+
+    public long blocksPlaced = 0L;
+
+    public long distanceWalked = 0L;
+
+    public long onlineTime = 0L;
+
     private double walkedDistanceTemp = 0D;
 
     public void addWalkedDistance(final double distance) {

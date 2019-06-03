@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class OfflinePlayerUpdateEvent extends Event implements Serializable, Cancellable {
+
     private boolean cancelled;
 
     @Override

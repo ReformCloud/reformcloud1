@@ -26,33 +26,45 @@ import java.io.Serializable;
  */
 
 public final class CloudAddonsListener implements Serializable, Listener {
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void handle(final AsyncPlayerChatEvent event) {
         if (!event.isCancelled()
-                && ReformCloudAPISpigot.getInstance().getPermissionCache() != null
-                && ReformCloudAPISpigot.getInstance().getPermissionCache().isChatEnabled()) {
-            PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(event.getPlayer().getUniqueId());
-            if (permissionHolder == null)
+            && ReformCloudAPISpigot.getInstance().getPermissionCache() != null
+            && ReformCloudAPISpigot.getInstance().getPermissionCache().isChatEnabled()) {
+            PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance()
+                .getCachedPermissionHolders().get(event.getPlayer().getUniqueId());
+            if (permissionHolder == null) {
                 return;
+            }
 
-            PermissionGroup permissionGroup = permissionHolder.getHighestPlayerGroup(ReformCloudAPISpigot.getInstance().getPermissionCache()).orElse(null);
-            if (permissionGroup == null)
+            PermissionGroup permissionGroup = permissionHolder
+                .getHighestPlayerGroup(ReformCloudAPISpigot.getInstance().getPermissionCache())
+                .orElse(null);
+            if (permissionGroup == null) {
                 return;
+            }
 
             event.setFormat(
-                    ChatColor.translateAlternateColorCodes('&',
-                            ReformCloudAPISpigot.getInstance().getPermissionCache().getChatFormat()
-                                    .replace("%group%", permissionGroup.getName())
-                                    .replace("%player%", event.getPlayer().getName())
-                                    .replace("%prefix%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()))
-                                    .replace("%suffix%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()))
-                                    .replace("%display%", ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()))
-                                    .replace("%id%", Integer.toString(permissionGroup.getGroupID()))
-                                    .replace("%message%", event.getPlayer().hasPermission("reformcloud.chat.color") ?
-                                            ChatColor.translateAlternateColorCodes('&', event.getMessage().replace("%", "%%"))
-                                            :
-                                            ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', event.getMessage().replace("%", "%%"))))
-                    )
+                ChatColor.translateAlternateColorCodes('&',
+                    ReformCloudAPISpigot.getInstance().getPermissionCache().getChatFormat()
+                        .replace("%group%", permissionGroup.getName())
+                        .replace("%player%", event.getPlayer().getName())
+                        .replace("%prefix%", ChatColor
+                            .translateAlternateColorCodes('&', permissionGroup.getPrefix()))
+                        .replace("%suffix%", ChatColor
+                            .translateAlternateColorCodes('&', permissionGroup.getSuffix()))
+                        .replace("%display%", ChatColor
+                            .translateAlternateColorCodes('&', permissionGroup.getDisplay()))
+                        .replace("%id%", Integer.toString(permissionGroup.getGroupID()))
+                        .replace("%message%",
+                            event.getPlayer().hasPermission("reformcloud.chat.color") ?
+                                ChatColor.translateAlternateColorCodes('&',
+                                    event.getMessage().replace("%", "%%"))
+                                :
+                                    ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',
+                                        event.getMessage().replace("%", "%%"))))
+                )
             );
         }
     }
@@ -64,71 +76,97 @@ public final class CloudAddonsListener implements Serializable, Listener {
 
     @EventHandler
     public void handle(final PermissionHolderUpdateEvent event) {
-        Player player = SpigotBootstrap.getInstance().getServer().getPlayer(event.getPermissionHolder().getUniqueID());
-        if (player == null)
+        Player player = SpigotBootstrap.getInstance().getServer()
+            .getPlayer(event.getPermissionHolder().getUniqueID());
+        if (player == null) {
             return;
+        }
 
         this.initTablist(player);
     }
 
     private void initTablist(Player player) {
         if (ReformCloudAPISpigot.getInstance().getPermissionCache() == null
-                || !ReformCloudAPISpigot.getInstance().getPermissionCache().isTabEnabled())
+            || !ReformCloudAPISpigot.getInstance().getPermissionCache().isTabEnabled()) {
             return;
+        }
 
         Bukkit.getScheduler().runTaskLater(SpigotBootstrap.getInstance(), () -> {
-            PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(player.getUniqueId());
-            if (permissionHolder == null)
+            PermissionHolder permissionHolder = ReformCloudAPISpigot.getInstance()
+                .getCachedPermissionHolders().get(player.getUniqueId());
+            if (permissionHolder == null) {
                 return;
+            }
 
-            PermissionGroup permissionGroup = permissionHolder.getHighestPlayerGroup(ReformCloudAPISpigot.getInstance().getPermissionCache()).orElse(null);
-            if (permissionGroup == null)
+            PermissionGroup permissionGroup = permissionHolder
+                .getHighestPlayerGroup(ReformCloudAPISpigot.getInstance().getPermissionCache())
+                .orElse(null);
+            if (permissionGroup == null) {
                 return;
+            }
 
-            if (player.getScoreboard() == null)
+            if (player.getScoreboard() == null) {
                 player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            }
 
             Bukkit.getOnlinePlayers().forEach(online -> {
-                if (online.getScoreboard() == null)
+                if (online.getScoreboard() == null) {
                     online.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                }
 
                 String teamName = permissionGroup.getGroupID() + permissionGroup.getName();
 
                 Team team = online.getScoreboard().getTeam(teamName);
-                if (team == null)
+                if (team == null) {
                     team = online.getScoreboard().registerNewTeam(teamName);
+                }
 
                 team.addEntry(player.getName());
 
-                team.setPrefix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
-                team.setSuffix(ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
-                team.setDisplayName(ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()));
+                team.setPrefix(
+                    ChatColor.translateAlternateColorCodes('&', permissionGroup.getPrefix()));
+                team.setSuffix(
+                    ChatColor.translateAlternateColorCodes('&', permissionGroup.getSuffix()));
+                team.setDisplayName(
+                    ChatColor.translateAlternateColorCodes('&', permissionGroup.getDisplay()));
 
                 try {
-                    if (permissionGroup.getTabColorCode() != null && permissionGroup.getTabColorCode().trim().length() == 1)
+                    if (permissionGroup.getTabColorCode() != null
+                        && permissionGroup.getTabColorCode().trim().length() == 1) {
                         team.setColor(ChatColor.getByChar(permissionGroup.getTabColorCode()));
+                    }
                 } catch (final Throwable ignored) {
                 }
 
-                PermissionHolder onlinePermsHolder = ReformCloudAPISpigot.getInstance().getCachedPermissionHolders().get(online.getUniqueId());
-                if (onlinePermsHolder == null)
+                PermissionHolder onlinePermsHolder = ReformCloudAPISpigot.getInstance()
+                    .getCachedPermissionHolders().get(online.getUniqueId());
+                if (onlinePermsHolder == null) {
                     return;
+                }
 
-                PermissionGroup onlinePermissionGroup = onlinePermsHolder.getHighestPlayerGroup(ReformCloudAPISpigot.getInstance().getPermissionCache()).orElse(null);
-                if (onlinePermissionGroup == null)
+                PermissionGroup onlinePermissionGroup = onlinePermsHolder
+                    .getHighestPlayerGroup(ReformCloudAPISpigot.getInstance().getPermissionCache())
+                    .orElse(null);
+                if (onlinePermissionGroup == null) {
                     return;
+                }
 
-                String onlineTeamName = onlinePermissionGroup.getGroupID() + onlinePermissionGroup.getName();
+                String onlineTeamName =
+                    onlinePermissionGroup.getGroupID() + onlinePermissionGroup.getName();
 
                 Team onlineTeam = online.getScoreboard().getTeam(onlineTeamName);
-                if (onlineTeam == null)
+                if (onlineTeam == null) {
                     onlineTeam = online.getScoreboard().registerNewTeam(onlineTeamName);
+                }
 
                 onlineTeam.addEntry(online.getName());
 
-                onlineTeam.setPrefix(ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getPrefix()));
-                onlineTeam.setSuffix(ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getSuffix()));
-                online.setDisplayName(ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getDisplay()));
+                onlineTeam.setPrefix(
+                    ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getPrefix()));
+                onlineTeam.setSuffix(
+                    ChatColor.translateAlternateColorCodes('&', onlinePermissionGroup.getSuffix()));
+                online.setDisplayName(ChatColor
+                    .translateAlternateColorCodes('&', onlinePermissionGroup.getDisplay()));
             });
         }, 3L);
     }

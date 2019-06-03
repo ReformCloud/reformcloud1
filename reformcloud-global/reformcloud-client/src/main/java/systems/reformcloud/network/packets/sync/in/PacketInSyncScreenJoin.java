@@ -17,24 +17,26 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncScreenJoin implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = 7400484794437983879L;
 
     @Override
     public void handle(Configuration configuration) {
-        if (configuration.getStringValue("name").equalsIgnoreCase(ReformCloudClient.getInstance().getCloudConfiguration().getClientName())) {
+        if (configuration.getStringValue("name").equalsIgnoreCase(
+            ReformCloudClient.getInstance().getCloudConfiguration().getClientName())) {
             ReformCloudClient.getInstance().getClientScreenHandler().enableScreen();
             return;
         }
 
         CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient.getInstance()
-                .getCloudProcessScreenService()
-                .getRegisteredServerHandler(configuration.getStringValue("name"));
+            .getCloudProcessScreenService()
+            .getRegisteredServerHandler(configuration.getStringValue("name"));
         if (cloudServerStartupHandler != null) {
             cloudServerStartupHandler.getScreenHandler().enableScreen();
         } else {
             ProxyStartupHandler proxyStartupHandler = ReformCloudClient.getInstance()
-                    .getCloudProcessScreenService()
-                    .getRegisteredProxyHandler(configuration.getStringValue("name"));
+                .getCloudProcessScreenService()
+                .getRegisteredProxyHandler(configuration.getStringValue("name"));
             if (proxyStartupHandler != null) {
                 proxyStartupHandler.getScreenHandler().enableScreen();
             }

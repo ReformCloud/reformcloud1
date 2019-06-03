@@ -23,14 +23,19 @@ import java.io.Serializable;
  */
 
 public final class PacketInInitializeInternal implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
-        ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new Packet(
-                "AuthSuccess", new Configuration().addStringValue("name", ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
-        ));
+        ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudAPISpigot.getInstance().getChannelHandler()
+            .sendPacketAsynchronous("ReformCloudController", new Packet(
+                "AuthSuccess", new Configuration().addStringValue("name",
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
+            ));
 
-        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
+        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().getServerModeType()
+            .equals(ServerModeType.LOBBY)) {
             try {
                 new SignSelector();
             } catch (Throwable throwable) {
@@ -41,15 +46,17 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         }
 
         ReformCloudAPISpigot.getInstance().getServerInfo().setServerState(ServerState.READY);
-        ReformCloudAPISpigot.getInstance().sendPacketSync("ReformCloudController", new PacketOutServerInfoUpdate(
+        ReformCloudAPISpigot.getInstance()
+            .sendPacketSync("ReformCloudController", new PacketOutServerInfoUpdate(
                 ReformCloudAPISpigot.getInstance().getServerInfo()
-        ));
+            ));
 
         ReformCloudAPISpigot.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) ->
-                        ReformCloudAPISpigot.getInstance().setPermissionCache(configuration1.getValue("cache",
-                                TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
-                        )
+            new PacketOutQueryGetPermissionCache(), (configuration1, resultID) ->
+                ReformCloudAPISpigot.getInstance()
+                    .setPermissionCache(configuration1.getValue("cache",
+                        TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                    )
         );
     }
 }

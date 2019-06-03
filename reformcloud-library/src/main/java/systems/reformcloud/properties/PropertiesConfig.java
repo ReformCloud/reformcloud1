@@ -14,6 +14,7 @@ import java.util.Collection;
  */
 
 public final class PropertiesConfig implements Serializable {
+
     private Collection<PropertiesGroup> propertiesGroups;
 
     @java.beans.ConstructorProperties({"propertiesGroups"})

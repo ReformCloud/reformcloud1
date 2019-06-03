@@ -29,6 +29,7 @@ import java.util.function.Consumer;
  */
 
 public final class WebServerHandler extends ChannelInboundHandlerAdapter implements Serializable {
+
     /**
      * The web handler of the cloud system
      */
@@ -52,20 +53,23 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
     /**
      * Tries to handle the incoming message
      *
-     * @param ctx               The channel handler context of the channel which connects
-     * @param msg               The sent message of the network participant
+     * @param ctx The channel handler context of the channel which connects
+     * @param msg The sent message of the network participant
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Receiving message in channel " +
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            .debug("Receiving message in channel " +
                 inetSocketAddress.getAddress().getHostAddress());
 
-        if (!(msg instanceof HttpRequest))
+        if (!(msg instanceof HttpRequest)) {
             return;
+        }
         HttpRequest httpRequest = (HttpRequest) msg;
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug(httpRequest.headers().entries() + "");
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            .debug(httpRequest.headers().entries() + "");
 
         String requestUri;
 
@@ -74,18 +78,21 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
         } catch (final URISyntaxException ex) {
             exception.accept(ex);
             ctx.writeAndFlush(
-                    new DefaultFullHttpResponse(httpRequest.protocolVersion(),
-                            HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer("404 Page is not available!".getBytes()))
+                new DefaultFullHttpResponse(httpRequest.protocolVersion(),
+                    HttpResponseStatus.NOT_FOUND,
+                    Unpooled.wrappedBuffer("404 Page is not available!".getBytes()))
             ).addListener(ChannelFutureListener.CLOSE);
             return;
         }
 
-        if (requestUri == null)
+        if (requestUri == null) {
             requestUri = "/";
+        }
 
         final WebHandler webHandler = this.webHandlerAdapter.getHandler(requestUri);
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug(webHandler == null ?
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            .debug(webHandler == null ?
                 "No web handler found, sending default response" : "Handler found, handling");
 
         FullHttpResponse fullHttpResponse = null;
@@ -95,20 +102,25 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
             } catch (final Exception ex) {
                 exception.accept(ex);
                 ctx.writeAndFlush(
-                        new DefaultFullHttpResponse(httpRequest.protocolVersion(),
-                                HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer("404 Page is not available!".getBytes()))
+                    new DefaultFullHttpResponse(httpRequest.protocolVersion(),
+                        HttpResponseStatus.NOT_FOUND,
+                        Unpooled.wrappedBuffer("404 Page is not available!".getBytes()))
                 ).addListener(ChannelFutureListener.CLOSE);
                 return;
             }
         }
 
-        if (webHandler != null && fullHttpResponse == null)
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().debug("Web handler got request, " +
+        if (webHandler != null && fullHttpResponse == null) {
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+                .debug("Web handler got request, " +
                     "but returned nothing (sending default response)");
+        }
 
-        if (fullHttpResponse == null)
+        if (fullHttpResponse == null) {
             fullHttpResponse = new DefaultFullHttpResponse(httpRequest.protocolVersion(),
-                    HttpResponseStatus.NOT_FOUND, Unpooled.wrappedBuffer("404 Page is not available!".getBytes()));
+                HttpResponseStatus.NOT_FOUND,
+                Unpooled.wrappedBuffer("404 Page is not available!".getBytes()));
+        }
 
         fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
         ctx.channel().writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
@@ -116,8 +128,10 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable())
-            ctx.channel().close().addListener(ChannelFutureListener.CLOSE_ON_FAILURE).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable()) {
+            ctx.channel().close().addListener(ChannelFutureListener.CLOSE_ON_FAILURE)
+                .addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
+        }
     }
 
     @Override
@@ -128,16 +142,21 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
     /**
      * Handles the exceptions and print them
      *
-     * @param cause     The exception which occurs
+     * @param cause The exception which occurs
      */
     private void handleException(Throwable cause) {
-        if (ReformCloudLibraryServiceProvider.getInstance() == null)
+        if (ReformCloudLibraryServiceProvider.getInstance() == null) {
             AbstractLoggerProvider.defaultLogger().exception().accept(cause);
+        }
 
         if (cause instanceof IOException) {
-            if (ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().isDebug())
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().exception().accept(cause);
-        } else
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().exception().accept(cause);
+            if (ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().isDebug()) {
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().exception()
+                    .accept(cause);
+            }
+        } else {
+            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().exception()
+                .accept(cause);
+        }
     }
 }

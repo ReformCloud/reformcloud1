@@ -14,6 +14,7 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class ProxyAddon extends ControllerAddonImpl implements Serializable {
+
     private static ProxyAddon instance;
 
     private ProxyAddonConfiguration proxyAddonConfiguration;
@@ -35,7 +36,8 @@ public final class ProxyAddon extends ControllerAddonImpl implements Serializabl
 
     @Override
     public void onAddonReadyToClose() {
-        ReformCloudController.getInstance().getNettyHandler().unregisterQueryHandler("GetProxyConfig");
+        ReformCloudController.getInstance().getNettyHandler()
+            .unregisterQueryHandler("GetProxyConfig");
     }
 
     public ProxyAddonConfiguration getProxyAddonConfiguration() {

@@ -13,6 +13,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutDisableIcons extends Packet implements Serializable {
+
     public PacketOutDisableIcons() {
         super("DisableIcons", new Configuration());
     }

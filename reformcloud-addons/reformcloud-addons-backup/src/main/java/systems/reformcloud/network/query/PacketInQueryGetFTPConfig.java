@@ -18,15 +18,16 @@ import systems.reformcloud.utility.StringUtil;
  */
 
 public final class PacketInQueryGetFTPConfig implements Serializable, NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
-                configuration.getStringValue("from"),
-                new Packet(
-                        StringUtil.NULL,
-                        new Configuration().addValue("config", BackUpMaker.getInstance().getFtpConfig()),
-                        resultID
-                )
+            configuration.getStringValue("from"),
+            new Packet(
+                StringUtil.NULL,
+                new Configuration().addValue("config", BackUpMaker.getInstance().getFtpConfig()),
+                resultID
+            )
         );
     }
 }

@@ -16,10 +16,11 @@ import systems.reformcloud.network.out.PacketOutSendProperties;
  */
 
 public final class PacketInRequestProperties implements Serializable, NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
-                configuration.getStringValue("from"), new PacketOutSendProperties(resultID)
+            configuration.getStringValue("from"), new PacketOutSendProperties(resultID)
         );
     }
 }

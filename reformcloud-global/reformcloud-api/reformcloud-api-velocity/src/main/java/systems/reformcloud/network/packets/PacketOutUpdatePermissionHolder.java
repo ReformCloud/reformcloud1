@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdatePermissionHolder extends Packet implements Serializable {
+
     public PacketOutUpdatePermissionHolder(PermissionHolder permissionHolder) {
         super("UpdatePermissionHolder", new Configuration().addValue("holder", permissionHolder));
     }

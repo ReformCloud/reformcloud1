@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class ApacheHttpCore extends Dependency implements Serializable {
+
     private static final long serialVersionUID = 727304906145669453L;
 
     public ApacheHttpCore() {

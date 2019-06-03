@@ -39,13 +39,13 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
-import systems.reformcloud.utility.startup.IServiceAble;
+import systems.reformcloud.utility.startup.ServiceAble;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public final class ProxyStartupHandler implements Serializable, IServiceAble {
+public final class ProxyStartupHandler implements Serializable, ServiceAble {
 
     private ProxyStartupInfo proxyStartupInfo;
     private Path path;
@@ -114,9 +114,9 @@ public final class ProxyStartupHandler implements Serializable, IServiceAble {
                 .getClient_copies_template()
                 .replace("%path%", this.path + ""));
             if (template.getTemplateBackend().equals(TemplateBackend.URL)
-                && template.getTemplate_url() != null) {
+                && template.getTemplateUrl() != null) {
                 new TemplatePreparer(path + "/template.zip")
-                    .loadTemplate(template.getTemplate_url());
+                    .loadTemplate(template.getTemplateUrl());
                 try {
                     ZoneInformationProtocolUtility
                         .unZip(new File(path + "/template.zip"), path + "");
@@ -357,7 +357,8 @@ public final class ProxyStartupHandler implements Serializable, IServiceAble {
             {
                 StringUtil.JAVA_JAR,
                 "loader.jar",
-                "--file=BungeeCord.jar"
+                "--file=BungeeCord.jar",
+                "--version=" + StringUtil.REFORM_VERSION
             };
 
         String command = ReformCloudClient.getInstance().getParameterManager()
@@ -489,7 +490,7 @@ public final class ProxyStartupHandler implements Serializable, IServiceAble {
 
         this.screenHandler.disableScreen();
 
-        if (this.proxyStartupInfo.getProxyGroup().isSave_logs()) {
+        if (this.proxyStartupInfo.getProxyGroup().isSaveLogs()) {
             if (this.proxyStartupInfo.getProxyGroup().getProxyVersions()
                 .equals(ProxyVersions.BUNGEECORD)
                 || this.proxyStartupInfo.getProxyGroup().getProxyVersions()

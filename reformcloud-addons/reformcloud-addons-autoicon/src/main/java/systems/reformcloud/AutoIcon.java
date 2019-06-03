@@ -16,22 +16,26 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class AutoIcon extends ControllerAddonImpl implements Serializable {
+
     @Override
     public void onAddonLoading() {
         new AutoIconConfig();
-        ReformCloudController.getInstance().getNettyHandler().registerQueryHandler("GetConfig", new PacketInGetConfig());
-        ReformCloudController.getInstance().getAllRegisteredProxies().forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
+        ReformCloudController.getInstance().getNettyHandler()
+            .registerQueryHandler("GetConfig", new PacketInGetConfig());
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                 e.getCloudProcess().getName(),
                 new PacketOutEnableIcons()
-        ));
+            ));
     }
 
     @Override
     public void onAddonReadyToClose() {
         ReformCloudController.getInstance().getNettyHandler().unregisterQueryHandler("GetConfig");
-        ReformCloudController.getInstance().getAllRegisteredProxies().forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                 e.getCloudProcess().getName(),
                 new PacketOutDisableIcons()
-        ));
+            ));
     }
 }

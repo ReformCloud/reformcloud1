@@ -16,12 +16,16 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
  */
 
 public final class PacketInUpdatePermissionHolder implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-        if (permissionHolder == null)
+        PermissionHolder permissionHolder = configuration
+            .getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+        if (permissionHolder == null) {
             return;
+        }
 
-        PermissionsAddon.getInstance().getPermissionDatabase().updatePermissionHolder(permissionHolder);
+        PermissionsAddon.getInstance().getPermissionDatabase()
+            .updatePermissionHolder(permissionHolder);
     }
 }

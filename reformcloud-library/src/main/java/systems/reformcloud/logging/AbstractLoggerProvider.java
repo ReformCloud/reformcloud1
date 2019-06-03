@@ -16,6 +16,7 @@ import java.util.function.Consumer;
  */
 
 public abstract class AbstractLoggerProvider implements Serializable {
+
     /**
      * The global logging instance
      */
@@ -31,35 +32,35 @@ public abstract class AbstractLoggerProvider implements Serializable {
     /**
      * Warns a message to the console
      *
-     * @param message       The message which should be sent
+     * @param message The message which should be sent
      */
     public abstract void warn(String message);
 
     /**
      * Serves a message to the console
      *
-     * @param message       The message which should be sent
+     * @param message The message which should be sent
      */
     public abstract void serve(String message);
 
     /**
      * Colours a string by replacing the colour code
      *
-     * @param message   The message which should be formatted
+     * @param message The message which should be formatted
      */
     public abstract void coloured(String message);
 
     /**
      * Handles an exception to the console
      *
-     * @param cause     The exception which occurs
+     * @param cause The exception which occurs
      */
     public abstract void exception(Throwable cause);
 
     /**
      * Sends a message to all registered console handlers
      *
-     * @param message       The message which was sent in the console
+     * @param message The message which was sent in the console
      */
     public abstract void handleAll(String message);
 
@@ -85,14 +86,14 @@ public abstract class AbstractLoggerProvider implements Serializable {
     /**
      * Writes a message to the console
      *
-     * @param message       The message which should be written
+     * @param message The message which should be written
      */
     public abstract void write(String message);
 
     /**
      * Debugs a message into the console and the debug file
      *
-     * @param message       The message which should be debugged
+     * @param message The message which should be debugged
      */
     public abstract void debug(String message);
 
@@ -114,14 +115,14 @@ public abstract class AbstractLoggerProvider implements Serializable {
     /**
      * Registers a logger provider
      *
-     * @param iConsoleInputHandler      The logger handler which should be registered
+     * @param iConsoleInputHandler The logger handler which should be registered
      */
     public abstract void registerLoggerHandler(IConsoleInputHandler iConsoleInputHandler);
 
     /**
      * Uploads a log to the reformcloud web server
      *
-     * @param message       The log which should be uploaded
+     * @param message The log which should be uploaded
      * @return The url of the log
      */
     public abstract String uploadLog(String message);
@@ -174,6 +175,7 @@ public abstract class AbstractLoggerProvider implements Serializable {
      * @return Creates a new logger or returns the current logger instance
      */
     public static AbstractLoggerProvider defaultLogger() {
-        return LoggerProvider.instance.isPresent() ? LoggerProvider.instance.get() : LoggerProvider.newSaveLogger();
+        return LoggerProvider.instance.isPresent() ? LoggerProvider.instance.get()
+            : LoggerProvider.newSaveLogger();
     }
 }

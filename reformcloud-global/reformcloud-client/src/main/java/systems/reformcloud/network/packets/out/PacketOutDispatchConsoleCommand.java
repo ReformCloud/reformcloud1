@@ -12,6 +12,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutDispatchConsoleCommand extends Packet {
+
     public PacketOutDispatchConsoleCommand(final String command) {
         super("DispatchCommandLine", new Configuration().addValue("command", command));
     }

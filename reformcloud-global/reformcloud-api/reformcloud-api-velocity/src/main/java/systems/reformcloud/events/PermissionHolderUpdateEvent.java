@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class PermissionHolderUpdateEvent implements Serializable {
+
     private PermissionHolder permissionHolder;
 
     @java.beans.ConstructorProperties({"permissionHolder"})

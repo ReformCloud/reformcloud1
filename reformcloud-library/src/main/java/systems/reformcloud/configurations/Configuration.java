@@ -28,6 +28,7 @@ import java.util.Set;
  */
 
 public final class Configuration {
+
     /**
      * The json object of the configuration
      */
@@ -52,13 +53,14 @@ public final class Configuration {
     /**
      * Adds a string property to the config
      *
-     * @param key       The key of the item
-     * @param value     The string as value
+     * @param key The key of the item
+     * @param value The string as value
      * @return The config class instance
      */
     public Configuration addStringValue(String key, String value) {
-        if (key == null || value == null)
+        if (key == null || value == null) {
             return this;
+        }
 
         this.jsonObject.addProperty(key, value);
         return this;
@@ -67,13 +69,14 @@ public final class Configuration {
     /**
      * Adds a integer property to the config
      *
-     * @param key       The key of the item
-     * @param value     The string as value
+     * @param key The key of the item
+     * @param value The string as value
      * @return The config class instance
      */
     public Configuration addIntegerValue(String key, Integer value) {
-        if (key == null || value == null)
+        if (key == null || value == null) {
             return this;
+        }
 
         this.jsonObject.addProperty(key, value);
         return this;
@@ -82,13 +85,14 @@ public final class Configuration {
     /**
      * Adds a boolean property to the config
      *
-     * @param key       The key of the item
-     * @param value     The string as value
+     * @param key The key of the item
+     * @param value The string as value
      * @return The config class instance
      */
     public Configuration addBooleanValue(String key, Boolean value) {
-        if (key == null || value == null)
+        if (key == null || value == null) {
             return this;
+        }
 
         this.jsonObject.addProperty(key, value);
         return this;
@@ -97,13 +101,14 @@ public final class Configuration {
     /**
      * Adds a long property to the config
      *
-     * @param key       The key of the item
-     * @param value     The string as value
+     * @param key The key of the item
+     * @param value The string as value
      * @return The config class instance
      */
     public Configuration addLongValue(String key, Long value) {
-        if (key == null || value == null)
+        if (key == null || value == null) {
             return this;
+        }
 
         this.jsonObject.addProperty(key, value);
         return this;
@@ -112,13 +117,14 @@ public final class Configuration {
     /**
      * Adds a configuration property to the config
      *
-     * @param key       The key of the item
-     * @param value     The string as value
+     * @param key The key of the item
+     * @param value The string as value
      * @return The config class instance
      */
     public Configuration addConfigurationValue(String key, Configuration value) {
-        if (key == null || value == null)
+        if (key == null || value == null) {
             return this;
+        }
 
         this.jsonObject.add(key, value.jsonObject);
         return this;
@@ -127,13 +133,14 @@ public final class Configuration {
     /**
      * Adds an object property to the config
      *
-     * @param key       The key of the item
-     * @param value     The string as value
+     * @param key The key of the item
+     * @param value The string as value
      * @return The config class instance
      */
     public Configuration addValue(String key, Object value) {
-        if (key == null || value == null)
+        if (key == null || value == null) {
             return this;
+        }
 
         this.jsonObject.add(key, ReformCloudLibraryService.GSON.toJsonTree(value));
         return this;
@@ -142,7 +149,7 @@ public final class Configuration {
     /**
      * Removes an key out of the config
      *
-     * @param key       The key of the value which should be removed
+     * @param key The key of the value which should be removed
      * @return The config class instance
      */
     public Configuration remove(String key) {
@@ -153,7 +160,7 @@ public final class Configuration {
     /**
      * Gets a string value out of the config
      *
-     * @param key       The key of the config value
+     * @param key The key of the config value
      * @return The config class instance
      */
     public String getStringValue(String key) {
@@ -163,7 +170,7 @@ public final class Configuration {
     /**
      * Gets a long value out of the config
      *
-     * @param key       The key of the config value
+     * @param key The key of the config value
      * @return The config class instance
      */
     public Long getLongValue(String key) {
@@ -173,7 +180,7 @@ public final class Configuration {
     /**
      * Gets a integer value out of the config
      *
-     * @param key       The key of the config value
+     * @param key The key of the config value
      * @return The config class instance
      */
     public int getIntegerValue(String key) {
@@ -183,7 +190,7 @@ public final class Configuration {
     /**
      * Gets a boolean value out of the config
      *
-     * @param key       The key of the config value
+     * @param key The key of the config value
      * @return The config class instance
      */
     public boolean getBooleanValue(String key) {
@@ -193,29 +200,31 @@ public final class Configuration {
     /**
      * Gets a object value out of the config
      *
-     * @param key       The key of the config value
-     * @param clazz     The defining class of the containing object
+     * @param key The key of the config value
+     * @param clazz The defining class of the containing object
      * @return The config class instance
      */
     public <T> T getValue(String key, Class<T> clazz) {
-        return jsonObject.has(key) ? ReformCloudLibraryService.GSON.fromJson(jsonObject.get(key), clazz) : null;
+        return jsonObject.has(key) ? ReformCloudLibraryService.GSON
+            .fromJson(jsonObject.get(key), clazz) : null;
     }
 
     /**
      * Gets a object value out of the config
      *
-     * @param key       The key of the config value
-     * @param type      The defining type of the containing object
+     * @param key The key of the config value
+     * @param type The defining type of the containing object
      * @return The config class instance
      */
     public <T> T getValue(String key, Type type) {
-        return jsonObject.has(key) ? ReformCloudLibraryService.GSON.fromJson(jsonObject.get(key), type) : null;
+        return jsonObject.has(key) ? ReformCloudLibraryService.GSON
+            .fromJson(jsonObject.get(key), type) : null;
     }
 
     /**
      * Gets a object value out of the config
      *
-     * @param key       The key of the config value
+     * @param key The key of the config value
      * @param typeToken The defining type token of the containing object
      * @return The config class instance
      */
@@ -226,28 +235,33 @@ public final class Configuration {
     /**
      * Gets a configuration value out of the config
      *
-     * @param key       The key of the config value
+     * @param key The key of the config value
      * @return The config class instance
      */
     public Configuration getConfiguration(String key) {
-        return jsonObject.has(key) ? new Configuration(jsonObject.get(key).getAsJsonObject()) : null;
+        return jsonObject.has(key) ? new Configuration(jsonObject.get(key).getAsJsonObject())
+            : null;
     }
 
     /**
      * Saves the file to a specific path
      *
-     * @param path          The path as file where the file should be saved to
+     * @param path The path as file where the file should be saved to
      * @return If the operation was successful
      */
     private boolean write(File path) {
-        if (path.exists())
+        if (path.exists()) {
             path.delete();
+        }
 
-        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8)) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path),
+            StandardCharsets.UTF_8)) {
             ReformCloudLibraryService.GSON.toJson(jsonObject, (writer));
             return true;
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while storing configuration file", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error while storing configuration file", ex);
         }
         return false;
     }
@@ -255,7 +269,7 @@ public final class Configuration {
     /**
      * Saves the file to a specific path
      *
-     * @param path          The path where the file should be saved to
+     * @param path The path where the file should be saved to
      * @return If the operation was successful
      */
     public boolean write(Path path) {
@@ -265,7 +279,7 @@ public final class Configuration {
     /**
      * Saves the file to a specific path
      *
-     * @param path          The path as string where the file should be saved to
+     * @param path The path as string where the file should be saved to
      * @return If the operation was successful
      */
     public boolean write(String path) {
@@ -275,16 +289,20 @@ public final class Configuration {
     /**
      * Reads a config from the given path as file
      *
-     * @param path      The path where the file is saved
-     * @return The configuration which was loaded or an empty
-     *                  configuration if the file wasn't found or an error occurred
+     * @param path The path where the file is saved
+     * @return The configuration which was loaded or an empty configuration if the file wasn't found
+     * or an error occurred
      */
     public static Configuration parse(File path) {
-        try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(path.toPath()), StandardCharsets.UTF_8);
-             BufferedReader bufferedReader = new BufferedReader(reader)) {
-            return new Configuration(ReformCloudLibraryService.PARSER.parse(bufferedReader).getAsJsonObject());
+        try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(path.toPath()),
+            StandardCharsets.UTF_8);
+            BufferedReader bufferedReader = new BufferedReader(reader)) {
+            return new Configuration(
+                ReformCloudLibraryService.PARSER.parse(bufferedReader).getAsJsonObject());
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while loading configuration", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error while loading configuration", ex);
         }
         return new Configuration();
     }
@@ -292,9 +310,9 @@ public final class Configuration {
     /**
      * Reads a config from the given path
      *
-     * @param path      The path where the file is saved
-     * @return The configuration which was loaded or an empty
-     *                  configuration if the file wasn't found or an error occurred
+     * @param path The path where the file is saved
+     * @return The configuration which was loaded or an empty configuration if the file wasn't found
+     * or an error occurred
      */
     public static Configuration parse(Path path) {
         return parse(path.toFile());
@@ -303,9 +321,9 @@ public final class Configuration {
     /**
      * Reads a config from the given path as string
      *
-     * @param path      The path where the file is saved
-     * @return The configuration which was loaded or an empty
-     *                  configuration if the file wasn't found or an error occurred
+     * @param path The path where the file is saved
+     * @return The configuration which was loaded or an empty configuration if the file wasn't found
+     * or an error occurred
      */
     public static Configuration parse(String path) {
         return parse(Paths.get(path));
@@ -314,7 +332,7 @@ public final class Configuration {
     /**
      * Creates a new configuration of the given string
      *
-     * @param in        The string of the config in json format
+     * @param in The string of the config in json format
      * @return A new configuration which contains the content of the string
      */
     public static Configuration fromString(String in) {
@@ -324,13 +342,14 @@ public final class Configuration {
     /**
      * Creates a new configuration of the given map
      *
-     * @param in        A map containing all keys of the config
+     * @param in A map containing all keys of the config
      * @return A new configuration which contains the content of the map
      */
     public static Configuration fromMap(Map<? extends String, ?> in) {
         Configuration configuration = new Configuration();
-        for (Map.Entry<? extends String, ?> entry : in.entrySet())
+        for (Map.Entry<? extends String, ?> entry : in.entrySet()) {
             configuration.addValue(entry.getKey(), entry.getValue());
+        }
 
         return configuration;
     }
@@ -358,7 +377,7 @@ public final class Configuration {
     /**
      * Checks if the config contains a specific key
      *
-     * @param key       The key which should be found
+     * @param key The key which should be found
      * @return If the config contains the key or not
      */
     public boolean contains(String key) {

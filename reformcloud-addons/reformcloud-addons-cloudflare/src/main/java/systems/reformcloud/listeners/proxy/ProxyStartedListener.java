@@ -15,6 +15,7 @@ import systems.reformcloud.event.utility.Listener;
  */
 
 public final class ProxyStartedListener implements Serializable, Listener {
+
     @Handler
     public void handleStart(final ProxyStartedEvent event) {
         CloudFlareUtil.getInstance().createProxyEntry(event.getProxyInfo());

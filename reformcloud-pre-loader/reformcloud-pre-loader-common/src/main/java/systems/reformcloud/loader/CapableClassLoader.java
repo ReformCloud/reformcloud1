@@ -13,12 +13,14 @@ import java.net.URLClassLoader;
  */
 
 public final class CapableClassLoader extends URLClassLoader implements Serializable {
+
     public CapableClassLoader(URL[] urls, ClassLoader parent) {
         super(urls, parent);
     }
 
     static {
-        if (!ClassLoader.registerAsParallelCapable())
+        if (!ClassLoader.registerAsParallelCapable()) {
             throw new IllegalStateException("Cannot create ClassLoader");
+        }
     }
 }

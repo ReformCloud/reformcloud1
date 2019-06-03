@@ -22,11 +22,13 @@ import systems.reformcloud.utility.StringUtil;
  */
 
 public final class DiscordAddon extends ControllerAddonImpl implements Serializable {
+
     private static final long serialVersionUID = 3321468728377410418L;
 
     private static DiscordAddon instance;
 
     private JDA jda;
+
     private DiscordConfig discordConfig;
 
     private TextChannel textChannel;
@@ -49,17 +51,19 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
         this.discordConfig = new DiscordConfig();
 
         final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT)
-                .setAudioEnabled(false)
-                .setAutoReconnect(true)
-                .setToken(this.discordConfig.getDiscordInformation().getToken())
-                .addEventListeners(new ConsoleInputHandler())
-                .setActivity(Activity.playing(this.discordConfig.getDiscordInformation().getGame()));
+            .setAudioEnabled(false)
+            .setAutoReconnect(true)
+            .setToken(this.discordConfig.getDiscordInformation().getToken())
+            .addEventListeners(new ConsoleInputHandler())
+            .setActivity(Activity.playing(this.discordConfig.getDiscordInformation().getGame()));
 
         try {
             this.jda = jdaBuilder.build().awaitReady();
-            this.textChannel = jda.getTextChannelById(this.discordConfig.getDiscordInformation().getChannelID());
+            this.textChannel = jda
+                .getTextChannelById(this.discordConfig.getDiscordInformation().getChannelID());
         } catch (final InterruptedException | LoginException ex) {
-            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(), "Error while startup of addon DiscordBot", ex);
+            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
+                "Error while startup of addon DiscordBot", ex);
         }
     }
 

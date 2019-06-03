@@ -15,11 +15,13 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncClientReloadSuccess implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getLoggerProvider().info(
-                ReformCloudController.getInstance().getLoadedLanguage().getClient_controller_info_reload_success()
-                        .replace("%name%", configuration.getStringValue("name"))
+            ReformCloudController.getInstance().getLoadedLanguage()
+                .getClient_controller_info_reload_success()
+                .replace("%name%", configuration.getStringValue("name"))
         );
     }
 }

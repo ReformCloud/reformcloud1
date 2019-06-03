@@ -13,6 +13,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutDisableBackup extends Packet implements Serializable {
+
     public PacketOutDisableBackup() {
         super("DisableBackup", new Configuration());
     }

@@ -14,10 +14,12 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutParametersUpdate extends Packet implements Serializable {
+
     public PacketOutParametersUpdate() {
         super(
-                "ParametersUpdate",
-                new Configuration().addValue("parameters", ParametersAddon.getInstance().getParametersConfiguration().getParameters())
+            "ParametersUpdate",
+            new Configuration().addValue("parameters",
+                ParametersAddon.getInstance().getParametersConfiguration().getParameters())
         );
     }
 }

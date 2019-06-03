@@ -18,6 +18,7 @@ import java.io.Serializable;
  */
 
 public final class CommandClear extends Command implements Serializable {
+
     public CommandClear() {
         super("clear", "Clears the console", "reformcloud.command.clear", new String[0]);
     }
@@ -25,9 +26,12 @@ public final class CommandClear extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         try {
-            ReformCloudController.getInstance().getLoggerProvider().getConsoleReader().clearScreen();
+            ReformCloudController.getInstance().getLoggerProvider().getConsoleReader()
+                .clearScreen();
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error in clear command", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error in clear command", ex);
         }
     }
 }

@@ -14,10 +14,17 @@ import java.io.Serializable;
  */
 
 final class TaskQueueEntry implements Serializable {
-    private Runnable prepared, run;
-    private long repeats, sleepPerRepeat;
+
+    private Runnable prepared;
+
+    private Runnable run;
+
+    private long repeats;
+
+    private long sleepPerRepeat;
 
     private long currentRepeats = 0;
+
     private boolean countRepeats = true;
 
     private boolean deleted = false;
@@ -46,10 +53,12 @@ final class TaskQueueEntry implements Serializable {
         }
 
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
-            while (!Thread.currentThread().isInterrupted() && (currentRepeats < repeats || repeats == -1) && !deleted) {
+            while (!Thread.currentThread().isInterrupted() && (currentRepeats < repeats
+                || repeats == -1) && !deleted) {
                 prepared.run();
-                if (countRepeats)
+                if (countRepeats) {
                     currentRepeats++;
+                }
             }
 
             deleted = true;
@@ -73,8 +82,9 @@ final class TaskQueueEntry implements Serializable {
     }
 
     public void delete() {
-        if (deleted)
+        if (deleted) {
             return;
+        }
 
         this.deleted = true;
     }

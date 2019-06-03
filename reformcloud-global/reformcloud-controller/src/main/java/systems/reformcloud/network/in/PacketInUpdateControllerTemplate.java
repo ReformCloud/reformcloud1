@@ -16,6 +16,7 @@ import java.util.Base64;
  */
 
 public final class PacketInUpdateControllerTemplate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         String type = configuration.getStringValue("type");
@@ -23,10 +24,10 @@ public final class PacketInUpdateControllerTemplate implements Serializable, Net
             case "server": {
                 try {
                     ZoneInformationProtocolUtility.unZip(
-                            Base64.getDecoder().decode(configuration.getStringValue("encoded")),
-                            "reformcloud/templates/servers/" +
-                                    configuration.getStringValue("group") + "/" +
-                                    configuration.getStringValue("template")
+                        Base64.getDecoder().decode(configuration.getStringValue("encoded")),
+                        "reformcloud/templates/servers/" +
+                            configuration.getStringValue("group") + "/" +
+                            configuration.getStringValue("template")
                     );
                 } catch (final Exception ex) {
                     ex.printStackTrace();
@@ -36,10 +37,10 @@ public final class PacketInUpdateControllerTemplate implements Serializable, Net
             case "proxy": {
                 try {
                     ZoneInformationProtocolUtility.unZip(
-                            Base64.getDecoder().decode(configuration.getStringValue("encoded")),
-                            "reformcloud/templates/proxies/" +
-                                    configuration.getStringValue("group") + "/" +
-                                    configuration.getStringValue("template")
+                        Base64.getDecoder().decode(configuration.getStringValue("encoded")),
+                        "reformcloud/templates/proxies/" +
+                            configuration.getStringValue("group") + "/" +
+                            configuration.getStringValue("template")
                     );
                 } catch (final Exception ex) {
                     ex.printStackTrace();

@@ -14,6 +14,7 @@ import systems.reformcloud.event.utility.Listener;
  */
 
 public final class ClientDeletedListener implements Serializable, Listener {
+
     @Handler
     public void handleDelete(final systems.reformcloud.api.events.ClientDeletedEvent event) {
         CloudFlareUtil.getInstance().deleteClientEntry(event.getClient());

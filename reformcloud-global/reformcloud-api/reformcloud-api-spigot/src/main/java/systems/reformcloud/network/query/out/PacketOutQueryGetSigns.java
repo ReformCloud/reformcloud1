@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutQueryGetSigns extends Packet implements Serializable {
+
     public PacketOutQueryGetSigns() {
         super("QueryGetSigns", new Configuration());
     }

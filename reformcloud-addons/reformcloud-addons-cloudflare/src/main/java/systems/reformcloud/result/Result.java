@@ -12,7 +12,14 @@ import java.io.Serializable;
  */
 
 public final class Result implements Serializable {
-    private String id, email, token, name;
+
+    private String id;
+
+    private String email;
+
+    private String token;
+
+    private String name;
 
     @ConstructorProperties({"id", "email", "token", "name"})
     public Result(String id, String email, String token, String name) {

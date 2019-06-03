@@ -21,21 +21,24 @@ import java.util.Set;
  */
 
 public final class NettyHandler implements Serializable {
+
     /**
      * All registered network handlers
      */
-    private Map<String, NetworkInboundHandler> networkInboundHandlerMap = ReformCloudLibraryService.concurrentHashMap();
+    private Map<String, NetworkInboundHandler> networkInboundHandlerMap = ReformCloudLibraryService
+        .concurrentHashMap();
 
     /**
      * All registered network query handlers
      */
-    private Map<String, NetworkQueryInboundHandler> networkQueryInboundHandlerMap = ReformCloudLibraryService.concurrentHashMap();
+    private Map<String, NetworkQueryInboundHandler> networkQueryInboundHandlerMap = ReformCloudLibraryService
+        .concurrentHashMap();
 
     /**
      * Handles an incoming packet
      *
-     * @param type              The type of the incoming packet
-     * @param configuration     The configuration of the incoming packet
+     * @param type The type of the incoming packet
+     * @param configuration The configuration of the incoming packet
      * @return If a handler for the packet could be found
      */
     public boolean handle(String type, Configuration configuration) {
@@ -67,7 +70,7 @@ public final class NettyHandler implements Serializable {
     /**
      * Get a registered network handler
      *
-     * @param type      The type of the handler which should be found
+     * @param type The type of the handler which should be found
      * @return The registered handler or {@code null} if the handler could not be found
      */
     public NetworkInboundHandler getHandler(String type) {
@@ -77,8 +80,8 @@ public final class NettyHandler implements Serializable {
     /**
      * Registers a new network handler
      *
-     * @param type                      The type of the packet the handler should handle
-     * @param networkInboundHandler     The handler which should be registered
+     * @param type The type of the packet the handler should handle
+     * @param networkInboundHandler The handler which should be registered
      * @return The current instance of this class
      */
     public NettyHandler registerHandler(String type, NetworkInboundHandler networkInboundHandler) {
@@ -89,11 +92,12 @@ public final class NettyHandler implements Serializable {
     /**
      * Registers a new network query handler
      *
-     * @param type                       The type of the query packet the handler should handler
+     * @param type The type of the query packet the handler should handler
      * @param networkQueryInboundHandler The handler which should be registered
      * @return The current instance of this class
      */
-    public NettyHandler registerQueryHandler(String type, NetworkQueryInboundHandler networkQueryInboundHandler) {
+    public NettyHandler registerQueryHandler(String type,
+        NetworkQueryInboundHandler networkQueryInboundHandler) {
         this.networkQueryInboundHandlerMap.put(type, networkQueryInboundHandler);
         return this;
     }
@@ -101,8 +105,8 @@ public final class NettyHandler implements Serializable {
     /**
      * Registers a new network handler
      *
-     * @param type      The type of the packet the handler should handler
-     * @param clazz     The class of the network handler
+     * @param type The type of the packet the handler should handler
+     * @param clazz The class of the network handler
      * @return The current instance of this class
      */
     public NettyHandler registerHandler(String type, Class<? extends NetworkInboundHandler> clazz) {
@@ -110,8 +114,8 @@ public final class NettyHandler implements Serializable {
             this.networkInboundHandlerMap.put(type, clazz.newInstance());
         } catch (final InstantiationException | IllegalAccessException ex) {
             StringUtil.printError(
-                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
-                    "Error while registering network handler", ex
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                "Error while registering network handler", ex
             );
         }
 
@@ -121,17 +125,18 @@ public final class NettyHandler implements Serializable {
     /**
      * Registers a new network query handler
      *
-     * @param type      The type of the query packet the handler should handler
-     * @param clazz     The class of the network handler
+     * @param type The type of the query packet the handler should handler
+     * @param clazz The class of the network handler
      * @return The current instance of this class
      */
-    public NettyHandler registerQueryHandler(String type, Class<? extends NetworkQueryInboundHandler> clazz) {
+    public NettyHandler registerQueryHandler(String type,
+        Class<? extends NetworkQueryInboundHandler> clazz) {
         try {
             this.networkQueryInboundHandlerMap.put(type, clazz.newInstance());
         } catch (final InstantiationException | IllegalAccessException ex) {
             StringUtil.printError(
-                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
-                    "Error while registering query network handler", ex
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                "Error while registering query network handler", ex
             );
         }
 
@@ -141,7 +146,7 @@ public final class NettyHandler implements Serializable {
     /**
      * Get if a handler is registered
      *
-     * @param type  The type of the query packet which should be handled
+     * @param type The type of the query packet which should be handled
      * @return If a handler is registered
      */
     public boolean isQueryHandlerRegistered(String type) {
@@ -151,7 +156,7 @@ public final class NettyHandler implements Serializable {
     /**
      * Get if a handler is registered
      *
-     * @param type  The type of the packet which should be handled
+     * @param type The type of the packet which should be handled
      * @return If a handler is registered
      */
     public boolean isHandlerRegisterd(String type) {
@@ -172,7 +177,7 @@ public final class NettyHandler implements Serializable {
     /**
      * Unregisters a specific network handler
      *
-     * @param type      The type of the handler which should be unregistered
+     * @param type The type of the handler which should be unregistered
      * @return The current instance of this class
      */
     public NettyHandler unregisterHandler(String type) {
@@ -183,7 +188,7 @@ public final class NettyHandler implements Serializable {
     /**
      * Unregisters a specific network query handler
      *
-     * @param type      The type of the query handler which should be unregistered
+     * @param type The type of the query handler which should be unregistered
      * @return The current instance of this class
      */
     public NettyHandler unregisterQueryHandler(String type) {

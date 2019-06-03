@@ -58,7 +58,9 @@ public final class SignSelector {
     private static SignSelector instance;
 
     private SignLayoutConfiguration signLayoutConfiguration;
+
     private Worker worker;
+
     private Map<UUID, Sign> signMap;
 
     /**

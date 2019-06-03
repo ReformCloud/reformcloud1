@@ -16,14 +16,17 @@ import java.io.Serializable;
  */
 
 public final class PacketInGetClientProcessQueue implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous(
-                "ReformCloudController",
-                new PacketOutClientProcessQueue(
-                        ReformCloudClient.getInstance().getCloudProcessStartupHandler().getServerStartupInfo(),
-                        ReformCloudClient.getInstance().getCloudProcessStartupHandler().getProxyStartupInfo()
-                )
+            "ReformCloudController",
+            new PacketOutClientProcessQueue(
+                ReformCloudClient.getInstance().getCloudProcessStartupHandler()
+                    .getServerStartupInfo(),
+                ReformCloudClient.getInstance().getCloudProcessStartupHandler()
+                    .getProxyStartupInfo()
+            )
         );
     }
 }

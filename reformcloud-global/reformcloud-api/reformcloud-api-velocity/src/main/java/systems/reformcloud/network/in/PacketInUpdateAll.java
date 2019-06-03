@@ -17,12 +17,23 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateAll implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIVelocity.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
-        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudAPIVelocity.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
 
-        if (ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByUID(ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getProcessUID()) != null)
-            ReformCloudAPIVelocity.getInstance().setProxyInfo(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByUID(ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getProcessUID()));
+        if (ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager()
+            .getRegisteredProxyByUID(
+                ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess()
+                    .getProcessUID()) != null) {
+            ReformCloudAPIVelocity.getInstance().setProxyInfo(
+                ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                    .getServerProcessManager().getRegisteredProxyByUID(
+                    ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess()
+                        .getProcessUID()));
+        }
     }
 }

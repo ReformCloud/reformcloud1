@@ -17,11 +17,14 @@ import systems.reformcloud.signs.netty.packets.PacketOutRemoveSign;
  */
 
 public final class PacketInRemoveSign implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        SignSelector.getInstance().getSignConfiguration().removeSign(configuration.getValue("sign", new TypeToken<Sign>() {
-        }.getType()));
-        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutRemoveSign(configuration.getValue("sign", new TypeToken<Sign>() {
-        }.getType())));
+        SignSelector.getInstance().getSignConfiguration()
+            .removeSign(configuration.getValue("sign", new TypeToken<Sign>() {
+            }.getType()));
+        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(
+            new PacketOutRemoveSign(configuration.getValue("sign", new TypeToken<Sign>() {
+            }.getType())));
     }
 }

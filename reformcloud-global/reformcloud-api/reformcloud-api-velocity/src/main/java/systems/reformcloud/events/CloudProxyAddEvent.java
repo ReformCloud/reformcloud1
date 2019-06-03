@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class CloudProxyAddEvent implements Serializable {
+
     private ProxyInfo proxyInfo;
 
     @java.beans.ConstructorProperties({"proxyInfo"})

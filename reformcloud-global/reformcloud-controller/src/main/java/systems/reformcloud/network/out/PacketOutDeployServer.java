@@ -14,12 +14,13 @@ import java.io.Serializable;
  */
 
 public final class PacketOutDeployServer extends Packet implements Serializable {
+
     public PacketOutDeployServer(String name, String template, boolean proxy, String toClient) {
         super("DeployServer", new Configuration()
-                .addStringValue("group", name)
-                .addStringValue("template", template)
-                .addStringValue("type", (proxy ? "proxy" : "server"))
-                .addStringValue("to", toClient)
+            .addStringValue("group", name)
+            .addStringValue("template", template)
+            .addStringValue("type", (proxy ? "proxy" : "server"))
+            .addStringValue("to", toClient)
         );
     }
 }

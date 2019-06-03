@@ -14,8 +14,10 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class Encoder extends MessageToByteEncoder<Packet> {
+
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
+    protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet,
+        ByteBuf byteBuf) {
         packet.write(byteBuf);
     }
 }

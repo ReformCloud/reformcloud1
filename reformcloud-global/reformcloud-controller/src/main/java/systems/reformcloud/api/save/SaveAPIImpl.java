@@ -26,7 +26,8 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 30.03.2019
  */
 
-public final class SaveAPIImpl implements Serializable, ISaveAPIService {
+public final class SaveAPIImpl implements Serializable, SaveAPIService {
+
     @Override
     public Optional<OnlinePlayer> getOnlinePlayer(UUID uniqueId) {
         return Optional.ofNullable(ReformCloudController.getInstance().getOnlinePlayer(uniqueId));
@@ -114,12 +115,14 @@ public final class SaveAPIImpl implements Serializable, ISaveAPIService {
 
     @Override
     public Optional<List<ServerInfo>> getAllRegisteredServers(String groupName) {
-        return Optional.ofNullable(ReformCloudController.getInstance().getAllRegisteredServers(groupName));
+        return Optional
+            .ofNullable(ReformCloudController.getInstance().getAllRegisteredServers(groupName));
     }
 
     @Override
     public Optional<List<ProxyInfo>> getAllRegisteredProxies(String groupName) {
-        return Optional.ofNullable(ReformCloudController.getInstance().getAllRegisteredProxies(groupName));
+        return Optional
+            .ofNullable(ReformCloudController.getInstance().getAllRegisteredProxies(groupName));
     }
 
     @Override
@@ -134,12 +137,14 @@ public final class SaveAPIImpl implements Serializable, ISaveAPIService {
 
     @Override
     public Optional<PacketFuture> createPacketFuture(Packet packet, String networkComponent) {
-        return Optional.ofNullable(ReformCloudController.getInstance().createPacketFuture(packet, networkComponent));
+        return Optional.ofNullable(
+            ReformCloudController.getInstance().createPacketFuture(packet, networkComponent));
     }
 
     @Override
     public Optional<PacketFuture> sendPacketQuery(String channel, Packet packet) {
-        return Optional.ofNullable(ReformCloudController.getInstance().sendPacketQuery(channel, packet));
+        return Optional
+            .ofNullable(ReformCloudController.getInstance().sendPacketQuery(channel, packet));
     }
 
     @Override

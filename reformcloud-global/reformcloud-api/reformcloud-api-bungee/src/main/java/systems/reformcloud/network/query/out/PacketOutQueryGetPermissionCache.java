@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutQueryGetPermissionCache extends Packet implements Serializable {
+
     public PacketOutQueryGetPermissionCache() {
         super("QueryGetPermissionCache", new Configuration());
     }

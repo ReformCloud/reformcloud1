@@ -21,6 +21,7 @@ import java.util.Objects;
  */
 
 public final class ReformCloudLibraryServiceProvider {
+
     /**
      * The internal instance of this class
      */
@@ -69,20 +70,23 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * Creates a new Instance of the {ReformCloudLibraryServiceProvider}
      *
-     * @param loggerProvider        The internal LoggerProvider created by the instances
-     * @param key                   The controller key
-     * @param controllerIP          The controller ip address
-     * @param eventManager          The event manager of the cloud
-     * @throws Throwable            Will be thrown if any exception occurs
+     * @param loggerProvider The internal LoggerProvider created by the instances
+     * @param key The controller key
+     * @param controllerIP The controller ip address
+     * @param eventManager The event manager of the cloud
+     * @throws Throwable Will be thrown if any exception occurs
      */
-    public ReformCloudLibraryServiceProvider(LoggerProvider loggerProvider, String key, String controllerIP, EventManager eventManager, String lang) throws Throwable {
-        if (instance == null)
+    public ReformCloudLibraryServiceProvider(LoggerProvider loggerProvider, String key,
+        String controllerIP, EventManager eventManager, String lang) throws Throwable {
+        if (instance == null) {
             instance = this;
-        else
+        } else {
             throw new InstanceAlreadyExistsException();
+        }
 
-        if (lang != null)
+        if (lang != null) {
             this.taskScheduler = new TaskScheduler();
+        }
 
         this.key = key;
         this.controllerIP = controllerIP;
@@ -164,43 +168,58 @@ public final class ReformCloudLibraryServiceProvider {
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ReformCloudLibraryServiceProvider)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ReformCloudLibraryServiceProvider)) {
+            return false;
+        }
         final ReformCloudLibraryServiceProvider other = (ReformCloudLibraryServiceProvider) o;
         final Object this$internalCloudNetwork = this.getInternalCloudNetwork();
         final Object other$internalCloudNetwork = other.getInternalCloudNetwork();
-        if (!Objects.equals(this$internalCloudNetwork, other$internalCloudNetwork))
+        if (!Objects.equals(this$internalCloudNetwork, other$internalCloudNetwork)) {
             return false;
+        }
         final Object this$loaded = this.getLoaded();
         final Object other$loaded = other.getLoaded();
-        if (!Objects.equals(this$loaded, other$loaded)) return false;
+        if (!Objects.equals(this$loaded, other$loaded)) {
+            return false;
+        }
         final Object this$eventManager = this.getEventManager();
         final Object other$eventManager = other.getEventManager();
-        if (!Objects.equals(this$eventManager, other$eventManager))
+        if (!Objects.equals(this$eventManager, other$eventManager)) {
             return false;
+        }
         final Object this$channelHandler = this.getChannelHandler();
         final Object other$channelHandler = other.getChannelHandler();
-        if (!Objects.equals(this$channelHandler, other$channelHandler))
+        if (!Objects.equals(this$channelHandler, other$channelHandler)) {
             return false;
+        }
         final Object this$loggerProvider = this.getLoggerProvider();
         final Object other$loggerProvider = other.getLoggerProvider();
-        if (!Objects.equals(this$loggerProvider, other$loggerProvider))
+        if (!Objects.equals(this$loggerProvider, other$loggerProvider)) {
             return false;
+        }
         final Object this$key = this.getKey();
         final Object other$key = other.getKey();
-        if (!Objects.equals(this$key, other$key)) return false;
+        if (!Objects.equals(this$key, other$key)) {
+            return false;
+        }
         final Object this$controllerIP = this.getControllerIP();
         final Object other$controllerIP = other.getControllerIP();
-        if (!Objects.equals(this$controllerIP, other$controllerIP))
+        if (!Objects.equals(this$controllerIP, other$controllerIP)) {
             return false;
+        }
         final Object this$nettyHandler = this.getNettyHandler();
         final Object other$nettyHandler = other.getNettyHandler();
-        if (!Objects.equals(this$nettyHandler, other$nettyHandler))
+        if (!Objects.equals(this$nettyHandler, other$nettyHandler)) {
             return false;
+        }
         final Object this$taskScheduler = this.getTaskScheduler();
         final Object other$taskScheduler = other.getTaskScheduler();
-        if (!Objects.equals(this$taskScheduler, other$taskScheduler))
+        if (!Objects.equals(this$taskScheduler, other$taskScheduler)) {
             return false;
+        }
         return true;
     }
 
@@ -208,7 +227,8 @@ public final class ReformCloudLibraryServiceProvider {
         final int PRIME = 59;
         int result = 1;
         final Object $internalCloudNetwork = this.getInternalCloudNetwork();
-        result = result * PRIME + ($internalCloudNetwork == null ? 43 : $internalCloudNetwork.hashCode());
+        result = result * PRIME + ($internalCloudNetwork == null ? 43
+            : $internalCloudNetwork.hashCode());
         final Object $loaded = this.getLoaded();
         result = result * PRIME + ($loaded == null ? 43 : $loaded.hashCode());
         final Object $eventManager = this.getEventManager();
@@ -229,6 +249,11 @@ public final class ReformCloudLibraryServiceProvider {
     }
 
     public String toString() {
-        return "ReformCloudLibraryServiceProvider(internalCloudNetwork=" + this.getInternalCloudNetwork() + ", loaded=" + this.getLoaded() + ", eventManager=" + this.getEventManager() + ", channelHandler=" + this.getChannelHandler() + ", loggerProvider=" + this.getLoggerProvider() + ", key=" + this.getKey() + ", controllerIP=" + this.getControllerIP() + ", nettyHandler=" + this.getNettyHandler() + ", taskScheduler=" + this.getTaskScheduler() + ")";
+        return "ReformCloudLibraryServiceProvider(internalCloudNetwork=" + this
+            .getInternalCloudNetwork() + ", loaded=" + this.getLoaded() + ", eventManager=" + this
+            .getEventManager() + ", channelHandler=" + this.getChannelHandler()
+            + ", loggerProvider=" + this.getLoggerProvider() + ", key=" + this.getKey()
+            + ", controllerIP=" + this.getControllerIP() + ", nettyHandler=" + this
+            .getNettyHandler() + ", taskScheduler=" + this.getTaskScheduler() + ")";
     }
 }

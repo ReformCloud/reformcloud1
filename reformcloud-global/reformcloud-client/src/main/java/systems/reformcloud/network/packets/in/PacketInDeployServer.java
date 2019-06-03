@@ -16,18 +16,20 @@ import java.io.Serializable;
  */
 
 public final class PacketInDeployServer implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         boolean proxy = configuration.getStringValue("type").equals("proxy");
         new ControllerTemplateDeploy().deploy(
-                new File(
-                        "reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" +
-                                configuration.getStringValue("group") + "/" + configuration.getStringValue("template")
-                ),
-                configuration.getStringValue("group"),
-                configuration.getStringValue("template"),
-                configuration.getStringValue("to"),
-                proxy
+            new File(
+                "reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" +
+                    configuration.getStringValue("group") + "/" + configuration
+                    .getStringValue("template")
+            ),
+            configuration.getStringValue("group"),
+            configuration.getStringValue("template"),
+            configuration.getStringValue("to"),
+            proxy
         );
     }
 }

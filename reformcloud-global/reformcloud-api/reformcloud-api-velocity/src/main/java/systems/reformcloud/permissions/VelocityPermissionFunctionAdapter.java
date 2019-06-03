@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class VelocityPermissionFunctionAdapter implements Serializable, PermissionFunction {
+
     @java.beans.ConstructorProperties({"permissionSubject"})
     public VelocityPermissionFunctionAdapter(PermissionSubject permissionSubject) {
         this(((Player) permissionSubject).getUniqueId());
@@ -43,37 +44,45 @@ public final class VelocityPermissionFunctionAdapter implements Serializable, Pe
     @Override
     public Tristate getPermissionValue(String s) {
         PermissionHolder permissionHolder = this.getHolder();
-        if (permissionHolder == null)
+        if (permissionHolder == null) {
             return Tristate.FALSE;
+        }
 
         return permissionHolder.hasPermission(
-                s,
-                this.getGroups(permissionHolder)
+            s,
+            this.getGroups(permissionHolder)
         ) ? Tristate.TRUE : Tristate.FALSE;
     }
 
     private PermissionHolder getHolder() {
-        if (permissionHolder != null)
+        if (permissionHolder != null) {
             return permissionHolder;
+        }
 
         this.permissionHolder = ReformCloudAPIVelocity.getInstance().createPacketFuture(
-                new PacketOutQueryGetPermissionHolder(
-                        new PermissionHolder(permissionSubject, Collections.singletonMap(ReformCloudAPIVelocity
-                                .getInstance().getPermissionCache().getDefaultGroup().getName(), -1L), new HashMap<>())
-                ), "ReformCloudController"
-        ).sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS).getConfiguration().getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+            new PacketOutQueryGetPermissionHolder(
+                new PermissionHolder(permissionSubject,
+                    Collections.singletonMap(ReformCloudAPIVelocity
+                        .getInstance().getPermissionCache().getDefaultGroup().getName(), -1L),
+                    new HashMap<>())
+            ), "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS).getConfiguration()
+            .getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders()
+            .put(permissionHolder.getUniqueID(), permissionHolder);
         return this.permissionHolder;
     }
 
     private List<PermissionGroup> getGroups(PermissionHolder permissionHolder) {
-        if (this.permissionGroups == null)
+        if (this.permissionGroups == null) {
             this.calculatePermissions(permissionHolder);
+        }
 
         return this.permissionGroups;
     }
 
     private void calculatePermissions(PermissionHolder permissionHolder) {
-        this.permissionGroups = permissionHolder.getAllPermissionGroups(ReformCloudAPIVelocity.getInstance().getPermissionCache());
+        this.permissionGroups = permissionHolder
+            .getAllPermissionGroups(ReformCloudAPIVelocity.getInstance().getPermissionCache());
     }
 }

@@ -25,23 +25,32 @@ import java.util.Properties;
  */
 
 public final class PacketInUpdateClientSetting implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ClientSettings clientSettings = configuration.getValue("setting", TypeTokenAdaptor.getCLIENT_SETTING_TYPE());
+        ClientSettings clientSettings = configuration
+            .getValue("setting", TypeTokenAdaptor.getCLIENT_SETTING_TYPE());
 
         Properties properties = new Properties();
-        try (InputStreamReader inputStreamReader = new InputStreamReader(Files.newInputStream(Paths.get("configuration.properties")))) {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(
+            Files.newInputStream(Paths.get("configuration.properties")))) {
             properties.load(inputStreamReader);
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load configuration.properties", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Could not load configuration.properties", ex);
         }
 
-        properties.setProperty(clientSettings.getConfigString(), configuration.getStringValue("value"));
+        properties
+            .setProperty(clientSettings.getConfigString(), configuration.getStringValue("value"));
 
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get("configuration.properties"))) {
+        try (OutputStream outputStream = Files
+            .newOutputStream(Paths.get("configuration.properties"))) {
             properties.store(outputStream, "ReformCloud default Configuration");
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not store configuration.properties", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Could not store configuration.properties", ex);
         }
 
         ReformCloudClient.getInstance().reloadAll();

@@ -5,7 +5,7 @@
 package systems.reformcloud.api;
 
 import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.api.save.ISaveAPIService;
+import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
@@ -27,7 +27,8 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 30.03.2019
  */
 
-public final class SaveAPIImpl implements Serializable, ISaveAPIService {
+public final class SaveAPIImpl implements Serializable, SaveAPIService {
+
     @Override
     public Optional<OnlinePlayer> getOnlinePlayer(UUID uniqueId) {
         return Optional.ofNullable(ReformCloudClient.getInstance().getOnlinePlayer(uniqueId));
@@ -115,12 +116,14 @@ public final class SaveAPIImpl implements Serializable, ISaveAPIService {
 
     @Override
     public Optional<List<ServerInfo>> getAllRegisteredServers(String groupName) {
-        return Optional.ofNullable(ReformCloudClient.getInstance().getAllRegisteredServers(groupName));
+        return Optional
+            .ofNullable(ReformCloudClient.getInstance().getAllRegisteredServers(groupName));
     }
 
     @Override
     public Optional<List<ProxyInfo>> getAllRegisteredProxies(String groupName) {
-        return Optional.ofNullable(ReformCloudClient.getInstance().getAllRegisteredProxies(groupName));
+        return Optional
+            .ofNullable(ReformCloudClient.getInstance().getAllRegisteredProxies(groupName));
     }
 
     @Override
@@ -135,12 +138,14 @@ public final class SaveAPIImpl implements Serializable, ISaveAPIService {
 
     @Override
     public Optional<PacketFuture> createPacketFuture(Packet packet, String networkComponent) {
-        return Optional.ofNullable(ReformCloudClient.getInstance().createPacketFuture(packet, networkComponent));
+        return Optional.ofNullable(
+            ReformCloudClient.getInstance().createPacketFuture(packet, networkComponent));
     }
 
     @Override
     public Optional<PacketFuture> sendPacketQuery(String channel, Packet packet) {
-        return Optional.ofNullable(ReformCloudClient.getInstance().sendPacketQuery(channel, packet));
+        return Optional
+            .ofNullable(ReformCloudClient.getInstance().sendPacketQuery(channel, packet));
     }
 
     @Override

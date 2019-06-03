@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class DatabaseSaver implements Serializable, Runnable {
+
     @Override
     public void run() {
         ReformCloudController.getInstance().getDatabaseProviders().forEach(DatabaseProvider::save);

@@ -15,7 +15,8 @@ public class YamlConfiguration extends ConfigurationProvider {
     private final ThreadLocal<Yaml> yaml = ThreadLocal.withInitial(() -> {
         Representer representer = new Representer() {
             {
-                representers.put(Configuration.class, data -> represent(((Configuration) data).self));
+                representers
+                    .put(Configuration.class, data -> represent(((Configuration) data).self));
             }
         };
 
@@ -30,7 +31,8 @@ public class YamlConfiguration extends ConfigurationProvider {
 
     @Override
     public void save(Configuration config, File file) throws IOException {
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+        try (Writer writer = new BufferedWriter(
+            new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             save(config, writer);
         }
     }
@@ -47,7 +49,8 @@ public class YamlConfiguration extends ConfigurationProvider {
 
     @Override
     public Configuration load(File file, Configuration defaults) throws IOException {
-        try (Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
+        try (Reader reader = new BufferedReader(
+            new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             return load(reader, defaults);
         }
     }

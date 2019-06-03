@@ -16,17 +16,21 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class ShutdownWorker implements Serializable, Runnable {
+
     private static final long serialVersionUID = 8124418130754401586L;
 
     @Override
     public void run() {
-        if (!ReformCloudClient.RUNNING || ReformCloudClient.getInstance().isShutdown())
+        if (!ReformCloudClient.RUNNING || ReformCloudClient.getInstance().isShutdown()) {
             return;
+        }
 
-        final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance().getCloudProcessScreenService();
+        final CloudProcessScreenService cloudProcessScreenService = ReformCloudClient.getInstance()
+            .getCloudProcessScreenService();
 
         cloudProcessScreenService.getRegisteredServerProcesses().forEach(handler -> {
-            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown()) {
+            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler
+                .isAlive() && !handler.isToShutdown()) {
                 long shutdown = handler.getStartupTime() + TimeUnit.MINUTES.toMillis(2);
                 if (shutdown <= System.currentTimeMillis()) {
                     handler.shutdown(true);
@@ -35,8 +39,10 @@ public final class ShutdownWorker implements Serializable, Runnable {
         });
 
         cloudProcessScreenService.getRegisteredProxyProcesses().forEach(handler -> {
-            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler.isAlive() && !handler.isToShutdown())
+            if (handler.getProcessStartupStage().equals(ProcessStartupStage.DONE) && !handler
+                .isAlive() && !handler.isToShutdown()) {
                 handler.shutdown(null, true);
+            }
         });
     }
 }

@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public final class InfinitySleeper implements Serializable {
+
     public InfinitySleeper() {
         Runtime.getRuntime().addShutdownHook(new Thread(this::deleteInstant));
     }

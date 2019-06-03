@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class CommonsLogging extends Dependency implements Serializable {
+
     public CommonsLogging() {
         super(null);
     }

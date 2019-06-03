@@ -22,15 +22,21 @@ import java.lang.reflect.Field;
  */
 
 public final class PacketInUpdatePermissionHolder implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-        Player player = VelocityBootstrap.getInstance().getProxy().getPlayer(permissionHolder.getUniqueID()).orElse(null);
-        if (player == null)
+        PermissionHolder permissionHolder = configuration
+            .getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+        Player player = VelocityBootstrap.getInstance().getProxy()
+            .getPlayer(permissionHolder.getUniqueID()).orElse(null);
+        if (player == null) {
             return;
+        }
 
-        VelocityBootstrap.getInstance().getProxy().getEventManager().fire(new PermissionHolderUpdateEvent(permissionHolder));
-        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
+        VelocityBootstrap.getInstance().getProxy().getEventManager()
+            .fire(new PermissionHolderUpdateEvent(permissionHolder));
+        ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders()
+            .put(permissionHolder.getUniqueID(), permissionHolder);
         try {
             Field field = player.getClass().getDeclaredField("permissionFunction");
             field.setAccessible(true);

@@ -17,12 +17,14 @@ import java.io.Serializable;
  */
 
 public final class PacketInRemoveSign implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
         if (SignSelector.getInstance() != null) {
             try {
-                SignSelector.getInstance().handleSignRemove(configuration.getValue("sign", new TypeToken<Sign>() {
-                }.getType()));
+                SignSelector.getInstance()
+                    .handleSignRemove(configuration.getValue("sign", new TypeToken<Sign>() {
+                    }.getType()));
             } catch (final NullPointerException ignored) {
             }
         }

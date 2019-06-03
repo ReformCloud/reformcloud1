@@ -14,10 +14,11 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutDeleteMob extends Packet implements Serializable {
+
     public PacketOutDeleteMob(SelectorMob selectorMob) {
         super(
-                "DeleteMob",
-                new Configuration().addValue("mob", selectorMob)
+            "DeleteMob",
+            new Configuration().addValue("mob", selectorMob)
         );
     }
 }

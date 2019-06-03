@@ -23,6 +23,7 @@ import java.util.Map;
  */
 
 public final class InternalCloudNetwork implements Serializable {
+
     private static final long serialVersionUID = 4564917986901138765L;
 
     /**
@@ -34,9 +35,11 @@ public final class InternalCloudNetwork implements Serializable {
      * The internal web user which will be used for some actions in the cloud system
      */
     private InternalWebUser internalWebUser = new InternalWebUser(
-            ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + "-internal",
-            StringEncrypt.encryptSHA512(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
-                    + StringUtil.EMPTY + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE))
+        ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + "-internal",
+        StringEncrypt
+            .encryptSHA512(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
+                + StringUtil.EMPTY + ReformCloudLibraryService.THREAD_LOCAL_RANDOM
+                .nextLong(0, Long.MAX_VALUE))
     );
 
     /**
@@ -168,7 +171,8 @@ public final class InternalCloudNetwork implements Serializable {
         final Object $prefix = this.getPrefix();
         result = result * PRIME + ($prefix == null ? 43 : $prefix.hashCode());
         final Object $serverProcessManager = this.getServerProcessManager();
-        result = result * PRIME + ($serverProcessManager == null ? 43 : $serverProcessManager.hashCode());
+        result = result * PRIME + ($serverProcessManager == null ? 43
+            : $serverProcessManager.hashCode());
         final Object $serverGroups = this.getServerGroups();
         result = result * PRIME + ($serverGroups == null ? 43 : $serverGroups.hashCode());
         final Object $proxyGroups = this.getProxyGroups();
@@ -179,6 +183,10 @@ public final class InternalCloudNetwork implements Serializable {
     }
 
     public String toString() {
-        return "InternalCloudNetwork(webPort=" + this.getWebPort() + ", internalWebUser=" + this.getInternalWebUser() + ", messages=" + this.getMessages() + ", loaded=" + this.getLoaded() + ", prefix=" + this.getPrefix() + ", serverProcessManager=" + this.getServerProcessManager() + ", serverGroups=" + this.getServerGroups() + ", proxyGroups=" + this.getProxyGroups() + ", clients=" + this.getClients() + ")";
+        return "InternalCloudNetwork(webPort=" + this.getWebPort() + ", internalWebUser=" + this
+            .getInternalWebUser() + ", messages=" + this.getMessages() + ", loaded=" + this
+            .getLoaded() + ", prefix=" + this.getPrefix() + ", serverProcessManager=" + this
+            .getServerProcessManager() + ", serverGroups=" + this.getServerGroups()
+            + ", proxyGroups=" + this.getProxyGroups() + ", clients=" + this.getClients() + ")";
     }
 }

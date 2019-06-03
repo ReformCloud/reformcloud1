@@ -27,6 +27,7 @@ import java.util.List;
  */
 
 final class ReformCloudLauncher {
+
     /**
      * Main Method of ReformCloudClient
      *
@@ -37,8 +38,8 @@ final class ReformCloudLauncher {
         final List<String> options = Arrays.asList(args);
 
         if (StringUtil.USER_NAME.equalsIgnoreCase("root")
-                && StringUtil.OS_NAME.toLowerCase().contains("linux")
-                && !options.contains("--ignore-root")) {
+            && StringUtil.OS_NAME.toLowerCase().contains("linux")
+            && !options.contains("--ignore-root")) {
             System.out.println("You cannot run ReformCloud as root user");
             try {
                 Thread.sleep(2000);
@@ -53,21 +54,27 @@ final class ReformCloudLauncher {
         final InfinitySleeper infinitySleeper = new InfinitySleeper();
 
         Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
-            if (t instanceof ThreadDeath)
+            if (t instanceof ThreadDeath) {
                 return;
+            }
 
             if (ReformCloudClient.getInstance() != null) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "Exception caught", t);
-                ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSyncExceptionThrown(t));
-            } else
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+                    "Exception caught", t);
+                ReformCloudClient.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous("ReformCloudController",
+                        new PacketOutSyncExceptionThrown(t));
+            } else {
                 t.printStackTrace(System.err);
+            }
         });
 
         System.out.println("Trying to startup ReformCloudClient...");
         System.out.println("Startup time: " + DateProvider.formatByDefaultFormat(current));
 
-        if (Files.exists(Paths.get("reformcloud/logs")))
+        if (Files.exists(Paths.get("reformcloud/logs"))) {
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));
+        }
 
         System.out.println();
 
@@ -81,7 +88,8 @@ final class ReformCloudLauncher {
         loggerProvider.setDebug(options.contains("--debug"));
         new ReformCloudClient(loggerProvider, commandManager, options.contains("--ssl"), current);
 
-        loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded().getHelp_default());
+        loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
+            .getHelp_default());
         new ReformAsyncConsole(loggerProvider, commandManager, "Client");
 
         infinitySleeper.sleep();

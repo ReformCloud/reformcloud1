@@ -19,7 +19,9 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 15.03.2019
  */
 
-public final class PacketInGetControllerTemplateResult implements Serializable, NetworkInboundHandler {
+public final class PacketInGetControllerTemplateResult implements Serializable,
+    NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         String type = configuration.getStringValue("type");
@@ -27,12 +29,12 @@ public final class PacketInGetControllerTemplateResult implements Serializable, 
             case "server": {
                 byte[] result = Base64.getDecoder().decode(configuration.getStringValue("encode"));
                 ServerGroup serverGroup = ReformCloudClient.getInstance().getInternalCloudNetwork()
-                        .getServerGroups().get(configuration.getStringValue("group"));
+                    .getServerGroups().get(configuration.getStringValue("group"));
                 if (serverGroup.getServerModeType().equals(ServerModeType.STATIC)) {
                     try {
                         ZoneInformationProtocolUtility.unZip(
-                                result,
-                                "reformcloud/static/servers/" + configuration.getStringValue("name")
+                            result,
+                            "reformcloud/static/servers/" + configuration.getStringValue("name")
                         );
                     } catch (final Exception ex) {
                         ex.printStackTrace();
@@ -40,9 +42,9 @@ public final class PacketInGetControllerTemplateResult implements Serializable, 
                 } else {
                     try {
                         ZoneInformationProtocolUtility.unZip(
-                                result,
-                                "reformcloud/temp/servers/" + configuration.getStringValue("name")
-                                        + "-" + configuration.getValue("uuid", UUID.class)
+                            result,
+                            "reformcloud/temp/servers/" + configuration.getStringValue("name")
+                                + "-" + configuration.getValue("uuid", UUID.class)
                         );
                     } catch (final Exception ex) {
                         ex.printStackTrace();
@@ -55,9 +57,9 @@ public final class PacketInGetControllerTemplateResult implements Serializable, 
                 byte[] result = Base64.getDecoder().decode(configuration.getStringValue("encode"));
                 try {
                     ZoneInformationProtocolUtility.unZip(
-                            result,
-                            "reformcloud/temp/proxies/" + configuration.getStringValue("name")
-                                    + "-" + configuration.getValue("uuid", UUID.class)
+                        result,
+                        "reformcloud/temp/proxies/" + configuration.getStringValue("name")
+                            + "-" + configuration.getValue("uuid", UUID.class)
                     );
                 } catch (final Exception ex) {
                     ex.printStackTrace();

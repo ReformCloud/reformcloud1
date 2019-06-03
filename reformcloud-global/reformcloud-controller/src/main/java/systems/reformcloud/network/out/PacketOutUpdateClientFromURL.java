@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateClientFromURL extends Packet implements Serializable {
+
     public PacketOutUpdateClientFromURL(String url) {
         super("UpdateClientFromURL", new Configuration().addStringValue("url", url));
     }

@@ -17,6 +17,7 @@ import java.io.Serializable;
  */
 
 public final class PacketInDeleteMob implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         SelectorMob selectorMob = configuration.getValue("mob", new TypeToken<SelectorMob>() {

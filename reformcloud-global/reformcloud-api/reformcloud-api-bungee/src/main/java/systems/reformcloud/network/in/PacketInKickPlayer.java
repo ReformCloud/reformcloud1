@@ -18,12 +18,16 @@ import java.util.UUID;
  */
 
 public final class PacketInKickPlayer implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ProxiedPlayer proxiedPlayer = BungeecordBootstrap.getInstance().getProxy().getPlayer(configuration.getValue("uuid", UUID.class));
-        if (proxiedPlayer == null)
+        ProxiedPlayer proxiedPlayer = BungeecordBootstrap.getInstance().getProxy()
+            .getPlayer(configuration.getValue("uuid", UUID.class));
+        if (proxiedPlayer == null) {
             return;
+        }
 
-        proxiedPlayer.disconnect(TextComponent.fromLegacyText(configuration.getStringValue("reason")));
+        proxiedPlayer
+            .disconnect(TextComponent.fromLegacyText(configuration.getStringValue("reason")));
     }
 }

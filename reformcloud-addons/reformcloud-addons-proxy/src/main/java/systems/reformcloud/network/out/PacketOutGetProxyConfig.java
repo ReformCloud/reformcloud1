@@ -16,11 +16,12 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutGetProxyConfig extends Packet implements Serializable {
+
     public PacketOutGetProxyConfig(UUID result, Optional<ProxySettings> proxySettings) {
         super(
-                "GetProxyConfig",
-                new Configuration().addValue("settings", proxySettings),
-                result
+            "GetProxyConfig",
+            new Configuration().addValue("settings", proxySettings),
+            result
         );
     }
 }

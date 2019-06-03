@@ -25,11 +25,12 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author _Klaro | Pasqual K. / created on 29.03.2019
  */
 
-public interface ISaveAPIService {
+public interface SaveAPIService {
+
     /**
      * The atomic reference to get the default instance of the api service
      */
-    AtomicReference<ISaveAPIService> instance = new AtomicReference<>();
+    AtomicReference<SaveAPIService> instance = new AtomicReference<>();
 
     /**
      * Get a online player of the cloudSystem
@@ -67,8 +68,7 @@ public interface ISaveAPIService {
      * Gets if the player is globally online
      *
      * @param uniqueId The exact UUID of the player which should be checked
-     * @return {@code true} if the player is online or {@code false}
-     * if the player is offline
+     * @return {@code true} if the player is online or {@code false} if the player is offline
      */
     Optional<Boolean> isOnline(UUID uniqueId);
 
@@ -76,8 +76,7 @@ public interface ISaveAPIService {
      * Gets if the player is globally online
      *
      * @param name The exact name of the player which should be checked
-     * @return {@code true} if the player is online or {@code false}
-     * if the player is offline
+     * @return {@code true} if the player is online or {@code false} if the player is offline
      */
     Optional<Boolean> isOnline(String name);
 
@@ -85,8 +84,8 @@ public interface ISaveAPIService {
      * Gets if the player is globally registered
      *
      * @param uniqueId The exact UUID of the player which should be checked
-     * @return {@code true} if the player is registered or {@code false}
-     * if the player isn't registered
+     * @return {@code true} if the player is registered or {@code false} if the player isn't
+     * registered
      */
     Optional<Boolean> isRegistered(UUID uniqueId);
 
@@ -94,8 +93,8 @@ public interface ISaveAPIService {
      * Gets if the player is globally registered
      *
      * @param name The exact name of the player which should be checked
-     * @return {@code true} if the player is registered or {@code false}
-     * if the player isn't registered
+     * @return {@code true} if the player is registered or {@code false} if the player isn't
+     * registered
      */
     Optional<Boolean> isRegistered(String name);
 
@@ -182,7 +181,7 @@ public interface ISaveAPIService {
      * Sends a packet through the cloud system
      *
      * @param subChannel The instance name of the packet receiver
-     * @param packet     The packet that should be send
+     * @param packet The packet that should be send
      * @return If the operation was successful
      */
     Optional<Boolean> sendPacket(String subChannel, Packet packet);
@@ -191,7 +190,7 @@ public interface ISaveAPIService {
      * Sends a packet through the cloud system
      *
      * @param subChannel The instance name of the packet receiver
-     * @param packet     The packet that should be send
+     * @param packet The packet that should be send
      * @return If the operation was successful
      */
     Optional<Boolean> sendPacketSync(String subChannel, Packet packet);
@@ -199,7 +198,7 @@ public interface ISaveAPIService {
     /**
      * Creates a packet future
      *
-     * @param packet           The packet that should be send
+     * @param packet The packet that should be send
      * @param networkComponent The instance name of the packet receiver
      * @return The created packet future
      */
@@ -208,7 +207,7 @@ public interface ISaveAPIService {
     /**
      * Creates a packet future
      *
-     * @param packet  The packet that should be send
+     * @param packet The packet that should be send
      * @param channel The instance name of the packet receiver
      * @return The created packet future
      */

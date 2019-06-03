@@ -17,9 +17,12 @@ import java.io.Serializable;
  */
 
 public final class PacketInServerInfoUpdate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIVelocity.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
-        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork());
+        ReformCloudAPIVelocity.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(
+            ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork());
     }
 }

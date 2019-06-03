@@ -13,8 +13,10 @@ import java.io.Serializable;
  */
 
 public final class Consumers implements Serializable {
+
     @FunctionalInterface
     public interface TriConsumer<V, T, U> {
+
         void accept(V v, T t, U u);
 
         default TriConsumer<V, T, U> andThen(TriConsumer<? super V, ? super T, ? super U> after) {
@@ -29,9 +31,11 @@ public final class Consumers implements Serializable {
 
     @FunctionalInterface
     public interface QuadConsumer<V, T, U, X> {
+
         void accept(V v, T t, U u, X x);
 
-        default QuadConsumer<V, T, U, X> andThen(QuadConsumer<? super V, ? super T, ? super U, ? super X> after) {
+        default QuadConsumer<V, T, U, X> andThen(
+            QuadConsumer<? super V, ? super T, ? super U, ? super X> after) {
             Require.requireNotNull(after);
 
             return (v, t, u, x) -> {

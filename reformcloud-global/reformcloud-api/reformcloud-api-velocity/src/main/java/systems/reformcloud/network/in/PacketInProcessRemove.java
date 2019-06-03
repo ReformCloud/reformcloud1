@@ -20,14 +20,19 @@ import java.io.Serializable;
  */
 
 public final class PacketInProcessRemove implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
-            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
-            VelocityBootstrap.getInstance().getProxyServer().getEventManager().fire(new CloudServerRemoveEvent(serverInfo));
+            final ServerInfo serverInfo = configuration
+                .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+            VelocityBootstrap.getInstance().getProxyServer().getEventManager()
+                .fire(new CloudServerRemoveEvent(serverInfo));
         } else {
-            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-            VelocityBootstrap.getInstance().getProxyServer().getEventManager().fire(new CloudProxyRemoveEvent(proxyInfo));
+            final ProxyInfo proxyInfo = configuration
+                .getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
+            VelocityBootstrap.getInstance().getProxyServer().getEventManager()
+                .fire(new CloudProxyRemoveEvent(proxyInfo));
         }
     }
 }

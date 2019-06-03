@@ -32,49 +32,53 @@ import systems.reformcloud.utility.files.FileUtils;
  */
 
 public final class AutoIconConfig implements Serializable {
+
     private Map<String, IconData> icons = new HashMap<>();
 
     private static AutoIconConfig instance;
 
     public AutoIconConfig() {
-        if (instance != null)
+        if (instance != null) {
             throw new InstanceAlreadyExistsException();
+        }
 
         instance = this;
 
         if (!Files.exists(Paths.get("reformcloud/addons/icons"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/icons/files"));
             new Configuration()
-                    .addValue("config", Collections.singletonList(new IconConfig(
-                            "Proxy",
-                            10,
-                            Collections.singletonList("reformcloud/addons/icons/files/default.png")
-                    ))).write(Paths.get("reformcloud/addons/icons/config.json"));
+                .addValue("config", Collections.singletonList(new IconConfig(
+                    "Proxy",
+                    10,
+                    Collections.singletonList("reformcloud/addons/icons/files/default.png")
+                ))).write(Paths.get("reformcloud/addons/icons/config.json"));
             copyCompiledFile();
         }
 
         List<IconConfig> iconConfigs = Configuration.parse("reformcloud/addons/icons/config.json")
-                .getValue("config", new TypeToken<List<IconConfig>>() {
-                });
+            .getValue("config", new TypeToken<List<IconConfig>>() {
+            });
 
         iconConfigs.forEach(e -> e.getIconPaths().forEach(path -> {
             try {
                 BufferedImage bufferedImage = ImageIO.read(new File(path));
                 if (bufferedImage.getWidth() != 64 || bufferedImage.getHeight() != 64) {
                     ReformCloudController.getInstance().getLoggerProvider().serve()
-                            .accept("The icon size of icon \"" + path + "\" is incorrect");
+                        .accept("The icon size of icon \"" + path + "\" is incorrect");
                 } else {
                     byte[] file = Files.readAllBytes(Paths.get(path));
-                    if (!icons.containsKey(e.getTargetGroup()))
-                        icons.put(e.getTargetGroup(), new IconData(new ArrayList<>(), e.getUpdateTimeInSeconds()));
+                    if (!icons.containsKey(e.getTargetGroup())) {
+                        icons.put(e.getTargetGroup(),
+                            new IconData(new ArrayList<>(), e.getUpdateTimeInSeconds()));
+                    }
 
                     icons.get(e.getTargetGroup()).getIcons().add(file);
                 }
             } catch (final IOException ex) {
                 StringUtil.printError(
-                        ReformCloudController.getInstance().getLoggerProvider(),
-                        "Can't read the input file (Are you sure, the file exists)",
-                        ex
+                    ReformCloudController.getInstance().getLoggerProvider(),
+                    "Can't read the input file (Are you sure, the file exists)",
+                    ex
                 );
             }
         }));
@@ -85,11 +89,15 @@ public final class AutoIconConfig implements Serializable {
     }
 
     private void copyCompiledFile() {
-        try (InputStream localInputStream = AutoIconConfig.class.getClassLoader().getResourceAsStream("defaults/default.png")) {
+        try (InputStream localInputStream = AutoIconConfig.class.getClassLoader()
+            .getResourceAsStream("defaults/default.png")) {
             assert localInputStream != null;
-            Files.copy(localInputStream, Paths.get("reformcloud/addons/icons/files/default.png"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(localInputStream, Paths.get("reformcloud/addons/icons/files/default.png"),
+                StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not copy local file", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Could not copy local file", ex);
         }
     }
 

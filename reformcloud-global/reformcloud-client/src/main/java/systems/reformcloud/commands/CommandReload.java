@@ -15,8 +15,10 @@ import java.io.Serializable;
  */
 
 public final class CommandReload extends Command implements Serializable {
+
     public CommandReload() {
-        super("reload", "Reloads the CloudSystem", "reformcloud.command.reload", new String[]{"rl"});
+        super("reload", "Reloads the CloudSystem", "reformcloud.command.reload",
+            new String[]{"rl"});
     }
 
     @Override

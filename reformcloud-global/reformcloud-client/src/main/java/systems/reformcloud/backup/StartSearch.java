@@ -15,17 +15,19 @@ import java.io.Serializable;
  */
 
 public final class StartSearch implements Serializable {
+
     public StartSearch() {
         ReformCloudClient.getInstance().getChannelHandler().sendPacketQuerySync(
-                "ReformCloudController",
-                "ReformCloudClient",
-                new PacketQueryOutGetFTPConfig(),
-                (configuration, resultID) -> {
-                    FTPConfig ftpConfig = configuration.getValue("config", new TypeToken<FTPConfig>() {
-                    });
-                    if (ftpConfig != null)
-                        new BackupHelper(ftpConfig);
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketQueryOutGetFTPConfig(),
+            (configuration, resultID) -> {
+                FTPConfig ftpConfig = configuration.getValue("config", new TypeToken<FTPConfig>() {
+                });
+                if (ftpConfig != null) {
+                    new BackupHelper(ftpConfig);
                 }
+            }
         );
     }
 }

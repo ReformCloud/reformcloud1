@@ -14,12 +14,13 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUploadLog extends Packet implements Serializable {
+
     private static final long serialVersionUID = -3275070800933988588L;
 
     public PacketOutUploadLog(final String name, final String type) {
         super(
-                "PacketInUploadLog",
-                new Configuration().addStringValue("name", name).addStringValue("type", type)
+            "PacketInUploadLog",
+            new Configuration().addStringValue("name", name).addStringValue("type", type)
         );
     }
 }

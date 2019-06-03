@@ -14,6 +14,7 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class ParametersAddon extends ControllerAddonImpl implements Serializable {
+
     private static ParametersAddon instance;
 
     private ParametersConfiguration parametersConfiguration;
@@ -30,12 +31,14 @@ public final class ParametersAddon extends ControllerAddonImpl implements Serial
     @Override
     public void onAddonLoading() {
         this.parametersConfiguration = new ParametersConfiguration();
-        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutParametersUpdate());
+        ReformCloudController.getInstance().getChannelHandler()
+            .sendToAllSynchronized(new PacketOutParametersUpdate());
     }
 
     @Override
     public void onAddonReadyToClose() {
-        ReformCloudController.getInstance().getNettyHandler().unregisterQueryHandler("RequestParameters");
+        ReformCloudController.getInstance().getNettyHandler()
+            .unregisterQueryHandler("RequestParameters");
     }
 
     public ParametersConfiguration getParametersConfiguration() {

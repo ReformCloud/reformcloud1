@@ -19,12 +19,16 @@ import java.util.UUID;
  */
 
 public final class PacketInSendPlayerMessage implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ProxiedPlayer proxiedPlayer = BungeecordBootstrap.getInstance().getProxy().getPlayer(configuration.getValue("uuid", UUID.class));
-        if (proxiedPlayer == null)
+        ProxiedPlayer proxiedPlayer = BungeecordBootstrap.getInstance().getProxy()
+            .getPlayer(configuration.getValue("uuid", UUID.class));
+        if (proxiedPlayer == null) {
             return;
+        }
 
-        proxiedPlayer.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(configuration.getStringValue("message")));
+        proxiedPlayer.sendMessage(ChatMessageType.CHAT,
+            TextComponent.fromLegacyText(configuration.getStringValue("message")));
     }
 }

@@ -17,11 +17,14 @@ import systems.reformcloud.signs.netty.packets.PacketOutCreateSign;
  */
 
 public final class PacketInCreateSign implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        SignSelector.getInstance().getSignConfiguration().addSign(configuration.getValue("sign", new TypeToken<Sign>() {
-        }.getType()));
-        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutCreateSign(configuration.getValue("sign", new TypeToken<Sign>() {
-        }.getType())));
+        SignSelector.getInstance().getSignConfiguration()
+            .addSign(configuration.getValue("sign", new TypeToken<Sign>() {
+            }.getType()));
+        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(
+            new PacketOutCreateSign(configuration.getValue("sign", new TypeToken<Sign>() {
+            }.getType())));
     }
 }

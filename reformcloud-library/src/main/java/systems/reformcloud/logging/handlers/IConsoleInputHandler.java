@@ -11,6 +11,8 @@ import systems.reformcloud.logging.LoggerProvider;
  *
  * Register a Handler in {@link LoggerProvider} to get the console input
  */
+
 public interface IConsoleInputHandler {
+
     void handle(String message);
 }

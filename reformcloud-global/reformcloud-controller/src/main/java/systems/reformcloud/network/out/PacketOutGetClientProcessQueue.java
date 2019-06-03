@@ -14,10 +14,11 @@ import java.io.Serializable;
  */
 
 public final class PacketOutGetClientProcessQueue extends Packet implements Serializable {
+
     public PacketOutGetClientProcessQueue() {
         super(
-                "ClientProcessQueue",
-                new Configuration()
+            "ClientProcessQueue",
+            new Configuration()
         );
     }
 }

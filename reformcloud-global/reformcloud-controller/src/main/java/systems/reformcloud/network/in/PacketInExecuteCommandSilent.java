@@ -18,15 +18,19 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 04.05.2019
  */
 
-public final class PacketInExecuteCommandSilent implements Serializable, NetworkQueryInboundHandler {
+public final class PacketInExecuteCommandSilent implements Serializable,
+    NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
-        ReformCloudController.getInstance().getCommandManager().dispatchCommand(new CommandSenderImpl(
+        ReformCloudController.getInstance().getCommandManager()
+            .dispatchCommand(new CommandSenderImpl(
                 configuration, resultID
-        ), configuration.getStringValue("line"));
+            ), configuration.getStringValue("line"));
     }
 
     private class CommandSenderImpl implements CommandSender {
+
         private Configuration in;
         private UUID resultID;
 
@@ -39,13 +43,15 @@ public final class PacketInExecuteCommandSilent implements Serializable, Network
 
         @Override
         public void sendMessage(String message) {
-            if (sent)
+            if (sent) {
                 return;
+            }
 
             sent = true;
             ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
-                    in.getStringValue("from"),
-                    new Packet(StringUtil.NULL, new Configuration().addStringValue("result", message), resultID)
+                in.getStringValue("from"),
+                new Packet(StringUtil.NULL, new Configuration().addStringValue("result", message),
+                    resultID)
             );
         }
 

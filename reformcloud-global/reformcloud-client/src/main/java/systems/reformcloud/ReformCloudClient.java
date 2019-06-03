@@ -6,9 +6,10 @@ package systems.reformcloud;
 
 import com.google.gson.reflect.TypeToken;
 import io.netty.channel.ChannelFutureListener;
+import java.nio.file.Paths;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
-import systems.reformcloud.api.save.ISaveAPIService;
+import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
@@ -61,6 +62,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.defaults.DefaultCloudService;
+import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.parameters.ParameterManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
@@ -82,12 +84,14 @@ import java.util.stream.Collectors;
  * @author _Klaro | Pasqual K. / created on 23.10.2018
  */
 
-public final class ReformCloudClient implements Serializable, Shutdown, Reload, IAPIService {
+public final class ReformCloudClient implements Serializable, Shutdown, Reload, APIService {
+
     public static volatile boolean RUNNING = false;
 
     private static ReformCloudClient instance;
 
     private LoggerProvider loggerProvider;
+
     private CommandManager commandManager;
 
     private boolean ssl;
@@ -97,17 +101,23 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     private ClientInfo clientInfo;
 
     private final EventManager eventManager = new EventManager();
+
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
 
     private final ParameterManager parameterManager = new ParameterManager(new ArrayList<>());
+
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
     private final TaskScheduler taskScheduler;
+
     private final ChannelHandler channelHandler;
+
     private final NettySocketClient nettySocketClient = new NettySocketClient();
 
     private final SynchronizationHandler synchronizationHandler;
+
     private final CloudProcessStartupHandler cloudProcessStartupHandler = new CloudProcessStartupHandler();
+
     private final CloudProcessScreenService cloudProcessScreenService = new CloudProcessScreenService();
 
     private CloudConfiguration cloudConfiguration;
@@ -119,29 +129,36 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     /**
      * Creates a new Instance of the ReformCloudClient
      *
-     * @param loggerProvider        The default logger provider of the cloud system
-     * @param commandManager        The command manger which should be used in the cloud system
-     * @param ssl                   If ssl should be enabled or not
-     * @param time                  The startup time of the client
-     * @throws Throwable            If any exception occurs it will be catch and printed
+     * @param loggerProvider The default logger provider of the cloud system
+     * @param commandManager The command manger which should be used in the cloud system
+     * @param ssl If ssl should be enabled or not
+     * @param time The startup time of the client
+     * @throws Throwable If any exception occurs it will be catch and printed
      */
-    public ReformCloudClient(LoggerProvider loggerProvider, CommandManager commandManager, boolean ssl, final long time) throws Throwable {
-        if (instance == null)
+    public ReformCloudClient(LoggerProvider loggerProvider, CommandManager commandManager,
+        boolean ssl, final long time) throws Throwable {
+        if (instance == null) {
             instance = this;
-        else
-            StringUtil.printError(loggerProvider, "ReformCloudClient Instance already exists", new LoadException(new InstanceAlreadyExistsException()));
+        } else {
+            StringUtil.printError(loggerProvider, "ReformCloudClient Instance already exists",
+                new LoadException(new InstanceAlreadyExistsException()));
+        }
+
+        FileUtils.deleteFileIfExists(Paths.get("reformcloud/files/ReformCloudProcess.jar"));
 
         this.ssl = ssl;
         this.commandManager = commandManager;
         this.loggerProvider = loggerProvider;
 
-        ISaveAPIService.instance.set(new SaveAPIImpl());
-        IAPIService.instance.set(this);
+        SaveAPIService.instance.set(new SaveAPIImpl());
+        APIService.instance.set(this);
         new DefaultCloudService(this);
-        IDefaultPlayerProvider.instance.set(new PlayerProvider());
+        DefaultPlayerProvider.instance.set(new PlayerProvider());
 
         this.cloudConfiguration = new CloudConfiguration(false);
-        new ReformCloudLibraryServiceProvider(loggerProvider, this.cloudConfiguration.getControllerKey(), cloudConfiguration.getEthernetAddress().getHost(), eventManager, StringUtil.NULL);
+        new ReformCloudLibraryServiceProvider(loggerProvider,
+            this.cloudConfiguration.getControllerKey(),
+            cloudConfiguration.getEthernetAddress().getHost(), eventManager, StringUtil.NULL);
 
         this.taskScheduler = ReformCloudLibraryServiceProvider.getInstance().getTaskScheduler();
         this.channelHandler = new ChannelHandler();
@@ -157,21 +174,21 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         new EventAdapter();
 
         this.clientInfo = new ClientInfo(
-                cloudConfiguration.getMemory(),
-                Runtime.getRuntime().availableProcessors(),
-                true,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                this.getMemory(),
-                ReformCloudLibraryService.cpuUsage(),
-                ReformCloudLibraryService.usedMemorySystem(),
-                ReformCloudLibraryService.usedMemorySystem()
+            cloudConfiguration.getMemory(),
+            Runtime.getRuntime().availableProcessors(),
+            true,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            this.getMemory(),
+            ReformCloudLibraryService.cpuUsage(),
+            ReformCloudLibraryService.usedMemorySystem(),
+            ReformCloudLibraryService.usedMemorySystem()
         );
 
         this.synchronizationHandler = new SynchronizationHandler();
 
         this.taskScheduler
-                .schedule(new ShutdownWorker(), -1, TimeUnit.SECONDS.toMillis(10));
+            .schedule(new ShutdownWorker(), -1, TimeUnit.SECONDS.toMillis(10));
 
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessScreenService);
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this.cloudProcessStartupHandler);
@@ -187,7 +204,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         RUNNING = true;
 
         loggerProvider.info(this.getInternalCloudNetwork().getLoaded().getLoading_done()
-                .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
+            .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
         this.eventManager.fire(new StartedEvent());
     }
 
@@ -196,52 +213,56 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     private void registerNetworkHandlers() {
-        getNettyHandler().registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
-                .registerHandler("StartCloudServer", new PacketInStartGameServer())
-                .registerHandler("StartProxy", new PacketInStartProxy())
-                .registerHandler("UpdateAll", new PacketInUpdateAll())
-                .registerHandler("ExecuteCommand", new PacketInExecuteCommand())
-                .registerHandler("StopProcess", new PacketInStopProcess())
-                .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
-                .registerHandler("UpdateClientFromURL", new PacketInUpdateClientFromURL())
-                .registerHandler("CopyServerIntoTemplate", new PacketInCopyServerIntoTemplate())
-                .registerHandler("UpdateClientAddon", new PacketInUpdateClientAddon())
-                .registerHandler("UpdateServerGroupPlugin", new PacketInUpdateSeverGroupPlugin())
-                .registerHandler("UpdateProxyGroupPlugin", new PacketInUpdateProxyGroupPlugin())
-                .registerHandler("UpdateProxyGroupPluginTemplate", new PacketInUpdateProxyGroupPluginTemplate())
-                .registerHandler("UpdateServerGroupPluginTemplate", new PacketInUpdateServerGroupPluginTemplate())
-                .registerHandler("PacketInUploadLog", new PacketInUploadLog())
-                .registerHandler("UpdateClientSetting", new PacketInUpdateClientSetting())
-                .registerHandler("JoinScreen", new PacketInSyncScreenJoin())
-                .registerHandler("ScreenDisable", new PacketInSyncScreenDisable())
-                .registerHandler("ReloadClient", new PacketInSyncUpdateClient())
-                .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand())
-                .registerHandler("DeployServer", new PacketInDeployServer())
-                .registerHandler("TemplateDeployReady", new PacketInTemplateDeployReady())
-                .registerHandler("EnableDebug", new PacketInEnableDebug())
-                .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
-                .registerHandler("ParametersUpdate", new PacketInParameterUpdate())
-                .registerHandler("EnableProperties", new PacketInEnableProperties())
-                .registerHandler("DisableProperties", new PacketInDisableProperties())
-                .registerHandler("DeleteTemplate", new PacketInDeleteTemplate())
-                .registerHandler("SyncStandby", new PacketInSyncStandby())
-                .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
-                .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
-                .registerHandler("GetControllerTemplateResult", new PacketInGetControllerTemplateResult())
-                .registerHandler("DisableBackup", new PacketInDisableBackup())
-                .registerHandler("EnableBackup", new PacketInEnableBackup())
-                .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess());
+        getNettyHandler()
+            .registerHandler("InitializeCloudNetwork", new PacketInInitializeInternal())
+            .registerHandler("StartCloudServer", new PacketInStartGameServer())
+            .registerHandler("StartProxy", new PacketInStartProxy())
+            .registerHandler("UpdateAll", new PacketInUpdateAll())
+            .registerHandler("ExecuteCommand", new PacketInExecuteCommand())
+            .registerHandler("StopProcess", new PacketInStopProcess())
+            .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate())
+            .registerHandler("UpdateClientFromURL", new PacketInUpdateClientFromURL())
+            .registerHandler("CopyServerIntoTemplate", new PacketInCopyServerIntoTemplate())
+            .registerHandler("UpdateClientAddon", new PacketInUpdateClientAddon())
+            .registerHandler("UpdateServerGroupPlugin", new PacketInUpdateSeverGroupPlugin())
+            .registerHandler("UpdateProxyGroupPlugin", new PacketInUpdateProxyGroupPlugin())
+            .registerHandler("UpdateProxyGroupPluginTemplate",
+                new PacketInUpdateProxyGroupPluginTemplate())
+            .registerHandler("UpdateServerGroupPluginTemplate",
+                new PacketInUpdateServerGroupPluginTemplate())
+            .registerHandler("PacketInUploadLog", new PacketInUploadLog())
+            .registerHandler("UpdateClientSetting", new PacketInUpdateClientSetting())
+            .registerHandler("JoinScreen", new PacketInSyncScreenJoin())
+            .registerHandler("ScreenDisable", new PacketInSyncScreenDisable())
+            .registerHandler("ReloadClient", new PacketInSyncUpdateClient())
+            .registerHandler("ExecuteClientCommand", new PacketInExecuteClientCommand())
+            .registerHandler("DeployServer", new PacketInDeployServer())
+            .registerHandler("TemplateDeployReady", new PacketInTemplateDeployReady())
+            .registerHandler("EnableDebug", new PacketInEnableDebug())
+            .registerHandler("ClientProcessQueue", new PacketInGetClientProcessQueue())
+            .registerHandler("ParametersUpdate", new PacketInParameterUpdate())
+            .registerHandler("EnableProperties", new PacketInEnableProperties())
+            .registerHandler("DisableProperties", new PacketInDisableProperties())
+            .registerHandler("DeleteTemplate", new PacketInDeleteTemplate())
+            .registerHandler("SyncStandby", new PacketInSyncStandby())
+            .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
+            .registerHandler("RemoveProxyQueueProcess", new PacketInRemoveProxyProcessQueue())
+            .registerHandler("GetControllerTemplateResult",
+                new PacketInGetControllerTemplateResult())
+            .registerHandler("DisableBackup", new PacketInDisableBackup())
+            .registerHandler("EnableBackup", new PacketInEnableBackup())
+            .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess());
     }
 
     private void registerCommands() {
         commandManager
-                .registerCommand(new CommandExit())
-                .registerCommand(new CommandUpdate())
-                .registerCommand(new CommandHelp())
-                .registerCommand(new CommandVersion())
-                .registerCommand(new CommandAddons())
-                .registerCommand(new CommandClear())
-                .registerCommand(new CommandReload());
+            .registerCommand(new CommandExit())
+            .registerCommand(new CommandUpdate())
+            .registerCommand(new CommandHelp())
+            .registerCommand(new CommandVersion())
+            .registerCommand(new CommandAddons())
+            .registerCommand(new CommandClear())
+            .registerCommand(new CommandReload());
     }
 
     @Override
@@ -270,7 +291,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         RUNNING = true;
         this.loggerProvider.info(this.internalCloudNetwork.getLoaded().getGlobal_reload_done());
-        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutSyncClientUpdateSuccess());
+        this.channelHandler.sendPacketAsynchronous("ReformCloudController",
+            new PacketOutSyncClientUpdateSuccess());
         this.eventManager.fire(new ReloadDoneEvent());
     }
 
@@ -278,28 +300,33 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public void shutdownAll() {
-        if (shutdown)
+        if (shutdown) {
             return;
+        }
 
         shutdown = true;
         RUNNING = false;
         this.synchronizationHandler.delete();
 
-        if (this.channelHandler.getChannel("ReformCloudController") != null)
-            this.channelHandler.getChannel("ReformCloudController").writeAndFlush(new PacketOutSyncClientDisconnects())
-                    .addListener(ChannelFutureListener.CLOSE);
+        if (this.channelHandler.getChannel("ReformCloudController") != null) {
+            this.channelHandler.getChannel("ReformCloudController")
+                .writeAndFlush(new PacketOutSyncClientDisconnects())
+                .addListener(ChannelFutureListener.CLOSE);
+        }
 
         ReformCloudLibraryService.sleep(500);
 
         this.cloudProcessScreenService.getRegisteredProxyProcesses().forEach(proxyProcess -> {
             proxyProcess.shutdown(null, false);
-            this.getLoggerProvider().info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
+            this.getLoggerProvider()
+                .info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
                     .replace("%name%", proxyProcess.getProxyStartupInfo().getName()));
             ReformCloudLibraryService.sleep(1000);
         });
         this.cloudProcessScreenService.getRegisteredServerProcesses().forEach(serverProcess -> {
             serverProcess.shutdown(false);
-            this.getLoggerProvider().info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
+            this.getLoggerProvider()
+                .info(this.internalCloudNetwork.getLoaded().getClient_shutdown_process()
                     .replace("%name%", serverProcess.getServerStartupInfo().getName()));
             ReformCloudLibraryService.sleep(1000);
         });
@@ -312,30 +339,34 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     /**
      * Get used memory of ReformCloudClient
      *
-     * @return of used memory by adding the maximal memory of the ProxyProcesses
-     * to the maximal memory of the ServerProcesses
+     * @return of used memory by adding the maximal memory of the ProxyProcesses to the maximal memory
+     * of the ServerProcesses
      */
     public int getMemory() {
         int used = 0;
 
         List<ProxyInfo> infos = this.internalCloudNetwork
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .stream()
-                .filter(e -> e.getCloudProcess().getClient().equals(this.cloudConfiguration.getClientName()))
-                .collect(Collectors.toList());
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient()
+                .equals(this.cloudConfiguration.getClientName()))
+            .collect(Collectors.toList());
         List<ServerInfo> serverInfos = this.internalCloudNetwork
-                .getServerProcessManager()
-                .getAllRegisteredServerProcesses()
-                .stream()
-                .filter(e -> e.getCloudProcess().getClient().equals(this.cloudConfiguration.getClientName()))
-                .collect(Collectors.toList());
+            .getServerProcessManager()
+            .getAllRegisteredServerProcesses()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient()
+                .equals(this.cloudConfiguration.getClientName()))
+            .collect(Collectors.toList());
 
-        for (ProxyInfo proxyInfo : infos)
+        for (ProxyInfo proxyInfo : infos) {
             used = used + proxyInfo.getMaxMemory();
+        }
 
-        for (ServerInfo serverInfo : serverInfos)
+        for (ServerInfo serverInfo : serverInfos) {
             used = used + serverInfo.getMaxMemory();
+        }
 
         return used;
     }
@@ -343,17 +374,19 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     /**
      * Connects to the Controller
      *
-     * @param ssl       If ssl is enabled or not
+     * @param ssl If ssl is enabled or not
      */
     public void connect(final boolean ssl) {
         this.nettySocketClient.setConnections(1);
         this.nettySocketClient.close();
 
         while (this.nettySocketClient.getConnections() != -1 && !shutdown) {
-            if (this.nettySocketClient.getConnections() == 8)
+            if (this.nettySocketClient.getConnections() == 8) {
                 System.exit(ExitUtil.CONTROLLER_NOT_REACHABLE);
+            }
 
-            this.nettySocketClient.connect(cloudConfiguration.getEthernetAddress(), this.channelHandler, ssl);
+            this.nettySocketClient
+                .connect(cloudConfiguration.getEthernetAddress(), this.channelHandler, ssl);
 
             ReformCloudLibraryService.sleep(2000);
         }
@@ -369,7 +402,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     public boolean isPortUseable(final int port) {
         try (ServerSocket serverSocket = new ServerSocket()) {
-            serverSocket.bind(new InetSocketAddress(port));
+            serverSocket.bind(new InetSocketAddress("0.0.0.0", port));
             return true;
         } catch (final IOException ignored) {
         }
@@ -389,9 +422,11 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public void startGameServer(final String serverGroupName, final Configuration preConfig) {
-        final ServerGroup serverGroup = this.internalCloudNetwork.getServerGroups().getOrDefault(serverGroupName, null);
-        if (serverGroup == null)
+        final ServerGroup serverGroup = this.internalCloudNetwork.getServerGroups()
+            .getOrDefault(serverGroupName, null);
+        if (serverGroup == null) {
             return;
+        }
 
         this.startGameServer(serverGroup, preConfig);
     }
@@ -403,12 +438,15 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public void startGameServer(final ServerGroup serverGroup, final Configuration preConfig) {
-        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutStartGameServer(serverGroup, preConfig));
+        this.channelHandler.sendPacketAsynchronous("ReformCloudController",
+            new PacketOutStartGameServer(serverGroup, preConfig));
     }
 
     @Override
-    public void startGameServer(final ServerGroup serverGroup, final Configuration preConfig, final String template) {
-        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutStartGameServer(serverGroup, preConfig, template));
+    public void startGameServer(final ServerGroup serverGroup, final Configuration preConfig,
+        final String template) {
+        this.channelHandler.sendPacketAsynchronous("ReformCloudController",
+            new PacketOutStartGameServer(serverGroup, preConfig, template));
     }
 
     @Override
@@ -418,11 +456,14 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public void startProxy(final String proxyGroupName, final Configuration preConfig) {
-        final ProxyGroup proxyGroup = this.internalCloudNetwork.getProxyGroups().getOrDefault(proxyGroupName, null);
-        if (proxyGroup == null)
+        final ProxyGroup proxyGroup = this.internalCloudNetwork.getProxyGroups()
+            .getOrDefault(proxyGroupName, null);
+        if (proxyGroup == null) {
             return;
+        }
 
-        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutStartProxy(proxyGroup, preConfig));
+        this.channelHandler.sendPacketAsynchronous("ReformCloudController",
+            new PacketOutStartProxy(proxyGroup, preConfig));
     }
 
     @Override
@@ -436,13 +477,16 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     @Override
-    public void startProxy(final ProxyGroup proxyGroup, final Configuration preConfig, final String template) {
-        this.channelHandler.sendPacketAsynchronous("ReformCloudController", new PacketOutStartProxy(proxyGroup, preConfig, template));
+    public void startProxy(final ProxyGroup proxyGroup, final Configuration preConfig,
+        final String template) {
+        this.channelHandler.sendPacketAsynchronous("ReformCloudController",
+            new PacketOutStartProxy(proxyGroup, preConfig, template));
     }
 
     @Override
     public boolean stopProxy(String name) {
-        return channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutStopProcess(name));
+        return channelHandler
+            .sendPacketSynchronized("ReformCloudController", new PacketOutStopProcess(name));
     }
 
     @Override
@@ -452,7 +496,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public boolean stopServer(String name) {
-        return channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutStopProcess(name));
+        return channelHandler
+            .sendPacketSynchronized("ReformCloudController", new PacketOutStopProcess(name));
     }
 
     @Override
@@ -461,187 +506,198 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     @Override
-    public void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, SpigotVersions spigotVersions) {
+    public void createServerGroup(String name, ServerModeType serverModeType,
+        Collection<String> clients, SpigotVersions spigotVersions) {
         ServerGroup serverGroup = new ServerGroup(
-                name,
-                "ReformCloud",
-                null,
-                new ArrayList<>(clients),
-                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
-                512,
-                1,
-                -1,
-                50,
-                41000,
-                true,
-                false,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                serverModeType,
-                spigotVersions
+            name,
+            "ReformCloud",
+            null,
+            new ArrayList<>(clients),
+            Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
+            512,
+            1,
+            -1,
+            50,
+            41000,
+            true,
+            false,
+            new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            serverModeType,
+            spigotVersions
         );
         createServerGroup(serverGroup);
     }
 
     @Override
     public void createServerGroup(ServerGroup serverGroup) {
-        if (this.internalCloudNetwork.getServerGroups().get(serverGroup.getName()) != null)
+        if (this.internalCloudNetwork.getServerGroups().get(serverGroup.getName()) != null) {
             return;
+        }
 
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateServerGroup(serverGroup));
+        channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutCreateServerGroup(serverGroup));
     }
 
     @Override
     public void createServerGroup(String name) {
-        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"), SpigotVersions.SPIGOT_1_8_8);
+        createServerGroup(name, ServerModeType.DYNAMIC, Collections.singletonList("Client-01"),
+            SpigotVersions.SPIGOT_1_8_8);
     }
 
     @Override
-    public void createServerGroup(String name, ServerModeType serverModeType, Collection<Template> templates) {
+    public void createServerGroup(String name, ServerModeType serverModeType,
+        Collection<Template> templates) {
         ServerGroup serverGroup = new ServerGroup(
-                name,
-                "ReformCloud",
-                null,
-                new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
-                new ArrayList<>(templates),
-                512,
-                1,
-                -1,
-                50,
-                41000,
-                true,
-                false,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                serverModeType,
-                SpigotVersions.SPIGOT_1_8_8
+            name,
+            "ReformCloud",
+            null,
+            new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
+            new ArrayList<>(templates),
+            512,
+            1,
+            -1,
+            50,
+            41000,
+            true,
+            false,
+            new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            serverModeType,
+            SpigotVersions.SPIGOT_1_8_8
         );
         createServerGroup(serverGroup);
     }
 
     @Override
-    public void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, Collection<Template> templates, SpigotVersions spigotVersions) {
+    public void createServerGroup(String name, ServerModeType serverModeType,
+        Collection<String> clients, Collection<Template> templates, SpigotVersions spigotVersions) {
         ServerGroup serverGroup = new ServerGroup(
-                name,
-                "ReformCloud",
-                null,
-                new ArrayList<>(clients),
-                new ArrayList<>(templates),
-                512,
-                1,
-                -1,
-                50,
-                41000,
-                true,
-                false,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                serverModeType,
-                spigotVersions
+            name,
+            "ReformCloud",
+            null,
+            new ArrayList<>(clients),
+            new ArrayList<>(templates),
+            512,
+            1,
+            -1,
+            50,
+            41000,
+            true,
+            false,
+            new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            serverModeType,
+            spigotVersions
         );
         createServerGroup(serverGroup);
     }
 
     @Override
-    public void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, ProxyVersions proxyVersions) {
+    public void createProxyGroup(String name, ProxyModeType proxyModeType,
+        Collection<String> clients, ProxyVersions proxyVersions) {
         ProxyGroup proxyGroup = new ProxyGroup(
-                name,
-                new ArrayList<>(clients),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                proxyModeType,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                false,
-                true,
-                false,
-                25565,
-                1,
-                -1,
-                512,
-                128,
-                proxyVersions
+            name,
+            new ArrayList<>(clients),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            proxyModeType,
+            new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            false,
+            true,
+            false,
+            25565,
+            1,
+            -1,
+            512,
+            128,
+            proxyVersions
         );
         createProxyGroup(proxyGroup);
     }
 
     @Override
     public void createProxyGroup(ProxyGroup proxyGroup) {
-        if (this.internalCloudNetwork.getProxyGroups().get(proxyGroup.getName()) != null)
+        if (this.internalCloudNetwork.getProxyGroups().get(proxyGroup.getName()) != null) {
             return;
+        }
 
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateProxyGroup(proxyGroup));
+        channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutCreateProxyGroup(proxyGroup));
     }
 
     @Override
     public void createProxyGroup(String name) {
         ProxyGroup proxyGroup = new ProxyGroup(
-                name,
-                new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
-                new ArrayList<>(),
-                Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
-                new ArrayList<>(),
-                ProxyModeType.DYNAMIC,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                false,
-                true,
-                false,
-                25565,
-                1,
-                -1,
-                512,
-                128,
-                ProxyVersions.BUNGEECORD
+            name,
+            new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
+            new ArrayList<>(),
+            Collections.singletonList(new Template("default", null, TemplateBackend.CLIENT)),
+            new ArrayList<>(),
+            ProxyModeType.DYNAMIC,
+            new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            false,
+            true,
+            false,
+            25565,
+            1,
+            -1,
+            512,
+            128,
+            ProxyVersions.BUNGEECORD
         );
         createProxyGroup(proxyGroup);
     }
 
     @Override
-    public void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<Template> templates) {
+    public void createProxyGroup(String name, ProxyModeType proxyModeType,
+        Collection<Template> templates) {
         ProxyGroup proxyGroup = new ProxyGroup(
-                name,
-                new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
-                new ArrayList<>(),
-                new ArrayList<>(templates),
-                new ArrayList<>(),
-                proxyModeType,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                false,
-                true,
-                false,
-                25565,
-                1,
-                -1,
-                512,
-                128,
-                ProxyVersions.BUNGEECORD
+            name,
+            new ArrayList<>(this.internalCloudNetwork.getClients().keySet()),
+            new ArrayList<>(),
+            new ArrayList<>(templates),
+            new ArrayList<>(),
+            proxyModeType,
+            new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            false,
+            true,
+            false,
+            25565,
+            1,
+            -1,
+            512,
+            128,
+            ProxyVersions.BUNGEECORD
         );
         createProxyGroup(proxyGroup);
     }
 
     @Override
-    public void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, Collection<Template> templates, ProxyVersions proxyVersions) {
+    public void createProxyGroup(String name, ProxyModeType proxyModeType,
+        Collection<String> clients, Collection<Template> templates, ProxyVersions proxyVersions) {
         ProxyGroup proxyGroup = new ProxyGroup(
-                name,
-                new ArrayList<>(clients),
-                new ArrayList<>(),
-                new ArrayList<>(templates),
-                new ArrayList<>(),
-                proxyModeType,
-                new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                false,
-                true,
-                false,
-                25565,
-                1,
-                -1,
-                512,
-                128,
-                proxyVersions
+            name,
+            new ArrayList<>(clients),
+            new ArrayList<>(),
+            new ArrayList<>(templates),
+            new ArrayList<>(),
+            proxyModeType,
+            new AutoStart(true, 510, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            false,
+            true,
+            false,
+            25565,
+            1,
+            -1,
+            512,
+            128,
+            proxyVersions
         );
         createProxyGroup(proxyGroup);
     }
@@ -649,9 +705,9 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public void createClient(String name, String host) {
         Client client = new Client(
-                name,
-                host,
-                null
+            name,
+            host,
+            null
         );
         createClient(client);
     }
@@ -659,46 +715,52 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public void createClient(String name) {
         Client client = new Client(
-                name,
-                "127.0.0.1",
-                null
+            name,
+            "127.0.0.1",
+            null
         );
         createClient(client);
     }
 
     @Override
     public void createClient(Client client) {
-        if (this.internalCloudNetwork.getClients().get(client.getName()) != null)
+        if (this.internalCloudNetwork.getClients().get(client.getName()) != null) {
             return;
+        }
 
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateClient(client));
+        channelHandler
+            .sendPacketSynchronized("ReformCloudController", new PacketOutCreateClient(client));
     }
 
     @Override
     public void updateServerInfo(ServerInfo serverInfo) {
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateServerInfo(serverInfo));
+        channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutUpdateServerInfo(serverInfo));
     }
 
     @Override
     public void updateProxyInfo(ProxyInfo proxyInfo) {
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateProxyInfo(proxyInfo));
+        channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutUpdateProxyInfo(proxyInfo));
     }
 
     @Override
     public void updateServerGroup(ServerGroup serverGroup) {
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateServerGroup(serverGroup));
+        channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutUpdateServerGroup(serverGroup));
     }
 
     @Override
     public void updateProxyGroup(ProxyGroup proxyGroup) {
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateProxyGroup(proxyGroup));
+        channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutUpdateProxyGroup(proxyGroup));
     }
 
     @Override
     public void createWebUser(String name) {
         String password = ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
-                + StringUtil.EMPTY
-                + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE);
+            + StringUtil.EMPTY
+            + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE);
 
         WebUser webUser = new WebUser(name, StringEncrypt.encryptSHA512(password), new HashMap<>());
         createWebUser(webUser);
@@ -718,12 +780,14 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public void createWebUser(WebUser webUser) {
-        channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutCreateWebUser(webUser));
+        channelHandler
+            .sendPacketSynchronized("ReformCloudController", new PacketOutCreateWebUser(webUser));
     }
 
     @Override
     public void dispatchConsoleCommand(String commandLine) {
-        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutDispatchConsoleCommand(commandLine));
+        this.channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutDispatchConsoleCommand(commandLine));
     }
 
     @Override
@@ -734,7 +798,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public String dispatchConsoleCommandAndGetResult(String commandLine) {
         return this.createPacketFuture(
-                new PacketOutExecuteCommandSilent(commandLine), "ReformCloudController"
+            new PacketOutExecuteCommandSilent(commandLine), "ReformCloudController"
         ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getStringValue("result");
     }
 
@@ -746,90 +810,104 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup) {
         return this.createPacketFuture(
-                new PacketOutQueryStartQueuedProcess(serverGroup, "default", new Configuration()),
-                "ReformCloudController"
-        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
-        });
+            new PacketOutQueryStartQueuedProcess(serverGroup, "default", new Configuration()),
+            "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration()
+            .getValue("result", new TypeToken<DevProcess>() {
+            });
     }
 
     @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup, String template) {
         return this.createPacketFuture(
-                new PacketOutQueryStartQueuedProcess(serverGroup, template, new Configuration()),
-                "ReformCloudController"
-        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
-        });
+            new PacketOutQueryStartQueuedProcess(serverGroup, template, new Configuration()),
+            "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration()
+            .getValue("result", new TypeToken<DevProcess>() {
+            });
     }
 
     @Override
-    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
+    public DevProcess startQueuedProcess(ServerGroup serverGroup, String template,
+        Configuration preConfig) {
         return this.createPacketFuture(
-                new PacketOutQueryStartQueuedProcess(serverGroup, template, preConfig),
-                "ReformCloudController"
-        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration().getValue("result", new TypeToken<DevProcess>() {
-        });
+            new PacketOutQueryStartQueuedProcess(serverGroup, template, preConfig),
+            "ReformCloudController"
+        ).sendOnCurrentThread().syncUninterruptedly().getConfiguration()
+            .getValue("result", new TypeToken<DevProcess>() {
+            });
     }
 
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
         PacketFuture packetFuture = this.createPacketFuture(
-                new PacketOutQueryGetOnlinePlayer(uniqueId),
-                "ReformCloudController"
+            new PacketOutQueryGetOnlinePlayer(uniqueId),
+            "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
-        if (result.getResult() == null)
+        if (result.getResult() == null) {
             return null;
+        }
 
-        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
+        return result.getConfiguration()
+            .getValue("result", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
     }
 
     @Override
     public OnlinePlayer getOnlinePlayer(String name) {
         PacketFuture packetFuture = this.createPacketFuture(
-                new PacketOutQueryGetOnlinePlayer(name),
-                "ReformCloudController"
+            new PacketOutQueryGetOnlinePlayer(name),
+            "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
-        if (result.getResult() == null)
+        if (result.getResult() == null) {
             return null;
+        }
 
-        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
+        return result.getConfiguration()
+            .getValue("result", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
         PacketFuture packetFuture = this.createPacketFuture(
-                new PacketOutQueryGetPlayer(uniqueId),
-                "ReformCloudController"
+            new PacketOutQueryGetPlayer(uniqueId),
+            "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
-        if (result.getResult() == null)
+        if (result.getResult() == null) {
             return null;
+        }
 
-        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
+        return result.getConfiguration()
+            .getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(String name) {
         PacketFuture packetFuture = this.createPacketFuture(
-                new PacketOutQueryGetPlayer(name),
-                "ReformCloudController"
+            new PacketOutQueryGetPlayer(name),
+            "ReformCloudController"
         );
         Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
-        if (result.getResult() == null)
+        if (result.getResult() == null) {
             return null;
+        }
 
-        return result.getConfiguration().getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
+        return result.getConfiguration()
+            .getValue("result", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
     }
 
     @Override
     public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
-        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateOnlinePlayer(onlinePlayer));
+        this.channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutUpdateOnlinePlayer(onlinePlayer));
     }
 
     @Override
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
-        this.channelHandler.sendPacketSynchronized("ReformCloudController", new PacketOutUpdateOfflinePlayer(offlinePlayer));
+        this.channelHandler.sendPacketSynchronized("ReformCloudController",
+            new PacketOutUpdateOfflinePlayer(offlinePlayer));
     }
 
     @Override
@@ -855,8 +933,9 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public int getMaxPlayers() {
         int max = 0;
-        for (ProxyGroup proxyGroup : this.internalCloudNetwork.getProxyGroups().values())
+        for (ProxyGroup proxyGroup : this.internalCloudNetwork.getProxyGroups().values()) {
             max += proxyGroup.getMaxPlayers();
+        }
 
         return max;
     }
@@ -865,8 +944,9 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     public int getOnlineCount() {
         AtomicInteger atomicInteger = new AtomicInteger(0);
         this.getAllRegisteredProxies().stream()
-                .filter(info -> info.getCloudProcess().getClient().equals(this.cloudConfiguration.getClientName()))
-                .forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
+            .filter(info -> info.getCloudProcess().getClient()
+                .equals(this.cloudConfiguration.getClientName()))
+            .forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
 
         return atomicInteger.get();
     }
@@ -874,7 +954,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public int getGlobalOnlineCount() {
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        this.getAllRegisteredProxies().forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
+        this.getAllRegisteredProxies()
+            .forEach(proxyInfo1 -> atomicInteger.addAndGet(proxyInfo1.getOnline()));
 
         return atomicInteger.get();
     }
@@ -887,11 +968,11 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public List<Client> getAllConnectedClients() {
         return this.internalCloudNetwork
-                .getClients()
-                .values()
-                .stream()
-                .filter(e -> e.getClientInfo() != null)
-                .collect(Collectors.toList());
+            .getClients()
+            .values()
+            .stream()
+            .filter(e -> e.getClientInfo() != null)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -906,7 +987,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public List<ServerInfo> getAllRegisteredServers() {
-        return this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses();
+        return this.internalCloudNetwork.getServerProcessManager()
+            .getAllRegisteredServerProcesses();
     }
 
     @Override
@@ -916,17 +998,18 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     @Override
     public List<ServerInfo> getAllRegisteredServers(String groupName) {
-        return new ArrayList<>(this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerGroupProcesses(groupName));
+        return new ArrayList<>(this.internalCloudNetwork.getServerProcessManager()
+            .getAllRegisteredServerGroupProcesses(groupName));
     }
 
     @Override
     public List<ProxyInfo> getAllRegisteredProxies(String groupName) {
         return this.internalCloudNetwork
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .stream()
-                .filter(e -> e.getProxyGroup().getName().equals(groupName))
-                .collect(Collectors.toList());
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .stream()
+            .filter(e -> e.getProxyGroup().getName().equals(groupName))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -950,27 +1033,30 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess) {
+    public void sendPacketQuery(String channel, Packet packet,
+        NetworkQueryInboundHandler onSuccess) {
         this.channelHandler.sendPacketQuerySync(
-                channel, this.cloudConfiguration.getClientName(), packet, onSuccess
+            channel, this.cloudConfiguration.getClientName(), packet, onSuccess
         );
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess, NetworkQueryInboundHandler onFailure) {
+    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
+        NetworkQueryInboundHandler onFailure) {
         this.channelHandler.sendPacketQuerySync(
-                channel, this.cloudConfiguration.getClientName(), packet, onSuccess, onFailure
+            channel, this.cloudConfiguration.getClientName(), packet, onSuccess, onFailure
         );
     }
 
     @Override
     public PacketFuture createPacketFuture(Packet packet, String networkComponent) {
-        this.channelHandler.toQueryPacket(packet, UUID.randomUUID(), this.cloudConfiguration.getClientName());
+        this.channelHandler
+            .toQueryPacket(packet, UUID.randomUUID(), this.cloudConfiguration.getClientName());
         PacketFuture packetFuture = new PacketFuture(
-                this.channelHandler,
-                packet,
-                this.channelHandler.getExecutorService(),
-                networkComponent
+            this.channelHandler,
+            packet,
+            this.channelHandler.getExecutorService(),
+            networkComponent
         );
         this.channelHandler.getResults().put(packet.getResult(), packetFuture);
 
@@ -980,7 +1066,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public PacketFuture sendPacketQuery(String channel, Packet packet) {
         return this.channelHandler.sendPacketQuerySync(
-                channel, this.cloudConfiguration.getClientName(), packet
+            channel, this.cloudConfiguration.getClientName(), packet
         );
     }
 
@@ -992,15 +1078,16 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public ClientInfo getConnectedClient(String name) {
         Client client = this.internalCloudNetwork
-                .getClients()
-                .values()
-                .stream()
-                .filter(e -> e.getName().equals(name) && e.getClientInfo() != null)
-                .findFirst()
-                .orElse(null);
+            .getClients()
+            .values()
+            .stream()
+            .filter(e -> e.getName().equals(name) && e.getClientInfo() != null)
+            .findFirst()
+            .orElse(null);
 
-        if (client == null)
+        if (client == null) {
             return null;
+        }
 
         return client.getClientInfo();
     }
@@ -1008,45 +1095,45 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public ServerInfo getServerInfo(UUID uniqueID) {
         return this.internalCloudNetwork
-                .getServerProcessManager()
-                .getAllRegisteredServerProcesses()
-                .stream()
-                .filter(serverInfo1 -> serverInfo1.getCloudProcess().getProcessUID().equals(uniqueID))
-                .findFirst()
-                .orElse(null);
+            .getServerProcessManager()
+            .getAllRegisteredServerProcesses()
+            .stream()
+            .filter(serverInfo1 -> serverInfo1.getCloudProcess().getProcessUID().equals(uniqueID))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
     public ServerInfo getServerInfo(String name) {
         return this.internalCloudNetwork
-                .getServerProcessManager()
-                .getAllRegisteredServerProcesses()
-                .stream()
-                .filter(serverInfo1 -> serverInfo1.getCloudProcess().getName().equals(name))
-                .findFirst()
-                .orElse(null);
+            .getServerProcessManager()
+            .getAllRegisteredServerProcesses()
+            .stream()
+            .filter(serverInfo1 -> serverInfo1.getCloudProcess().getName().equals(name))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
     public ProxyInfo getProxyInfo(UUID uniqueID) {
         return this.internalCloudNetwork
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .stream()
-                .filter(proxyInfo -> proxyInfo.getCloudProcess().getProcessUID().equals(uniqueID))
-                .findFirst()
-                .orElse(null);
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .stream()
+            .filter(proxyInfo -> proxyInfo.getCloudProcess().getProcessUID().equals(uniqueID))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
     public ProxyInfo getProxyInfo(String name) {
         return this.internalCloudNetwork
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .stream()
-                .filter(proxyInfo -> proxyInfo.getCloudProcess().getName().equals(name))
-                .findFirst()
-                .orElse(null);
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .stream()
+            .filter(proxyInfo -> proxyInfo.getCloudProcess().getName().equals(name))
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
@@ -1065,8 +1152,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     @Override
-    public Optional<ISaveAPIService> getAPISave() {
-        return Optional.ofNullable(ISaveAPIService.instance.get());
+    public Optional<SaveAPIService> getAPISave() {
+        return Optional.ofNullable(SaveAPIService.instance.get());
     }
 
     @Override

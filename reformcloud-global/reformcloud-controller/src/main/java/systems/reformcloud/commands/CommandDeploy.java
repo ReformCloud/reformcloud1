@@ -19,8 +19,10 @@ import java.io.Serializable;
  */
 
 public final class CommandDeploy extends Command implements Serializable {
+
     public CommandDeploy() {
-        super("deploy", "Deploys a template from one client to another", "reformcloud.commands.deploy", new String[0]);
+        super("deploy", "Deploys a template from one client to another",
+            "reformcloud.commands.deploy", new String[0]);
     }
 
     @Override
@@ -34,86 +36,111 @@ public final class CommandDeploy extends Command implements Serializable {
             if (args[0].equalsIgnoreCase("proxy")) {
                 ProxyGroup proxyGroup = ReformCloudController.getInstance().getProxyGroup(args[1]);
                 if (proxyGroup == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The proxy group doesn't exists"));
                     return;
                 }
 
                 if (proxyGroup.getTemplateOrElseNull(args[2]) == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The template doesn't exists"));
                     return;
                 }
 
-                if (!proxyGroup.getTemplate(args[2]).getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                if (!proxyGroup.getTemplate(args[2]).getTemplateBackend()
+                    .equals(TemplateBackend.CLIENT)) {
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Template backend must be a client"));
                     return;
                 }
 
                 if (ReformCloudController.getInstance().getConnectedClient(args[3]) == null
-                        || ReformCloudController.getInstance().getConnectedClient(args[4]) == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    || ReformCloudController.getInstance().getConnectedClient(args[4]) == null) {
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Both clients must be started"));
                     return;
                 }
 
                 if (args[3].equalsIgnoreCase(args[4])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Cannot deploy template to the same client"));
                     return;
                 }
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        args[3], new PacketOutDeployServer(args[1], args[2], true, args[4])
+                    args[3], new PacketOutDeployServer(args[1], args[2], true, args[4])
                 );
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_deploy_trying()
-                        .replace("%template%", args[2])
-                        .replace("%group%", args[1])
-                        .replace("%client1%", args[3])
-                        .replace("%client2%", args[4]));
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_deploy_trying()
+                    .replace("%template%", args[2])
+                    .replace("%group%", args[1])
+                    .replace("%client1%", args[3])
+                    .replace("%client2%", args[4]));
                 return;
             } else if (args[0].equalsIgnoreCase("server")) {
-                ServerGroup serverGroup = ReformCloudController.getInstance().getServerGroup(args[1]);
+                ServerGroup serverGroup = ReformCloudController.getInstance()
+                    .getServerGroup(args[1]);
                 if (serverGroup == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The server group doesn't exists"));
                     return;
                 }
 
                 if (serverGroup.getTemplateOrElseNull(args[2]) == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The template doesn't exists"));
                     return;
                 }
 
-                if (!serverGroup.getTemplate(args[2]).getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                if (!serverGroup.getTemplate(args[2]).getTemplateBackend()
+                    .equals(TemplateBackend.CLIENT)) {
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Template backend must be a client"));
                     return;
                 }
 
                 if (ReformCloudController.getInstance().getConnectedClient(args[3]) == null
-                        || ReformCloudController.getInstance().getConnectedClient(args[4]) == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    || ReformCloudController.getInstance().getConnectedClient(args[4]) == null) {
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Both clients must be started"));
                     return;
                 }
 
                 if (args[3].equalsIgnoreCase(args[4])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Cannot deploy template to the same client"));
                     return;
                 }
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        args[3], new PacketOutDeployServer(args[1], args[2], false, args[4])
+                    args[3], new PacketOutDeployServer(args[1], args[2], false, args[4])
                 );
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_deploy_trying()
-                        .replace("%template%", args[2])
-                        .replace("%group%", args[1])
-                        .replace("%client1%", args[3])
-                        .replace("%client2%", args[4]));
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_deploy_trying()
+                    .replace("%template%", args[2])
+                    .replace("%group%", args[1])
+                    .replace("%client1%", args[3])
+                    .replace("%client2%", args[4]));
                 return;
             }
         }

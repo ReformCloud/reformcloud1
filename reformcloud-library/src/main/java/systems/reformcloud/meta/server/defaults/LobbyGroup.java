@@ -22,30 +22,31 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class LobbyGroup extends ServerGroup implements Serializable {
+
     private static final long serialVersionUID = -6740582229649845556L;
 
     public LobbyGroup(SpigotVersions spigotVersions, int memory, final String client) {
         super(
-                "Lobby",
-                "ReformCloud",
-                null,
-                Collections.singletonList(client),
-                Arrays.asList(
-                        new Template("default", null, TemplateBackend.CLIENT),
-                        new Template("every", null, TemplateBackend.CLIENT
-                        )
-                ),
-                memory,
-                1,
-                -1,
-                50,
-                41000,
-                false,
-                false,
-                new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
-                new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
-                ServerModeType.LOBBY,
-                spigotVersions
+            "Lobby",
+            "ReformCloud",
+            null,
+            Collections.singletonList(client),
+            Arrays.asList(
+                new Template("default", null, TemplateBackend.CLIENT),
+                new Template("every", null, TemplateBackend.CLIENT
+                )
+            ),
+            memory,
+            1,
+            -1,
+            50,
+            41000,
+            false,
+            false,
+            new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
+            new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
+            ServerModeType.LOBBY,
+            spigotVersions
         );
     }
 

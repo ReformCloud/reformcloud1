@@ -18,29 +18,30 @@ import systems.reformcloud.utility.files.FileUtils;
  */
 
 public final class FTPConfigLoader implements Serializable {
+
     public FTPConfigLoader() {
         if (!Files.exists(Paths.get("reformcloud/addons/backup/config.json"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/backup"));
             new Configuration()
-                    .addValue("config", new FTPConfig(
-                            true,
-                                    true,
-                                    true,
-                                    false,
-                                    "ftp.example.com",
-                                    "root",
-                                    "root1234",
-                                    21,
-                                    60,
-                                    Collections.singletonList("configuration.properties")
-                            )
-                    ).write("reformcloud/addons/backup/config.json");
+                .addValue("config", new FTPConfig(
+                        true,
+                        true,
+                        true,
+                        false,
+                        "ftp.example.com",
+                        "root",
+                        "root1234",
+                        21,
+                        60,
+                        Collections.singletonList("configuration.properties")
+                    )
+                ).write("reformcloud/addons/backup/config.json");
         }
     }
 
     public FTPConfig load() {
         return Configuration.parse("reformcloud/addons/backup/config.json")
-                .getValue("config", new TypeToken<FTPConfig>() {
-                });
+            .getValue("config", new TypeToken<FTPConfig>() {
+            });
     }
 }

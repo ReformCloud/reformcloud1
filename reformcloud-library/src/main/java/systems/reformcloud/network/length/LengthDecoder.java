@@ -17,8 +17,10 @@ import java.util.List;
  */
 
 public final class LengthDecoder extends ByteToMessageDecoder implements Serializable {
+
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf incoming, List<Object> list) throws Exception {
+    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf incoming,
+        List<Object> list) throws Exception {
         incoming.markReaderIndex();
         byte[] lengthByte = new byte[3];
 
@@ -59,8 +61,9 @@ public final class LengthDecoder extends ByteToMessageDecoder implements Seriali
             result |= (value << (7 * numRead));
 
             numRead++;
-            if (numRead > 5)
+            if (numRead > 5) {
                 throw new IllegalStateException("VarInt too big");
+            }
         } while ((read & 0b10000000) != 0);
 
         return result;

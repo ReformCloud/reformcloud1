@@ -12,8 +12,13 @@ import java.util.List;
  */
 
 public final class SelectorsMobServerItem implements Serializable {
-    private String name, itemName;
+
+    private String name;
+
+    private String itemName;
+
     private List<String> lore;
+
     private short subId;
 
     @java.beans.ConstructorProperties({"name", "itemName", "lore", "subId"})

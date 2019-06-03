@@ -17,12 +17,14 @@ import java.io.Serializable;
  */
 
 public final class PacketInCreateServerGroup implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ServerGroup serverGroup = configuration.getValue("group", new TypeToken<ServerGroup>() {
         });
-        if (serverGroup == null)
+        if (serverGroup == null) {
             return;
+        }
 
         ReformCloudController.getInstance().createServerGroup(serverGroup);
     }

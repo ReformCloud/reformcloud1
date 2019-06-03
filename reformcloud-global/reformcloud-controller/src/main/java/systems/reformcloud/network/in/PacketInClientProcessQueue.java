@@ -20,21 +20,28 @@ import java.util.Queue;
  */
 
 public final class PacketInClientProcessQueue implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        final LoggerProvider loggerProvider = ReformCloudController.getInstance().getLoggerProvider();
-        loggerProvider.info("ProcessQueue of Client §3" + configuration.getStringValue("name") + ":");
+        final LoggerProvider loggerProvider = ReformCloudController.getInstance()
+            .getLoggerProvider();
+        loggerProvider
+            .info("ProcessQueue of Client §3" + configuration.getStringValue("name") + ":");
 
-        Queue<ServerStartupInfo> servers = configuration.getValue("servers", new TypeToken<Queue<ServerStartupInfo>>() {
-        }.getType());
-        Queue<ProxyStartupInfo> proxies = configuration.getValue("proxies", new TypeToken<Queue<ProxyStartupInfo>>() {
-        }.getType());
+        Queue<ServerStartupInfo> servers = configuration
+            .getValue("servers", new TypeToken<Queue<ServerStartupInfo>>() {
+            }.getType());
+        Queue<ProxyStartupInfo> proxies = configuration
+            .getValue("proxies", new TypeToken<Queue<ProxyStartupInfo>>() {
+            }.getType());
 
         loggerProvider.info(" - ServerProcesses: ");
         if (servers.isEmpty()) {
             loggerProvider.info("    There are §c0§r server processes in the §3Client§r queue");
         } else {
-            servers.forEach(e -> loggerProvider.info("    - " + e.getName() + " | Group: " + e.getServerGroup().getName() + " | UID: " + e.getUid()));
+            servers.forEach(e -> loggerProvider.info(
+                "    - " + e.getName() + " | Group: " + e.getServerGroup().getName() + " | UID: "
+                    + e.getUid()));
         }
 
         loggerProvider.emptyLine();
@@ -43,7 +50,9 @@ public final class PacketInClientProcessQueue implements Serializable, NetworkIn
         if (proxies.isEmpty()) {
             loggerProvider.info("    There are §c0§r proxy processes in the §3Client§r queue");
         } else {
-            proxies.forEach(e -> loggerProvider.info("    - " + e.getName() + " | Group: " + e.getProxyGroup().getName() + " | UID: " + e.getUid()));
+            proxies.forEach(e -> loggerProvider.info(
+                "    - " + e.getName() + " | Group: " + e.getProxyGroup().getName() + " | UID: " + e
+                    .getUid()));
         }
     }
 }

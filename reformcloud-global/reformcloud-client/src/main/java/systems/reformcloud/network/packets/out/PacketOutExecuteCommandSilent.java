@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutExecuteCommandSilent extends Packet implements Serializable {
+
     public PacketOutExecuteCommandSilent(String line) {
         super("ExecuteCommandSilent", new Configuration().addStringValue("line", line));
     }

@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 
 class DNSRecord implements Serializable {
+
     private String type;
 
     private String name;

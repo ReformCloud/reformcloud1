@@ -18,25 +18,32 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class PacketInSyncStandby implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         boolean enable = configuration.getBooleanValue("standby");
         if (enable) {
             ReformCloudClient.getInstance().getClientInfo().setReady(false);
-            ReformCloudClient.getInstance().getSynchronizationHandler().setLastInfo(ReformCloudClient.getInstance().getClientInfo());
+            ReformCloudClient.getInstance().getSynchronizationHandler()
+                .setLastInfo(ReformCloudClient.getInstance().getClientInfo());
             ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket(
-                    "ReformCloudController", new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo())
+                "ReformCloudController",
+                new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo())
             );
 
             ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
 
-            ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerProcesses().forEach(e -> e.shutdown(true));
-            ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredProxyProcesses().forEach(e -> e.shutdown(null, true));
+            ReformCloudClient.getInstance().getCloudProcessScreenService()
+                .getRegisteredServerProcesses().forEach(e -> e.shutdown(true));
+            ReformCloudClient.getInstance().getCloudProcessScreenService()
+                .getRegisteredProxyProcesses().forEach(e -> e.shutdown(null, true));
         } else {
             ReformCloudClient.getInstance().getClientInfo().setReady(true);
-            ReformCloudClient.getInstance().getSynchronizationHandler().setLastInfo(ReformCloudClient.getInstance().getClientInfo());
+            ReformCloudClient.getInstance().getSynchronizationHandler()
+                .setLastInfo(ReformCloudClient.getInstance().getClientInfo());
             ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket(
-                    "ReformCloudController", new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo())
+                "ReformCloudController",
+                new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo())
             );
         }
     }

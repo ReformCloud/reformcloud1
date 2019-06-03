@@ -15,6 +15,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutUpdateProxyConfig extends Packet implements Serializable {
+
     public PacketOutUpdateProxyConfig(Optional<ProxySettings> proxySettings) {
         super("UpdateProxyConfig", new Configuration().addValue("settings", proxySettings));
     }

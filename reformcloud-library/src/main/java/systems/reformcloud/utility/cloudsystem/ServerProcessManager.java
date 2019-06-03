@@ -18,10 +18,12 @@ import java.util.stream.Collectors;
  */
 
 public final class ServerProcessManager implements Serializable {
+
     /**
      * All registered proxies by their process uid
      */
-    private Map<UUID, ServerInfo> serverProcessUIDMap = ReformCloudLibraryService.concurrentHashMap();
+    private Map<UUID, ServerInfo> serverProcessUIDMap = ReformCloudLibraryService
+        .concurrentHashMap();
 
     /**
      * All registered proxies by their name
@@ -31,12 +33,14 @@ public final class ServerProcessManager implements Serializable {
     /**
      * All registered servers by their process uid
      */
-    private Map<String, ServerInfo> serverProcessNameMap = ReformCloudLibraryService.concurrentHashMap();
+    private Map<String, ServerInfo> serverProcessNameMap = ReformCloudLibraryService
+        .concurrentHashMap();
 
     /**
      * All registered servers by their process uid
      */
-    private Map<String, ProxyInfo> proxyProcessNameMap = ReformCloudLibraryService.concurrentHashMap();
+    private Map<String, ProxyInfo> proxyProcessNameMap = ReformCloudLibraryService
+        .concurrentHashMap();
 
     /**
      * All used ports in the cloud system
@@ -59,7 +63,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Get a specific proxy info
      *
-     * @param uid       The uid of the proxy process
+     * @param uid The uid of the proxy process
      * @return The proxy info or {@code null} if the proxy isn't registered
      */
     public ProxyInfo getRegisteredProxyByUID(final UUID uid) {
@@ -69,7 +73,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Get a specific proxy info
      *
-     * @param name      The name of the process
+     * @param name The name of the process
      * @return The proxy info or {@code null} if the proxy isn't registered
      */
     public ProxyInfo getRegisteredProxyByName(final String name) {
@@ -79,7 +83,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Get a specific server info
      *
-     * @param uid       The uid of the server process
+     * @param uid The uid of the server process
      * @return The server info or {@code null} if the server isn't registered
      */
     public ServerInfo getRegisteredServerByUID(final UUID uid) {
@@ -89,7 +93,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Get a specific server info
      *
-     * @param name          The name of the server process
+     * @param name The name of the server process
      * @return The server info or {@code null} if the server isn't registered
      */
     public ServerInfo getRegisteredServerByName(final String name) {
@@ -99,13 +103,14 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Registers a specific proxy in the cloud system to reserve the name, uid and port
      *
-     * @param uid               The uid of the process which should be registered
-     * @param name              The name of the process which should be registered
-     * @param proxyInfo         The proxy info of the process
-     * @param port              The port of the process
+     * @param uid The uid of the process which should be registered
+     * @param name The name of the process which should be registered
+     * @param proxyInfo The proxy info of the process
+     * @param port The port of the process
      * @return The current instance of this class
      */
-    public ServerProcessManager registerProxyProcess(final UUID uid, final String name, ProxyInfo proxyInfo, final int port) {
+    public ServerProcessManager registerProxyProcess(final UUID uid, final String name,
+        ProxyInfo proxyInfo, final int port) {
         this.proxyProcessUIDMap.put(uid, proxyInfo);
         this.proxyProcessNameMap.put(name, proxyInfo);
         this.ports.add(port);
@@ -115,12 +120,13 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Registers a specific proxy in the cloud system to reserve the name, uid and port
      *
-     * @param proxyInfo         The proxy info congaing all needed information about the process
+     * @param proxyInfo The proxy info congaing all needed information about the process
      * @return The current instance of this class
      */
     public ServerProcessManager registerProxyProcess(final ProxyInfo proxyInfo) {
         this.registerProxyProcess(
-                proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(), proxyInfo, proxyInfo.getPort()
+            proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(),
+            proxyInfo, proxyInfo.getPort()
         );
         return this;
     }
@@ -128,13 +134,14 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Registers a specific server in the cloud system to reserve the name, uid and port
      *
-     * @param uid               The uid of the process which should be registered
-     * @param name              The name of the process which should be registered
-     * @param serverInfo        The server info of the process
-     * @param port              The port of the process
+     * @param uid The uid of the process which should be registered
+     * @param name The name of the process which should be registered
+     * @param serverInfo The server info of the process
+     * @param port The port of the process
      * @return The current instance of this class
      */
-    public ServerProcessManager registerServerProcess(final UUID uid, final String name, ServerInfo serverInfo, final int port) {
+    public ServerProcessManager registerServerProcess(final UUID uid, final String name,
+        ServerInfo serverInfo, final int port) {
         this.serverProcessUIDMap.put(uid, serverInfo);
         this.serverProcessNameMap.put(name, serverInfo);
         this.ports.add(port);
@@ -144,12 +151,13 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Unregisters a specific proxy in the cloud system
      *
-     * @param uid               The uid of the process which should be unregistered
-     * @param name              The name of the process which should be unregistered
-     * @param port              The port of the process
+     * @param uid The uid of the process which should be unregistered
+     * @param name The name of the process which should be unregistered
+     * @param port The port of the process
      * @return The current instance of this class
      */
-    public ServerProcessManager unregisterProxyProcess(final UUID uid, final String name, final int port) {
+    public ServerProcessManager unregisterProxyProcess(final UUID uid, final String name,
+        final int port) {
         this.proxyProcessUIDMap.remove(uid);
         this.proxyProcessNameMap.remove(name);
         this.ports.remove(Integer.valueOf(port));
@@ -159,12 +167,13 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Unregisters a specific server in the cloud system
      *
-     * @param uid               The uid of the process which should be unregistered
-     * @param name              The name of the process which should be unregistered
-     * @param port              The port of the process
+     * @param uid The uid of the process which should be unregistered
+     * @param name The name of the process which should be unregistered
+     * @param port The port of the process
      * @return The current instance of this class
      */
-    public ServerProcessManager unregisterServerProcess(final UUID uid, final String name, final int port) {
+    public ServerProcessManager unregisterServerProcess(final UUID uid, final String name,
+        final int port) {
         this.serverProcessUIDMap.remove(uid);
         this.serverProcessNameMap.remove(name);
         this.ports.remove(Integer.valueOf(port));
@@ -210,7 +219,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Gets a proxy process is registered
      *
-     * @param uid           The uid of the process
+     * @param uid The uid of the process
      * @return If the proxy process is registered in the cloud system
      */
     public boolean isUIDProxyProcessRegistered(final UUID uid) {
@@ -220,7 +229,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Gets a proxy process is registered
      *
-     * @param name          The name of the proxy process
+     * @param name The name of the proxy process
      * @return If the proxy process is registered in the cloud system
      */
     public boolean isNameProxyProcessRegistered(final String name) {
@@ -230,7 +239,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Gets a server process is registered
      *
-     * @param uid           The uid of the process
+     * @param uid The uid of the process
      * @return If the server process is registered in the cloud system
      */
     public boolean isUIDServerProcessRegistered(final UUID uid) {
@@ -240,7 +249,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Gets a server process is registered
      *
-     * @param name          The name of the server process
+     * @param name The name of the server process
      * @return If the server process is registered in the cloud system
      */
     public boolean isNameServerProcessRegistered(final String name) {
@@ -272,15 +281,17 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Get all online servers of a specific group
      *
-     * @param name          The name of the group
+     * @param name The name of the group
      * @return A list containing all started servers of the given group by their name
      */
     public List<String> getOnlineServers(final String name) {
         List<String> list = new ArrayList<>();
 
-        for (ServerInfo serverInfo : this.serverProcessUIDMap.values())
-            if (serverInfo.getServerGroup().getName().equalsIgnoreCase(name))
+        for (ServerInfo serverInfo : this.serverProcessUIDMap.values()) {
+            if (serverInfo.getServerGroup().getName().equalsIgnoreCase(name)) {
                 list.add(serverInfo.getServerGroup().getName());
+            }
+        }
 
         return list;
     }
@@ -288,15 +299,17 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Get all online proxies of a specific group
      *
-     * @param name          The name of the group
+     * @param name The name of the group
      * @return A list containing all started proxies of the given group by their name
      */
     public List<String> getOnlineProxies(final String name) {
         List<String> list = new ArrayList<>();
 
-        for (ProxyInfo proxyInfo : this.proxyProcessUIDMap.values())
-            if (proxyInfo.getProxyGroup().getName().equalsIgnoreCase(name))
+        for (ProxyInfo proxyInfo : this.proxyProcessUIDMap.values()) {
+            if (proxyInfo.getProxyGroup().getName().equalsIgnoreCase(name)) {
                 list.add(proxyInfo.getProxyGroup().getName());
+            }
+        }
 
         return list;
     }
@@ -304,7 +317,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Checks if the given port is already used anywhere in the cloud system
      *
-     * @param port          The port which should be checked
+     * @param port The port which should be checked
      * @return If the port is usable or already taken
      */
     public boolean isPortRegistered(final int port) {
@@ -314,8 +327,8 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Gets the next free port of the cloud system starting by the given start port
      *
-     * @param startPort         The start port from where the cloud should check
-     *                          if the port is taken and gets a better port
+     * @param startPort The start port from where the cloud should check if the port is taken and gets
+     * a better port
      * @return The next free port after the start port
      */
     public int nextFreePort(int startPort) {
@@ -346,27 +359,31 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Gets all registered server processes by a specific group
      *
-     * @param groupName         The group name of the group for which the cloud should look for
+     * @param groupName The group name of the group for which the cloud should look for
      * @return A list containing all server infos of a specific group
      */
     public List<ServerInfo> getAllRegisteredServerGroupProcesses(final String groupName) {
-        return this.serverProcessUIDMap.values().stream().filter(e -> e.getServerGroup().getName().equals(groupName)).collect(Collectors.toList());
+        return this.serverProcessUIDMap.values().stream()
+            .filter(e -> e.getServerGroup().getName().equals(groupName))
+            .collect(Collectors.toList());
     }
 
     /**
      * Gets all registered proxy processes by a specific group
      *
-     * @param groupName         The group name of the group for which the cloud should look for
+     * @param groupName The group name of the group for which the cloud should look for
      * @return A list containing all proxy infos of a specific group
      */
     public List<ProxyInfo> getAllRegisteredProxyGroupProcesses(final String groupName) {
-        return this.proxyProcessUIDMap.values().stream().filter(e -> e.getProxyGroup().getName().equals(groupName)).collect(Collectors.toList());
+        return this.proxyProcessUIDMap.values().stream()
+            .filter(e -> e.getProxyGroup().getName().equals(groupName))
+            .collect(Collectors.toList());
     }
 
     /**
      * Updates a specific server info
      *
-     * @param serverInfo        The server info which should be updated
+     * @param serverInfo The server info which should be updated
      */
     public void updateServerInfo(final ServerInfo serverInfo) {
         this.serverProcessNameMap.replace(serverInfo.getCloudProcess().getName(), serverInfo);
@@ -376,7 +393,7 @@ public final class ServerProcessManager implements Serializable {
     /**
      * Updates a specific proxy info
      *
-     * @param proxyInfo         The proxy info which should be updated
+     * @param proxyInfo The proxy info which should be updated
      */
     public void updateProxyInfo(final ProxyInfo proxyInfo) {
         this.proxyProcessNameMap.replace(proxyInfo.getCloudProcess().getName(), proxyInfo);

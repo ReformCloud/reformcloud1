@@ -14,6 +14,7 @@ import systems.reformcloud.player.permissions.group.PermissionGroup;
  */
 
 public final class PacketOutUpdatePermissionGroup extends Packet implements Serializable {
+
     public PacketOutUpdatePermissionGroup(PermissionGroup permissionGroup) {
         super("UpdatePermissionGroup", new Configuration().addValue("group", permissionGroup));
     }

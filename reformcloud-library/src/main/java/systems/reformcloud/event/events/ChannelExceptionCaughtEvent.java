@@ -14,11 +14,13 @@ import java.io.Serializable;
  */
 
 public final class ChannelExceptionCaughtEvent extends Event implements Serializable {
+
     private ChannelHandlerContext channelHandlerContext;
     private Throwable cause;
 
     @java.beans.ConstructorProperties({"channelHandlerContext", "cause"})
-    public ChannelExceptionCaughtEvent(ChannelHandlerContext channelHandlerContext, Throwable cause) {
+    public ChannelExceptionCaughtEvent(ChannelHandlerContext channelHandlerContext,
+        Throwable cause) {
         this.channelHandlerContext = channelHandlerContext;
         this.cause = cause;
     }

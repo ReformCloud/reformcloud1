@@ -15,12 +15,14 @@ import java.util.Base64;
  */
 
 public final class PacketOutUpdateControllerTemplate extends Packet implements Serializable {
-    public PacketOutUpdateControllerTemplate(String type, String group, String template, byte[] files) {
+
+    public PacketOutUpdateControllerTemplate(String type, String group, String template,
+        byte[] files) {
         super("UpdateControllerTemplate", new Configuration()
-                .addStringValue("type", type)
-                .addStringValue("group", group)
-                .addStringValue("template", template)
-                .addStringValue("encoded", Base64.getEncoder().encodeToString(files))
+            .addStringValue("type", type)
+            .addStringValue("group", group)
+            .addStringValue("template", template)
+            .addStringValue("encoded", Base64.getEncoder().encodeToString(files))
         );
     }
 }

@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PermissionHolderUpdateEvent extends DefaultCloudEvent implements Serializable {
+
     private static final HandlerList handlerList = new HandlerList();
     private PermissionHolder permissionHolder;
 

@@ -30,61 +30,76 @@ import java.util.Optional;
  */
 
 public final class PacketInInitializeInternal implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIVelocity.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties",
+        ReformCloudAPIVelocity.getInstance()
+            .setInternalCloudNetwork(configuration.getValue("networkProperties",
                 TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
 
-        VelocityBootstrap.getInstance().getProxyServer().getEventManager().fire(new CloudNetworkInitializeEvent(
+        VelocityBootstrap.getInstance().getProxyServer().getEventManager()
+            .fire(new CloudNetworkInitializeEvent(
                 ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork())
-        );
+            );
 
         final ProxyGroup proxyGroup = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
-                .getProxyGroups().get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());
-        if (proxyGroup == null)
+            .getProxyGroups()
+            .get(ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup().getName());
+        if (proxyGroup == null) {
             return;
+        }
 
         new IconManager();
 
-        ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new Packet(
-                "AuthSuccess", new Configuration().addStringValue("name", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
-        ));
-        ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(
-                process -> {
-                    if (proxyGroup.getDisabledServerGroups().contains(process.getServerGroup().getName()))
-                        return;
-
-                    VelocityBootstrap.getInstance().getProxyServer().registerServer(
-                            new ServerInfo(
-                                    process.getCloudProcess().getName(),
-                                    new InetSocketAddress(process.getHost(), process.getPort())
-                            ));
-
-                    if (process.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
-                        VelocityBootstrap.getInstance().getProxyServer().getConfiguration().getAttemptConnectionOrder().add(
-                                process.getCloudProcess().getName()
-                        );
-                    }
+        ReformCloudAPIVelocity.getInstance().getChannelHandler()
+            .sendPacketAsynchronous("ReformCloudController", new Packet(
+                "AuthSuccess", new Configuration().addStringValue("name",
+                ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName())
+            ));
+        ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager()
+            .getAllRegisteredServerProcesses().forEach(
+            process -> {
+                if (proxyGroup.getDisabledServerGroups()
+                    .contains(process.getServerGroup().getName())) {
+                    return;
                 }
-        );
 
-        ReformCloudAPIVelocity.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutQueryGetPermissionCache(), (configuration1, resultID) -> {
-                    ReformCloudAPIVelocity.getInstance().setPermissionCache(configuration1.getValue("cache",
-                            TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                VelocityBootstrap.getInstance().getProxyServer().registerServer(
+                    new ServerInfo(
+                        process.getCloudProcess().getName(),
+                        new InetSocketAddress(process.getHost(), process.getPort())
+                    ));
+
+                if (process.getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
+                    VelocityBootstrap.getInstance().getProxyServer().getConfiguration()
+                        .getAttemptConnectionOrder().add(
+                        process.getCloudProcess().getName()
                     );
-                    if (ReformCloudAPIVelocity.getInstance().getPermissionCache() != null) {
-                        VelocityBootstrap.getInstance().getProxy().getCommandManager().register(new CommandPermissions(), "perms", "permissions", "cloudperms", "cp");
-                    }
                 }
+            }
         );
 
         ReformCloudAPIVelocity.getInstance().sendPacketQuery("ReformCloudController",
-                new PacketOutGetProxySettings(), (configuration1, resultID) -> {
-                    Optional<ProxySettings> proxySettings = configuration1.getValue("settings", new TypeToken<Optional<ProxySettings>>() {
-                    }.getType());
-                    ReformCloudAPIVelocity.getInstance().setProxySettings(proxySettings.orElse(null));
+            new PacketOutQueryGetPermissionCache(), (configuration1, resultID) -> {
+                ReformCloudAPIVelocity.getInstance()
+                    .setPermissionCache(configuration1.getValue("cache",
+                        TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
+                    );
+                if (ReformCloudAPIVelocity.getInstance().getPermissionCache() != null) {
+                    VelocityBootstrap.getInstance().getProxy().getCommandManager()
+                        .register(new CommandPermissions(), "perms", "permissions", "cloudperms",
+                            "cp");
                 }
+            }
+        );
+
+        ReformCloudAPIVelocity.getInstance().sendPacketQuery("ReformCloudController",
+            new PacketOutGetProxySettings(), (configuration1, resultID) -> {
+                Optional<ProxySettings> proxySettings = configuration1
+                    .getValue("settings", new TypeToken<Optional<ProxySettings>>() {
+                    }.getType());
+                ReformCloudAPIVelocity.getInstance().setProxySettings(proxySettings.orElse(null));
+            }
         );
     }
 }

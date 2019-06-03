@@ -15,6 +15,7 @@ import systems.reformcloud.event.utility.Listener;
  */
 
 public final class ClientCreatedListener implements Serializable, Listener {
+
     @Handler
     public void handleCreate(final ClientCreatedEvent event) {
         CloudFlareUtil.getInstance().createClientEntry(event.getClient());

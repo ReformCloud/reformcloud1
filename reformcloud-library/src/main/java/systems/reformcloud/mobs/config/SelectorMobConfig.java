@@ -14,11 +14,14 @@ import java.io.Serializable;
  */
 
 public final class SelectorMobConfig implements Serializable {
+
     private SelectorMobInventory selectorMobInventory;
+
     private SelectorsMobServerItem selectorsMobServerItem;
 
     @java.beans.ConstructorProperties({"selectorMobInventory", "selectorsMobServerItem"})
-    public SelectorMobConfig(SelectorMobInventory selectorMobInventory, SelectorsMobServerItem selectorsMobServerItem) {
+    public SelectorMobConfig(SelectorMobInventory selectorMobInventory,
+        SelectorsMobServerItem selectorsMobServerItem) {
         this.selectorMobInventory = selectorMobInventory;
         this.selectorsMobServerItem = selectorsMobServerItem;
     }

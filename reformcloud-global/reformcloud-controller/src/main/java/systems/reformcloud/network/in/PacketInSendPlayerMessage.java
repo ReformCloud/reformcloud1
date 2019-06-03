@@ -17,13 +17,14 @@ import java.util.UUID;
  */
 
 public final class PacketInSendPlayerMessage implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                configuration.getStringValue("proxy"),
-                new PacketOutSendPlayerMessage(
-                        configuration.getValue("uuid", UUID.class), configuration.getStringValue("message")
-                )
+            configuration.getStringValue("proxy"),
+            new PacketOutSendPlayerMessage(
+                configuration.getValue("uuid", UUID.class), configuration.getStringValue("message")
+            )
         );
     }
 }

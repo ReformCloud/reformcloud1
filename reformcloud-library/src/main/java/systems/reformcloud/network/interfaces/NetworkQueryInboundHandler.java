@@ -13,11 +13,12 @@ import java.util.UUID;
  */
 
 public interface NetworkQueryInboundHandler {
+
     /**
      * Handler for an incoming query packet
      *
-     * @param configuration     The configuration of the query packet
-     * @param resultID          The result uid of the query packet
+     * @param configuration The configuration of the query packet
+     * @param resultID The result uid of the query packet
      */
     void handle(Configuration configuration, UUID resultID);
 }

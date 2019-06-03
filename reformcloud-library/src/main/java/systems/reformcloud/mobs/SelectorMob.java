@@ -12,12 +12,21 @@ import java.util.UUID;
  */
 
 public final class SelectorMob implements Serializable {
+
     private UUID uniqueID;
-    private String entityClassName, name, displayName;
+
+    private String entityClassName;
+
+    private String name;
+
+    private String displayName;
+
     private SelectorMobPosition selectorMobPosition;
 
-    @java.beans.ConstructorProperties({"uniqueID", "entityClassName", "name", "displayName", "selectorMobPosition"})
-    public SelectorMob(UUID uniqueID, String entityClassName, String name, String displayName, SelectorMobPosition selectorMobPosition) {
+    @java.beans.ConstructorProperties({"uniqueID", "entityClassName", "name", "displayName",
+        "selectorMobPosition"})
+    public SelectorMob(UUID uniqueID, String entityClassName, String name, String displayName,
+        SelectorMobPosition selectorMobPosition) {
         this.uniqueID = uniqueID;
         this.entityClassName = entityClassName;
         this.name = name;

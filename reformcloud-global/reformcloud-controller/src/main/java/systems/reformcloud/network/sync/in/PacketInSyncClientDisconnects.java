@@ -21,52 +21,73 @@ import java.util.LinkedList;
  */
 
 public final class PacketInSyncClientDisconnects implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = -6533784184811381053L;
 
     @Override
     public void handle(Configuration configuration) {
-        Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(configuration.getStringValue("name"));
+        Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients()
+            .get(configuration.getStringValue("name"));
         if (client != null) {
             client.setClientInfo(null);
             Collection<String> waitingOnClient = new LinkedList<>();
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient()
-                    .forEach((k, v) -> {
-                        if (v.equals(client.getName()))
-                            waitingOnClient.add(k);
-                    });
+                .forEach((k, v) -> {
+                    if (v.equals(client.getName())) {
+                        waitingOnClient.add(k);
+                    }
+                });
 
             waitingOnClient.forEach(e -> {
-                ReformCloudController.getInstance().getCloudProcessOfferService().removeWaitingProcess(e);
-                ReformCloudController.getInstance().getCloudProcessOfferService().getWaitingPerClient().remove(e);
+                ReformCloudController.getInstance().getCloudProcessOfferService()
+                    .removeWaitingProcess(e);
+                ReformCloudController.getInstance().getCloudProcessOfferService()
+                    .getWaitingPerClient().remove(e);
             });
 
-            ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredServerProcesses().forEach(e -> {
+            ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                .getAllRegisteredServerProcesses().forEach(e -> {
                 if (e.getCloudProcess().getClient().equals(client.getName())) {
-                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterServerProcess(
-                            e.getCloudProcess().getProcessUID(), e.getCloudProcess().getName(), e.getPort()
+                    ReformCloudController.getInstance().getInternalCloudNetwork()
+                        .getServerProcessManager().unregisterServerProcess(
+                        e.getCloudProcess().getProcessUID(), e.getCloudProcess().getName(),
+                        e.getPort()
                     );
-                    ReformCloudController.getInstance().getCloudProcessOfferService().unregisterID(e);
-                    ReformCloudController.getInstance().getEventManager().fire(new ServerStoppedEvent(e));
+                    ReformCloudController.getInstance().getCloudProcessOfferService()
+                        .unregisterID(e);
+                    ReformCloudController.getInstance().getEventManager()
+                        .fire(new ServerStoppedEvent(e));
                 }
 
-                if (ReformCloudController.getInstance().getScreenSessionProvider().isInScreen(e.getCloudProcess().getName()))
+                if (ReformCloudController.getInstance().getScreenSessionProvider()
+                    .isInScreen(e.getCloudProcess().getName())) {
                     ReformCloudController.getInstance().getScreenSessionProvider().leaveScreen();
+                }
             });
 
-            ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getAllRegisteredProxyProcesses().forEach(e -> {
+            ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                .getAllRegisteredProxyProcesses().forEach(e -> {
                 if (e.getCloudProcess().getClient().equals(client.getName())) {
-                    ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().unregisterProxyProcess(
-                            e.getCloudProcess().getProcessUID(), e.getCloudProcess().getName(), e.getPort()
+                    ReformCloudController.getInstance().getInternalCloudNetwork()
+                        .getServerProcessManager().unregisterProxyProcess(
+                        e.getCloudProcess().getProcessUID(), e.getCloudProcess().getName(),
+                        e.getPort()
                     );
-                    ReformCloudController.getInstance().getCloudProcessOfferService().unregisterProxyID(e);
-                    ReformCloudController.getInstance().getEventManager().fire(new ProxyStoppedEvent(e));
+                    ReformCloudController.getInstance().getCloudProcessOfferService()
+                        .unregisterProxyID(e);
+                    ReformCloudController.getInstance().getEventManager()
+                        .fire(new ProxyStoppedEvent(e));
                 }
 
-                if (ReformCloudController.getInstance().getScreenSessionProvider().isInScreen(e.getCloudProcess().getName()))
+                if (ReformCloudController.getInstance().getScreenSessionProvider()
+                    .isInScreen(e.getCloudProcess().getName())) {
                     ReformCloudController.getInstance().getScreenSessionProvider().leaveScreen();
+                }
             });
 
-            ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+            ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(
+                new PacketOutUpdateAll(
+                    ReformCloudController.getInstance().getInternalCloudNetwork()));
         }
     }
 }

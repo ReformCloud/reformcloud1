@@ -12,7 +12,9 @@ import java.util.List;
  */
 
 public final class IconData implements Serializable {
+
     private List<byte[]> icons;
+
     private int updateTimeInSeconds;
 
     @java.beans.ConstructorProperties({"icons", "updateTimeInSeconds"})

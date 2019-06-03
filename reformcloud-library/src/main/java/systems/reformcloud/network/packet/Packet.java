@@ -20,6 +20,7 @@ import java.util.UUID;
  */
 
 public class Packet implements Serializable {
+
     private static final long serialVersionUID = -30847898951064299L;
 
     /**
@@ -70,11 +71,13 @@ public class Packet implements Serializable {
     /**
      * Reads a packet from the given byte buf
      *
-     * @param byteBuf       The byte buf containing the packet information
+     * @param byteBuf The byte buf containing the packet information
      */
     public void read(ByteBuf byteBuf) {
         if (byteBuf.readableBytes() != 0) {
-            final Packet packet = ReformCloudLibraryService.GSON.fromJson(byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8), TypeTokenAdaptor.getPACKET_TYPE());
+            final Packet packet = ReformCloudLibraryService.GSON.fromJson(
+                byteBuf.readBytes((int) readLong(byteBuf)).toString(StandardCharsets.UTF_8),
+                TypeTokenAdaptor.getPACKET_TYPE());
             this.configuration = packet.configuration;
             this.type = packet.type;
             this.result = packet.result;
@@ -84,7 +87,7 @@ public class Packet implements Serializable {
     /**
      * Writes a packet to the byte buf
      *
-     * @param byteBuf   The byte buf where the packet should be written to
+     * @param byteBuf The byte buf where the packet should be written to
      */
     public void write(ByteBuf byteBuf) {
         byte[] bytes = ReformCloudLibraryService.GSON.toJson(this).getBytes(StandardCharsets.UTF_8);
@@ -95,8 +98,9 @@ public class Packet implements Serializable {
         do {
             byte temp = (byte) (value & 0b01111111);
             value >>>= 7;
-            if (value != 0)
+            if (value != 0) {
                 temp |= 0b10000000;
+            }
 
             byteBuf.writeByte(temp);
         } while (value != 0);

@@ -15,8 +15,8 @@ import java.io.Serializable;
  */
 
 public final class ClientDeletedEvent extends Event implements Serializable {
-    private Client client;
 
+    private Client client;
 
     @ConstructorProperties({"client"})
     public ClientDeletedEvent(Client client) {

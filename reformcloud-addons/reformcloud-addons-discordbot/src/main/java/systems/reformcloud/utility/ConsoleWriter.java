@@ -18,6 +18,7 @@ import systems.reformcloud.logging.handlers.IConsoleInputHandler;
  */
 
 public final class ConsoleWriter implements Serializable, Runnable, IConsoleInputHandler {
+
     private Deque<String> consoleMessages = new LinkedList<>();
 
     public ConsoleWriter() {
@@ -29,25 +30,28 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             if (!consoleMessages.isEmpty()
-                    && DiscordAddon.getInstance().getJda() != null
-                    && DiscordAddon.getInstance().getTextChannel() != null) {
+                && DiscordAddon.getInstance().getJda() != null
+                && DiscordAddon.getInstance().getTextChannel() != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 while (!consoleMessages.isEmpty() && stringBuilder.length() < 1995) {
                     String message = consoleMessages.pollFirst();
-                    if (message == null)
+                    if (message == null) {
                         continue;
+                    }
 
-                    if (message.length() + stringBuilder.length() < 1995)
+                    if (message.length() + stringBuilder.length() < 1995) {
                         stringBuilder.append(message).append("\n");
-                    else {
+                    } else {
                         consoleMessages.addFirst(message);
                         break;
                     }
                 }
 
                 try {
-                    if (stringBuilder.length() != -1 && stringBuilder.length() != 0)
-                        DiscordAddon.getInstance().getTextChannel().sendMessage(stringBuilder.substring(0)).queue();
+                    if (stringBuilder.length() != -1 && stringBuilder.length() != 0) {
+                        DiscordAddon.getInstance().getTextChannel()
+                            .sendMessage(stringBuilder.substring(0)).queue();
+                    }
                 } catch (final Throwable ignored) {
                 }
             }

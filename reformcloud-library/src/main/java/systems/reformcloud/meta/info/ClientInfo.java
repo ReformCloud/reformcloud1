@@ -12,22 +12,32 @@ import java.util.List;
  */
 
 public final class ClientInfo implements Serializable {
+
     private static final long serialVersionUID = 588638903114905632L;
 
-    private int maxMemory, cpuCoresSystem;
+    private int maxMemory;
+
+    private int cpuCoresSystem;
 
     private boolean ready;
 
     private List<String> startedServers;
+
     private List<String> startedProxies;
 
     private int usedMemory;
+
     private double cpuUsage;
+
     private long systemMemoryUsage;
+
     private long systemMemoryMax;
 
-    @java.beans.ConstructorProperties({"maxMemory", "cpuCoresSystem", "ready", "startedServers", "startedProxies", "usedMemory", "cpuUsage", "systemMemoryUsage", "systemMemoryMax"})
-    public ClientInfo(int maxMemory, int cpuCoresSystem, boolean ready, List<String> startedServers, List<String> startedProxies, int usedMemory, double cpuUsage, long systemMemoryUsage, long systemMemoryMax) {
+    @java.beans.ConstructorProperties({"maxMemory", "cpuCoresSystem", "ready", "startedServers",
+        "startedProxies", "usedMemory", "cpuUsage", "systemMemoryUsage", "systemMemoryMax"})
+    public ClientInfo(int maxMemory, int cpuCoresSystem, boolean ready, List<String> startedServers,
+        List<String> startedProxies, int usedMemory, double cpuUsage, long systemMemoryUsage,
+        long systemMemoryMax) {
         this.maxMemory = maxMemory;
         this.cpuCoresSystem = cpuCoresSystem;
         this.ready = ready;

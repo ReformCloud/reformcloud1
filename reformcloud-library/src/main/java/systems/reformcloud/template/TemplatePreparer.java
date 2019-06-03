@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class TemplatePreparer implements Serializable {
+
     private String old;
 
     @java.beans.ConstructorProperties({"old"})
@@ -23,11 +24,12 @@ public final class TemplatePreparer implements Serializable {
     /**
      * Downloads the packet with the {@link DownloadManager}
      *
-     * @param url       The url where the template is located
+     * @param url The url where the template is located
      */
     public void loadTemplate(String url) {
-        if (url.isEmpty())
+        if (url.isEmpty()) {
             return;
+        }
 
         DownloadManager.downloadSilentAndDisconnect(url, old);
     }

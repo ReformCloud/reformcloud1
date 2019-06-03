@@ -25,40 +25,49 @@ import systems.reformcloud.utility.map.MapUtility;
  */
 
 public final class ParametersConfiguration implements Serializable {
+
     private List<ParameterGroup> parameters;
 
     public ParametersConfiguration() {
         if (!Files.exists(Paths.get("reformcloud/addons/parameters/config.json"))) {
             FileUtils.createDirectory(Paths.get("reformcloud/addons/parameters"));
-            ServerGroup serverGroup = ReformCloudController.getInstance().getAllServerGroups().stream().findFirst().orElse(null);
+            ServerGroup serverGroup = ReformCloudController.getInstance().getAllServerGroups()
+                .stream().findFirst().orElse(null);
             Configuration configuration = new Configuration();
 
-            configuration.addValue("config", serverGroup == null ? Collections.EMPTY_LIST : Collections.singletonList(new ParameterGroup(
+            configuration.addValue("config", serverGroup == null ? Collections.EMPTY_LIST
+                : Collections.singletonList(new ParameterGroup(
                     serverGroup.getName(), StringUtil.JAVA, new ArrayList<>(), new ArrayList<>()
-            )));
+                )));
 
             configuration.write("reformcloud/addons/parameters/config.json");
         }
 
-        this.parameters = Configuration.parse("reformcloud/addons/parameters/config.json").getValue("config", new TypeToken<List<ParameterGroup>>() {
-        }.getType());
+        this.parameters = Configuration.parse("reformcloud/addons/parameters/config.json")
+            .getValue("config", new TypeToken<List<ParameterGroup>>() {
+            }.getType());
 
-        ReformCloudController.getInstance().getNettyHandler().registerQueryHandler("RequestParameters", new PacketInRequestParameters());
+        ReformCloudController.getInstance().getNettyHandler()
+            .registerQueryHandler("RequestParameters", new PacketInRequestParameters());
     }
 
     public ParameterGroup forGroup(String name) {
-        return this.parameters.stream().filter(e -> e.getGroupName().equals(name)).findFirst().orElse(null);
+        return this.parameters.stream().filter(e -> e.getGroupName().equals(name)).findFirst()
+            .orElse(null);
     }
 
     public void delete(String name) {
         List<ParameterGroup> copy = MapUtility.copyOf(this.parameters);
-        copy.stream().filter(e -> e.getGroupName().equals(name)).forEach(e -> this.parameters.remove(e));
-        new Configuration().addValue("config", this.parameters).write("reformcloud/addons/parameters/config.json");
+        copy.stream().filter(e -> e.getGroupName().equals(name))
+            .forEach(e -> this.parameters.remove(e));
+        new Configuration().addValue("config", this.parameters)
+            .write("reformcloud/addons/parameters/config.json");
     }
 
     public void create(ParameterGroup parameterGroup) {
         this.parameters.add(parameterGroup);
-        new Configuration().addValue("config", this.parameters).write("reformcloud/addons/parameters/config.json");
+        new Configuration().addValue("config", this.parameters)
+            .write("reformcloud/addons/parameters/config.json");
     }
 
     public boolean exists(String name) {

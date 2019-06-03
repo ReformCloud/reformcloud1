@@ -14,6 +14,7 @@ import java.util.UUID;
  */
 
 public class CloudProcess implements Serializable {
+
     private static final long serialVersionUID = -532002825303576279L;
 
     /**
@@ -51,8 +52,10 @@ public class CloudProcess implements Serializable {
      */
     private int processID;
 
-    @java.beans.ConstructorProperties({"name", "processUID", "client", "group", "preConfig", "loadedTemplate", "processID"})
-    public CloudProcess(String name, UUID processUID, String client, String group, Configuration preConfig, Template loadedTemplate, int processID) {
+    @java.beans.ConstructorProperties({"name", "processUID", "client", "group", "preConfig",
+        "loadedTemplate", "processID"})
+    public CloudProcess(String name, UUID processUID, String client, String group,
+        Configuration preConfig, Template loadedTemplate, int processID) {
         this.name = name;
         this.processUID = processUID;
         this.client = client;
@@ -79,10 +82,12 @@ public class CloudProcess implements Serializable {
     }
 
     public Configuration getPreConfig() {
-        if (!this.preConfig.getJsonObject().has("jsonObject"))
+        if (!this.preConfig.getJsonObject().has("jsonObject")) {
             return this.preConfig;
+        }
 
-        return new Configuration(this.preConfig.getJsonObject().get("jsonObject").getAsJsonObject());
+        return new Configuration(
+            this.preConfig.getJsonObject().get("jsonObject").getAsJsonObject());
     }
 
     public Template getLoadedTemplate() {

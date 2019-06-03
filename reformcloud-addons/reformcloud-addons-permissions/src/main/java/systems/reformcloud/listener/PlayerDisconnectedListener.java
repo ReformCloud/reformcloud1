@@ -15,8 +15,10 @@ import systems.reformcloud.event.utility.Listener;
  */
 
 public final class PlayerDisconnectedListener implements Serializable, Listener {
+
     @Handler
     public void handle(final PlayerDisconnectsEvent event) {
-        PermissionsAddon.getInstance().getPermissionDatabase().getCachedPermissionHolders().remove(event.getOnlinePlayer());
+        PermissionsAddon.getInstance().getPermissionDatabase().getCachedPermissionHolders()
+            .remove(event.getOnlinePlayer());
     }
 }

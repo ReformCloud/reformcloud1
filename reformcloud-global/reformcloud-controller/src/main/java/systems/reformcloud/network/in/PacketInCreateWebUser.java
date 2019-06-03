@@ -17,12 +17,14 @@ import java.io.Serializable;
  */
 
 public final class PacketInCreateWebUser implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         WebUser webUser = configuration.getValue("user", new TypeToken<WebUser>() {
         });
-        if (webUser == null)
+        if (webUser == null) {
             return;
+        }
 
         ReformCloudController.getInstance().createWebUser(webUser);
     }

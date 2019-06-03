@@ -17,8 +17,10 @@ import java.util.Map;
  */
 
 public final class CommandWebPermissions extends Command implements Serializable {
+
     public CommandWebPermissions() {
-        super("webpermissions", "Adds a user a specific permission", "reformcloud.command.webpermissions", new String[]{"wperms"});
+        super("webpermissions", "Adds a user a specific permission",
+            "reformcloud.command.webpermissions", new String[]{"wperms"});
     }
 
     @Override
@@ -26,14 +28,17 @@ public final class CommandWebPermissions extends Command implements Serializable
         if (args.length == 2 && args[0].equalsIgnoreCase("list")) {
             WebUser webUser = this.getUser(args[1]);
             if (webUser == null) {
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
-                        .replace("%message%", "User not found"));
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_error_occurred()
+                    .replace("%message%", "User not found"));
                 return;
             }
 
             commandSender.sendMessage("Permissions of user " + webUser.getUser());
             for (Map.Entry<String, Boolean> perms : webUser.getPermissions().entrySet()) {
-                commandSender.sendMessage("   - §e" + perms.getKey() + "§r | Activated: " + (perms.getValue() ? "§atrue" : "§cfalse"));
+                commandSender.sendMessage(
+                    "   - §e" + perms.getKey() + "§r | Activated: " + (perms.getValue() ? "§atrue"
+                        : "§cfalse"));
             }
 
             return;
@@ -42,20 +47,23 @@ public final class CommandWebPermissions extends Command implements Serializable
         if (args.length == 3 && args[0].equalsIgnoreCase("remove")) {
             WebUser webUser = this.getUser(args[1]);
             if (webUser == null) {
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
-                        .replace("%message%", "User not found"));
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_error_occurred()
+                    .replace("%message%", "User not found"));
                 return;
             }
 
             if (!webUser.getPermissions().containsKey(args[2])) {
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
-                        .replace("%message%", "User don't have permission \"" + args[2] + "\""));
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_error_occurred()
+                    .replace("%message%", "User don't have permission \"" + args[2] + "\""));
                 return;
             }
 
             webUser.getPermissions().remove(args[2]);
             ReformCloudController.getInstance().getCloudConfiguration().updateWebUser(webUser);
-            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_webpermission_remove_success());
+            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                .getCommand_webpermission_remove_success());
             return;
         }
 
@@ -69,35 +77,40 @@ public final class CommandWebPermissions extends Command implements Serializable
         if (args[0].equalsIgnoreCase("add")) {
             WebUser webUser = this.getUser(args[1]);
             if (webUser == null) {
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
-                        .replace("%message%", "User not found"));
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_error_occurred()
+                    .replace("%message%", "User not found"));
                 return;
             }
 
             if (webUser.getPermissions().containsKey(args[2])) {
                 if (webUser.getPermissions().get(args[2]) == Boolean.valueOf(args[3])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Permission already set"));
                     return;
-                } else
+                } else {
                     webUser.getPermissions().remove(args[2]);
+                }
             }
 
             webUser.getPermissions().put(args[2], Boolean.valueOf(args[3]));
             ReformCloudController.getInstance().getCloudConfiguration().updateWebUser(webUser);
-            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_webpermission_add_success()
-                    .replace("%perm%", args[2])
-                    .replace("%key%", Boolean.toString(Boolean.valueOf(args[3]))));
+            commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                .getCommand_webpermission_add_success()
+                .replace("%perm%", args[2])
+                .replace("%key%", Boolean.toString(Boolean.valueOf(args[3]))));
         }
     }
 
     private WebUser getUser(final String name) {
         return ReformCloudController.getInstance()
-                .getCloudConfiguration()
-                .getWebUsers()
-                .stream()
-                .filter(e -> e.getUser().equals(name))
-                .findFirst()
-                .orElse(null);
+            .getCloudConfiguration()
+            .getWebUsers()
+            .stream()
+            .filter(e -> e.getUser().equals(name))
+            .findFirst()
+            .orElse(null);
     }
 }

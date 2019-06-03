@@ -27,18 +27,19 @@ import java.util.List;
  */
 
 final class ReformCloudLauncher implements Serializable {
+
     /**
      * Main method of ReformCloudController
      *
-     * @param args          The start parameters of reformcloud
-     * @throws Throwable    Will be thrown if any exception occurs
+     * @param args The start parameters of reformcloud
+     * @throws Throwable Will be thrown if any exception occurs
      */
     public static synchronized void main(String[] args) throws Throwable {
         final List<String> options = Arrays.asList(args);
 
         if (StringUtil.USER_NAME.equalsIgnoreCase("root")
-                && StringUtil.OS_NAME.toLowerCase().contains("linux")
-                && !options.contains("--ignore-root")) {
+            && StringUtil.OS_NAME.toLowerCase().contains("linux")
+            && !options.contains("--ignore-root")) {
             System.out.println("You cannot run ReformCloud as root user");
             try {
                 Thread.sleep(2000);
@@ -55,8 +56,9 @@ final class ReformCloudLauncher implements Serializable {
         System.out.println("\nTrying to startup ReformCloudController...");
         System.out.println("Startup time: " + DateProvider.formatByDefaultFormat(current) + "\n");
 
-        if (Files.exists(Paths.get("reformcloud/logs")))
+        if (Files.exists(Paths.get("reformcloud/logs"))) {
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));
+        }
 
         final CommandManager commandManager = new CommandManager();
         final LoggerProvider loggerProvider = new LoggerProvider();
@@ -66,9 +68,11 @@ final class ReformCloudLauncher implements Serializable {
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
         loggerProvider.setDebug(options.contains("--debug"));
-        new ReformCloudController(loggerProvider, commandManager, options.contains("--ssl"), current);
+        new ReformCloudController(loggerProvider, commandManager, options.contains("--ssl"),
+            current);
 
-        loggerProvider.info(ReformCloudController.getInstance().getLoadedLanguage().getHelp_default());
+        loggerProvider
+            .info(ReformCloudController.getInstance().getLoadedLanguage().getHelp_default());
         new ReformAsyncConsole(loggerProvider, commandManager, "Controller");
 
         infinitySleeper.sleep();

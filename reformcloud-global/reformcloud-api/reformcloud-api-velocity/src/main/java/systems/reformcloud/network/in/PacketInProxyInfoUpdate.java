@@ -18,9 +18,11 @@ import java.io.Serializable;
  */
 
 public final class PacketInProxyInfoUpdate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ProxyInfo proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-        VelocityBootstrap.getInstance().getProxyServer().getEventManager().fire(new CloudProxyInfoUpdateEvent(proxyInfo));
+        VelocityBootstrap.getInstance().getProxyServer().getEventManager()
+            .fire(new CloudProxyInfoUpdateEvent(proxyInfo));
     }
 }

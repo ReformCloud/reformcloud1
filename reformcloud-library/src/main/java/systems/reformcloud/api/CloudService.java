@@ -14,8 +14,9 @@ import java.util.function.BiConsumer;
  * @author _Klaro | Pasqual K. / created on 21.04.2019
  */
 
-public interface ICloudService {
-    AtomicReference<ICloudService> instance = new AtomicReference<>();
+public interface CloudService {
+
+    AtomicReference<CloudService> instance = new AtomicReference<>();
 
     /**
      * Get a cached online player
@@ -36,7 +37,7 @@ public interface ICloudService {
     /**
      * Schedules a specific task
      *
-     * @param runnable     The runnable which should be run
+     * @param runnable The runnable which should be run
      * @param timeInMillis The delay in milliseconds
      */
     void schedule(Runnable runnable, int timeInMillis);
@@ -45,7 +46,7 @@ public interface ICloudService {
      * Patches an action async and runs the when completed stage after
      *
      * @param runnable The runnable which should be executed
-     * @param andThen  Will be called after completing the action
+     * @param andThen Will be called after completing the action
      */
     void patchAsync(Runnable runnable, BiConsumer<? super Void, ? super Throwable> andThen);
 }

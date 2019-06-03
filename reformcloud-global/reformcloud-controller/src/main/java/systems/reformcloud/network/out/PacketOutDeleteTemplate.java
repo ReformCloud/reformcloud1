@@ -14,13 +14,14 @@ import java.io.Serializable;
  */
 
 public final class PacketOutDeleteTemplate extends Packet implements Serializable {
+
     public PacketOutDeleteTemplate(String type, String template, String group) {
         super(
-                "DeleteTemplate",
-                new Configuration()
-                        .addStringValue("type", type.toLowerCase())
-                        .addStringValue("group", group)
-                        .addStringValue("template", template)
+            "DeleteTemplate",
+            new Configuration()
+                .addStringValue("type", type.toLowerCase())
+                .addStringValue("group", group)
+                .addStringValue("template", template)
         );
     }
 }

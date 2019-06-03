@@ -11,8 +11,11 @@ import java.io.Serializable;
  */
 
 public final class AutoStart implements Serializable {
+
     private boolean enabled;
+
     private int playerMax;
+
     private long allowAutoStartEverySeconds;
 
     @java.beans.ConstructorProperties({"enabled", "playerMax", "allowAutoStartEverySeconds"})

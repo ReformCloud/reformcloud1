@@ -15,6 +15,7 @@ import java.util.concurrent.*;
  */
 
 public final class PacketFuture implements Serializable {
+
     /**
      * The completable future for the packets
      */
@@ -48,11 +49,12 @@ public final class PacketFuture implements Serializable {
     /**
      * Creates a new packet future
      *
-     * @param channelHandler  The channel handler which should be used to identify the packets
-     * @param packet          The packet which should be sent
+     * @param channelHandler The channel handler which should be used to identify the packets
+     * @param packet The packet which should be sent
      * @param executorService The executor service which should be used to send the packets
      */
-    public PacketFuture(ChannelHandler channelHandler, Packet packet, ExecutorService executorService) {
+    public PacketFuture(ChannelHandler channelHandler, Packet packet,
+        ExecutorService executorService) {
         this.completableFuture = new CompletableFuture<>();
         this.executorService = executorService;
         this.channelHandler = channelHandler;
@@ -62,12 +64,13 @@ public final class PacketFuture implements Serializable {
     /**
      * Creates a new packet future
      *
-     * @param channelHandler        The channel handler which should be used to identify the packets
-     * @param packet                The packet which should be sent
-     * @param executorService       The executor service which should be used to send the packets
-     * @param to                    The name of the network participant who should receive the packet
+     * @param channelHandler The channel handler which should be used to identify the packets
+     * @param packet The packet which should be sent
+     * @param executorService The executor service which should be used to send the packets
+     * @param to The name of the network participant who should receive the packet
      */
-    public PacketFuture(ChannelHandler channelHandler, Packet packet, ExecutorService executorService, String to) {
+    public PacketFuture(ChannelHandler channelHandler, Packet packet,
+        ExecutorService executorService, String to) {
         this.completableFuture = new CompletableFuture<>();
         this.executorService = executorService;
         this.channelHandler = channelHandler;
@@ -78,7 +81,7 @@ public final class PacketFuture implements Serializable {
     /**
      * This method will set the successful network inbound handler
      *
-     * @param inboundHandler        The new successful network handler
+     * @param inboundHandler The new successful network handler
      * @return The current instance of this class
      */
     public PacketFuture onSuccessfullyCompleted(final NetworkQueryInboundHandler inboundHandler) {
@@ -89,7 +92,7 @@ public final class PacketFuture implements Serializable {
     /**
      * This method will set the failure network inbound handler
      *
-     * @param inboundHandler        The new failure network handler
+     * @param inboundHandler The new failure network handler
      * @return The current instance of this class
      */
     private PacketFuture onFailure(final NetworkQueryInboundHandler inboundHandler) {
@@ -100,28 +103,30 @@ public final class PacketFuture implements Serializable {
     /**
      * This method will set the failure and the successful packet handler
      *
-     * @param onSuccess         The new successful network handler
-     * @param onFailure         The new failure network handler
+     * @param onSuccess The new successful network handler
+     * @param onFailure The new failure network handler
      * @return The current instance of this class
      */
-    public PacketFuture whenCompleted(final NetworkQueryInboundHandler onSuccess, final NetworkQueryInboundHandler onFailure) {
+    public PacketFuture whenCompleted(final NetworkQueryInboundHandler onSuccess,
+        final NetworkQueryInboundHandler onFailure) {
         return this.onSuccessfullyCompleted(onSuccess).onFailure(onFailure);
     }
 
     /**
      * Sends the packet to the network participant on a new thread
      *
-     * @param to    The network participant name
+     * @param to The network participant name
      */
     public void send(String to) {
         this.executorService.execute(() -> {
             this.channelHandler.sendDirectPacket(to, sentPacket);
 
             Packet packet = this.syncUninterruptedly();
-            if (packet.getResult() == null && this.onFailure != null)
+            if (packet.getResult() == null && this.onFailure != null) {
                 this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-            else if (packet.getResult() != null && this.onSuccess != null)
+            } else if (packet.getResult() != null && this.onSuccess != null) {
                 this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
+            }
         });
     }
 
@@ -131,8 +136,9 @@ public final class PacketFuture implements Serializable {
      * @return The current instance of this class
      */
     public PacketFuture sendOnCurrentThread() {
-        if (this.to == null)
+        if (this.to == null) {
             return null;
+        }
 
         this.channelHandler.sendDirectPacket(this.to, sentPacket);
         return this;
@@ -152,19 +158,20 @@ public final class PacketFuture implements Serializable {
     /**
      * Sends the packet to the network participant on a new thread
      *
-     * @param to            The network participant name
-     * @param timeout       The time how long the cloud should wait for a response
-     * @param timeUnit      The time unit in which the cloud should wait for a response
+     * @param to The network participant name
+     * @param timeout The time how long the cloud should wait for a response
+     * @param timeUnit The time unit in which the cloud should wait for a response
      */
     public void send(String to, long timeout, TimeUnit timeUnit) {
         executorService.execute(() -> {
             this.channelHandler.sendDirectPacket(to, sentPacket);
 
             Packet packet = this.syncUninterruptedly(timeout, timeUnit);
-            if (packet.getResult() == null && this.onFailure != null)
+            if (packet.getResult() == null && this.onFailure != null) {
                 this.onFailure.handle(packet.getConfiguration(), packet.getResult());
-            else if (this.onSuccess != null)
+            } else if (this.onSuccess != null) {
                 this.onSuccess.handle(packet.getConfiguration(), packet.getResult());
+            }
         });
     }
 
@@ -184,8 +191,8 @@ public final class PacketFuture implements Serializable {
     /**
      * Waits on the current thread the given time for a response
      *
-     * @param timeout       The time how long the cloud should wait
-     * @param timeUnit      The time unit in which the cloud should wait
+     * @param timeout The time how long the cloud should wait
+     * @param timeUnit The time unit in which the cloud should wait
      * @return The response packet or an empty packet
      */
     public Packet syncUninterruptedly(long timeout, TimeUnit timeUnit) {
@@ -199,7 +206,7 @@ public final class PacketFuture implements Serializable {
     /**
      * Handel an incoming response
      *
-     * @param in    The packet which was sent by the other network participant
+     * @param in The packet which was sent by the other network participant
      */
     public void handleIncoming(Packet in) {
         completableFuture.complete(in);

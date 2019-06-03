@@ -10,7 +10,8 @@ import java.io.IOException;
  * @author _Klaro | Pasqual K. / created on 27.05.2019
  */
 
-public interface IServiceAble {
+public interface ServiceAble {
+
     boolean bootstrap();
 
     void bootstrap0();

@@ -15,7 +15,10 @@ import java.util.UUID;
  */
 
 public final class PacketOutInternalProcessRemove extends Packet {
-    public PacketOutInternalProcessRemove(final UUID processUID, final AuthenticationType authenticationType) {
-        super("InternalProcessRemove", new Configuration().addValue("uid", processUID).addStringValue("type", authenticationType.name()));
+
+    public PacketOutInternalProcessRemove(final UUID processUID,
+        final AuthenticationType authenticationType) {
+        super("InternalProcessRemove", new Configuration().addValue("uid", processUID)
+            .addStringValue("type", authenticationType.name()));
     }
 }

@@ -20,25 +20,30 @@ import java.util.List;
  */
 
 public final class FTPUtil implements Serializable {
-    public static void uploadDirectory(FTPClient ftpClient, String dirPath, List<String> excluded, boolean deleteOnOperationComplete) throws IOException {
+
+    public static void uploadDirectory(FTPClient ftpClient, String dirPath, List<String> excluded,
+        boolean deleteOnOperationComplete) throws IOException {
         createDirectory();
         final String name = getCurrentFileName();
         final String dir = "temp/" + name;
         ZipUtil.zipDirectoryToFile(new File(dirPath), dir, excluded);
         ftpClient.makeDirectory(dirPath);
         uploadFile(ftpClient, dir, dirPath + "/" + name);
-        if (deleteOnOperationComplete)
+        if (deleteOnOperationComplete) {
             deleteFile(name);
+        }
     }
 
-    private static void uploadFile(FTPClient ftpClient, String zipPath, String remoteDir) throws IOException {
+    private static void uploadFile(FTPClient ftpClient, String zipPath, String remoteDir)
+        throws IOException {
         FileInputStream fileInputStream = new FileInputStream(new File(zipPath));
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
         ftpClient.storeFile(remoteDir, fileInputStream);
         fileInputStream.close();
     }
 
-    public static void openConnection(FTPClient ftpClient, String host, int port, String userName, String password) throws IOException {
+    public static void openConnection(FTPClient ftpClient, String host, int port, String userName,
+        String password) throws IOException {
         ftpClient.connect(host, port);
         ftpClient.login(userName, password);
         ftpClient.enterLocalPassiveMode();

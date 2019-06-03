@@ -13,6 +13,7 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class SignAddon extends ControllerAddonImpl implements Serializable {
+
     private static final long serialVersionUID = -3291689192807455021L;
 
     private static SignSelector signSelector;
@@ -37,9 +38,9 @@ public final class SignAddon extends ControllerAddonImpl implements Serializable
         }
 
         ReformCloudController.getInstance().getNettyHandler()
-                .unregisterQueryHandler("QueryGetSigns")
+            .unregisterQueryHandler("QueryGetSigns")
 
-                .unregisterHandler("CreateSign")
-                .unregisterHandler("RemoveSign");
+            .unregisterHandler("CreateSign")
+            .unregisterHandler("RemoveSign");
     }
 }

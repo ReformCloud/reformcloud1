@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutCreateServerGroup extends Packet implements Serializable {
+
     public PacketOutCreateServerGroup(ServerGroup serverGroup) {
         super("CreateServerGroup", new Configuration().addValue("group", serverGroup));
     }

@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class Gson extends Dependency implements Serializable {
+
     private static final long serialVersionUID = -6226344132999747554L;
 
     public Gson() {

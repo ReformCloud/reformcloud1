@@ -33,32 +33,36 @@ import java.util.regex.Pattern;
  */
 
 final class ClientPreLoader implements Serializable {
+
     public static synchronized void main(String[] args) throws IOException {
         LibraryPreLoader.prepareDependencies(true);
         List<URL> libs = LibraryPreLoader.downloadDependencies();
         System.out.println("\nSuccessfully installed all necessary libraries");
 
         prepareFolder();
-        if (!Files.exists(Paths.get("configuration.properties")))
+        if (!Files.exists(Paths.get("configuration.properties"))) {
             downloadCloudVersion();
-        else
+        } else {
             checkForNewVersion();
+        }
 
         run(args, libs);
     }
 
     private static synchronized void run(String[] args, List<URL> libs) {
-        if (args == null || libs == null)
+        if (args == null || libs == null) {
             throw new IllegalStateException("Null element detected");
+        }
 
         run0(args, libs);
     }
 
     private static synchronized void run0(String[] args, List<URL> libs) {
         File file = new File("version/ReformCloudClient-" +
-                CommonLoader.getCurrentFallbackVersion() + ".jar");
-        if (!file.exists())
-            throw new IllegalStateException("File of client not found");
+            CommonLoader.getCurrentFallbackVersion() + ".jar");
+        if (!file.exists()) {
+            downloadCloudVersion();
+        }
 
         try {
             libs.add(file.toURI().toURL());
@@ -71,11 +75,13 @@ final class ClientPreLoader implements Serializable {
     }
 
     private static synchronized void run1(String[] args, ClassLoader classLoader, File file) {
-        if (classLoader == null)
+        if (classLoader == null) {
             throw new IllegalStateException("Null element detected");
+        }
 
-        if (!file.exists())
+        if (!file.exists()) {
             throw new IllegalStateException("File of client not found");
+        }
 
         JarFile jarFile = null;
         try {
@@ -87,8 +93,9 @@ final class ClientPreLoader implements Serializable {
             ex.printStackTrace();
         } finally {
             try {
-                if (jarFile != null)
+                if (jarFile != null) {
                     jarFile.close();
+                }
             } catch (final IOException ex) {
                 ex.printStackTrace();
             }
@@ -109,8 +116,9 @@ final class ClientPreLoader implements Serializable {
     }
 
     private static synchronized void setSystemClassLoaderTo(ClassLoader classLoaderTo) {
-        if (classLoaderTo == null)
+        if (classLoaderTo == null) {
             throw new IllegalStateException("Null element detected");
+        }
 
         try {
             Field field = ClassLoader.class.getDeclaredField("scl");
@@ -122,23 +130,27 @@ final class ClientPreLoader implements Serializable {
     }
 
     private static void prepareFolder() throws IOException {
-        if (!Files.exists(Paths.get("version")))
+        if (!Files.exists(Paths.get("version"))) {
             Files.createDirectories(Paths.get("version"));
+        }
     }
 
     private static void downloadCloudVersion() {
         deleteExistingVersion();
 
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(downloadURL()).openConnection();
-            httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(downloadURL())
+                .openConnection();
+            httpURLConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             httpURLConnection.setDoOutput(false);
             httpURLConnection.setUseCaches(false);
             httpURLConnection.connect();
 
             try (InputStream inputStream = httpURLConnection.getInputStream()) {
                 Files.copy(inputStream, Paths.get("version/ReformCloudClient-" +
-                        CommonLoader.getCurrentFallbackVersion() + ".jar"), StandardCopyOption.REPLACE_EXISTING);
+                        CommonLoader.getCurrentFallbackVersion() + ".jar"),
+                    StandardCopyOption.REPLACE_EXISTING);
             }
 
             httpURLConnection.disconnect();
@@ -150,13 +162,13 @@ final class ClientPreLoader implements Serializable {
     private static String downloadURL() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
-                .append("https://internal.reformcloud.systems")
-                .append("/")
-                .append("latest")
-                .append("/")
-                .append("ReformCloudClient-")
-                .append(CommonLoader.getCurrentFallbackVersion())
-                .append(".jar");
+            .append("https://internal.reformcloud.systems")
+            .append("/")
+            .append("latest")
+            .append("/")
+            .append("ReformCloudClient-")
+            .append(CommonLoader.getCurrentFallbackVersion())
+            .append(".jar");
         return stringBuilder.substring(0);
     }
 
@@ -172,16 +184,20 @@ final class ClientPreLoader implements Serializable {
 
     private static void checkForNewVersion0() {
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://internal.reformcloud.systems/update/version.json").openConnection();
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+                "https://internal.reformcloud.systems/update/version.json").openConnection();
+            urlConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             urlConnection.setUseCaches(false);
             urlConnection.connect();
 
             StringBuilder stringBuilder = new StringBuilder();
             String line;
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
-                while ((line = bufferedReader.readLine()) != null)
+            try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(urlConnection.getInputStream()))) {
+                while ((line = bufferedReader.readLine()) != null) {
                     stringBuilder.append(line);
+                }
             }
 
             urlConnection.disconnect();
@@ -197,40 +213,48 @@ final class ClientPreLoader implements Serializable {
     }
 
     private static void checkForNewVersion1(String version) {
-        if (version == null)
+        if (version == null) {
             return;
+        }
 
         String fallback = null;
         File file = Arrays.stream(new File("version").listFiles())
-                .filter(Objects::nonNull)
-                .filter(e -> e.getName().contains("ReformCloudClient"))
-                .filter(e -> e.getName().endsWith(".jar"))
-                .findFirst()
-                .orElse(null);
+            .filter(Objects::nonNull)
+            .filter(e -> e.getName().contains("ReformCloudClient"))
+            .filter(e -> e.getName().endsWith(".jar"))
+            .findFirst()
+            .orElse(null);
         if (file != null) {
             String[] split = file.getName().split("-");
             fallback = split[1].replace(".jar", "");
         }
 
-        Matcher matcher = Pattern.compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}").matcher(version);
-        boolean newVersionAvailable = matcher.matches() && !matcher.group(1).equals(fallback != null ? fallback : CommonLoader.getCurrentFallbackVersion());
-        if (!newVersionAvailable)
-            System.out.println("You're running on the ReformCloud Version " + CommonLoader.getCurrentFallbackVersion() + ". This is the newest version");
-        else
+        Matcher matcher = Pattern
+            .compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}").matcher(version);
+        boolean newVersionAvailable = matcher.matches() && !matcher.group(1)
+            .equals(fallback != null ? fallback : CommonLoader.getCurrentFallbackVersion());
+        if (!newVersionAvailable) {
+            System.out.println("You're running on the ReformCloud Version " + CommonLoader
+                .getCurrentFallbackVersion() + ". This is the newest version");
+        } else {
             downloadNewVersion(matcher.group(1), fallback);
+        }
     }
 
     private static void downloadNewVersion(String newVersion, String oldVersion) {
-        if (newVersion == null || newVersion.trim().isEmpty())
+        if (newVersion == null || newVersion.trim().isEmpty()) {
             return;
+        }
 
-        System.out.println("A newer version was detected! Should the cloud be updated automatically? [\"y\", \"n\"]");
+        System.out.println(
+            "A newer version was detected! Should the cloud be updated automatically? [\"y\", \"n\"]");
         try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
+            BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(System.in, StandardCharsets.UTF_8));
             String line = bufferedReader.readLine();
-            if (line.equalsIgnoreCase("y"))
+            if (line.equalsIgnoreCase("y")) {
                 downloadNewVersion0(newVersion);
-            else {
+            } else {
                 System.out.println("Please update the cloud manually later");
                 CommonLoader.setVersion(oldVersion);
             }
@@ -240,21 +264,26 @@ final class ClientPreLoader implements Serializable {
     }
 
     private static void downloadNewVersion0(String newVersion) {
-        if (Files.exists(Paths.get("version/ReformCloudClient-" + newVersion + ".jar")))
+        if (Files.exists(Paths.get("version/ReformCloudClient-" + newVersion + ".jar"))) {
             return;
+        }
 
         downloadCloudVersion();
     }
 
     private static void deleteExistingVersion() {
         File[] files = new File("version").listFiles();
-        if (files == null)
+        if (files == null) {
             return;
+        }
 
         for (File file : files) {
-            if (file.getName().contains("ReformCloudClient") && file.getName().endsWith(".jar") && !file.getName().contains(CommonLoader.getCurrentFallbackVersion()))
-                if (file.delete())
+            if (file.getName().contains("ReformCloudClient") && file.getName().endsWith(".jar")
+                && !file.getName().contains(CommonLoader.getCurrentFallbackVersion())) {
+                if (file.delete()) {
                     break;
+                }
+            }
         }
     }
 }

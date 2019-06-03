@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class ProxyInfoUpdateEvent extends Event implements Serializable {
+
     private ProxyInfo proxyInfo;
 
     @java.beans.ConstructorProperties({"proxyInfo"})

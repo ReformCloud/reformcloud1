@@ -27,29 +27,46 @@ public class ProxyGroup implements Serializable {
 
     private String name;
 
-    private List<String> clients, disabledServerGroups;
+    private List<String> clients;
+
+    private List<String> disabledServerGroups;
+
     private List<Template> templates;
+
     private Collection<UUID> whitelist;
 
     private AutoStart autoStart;
+
     private AutoStop autoStop;
 
     private ProxyModeType proxyModeType;
 
-    private boolean controllerCommandLogging, maintenance, save_logs;
+    private boolean controllerCommandLogging;
 
-    private int startPort, minOnline, maxOnline, maxPlayers, memory;
+    private boolean maintenance;
+
+    private boolean saveLogs;
+
+    private int startPort;
+
+    private int minOnline;
+
+    private int maxOnline;
+
+    private int maxPlayers;
+
+    private int memory;
 
     protected ProxyVersions proxyVersions;
 
     @java.beans.ConstructorProperties({"name", "clients", "disabledServerGroups", "templates",
         "whitelist", "proxyModeType", "autoStart", "autoStop", "controllerCommandLogging",
-        "maintenance", "save_logs", "startPort", "minOnline", "maxOnline", "maxPlayers", "memory",
+        "maintenance", "saveLogs", "startPort", "minOnline", "maxOnline", "maxPlayers", "memory",
         "proxyVersions"})
     public ProxyGroup(String name, List<String> clients, List<String> disabledServerGroups,
         List<Template> templates, Collection<UUID> whitelist, ProxyModeType proxyModeType,
         AutoStart autoStart, AutoStop autoStop, boolean controllerCommandLogging,
-        boolean maintenance, boolean save_logs, int startPort, int minOnline, int maxOnline,
+        boolean maintenance, boolean saveLogs, int startPort, int minOnline, int maxOnline,
         int maxPlayers, int memory, ProxyVersions proxyVersions) {
         this.name = name;
         this.clients = clients;
@@ -61,7 +78,7 @@ public class ProxyGroup implements Serializable {
         this.autoStart = autoStart;
         this.autoStop = autoStop;
         this.maintenance = maintenance;
-        this.save_logs = save_logs;
+        this.saveLogs = saveLogs;
         this.startPort = startPort;
         this.minOnline = minOnline;
         this.maxOnline = maxOnline;
@@ -138,8 +155,8 @@ public class ProxyGroup implements Serializable {
         return this.maintenance;
     }
 
-    public boolean isSave_logs() {
-        return this.save_logs;
+    public boolean isSaveLogs() {
+        return this.saveLogs;
     }
 
     public int getStartPort() {
@@ -198,8 +215,8 @@ public class ProxyGroup implements Serializable {
         this.maintenance = maintenance;
     }
 
-    public void setSave_logs(boolean save_logs) {
-        this.save_logs = save_logs;
+    public void setSaveLogs(boolean saveLogs) {
+        this.saveLogs = saveLogs;
     }
 
     public void setStartPort(int startPort) {
@@ -289,7 +306,7 @@ public class ProxyGroup implements Serializable {
         if (this.isMaintenance() != other.isMaintenance()) {
             return false;
         }
-        if (this.isSave_logs() != other.isSave_logs()) {
+        if (this.isSaveLogs() != other.isSaveLogs()) {
             return false;
         }
         if (this.getStartPort() != other.getStartPort()) {
@@ -337,7 +354,7 @@ public class ProxyGroup implements Serializable {
         result = result * PRIME + ($proxyModeType == null ? 43 : $proxyModeType.hashCode());
         result = result * PRIME + (this.isControllerCommandLogging() ? 79 : 97);
         result = result * PRIME + (this.isMaintenance() ? 79 : 97);
-        result = result * PRIME + (this.isSave_logs() ? 79 : 97);
+        result = result * PRIME + (this.isSaveLogs() ? 79 : 97);
         result = result * PRIME + this.getStartPort();
         result = result * PRIME + this.getMinOnline();
         result = result * PRIME + this.getMaxOnline();
@@ -353,7 +370,7 @@ public class ProxyGroup implements Serializable {
             + ", disabledServerGroups=" + this.getDisabledServerGroups() + ", templates=" + this
             .getTemplates() + ", whitelist=" + this.getWhitelist() + ", proxyModeType=" + this
             .getProxyModeType() + ", controllerCommandLogging=" + this.isControllerCommandLogging()
-            + ", maintenance=" + this.isMaintenance() + ", save_logs=" + this.isSave_logs()
+            + ", maintenance=" + this.isMaintenance() + ", saveLogs=" + this.isSaveLogs()
             + ", startPort=" + this.getStartPort() + ", minOnline=" + this.getMinOnline()
             + ", maxOnline=" + this.getMaxOnline() + ", maxPlayers=" + this.getMaxPlayers()
             + ", memory=" + this.getMemory() + ", proxyVersions=" + this.getProxyVersions() + ")";

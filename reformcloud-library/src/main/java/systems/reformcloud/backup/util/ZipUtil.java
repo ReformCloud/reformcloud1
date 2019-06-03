@@ -18,18 +18,15 @@ import java.util.zip.ZipOutputStream;
  */
 
 final class ZipUtil implements Serializable {
-    private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut, List<String> skip) throws IOException {
-        /*
-        if (fileToZip.isHidden())
-            return;
 
-         */
-
+    private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut,
+        List<String> skip) throws IOException {
         if (fileToZip.isDirectory()) {
             File[] children = fileToZip.listFiles();
             for (File childFile : children) {
-                if (isSkipped(skip, childFile.toPath()))
+                if (isSkipped(skip, childFile.toPath())) {
                     continue;
+                }
 
                 zipFile(childFile, fileName + "/" + childFile.getName(), zipOut, skip);
             }
@@ -42,8 +39,9 @@ final class ZipUtil implements Serializable {
         zipOut.putNextEntry(zipEntry);
         byte[] bytes = new byte[1024];
         int length;
-        while ((length = fileInputStream.read(bytes)) >= 0)
+        while ((length = fileInputStream.read(bytes)) >= 0) {
             zipOut.write(bytes, 0, length);
+        }
 
         fileInputStream.close();
     }
@@ -57,7 +55,9 @@ final class ZipUtil implements Serializable {
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while zipping dir", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error while zipping dir", ex);
         }
     }
 

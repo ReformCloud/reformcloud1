@@ -16,6 +16,7 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class PermissionsAddon extends ControllerAddonImpl implements Serializable {
+
     private static PermissionsAddon instance;
 
     private PermissionDatabase permissionDatabase;
@@ -32,9 +33,11 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
     @Override
     public void onAddonLoading() {
         permissionDatabase = new PermissionDatabase();
-        ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutUpdatePermissionCache());
+        ReformCloudController.getInstance().getChannelHandler()
+            .sendToAllDirect(new PacketOutUpdatePermissionCache());
         this.registerCommand(new CommandPermissions());
-        ReformCloudController.getInstance().getEventManager().registerListener(new PlayerDisconnectedListener());
+        ReformCloudController.getInstance().getEventManager()
+            .registerListener(new PlayerDisconnectedListener());
     }
 
     @Override
@@ -43,10 +46,10 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
         permissionDatabase = null;
 
         ReformCloudController.getInstance().getNettyHandler()
-                .unregisterQueryHandler("QueryGetPermissionCache")
-                .unregisterQueryHandler("QueryGetPermissionHolder")
+            .unregisterQueryHandler("QueryGetPermissionCache")
+            .unregisterQueryHandler("QueryGetPermissionHolder")
 
-                .unregisterHandler("UpdatePermissionHolder");
+            .unregisterHandler("UpdatePermissionHolder");
     }
 
     public PermissionDatabase getPermissionDatabase() {

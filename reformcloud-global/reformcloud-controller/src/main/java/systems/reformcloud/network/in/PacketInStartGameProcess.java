@@ -20,32 +20,48 @@ import java.util.UUID;
  */
 
 public final class PacketInStartGameProcess implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        final ServerGroup serverGroup = configuration.getValue("group", TypeTokenAdaptor.getSERVER_GROUP_TYPE());
-        final Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
+        final ServerGroup serverGroup = configuration
+            .getValue("group", TypeTokenAdaptor.getSERVER_GROUP_TYPE());
+        final Client client = ReformCloudController.getInstance()
+            .getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
-        if (client == null)
+        if (client == null) {
             return;
+        }
 
-        final Collection<String> servers = ReformCloudController.getInstance().getInternalCloudNetwork()
-                .getServerProcessManager().getOnlineServers(serverGroup.getName());
-        final Collection<String> waiting = ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting(serverGroup.getName());
+        final Collection<String> servers = ReformCloudController.getInstance()
+            .getInternalCloudNetwork()
+            .getServerProcessManager().getOnlineServers(serverGroup.getName());
+        final Collection<String> waiting = ReformCloudController.getInstance()
+            .getCloudProcessOfferService().getWaiting(serverGroup.getName());
 
         final int waitingAndOnline = servers.size() + waiting.size();
-        final String id = Integer.toString(ReformCloudController.getInstance().getCloudProcessOfferService().nextServerID(serverGroup.getName()));
-        final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
-        ReformCloudController.getInstance().getCloudProcessOfferService().registerID(serverGroup.getName(), name, Integer.valueOf(id));
+        final String id = Integer.toString(
+            ReformCloudController.getInstance().getCloudProcessOfferService()
+                .nextServerID(serverGroup.getName()));
+        final String name =
+            serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration()
+                .getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+        ReformCloudController.getInstance().getCloudProcessOfferService()
+            .registerID(serverGroup.getName(), name, Integer.valueOf(id));
 
         if (serverGroup.getMaxOnline() > waitingAndOnline || serverGroup.getMaxOnline() == -1) {
             if (configuration.contains("template")) {
-                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
-                        new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), configuration.getConfiguration("pre"), id, configuration.getStringValue("template"))
-                );
+                ReformCloudController.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous(client.getName(),
+                        new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(),
+                            configuration.getConfiguration("pre"), id,
+                            configuration.getStringValue("template"))
+                    );
             } else {
-                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
-                        new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), configuration.getConfiguration("pre"), id)
-                );
+                ReformCloudController.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous(client.getName(),
+                        new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(),
+                            configuration.getConfiguration("pre"), id)
+                    );
             }
         }
     }

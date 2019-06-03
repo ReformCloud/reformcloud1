@@ -14,7 +14,10 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
  */
 
 public final class PacketOutServerInfoUpdate extends Packet {
-    public PacketOutServerInfoUpdate(final ServerInfo serverInfo, final InternalCloudNetwork internalCloudNetwork) {
-        super("ServerInfoUpdate", new Configuration().addValue("serverInfo", serverInfo).addValue("networkProperties", internalCloudNetwork));
+
+    public PacketOutServerInfoUpdate(final ServerInfo serverInfo,
+        final InternalCloudNetwork internalCloudNetwork) {
+        super("ServerInfoUpdate", new Configuration().addValue("serverInfo", serverInfo)
+            .addValue("networkProperties", internalCloudNetwork));
     }
 }

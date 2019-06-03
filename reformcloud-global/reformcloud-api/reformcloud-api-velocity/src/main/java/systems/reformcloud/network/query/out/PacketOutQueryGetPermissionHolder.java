@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutQueryGetPermissionHolder extends Packet implements Serializable {
+
     public PacketOutQueryGetPermissionHolder(PermissionHolder permissionHolder) {
         super("QueryGetPermissionHolder", new Configuration().addValue("holder", permissionHolder));
     }

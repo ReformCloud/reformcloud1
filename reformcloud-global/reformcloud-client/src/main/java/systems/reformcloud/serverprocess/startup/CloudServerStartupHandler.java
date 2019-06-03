@@ -44,29 +44,35 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
-import systems.reformcloud.utility.startup.IServiceAble;
+import systems.reformcloud.utility.startup.ServiceAble;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
  */
 
-public final class CloudServerStartupHandler implements Serializable, IServiceAble {
+public final class CloudServerStartupHandler implements Serializable, ServiceAble {
 
     private Path path;
+
     private ServerStartupInfo serverStartupInfo;
+
     private Process process;
+
     private int port;
 
     private boolean toShutdown;
 
     private Template loaded;
+
     private ScreenHandler screenHandler;
 
     private ProcessStartupStage processStartupStage;
 
     private boolean firstGroupStart;
 
-    private long startupTime, finishedTime;
+    private long startupTime;
+
+    private long finishedTime;
 
     /**
      * Creates a instance of a CloudServerStartupHandler
@@ -80,12 +86,13 @@ public final class CloudServerStartupHandler implements Serializable, IServiceAb
 
         if (this.serverStartupInfo.getServerGroup().getServerModeType()
             .equals(ServerModeType.STATIC)) {
-            this.path = Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName());
+            this.path =
+                Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName() + "/plugins");
             FileUtils.createDirectory(path);
         } else {
             this.path = Paths.get(
                 "reformcloud/temp/servers/" + serverStartupInfo.getName() + "-" + serverStartupInfo
-                    .getUid());
+                    .getUid() + "/plugins");
             FileUtils.deleteFullDirectory(path);
             FileUtils.createDirectory(path);
         }
@@ -130,8 +137,8 @@ public final class CloudServerStartupHandler implements Serializable, IServiceAb
                 .replace("%path%", this.path + ""));
 
             if (loaded.getTemplateBackend().equals(TemplateBackend.URL)
-                && loaded.getTemplate_url() != null) {
-                new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplate_url());
+                && loaded.getTemplateUrl() != null) {
+                new TemplatePreparer(path + "/loaded.zip").loadTemplate(loaded.getTemplateUrl());
                 try {
                     ZoneInformationProtocolUtility.unZip(new File(path + "/loaded.zip"), path + "");
                 } catch (final Exception ex) {
@@ -504,6 +511,7 @@ public final class CloudServerStartupHandler implements Serializable, IServiceAb
                 StringUtil.JAVA_JAR,
                 "loader.jar",
                 "--file=spigot.jar",
+                "--version=" + StringUtil.REFORM_VERSION,
                 "nogui"
             };
 
@@ -631,7 +639,7 @@ public final class CloudServerStartupHandler implements Serializable, IServiceAb
 
         this.screenHandler.disableScreen();
 
-        if (this.serverStartupInfo.getServerGroup().isSave_logs()) {
+        if (this.serverStartupInfo.getServerGroup().isSaveLogs()) {
             FileUtils.copyFile(this.path + "/logs/latest.log",
                 "reformcloud/saves/servers/logs/server_log_" +
                     this.serverStartupInfo.getUid() + "-" + this.serverStartupInfo.getName()
@@ -653,8 +661,6 @@ public final class CloudServerStartupHandler implements Serializable, IServiceAb
         if (!this.serverStartupInfo.getServerGroup().getServerModeType()
             .equals(ServerModeType.STATIC)) {
             FileUtils.deleteFullDirectory(path);
-        } else {
-            FileUtils.deleteFileIfExists(Paths.get(path + "/plugins/ReformAPISpigot.jar"));
         }
 
         try {

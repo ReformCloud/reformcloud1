@@ -5,7 +5,7 @@
 package systems.reformcloud.api.player;
 
 import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.api.IDefaultPlayerProvider;
+import systems.reformcloud.api.DefaultPlayerProvider;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.out.PacketOutConnectPlayer;
@@ -19,17 +19,19 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 14.03.2019
  */
 
-public final class PlayerProvider implements Serializable, IDefaultPlayerProvider {
+public final class PlayerProvider implements Serializable, DefaultPlayerProvider {
+
     @Override
     public void sendPlayer(UUID uniqueID, String name) {
         ProxyInfo proxyInfo = this.findPlayer(uniqueID);
-        if (proxyInfo == null)
+        if (proxyInfo == null) {
             return;
+        }
 
         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                proxyInfo.getCloudProcess().getName(), new PacketOutConnectPlayer(
-                        uniqueID, name
-                )
+            proxyInfo.getCloudProcess().getName(), new PacketOutConnectPlayer(
+                uniqueID, name
+            )
         );
     }
 
@@ -41,37 +43,39 @@ public final class PlayerProvider implements Serializable, IDefaultPlayerProvide
     @Override
     public void sendMessage(UUID uniqueID, String message) {
         ProxyInfo proxyInfo = this.findPlayer(uniqueID);
-        if (proxyInfo == null)
+        if (proxyInfo == null) {
             return;
+        }
 
         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                proxyInfo.getCloudProcess().getName(), new PacketOutSendPlayerMessage(
-                        uniqueID, message
-                )
+            proxyInfo.getCloudProcess().getName(), new PacketOutSendPlayerMessage(
+                uniqueID, message
+            )
         );
     }
 
     @Override
     public void kickPlayer(UUID uniqueID, String reason) {
         ProxyInfo proxyInfo = this.findPlayer(uniqueID);
-        if (proxyInfo == null)
+        if (proxyInfo == null) {
             return;
+        }
 
         ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                proxyInfo.getCloudProcess().getName(), new PacketOutKickPlayer(
-                        uniqueID, reason
-                )
+            proxyInfo.getCloudProcess().getName(), new PacketOutKickPlayer(
+                uniqueID, reason
+            )
         );
     }
 
     private ProxyInfo findPlayer(UUID toFind) {
         return ReformCloudController.getInstance()
-                .getInternalCloudNetwork()
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .stream()
-                .filter(e -> e.getOnlinePlayers().contains(toFind))
-                .findFirst()
-                .orElse(null);
+            .getInternalCloudNetwork()
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .stream()
+            .filter(e -> e.getOnlinePlayers().contains(toFind))
+            .findFirst()
+            .orElse(null);
     }
 }

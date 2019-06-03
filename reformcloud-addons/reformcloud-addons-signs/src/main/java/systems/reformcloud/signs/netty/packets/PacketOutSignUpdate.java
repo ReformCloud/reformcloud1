@@ -17,7 +17,10 @@ import systems.reformcloud.signs.SignLayoutConfiguration;
  */
 
 public final class PacketOutSignUpdate extends Packet implements Serializable {
-    public PacketOutSignUpdate(final SignLayoutConfiguration signLayoutConfiguration, final Map<UUID, Sign> signs) {
-        super("SignUpdate", new Configuration().addValue("signConfig", signLayoutConfiguration).addValue("signMap", signs));
+
+    public PacketOutSignUpdate(final SignLayoutConfiguration signLayoutConfiguration,
+        final Map<UUID, Sign> signs) {
+        super("SignUpdate", new Configuration().addValue("signConfig", signLayoutConfiguration)
+            .addValue("signMap", signs));
     }
 }

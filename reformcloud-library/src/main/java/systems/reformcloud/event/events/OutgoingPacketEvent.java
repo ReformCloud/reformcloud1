@@ -19,6 +19,7 @@ import java.io.Serializable;
  */
 
 public final class OutgoingPacketEvent extends Event implements Serializable, Cancellable {
+
     /**
      * The current cancel status
      */
@@ -27,7 +28,7 @@ public final class OutgoingPacketEvent extends Event implements Serializable, Ca
     /**
      * Sets the cancel status
      *
-     * @param cancelled     The new cancel status
+     * @param cancelled The new cancel status
      */
     @Override
     public void setCancelled(boolean cancelled) {

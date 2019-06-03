@@ -15,9 +15,10 @@ import java.util.UUID;
  */
 
 public final class PacketOutKickPlayer extends Packet implements Serializable {
+
     public PacketOutKickPlayer(UUID uniqueID, String reason, String proxy) {
         super("KickPlayer", new Configuration().addValue("uuid", uniqueID)
-                .addStringValue("reason", reason).addStringValue("proxy", proxy)
+            .addStringValue("reason", reason).addStringValue("proxy", proxy)
         );
     }
 }

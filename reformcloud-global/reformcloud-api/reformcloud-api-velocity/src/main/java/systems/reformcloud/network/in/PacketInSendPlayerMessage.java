@@ -18,11 +18,14 @@ import java.util.UUID;
  */
 
 public final class PacketInSendPlayerMessage implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer().getPlayer(configuration.getValue("uuid", UUID.class)).orElse(null);
-        if (proxiedPlayer == null)
+        Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer()
+            .getPlayer(configuration.getValue("uuid", UUID.class)).orElse(null);
+        if (proxiedPlayer == null) {
             return;
+        }
 
         proxiedPlayer.sendMessage(TextComponent.of(configuration.getStringValue("message")));
     }

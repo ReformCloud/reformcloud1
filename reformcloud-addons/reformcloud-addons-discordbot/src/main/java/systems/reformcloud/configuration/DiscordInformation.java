@@ -11,7 +11,12 @@ import java.io.Serializable;
  */
 
 public final class DiscordInformation implements Serializable {
-    private String token, channelID, game;
+
+    private String token;
+
+    private String channelID;
+
+    private String game;
 
     @java.beans.ConstructorProperties({"token", "channelID", "game"})
     public DiscordInformation(String token, String channelID, String game) {

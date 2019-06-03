@@ -14,6 +14,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutRemoveProcess extends Packet {
+
     public PacketOutRemoveProcess(final ServerInfo serverInfo) {
         super("ProcessRemove", new Configuration().addValue("serverInfo", serverInfo));
     }

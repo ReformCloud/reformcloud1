@@ -15,18 +15,21 @@ import systems.reformcloud.utility.ControllerAddonImpl;
  */
 
 public final class BackupAddon extends ControllerAddonImpl implements Serializable {
+
     private BackUpMaker backUpMaker;
 
     @Override
     public void onAddonLoading() {
         this.backUpMaker = new BackUpMaker(new FTPConfigLoader().load());
         this.backUpMaker.start();
-        ReformCloudController.getInstance().getNettyHandler().registerQueryHandler("GetFTPConfig", new PacketInQueryGetFTPConfig());
+        ReformCloudController.getInstance().getNettyHandler()
+            .registerQueryHandler("GetFTPConfig", new PacketInQueryGetFTPConfig());
     }
 
     @Override
     public void onAddonReadyToClose() {
-        ReformCloudController.getInstance().getNettyHandler().unregisterQueryHandler("GetFTPConfig");
+        ReformCloudController.getInstance().getNettyHandler()
+            .unregisterQueryHandler("GetFTPConfig");
         this.backUpMaker.close();
     }
 }

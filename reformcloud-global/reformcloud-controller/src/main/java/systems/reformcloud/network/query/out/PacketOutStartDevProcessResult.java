@@ -17,11 +17,12 @@ import java.util.UUID;
  */
 
 public final class PacketOutStartDevProcessResult extends Packet implements Serializable {
+
     public PacketOutStartDevProcessResult(UUID requester, DevProcess result) {
         super(
-                StringUtil.NULL,
-                new Configuration().addValue("result", result),
-                requester
+            StringUtil.NULL,
+            new Configuration().addValue("result", result),
+            requester
         );
     }
 }

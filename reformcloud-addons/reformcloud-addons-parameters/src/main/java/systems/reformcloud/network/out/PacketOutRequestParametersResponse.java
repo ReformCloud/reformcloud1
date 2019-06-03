@@ -15,11 +15,13 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutRequestParametersResponse extends Packet implements Serializable {
+
     public PacketOutRequestParametersResponse(UUID key) {
         super(
-                "undefined",
-                new Configuration().addValue("parameters", ParametersAddon.getInstance().getParametersConfiguration().getParameters()),
-                key
+            "undefined",
+            new Configuration().addValue("parameters",
+                ParametersAddon.getInstance().getParametersConfiguration().getParameters()),
+            key
         );
     }
 }

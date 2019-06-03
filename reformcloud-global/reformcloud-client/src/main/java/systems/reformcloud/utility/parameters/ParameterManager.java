@@ -18,6 +18,7 @@ import java.util.List;
  */
 
 public final class ParameterManager implements Serializable {
+
     private List<ParameterGroup> parameterGroups;
 
     @java.beans.ConstructorProperties({"parameterGroups"})
@@ -30,7 +31,8 @@ public final class ParameterManager implements Serializable {
     }
 
     private ParameterGroup forGroup(String name) {
-        return this.parameterGroups.stream().filter(e -> e.getGroupName().equals(name)).findFirst().orElse(null);
+        return this.parameterGroups.stream().filter(e -> e.getGroupName().equals(name)).findFirst()
+            .orElse(null);
     }
 
     public String buildJavaCommand(String group, String[] before, String[] after) {
@@ -38,40 +40,49 @@ public final class ParameterManager implements Serializable {
         ParameterGroup parameterGroup = this.forGroup(group);
         this.checkForLoader();
 
-        if (parameterGroup != null)
+        if (parameterGroup != null) {
             stringBuilder.append(parameterGroup.getJavaCommand()).append(StringUtil.SPACE);
-        else
+        } else {
             stringBuilder.append(StringUtil.JAVA).append(StringUtil.SPACE);
+        }
 
-        for (String s : before)
+        for (String s : before) {
             stringBuilder.append(s).append(StringUtil.SPACE);
+        }
 
-        if (parameterGroup != null)
-            parameterGroup.getPreParameters().forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+        if (parameterGroup != null) {
+            parameterGroup.getPreParameters()
+                .forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+        }
 
-        for (String s : after)
+        for (String s : after) {
             stringBuilder.append(s).append(StringUtil.SPACE);
+        }
 
-        if (parameterGroup != null)
-            parameterGroup.getAfterParameters().forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+        if (parameterGroup != null) {
+            parameterGroup.getAfterParameters()
+                .forEach(e -> stringBuilder.append(e).append(StringUtil.SPACE));
+        }
 
         return stringBuilder.substring(0, stringBuilder.length() - 1);
     }
 
     public void update(List<ParameterGroup> parameterGroups) {
-        if (parameterGroups == null)
+        if (parameterGroups == null) {
             return;
+        }
 
         this.parameterGroups = parameterGroups;
     }
 
     private void checkForLoader() {
-        if (Files.exists(Paths.get("reformcloud/files/ReformCloudProcess.jar")))
+        if (Files.exists(Paths.get("reformcloud/files/ReformCloudProcess.jar"))) {
             return;
+        }
 
         DownloadManager.downloadSilentAndDisconnect(
-                "https://internal.reformcloud.systems/latest/ReformCloudProcess.jar",
-                "reformcloud/files/ReformCloudProcess.jar"
+            "https://internal.reformcloud.systems/latest/ReformCloudProcess.jar",
+            "reformcloud/files/ReformCloudProcess.jar"
         );
     }
 }

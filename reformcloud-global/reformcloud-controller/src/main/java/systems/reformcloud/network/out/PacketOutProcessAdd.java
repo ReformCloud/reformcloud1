@@ -14,6 +14,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutProcessAdd extends Packet {
+
     public PacketOutProcessAdd(final ServerInfo serverInfo) {
         super("ProcessAdd", new Configuration().addValue("serverInfo", serverInfo));
     }

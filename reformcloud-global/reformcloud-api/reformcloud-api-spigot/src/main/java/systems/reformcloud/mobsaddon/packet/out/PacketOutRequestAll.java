@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutRequestAll extends Packet implements Serializable {
+
     public PacketOutRequestAll() {
         super("RequestAll", new Configuration());
     }

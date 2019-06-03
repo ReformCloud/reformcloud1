@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class ChannelConnectedEvent extends Event implements Serializable {
+
     private ChannelHandlerContext channelHandlerContext;
 
     @java.beans.ConstructorProperties({"channelHandlerContext"})

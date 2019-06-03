@@ -14,14 +14,15 @@ import java.io.Serializable;
  */
 
 public final class PacketOutSyncScreenUpdate extends Packet implements Serializable {
+
     private static final long serialVersionUID = 3205044307706658304L;
 
     public PacketOutSyncScreenUpdate(final String line, final String who) {
         super(
-                "ScreenUpdate",
-                new Configuration()
-                        .addStringValue("line", line)
-                        .addStringValue("from", who)
+            "ScreenUpdate",
+            new Configuration()
+                .addStringValue("line", line)
+                .addStringValue("from", who)
         );
     }
 }

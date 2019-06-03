@@ -27,11 +27,13 @@ import java.nio.file.StandardCopyOption;
  */
 
 public final class DependencyLoader implements Serializable {
+
     public static void loadDependency(DynamicDependency dynamicDependency) {
         try {
             URL result = downloadLib(dynamicDependency);
-            if (result == null)
+            if (result == null) {
                 return;
+            }
 
             URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
             try {
@@ -40,44 +42,57 @@ public final class DependencyLoader implements Serializable {
                 addURL.invoke(urlClassLoader, result);
             } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
                 StringUtil.printError(
-                        AbstractLoggerProvider.defaultLogger(),
-                        "Error while loading dependency",
-                        ex
+                    AbstractLoggerProvider.defaultLogger(),
+                    "Error while loading dependency",
+                    ex
                 );
             }
 
             final String[] name = result.getFile().split("/");
-            System.out.println("Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
+            System.out.println(
+                "Successfully installed dependency " + name[name.length - 1].replace(".jar", ""));
         } catch (final IOException ex) {
             StringUtil.printError(
-                    AbstractLoggerProvider.defaultLogger(),
-                    "Error while loading dependency",
-                    ex
+                AbstractLoggerProvider.defaultLogger(),
+                "Error while loading dependency",
+                ex
             );
         }
     }
 
-    private static URL downloadLib(final DynamicDependency dependency) throws MalformedURLException {
-        if (Files.exists(Paths.get("libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar")))
-            return new File("libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar").toURI().toURL();
+    private static URL downloadLib(final DynamicDependency dependency)
+        throws MalformedURLException {
+        if (Files.exists(Paths
+            .get("libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar"))) {
+            return new File(
+                "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar")
+                .toURI().toURL();
+        }
 
         deleteExistingDependency(dependency);
 
         try {
-            System.out.println("Downloading dependency " + dependency.getName() + " from \"" + format(dependency) + "\"...");
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(format(dependency)).openConnection();
-            httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            System.out.println(
+                "Downloading dependency " + dependency.getName() + " from \"" + format(dependency)
+                    + "\"...");
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(format(dependency))
+                .openConnection();
+            httpURLConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             httpURLConnection.setDoOutput(false);
             httpURLConnection.setUseCaches(false);
             httpURLConnection.connect();
 
             try (InputStream inputStream = httpURLConnection.getInputStream()) {
-                Files.copy(inputStream, Paths.get("libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar"),
-                        StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(inputStream, Paths.get(
+                    "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar"),
+                    StandardCopyOption.REPLACE_EXISTING);
             }
 
             httpURLConnection.disconnect();
-            return new File("libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar").toURI().toURL();
+            return new File(
+                "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar")
+                .toURI().toURL();
         } catch (final IOException ex) {
             ex.printStackTrace();
         }
@@ -87,18 +102,22 @@ public final class DependencyLoader implements Serializable {
 
     private static void deleteExistingDependency(DynamicDependency dependency) {
         File[] files = new File("libraries").listFiles();
-        if (files == null)
+        if (files == null) {
             return;
+        }
 
         for (File file : files) {
-            if (file.getName().contains(dependency.getName()) && file.getName().endsWith(".jar"))
-                if (file.delete())
+            if (file.getName().contains(dependency.getName()) && file.getName().endsWith(".jar")) {
+                if (file.delete()) {
                     break;
+                }
+            }
         }
     }
 
     private static String format(final DynamicDependency dependency) {
         return dependency.download_url + dependency.getGroupID().replace(".", "/") + "/" +
-                dependency.getName() + "/" + dependency.getVersion() + "/" + dependency.getName() + "-" + dependency.getVersion() + ".jar";
+            dependency.getName() + "/" + dependency.getVersion() + "/" + dependency.getName() + "-"
+            + dependency.getVersion() + ".jar";
     }
 }

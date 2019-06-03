@@ -14,13 +14,14 @@ import java.io.Serializable;
  */
 
 public final class PacketOutSyncScreenDisable extends Packet implements Serializable {
+
     private static final long serialVersionUID = 2358329581554616977L;
 
     public PacketOutSyncScreenDisable(final String name) {
         super(
-                "ScreenDisable",
-                new Configuration()
-                        .addStringValue("name", name)
+            "ScreenDisable",
+            new Configuration()
+                .addStringValue("name", name)
         );
     }
 }

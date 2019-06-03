@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class CommonsIO extends Dependency implements Serializable {
+
     private static final long serialVersionUID = 8266556935851895180L;
 
     public CommonsIO() {

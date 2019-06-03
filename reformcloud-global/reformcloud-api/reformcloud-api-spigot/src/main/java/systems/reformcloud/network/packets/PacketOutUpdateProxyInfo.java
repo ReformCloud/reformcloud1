@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateProxyInfo extends Packet implements Serializable {
+
     public PacketOutUpdateProxyInfo(ProxyInfo proxyInfo) {
         super("ProxyInfoUpdate", new Configuration().addValue("proxyInfo", proxyInfo));
     }

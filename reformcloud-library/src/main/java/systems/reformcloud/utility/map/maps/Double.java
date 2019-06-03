@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class Double<F, S> implements Serializable {
+
     private static final long serialVersionUID = -8210889894016298745L;
 
     /**
@@ -35,7 +36,7 @@ public final class Double<F, S> implements Serializable {
      * Checks if a specific parameter is in the double
      *
      * @param toFind The key which should be checked for
-     * @param <T>    The type of the key
+     * @param <T> The type of the key
      * @return If the double contains the key
      */
     public <T> boolean contains(T toFind) {

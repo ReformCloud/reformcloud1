@@ -13,6 +13,7 @@ import systems.reformcloud.signs.Sign;
  */
 
 public final class PacketOutDeleteSign extends Packet {
+
     public PacketOutDeleteSign(final Sign sign) {
         super("RemoveSign", new Configuration().addValue("sign", sign));
     }

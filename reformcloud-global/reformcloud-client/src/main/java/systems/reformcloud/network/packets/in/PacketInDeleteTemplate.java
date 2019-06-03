@@ -16,20 +16,21 @@ import java.io.Serializable;
  */
 
 public final class PacketInDeleteTemplate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         switch (configuration.getStringValue("type").toLowerCase()) {
             case "proxy": {
                 File file = new File("reformcloud/templates/proxies/" +
-                        configuration.getStringValue("group") + "/" +
-                        configuration.getStringValue("template"));
+                    configuration.getStringValue("group") + "/" +
+                    configuration.getStringValue("template"));
                 FileUtils.deleteFullDirectory(file);
                 break;
             }
             case "server": {
                 File file = new File("reformcloud/templates/servers/" +
-                        configuration.getStringValue("group") + "/" +
-                        configuration.getStringValue("template"));
+                    configuration.getStringValue("group") + "/" +
+                    configuration.getStringValue("template"));
                 FileUtils.deleteFullDirectory(file);
                 break;
             }

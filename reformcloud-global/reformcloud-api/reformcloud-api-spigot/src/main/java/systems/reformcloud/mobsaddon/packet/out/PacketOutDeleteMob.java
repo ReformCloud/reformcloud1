@@ -15,10 +15,11 @@ import java.util.UUID;
  */
 
 public final class PacketOutDeleteMob extends Packet implements Serializable {
+
     public PacketOutDeleteMob(UUID selectorMob) {
         super(
-                "DeleteMob",
-                new Configuration().addValue("mob", selectorMob)
+            "DeleteMob",
+            new Configuration().addValue("mob", selectorMob)
         );
     }
 }

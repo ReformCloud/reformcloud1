@@ -13,6 +13,7 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutDisableProperties extends Packet implements Serializable {
+
     public PacketOutDisableProperties() {
         super("DisableProperties", new Configuration());
     }

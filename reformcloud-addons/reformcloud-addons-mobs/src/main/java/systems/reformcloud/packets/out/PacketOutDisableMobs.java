@@ -13,10 +13,11 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutDisableMobs extends Packet implements Serializable {
+
     public PacketOutDisableMobs() {
         super(
-                "DisableMobs",
-                new Configuration()
+            "DisableMobs",
+            new Configuration()
         );
     }
 }

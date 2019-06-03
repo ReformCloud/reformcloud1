@@ -14,11 +14,13 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateServerGroupPluginTemplate extends Packet implements Serializable {
-    public PacketOutUpdateServerGroupPluginTemplate(String groupName, String templateName, String pluginName, String url) {
+
+    public PacketOutUpdateServerGroupPluginTemplate(String groupName, String templateName,
+        String pluginName, String url) {
         super("UpdateServerGroupPluginTemplate", new Configuration()
-                .addStringValue("groupName", groupName)
-                .addStringValue("templateName", templateName)
-                .addStringValue("pluginName", pluginName)
-                .addStringValue("url", url));
+            .addStringValue("groupName", groupName)
+            .addStringValue("templateName", templateName)
+            .addStringValue("pluginName", pluginName)
+            .addStringValue("url", url));
     }
 }

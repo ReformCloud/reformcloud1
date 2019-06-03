@@ -28,7 +28,10 @@ import java.util.UUID;
  */
 
 public final class PlayerDatabase extends DatabaseProvider implements Serializable {
-    private Cache<UUID, OfflinePlayer> cachedOfflinePlayers = ReformCloudLibraryService.newCache(1000);
+
+    private Cache<UUID, OfflinePlayer> cachedOfflinePlayers = ReformCloudLibraryService
+        .newCache(1000);
+
     public Map<UUID, OnlinePlayer> cachedOnlinePlayers = new HashMap<>();
 
     private final File dir = new File("reformcloud/database/players");
@@ -36,17 +39,19 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
 
     public OfflinePlayer getOfflinePlayer(DefaultPlayer defaultPlayer) {
         if (this.cachedOfflinePlayers.contains(defaultPlayer.getUniqueID())
-                && this.cachedOfflinePlayers.getSave(defaultPlayer.getUniqueID()).orElse(null) != null) {
+            && this.cachedOfflinePlayers.getSave(defaultPlayer.getUniqueID()).orElse(null)
+            != null) {
             return this.cachedOfflinePlayers.getSave(defaultPlayer.getUniqueID()).get();
         }
 
         if (dir.isDirectory()) {
             for (File file : dir.listFiles()) {
                 if (file.getName().endsWith(".json") && file.getName().replace(".json", "")
-                        .equals(String.valueOf(defaultPlayer.getUniqueID()))) {
+                    .equals(String.valueOf(defaultPlayer.getUniqueID()))) {
                     try {
                         Configuration configuration = Configuration.parse(file);
-                        OfflinePlayer offlinePlayer = configuration.getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
+                        OfflinePlayer offlinePlayer = configuration
+                            .getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
 
                         offlinePlayer.setLastLogin(defaultPlayer.getLastLogin());
                         offlinePlayer.setSpigotVersion(defaultPlayer.getSpigotVersion());
@@ -55,7 +60,9 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
                         this.updateOfflinePlayer(offlinePlayer);
                         return offlinePlayer;
                     } catch (final Throwable throwable) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load OfflinePlayer", throwable);
+                        StringUtil.printError(
+                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            "Could not load OfflinePlayer", throwable);
                         return null;
                     }
                 }
@@ -63,15 +70,17 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
         }
 
         OfflinePlayer offlinePlayer = new OfflinePlayer(
-                defaultPlayer.getName(),
-                defaultPlayer.getUniqueID(),
-                new HashMap<>(),
-                defaultPlayer.getLastLogin(),
-                defaultPlayer.getSpigotVersion()
+            defaultPlayer.getName(),
+            defaultPlayer.getUniqueID(),
+            new HashMap<>(),
+            defaultPlayer.getLastLogin(),
+            defaultPlayer.getSpigotVersion()
         );
 
-        new Configuration().addValue("player", offlinePlayer).write(Paths.get(dir + "/" + defaultPlayer.getUniqueID() + ".json"));
-        new Configuration().addValue("uuid", offlinePlayer.getUniqueID()).write(Paths.get(name_to_uuid + "/" +
+        new Configuration().addValue("player", offlinePlayer)
+            .write(Paths.get(dir + "/" + defaultPlayer.getUniqueID() + ".json"));
+        new Configuration().addValue("uuid", offlinePlayer.getUniqueID())
+            .write(Paths.get(name_to_uuid + "/" +
                 defaultPlayer.getName() + ".json"));
         this.cachedOfflinePlayers.add(defaultPlayer.getUniqueID(), offlinePlayer);
         return offlinePlayer;
@@ -79,21 +88,24 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
 
     public OfflinePlayer getOfflinePlayer(UUID uuid) {
         if (this.cachedOfflinePlayers.contains(uuid)
-                && this.cachedOfflinePlayers.getSave(uuid).orElse(null) != null) {
+            && this.cachedOfflinePlayers.getSave(uuid).orElse(null) != null) {
             return this.cachedOfflinePlayers.getSave(uuid).get();
         }
 
         if (dir.isDirectory()) {
             for (File file : dir.listFiles()) {
                 if (file.getName().endsWith(".json") && file.getName().replace(".json", "")
-                        .equals(String.valueOf(uuid))) {
+                    .equals(String.valueOf(uuid))) {
                     try {
                         Configuration configuration = Configuration.parse(file);
-                        OfflinePlayer offlinePlayer = configuration.getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
+                        OfflinePlayer offlinePlayer = configuration
+                            .getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
                         this.cachedOfflinePlayers.add(offlinePlayer.getUniqueID(), offlinePlayer);
                         return offlinePlayer;
                     } catch (final Throwable throwable) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load OfflinePlayer", throwable);
+                        StringUtil.printError(
+                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            "Could not load OfflinePlayer", throwable);
                         return null;
                     }
                 }
@@ -105,19 +117,22 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
 
     public UUID getFromName(String name) {
         Optional<OfflinePlayer> offlinePlayer = this.cachedOfflinePlayers.asMap()
-                .values().stream().filter(e -> e.getName().equals(name)).findFirst();
-        if (offlinePlayer.isPresent())
+            .values().stream().filter(e -> e.getName().equals(name)).findFirst();
+        if (offlinePlayer.isPresent()) {
             return offlinePlayer.get().getUniqueID();
+        }
 
         if (name_to_uuid.isDirectory()) {
             for (File file : name_to_uuid.listFiles()) {
                 if (file.getName().endsWith(".json")
-                        && file.getName().replace(".json", "").equals(name)) {
+                    && file.getName().replace(".json", "").equals(name)) {
                     try {
                         Configuration configuration = Configuration.parse(file);
                         return configuration.getValue("uuid", UUID.class);
                     } catch (final Throwable throwable) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not load uuid", throwable);
+                        StringUtil.printError(
+                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            "Could not load uuid", throwable);
                         return null;
                     }
                 }
@@ -132,13 +147,15 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
     }
 
     public void cacheOfflinePlayer(OfflinePlayer offlinePlayer) {
-        if (!this.cachedOfflinePlayers.contains(offlinePlayer.getUniqueID()))
+        if (!this.cachedOfflinePlayers.contains(offlinePlayer.getUniqueID())) {
             this.cachedOfflinePlayers.add(offlinePlayer.getUniqueID(), offlinePlayer);
+        }
     }
 
     private void cacheOnlinePlayer(OnlinePlayer onlinePlayer) {
-        if (!this.cachedOnlinePlayers.containsKey(onlinePlayer.getUniqueID()))
+        if (!this.cachedOnlinePlayers.containsKey(onlinePlayer.getUniqueID())) {
             this.cachedOnlinePlayers.put(onlinePlayer.getUniqueID(), onlinePlayer);
+        }
     }
 
     public void logoutPlayer(UUID uuid) {
@@ -158,8 +175,8 @@ public final class PlayerDatabase extends DatabaseProvider implements Serializab
 
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
         new Configuration()
-                .addValue("player", offlinePlayer)
-                .write(Paths.get(dir + "/" + offlinePlayer.getUniqueID() + ".json"));
+            .addValue("player", offlinePlayer)
+            .write(Paths.get(dir + "/" + offlinePlayer.getUniqueID() + ".json"));
         this.cachedOfflinePlayers.invalidate(offlinePlayer.getUniqueID());
         this.cachedOfflinePlayers.add(offlinePlayer.getUniqueID(), offlinePlayer);
     }

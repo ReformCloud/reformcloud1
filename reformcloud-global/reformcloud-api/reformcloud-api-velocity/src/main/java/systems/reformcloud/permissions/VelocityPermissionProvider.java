@@ -17,9 +17,11 @@ import java.io.Serializable;
  */
 
 public final class VelocityPermissionProvider implements Serializable, PermissionProvider {
+
     @Override
     @MaybePresent
     public PermissionFunction createFunction(PermissionSubject permissionSubject) {
-        return permissionSubject instanceof Player ? new VelocityPermissionFunctionAdapter(permissionSubject) : null;
+        return permissionSubject instanceof Player ? new VelocityPermissionFunctionAdapter(
+            permissionSubject) : null;
     }
 }

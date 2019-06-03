@@ -16,6 +16,7 @@ import java.util.UUID;
  */
 
 public final class PacketOutQueryOnlinePlayerResult extends Packet implements Serializable {
+
     public PacketOutQueryOnlinePlayerResult(OnlinePlayer onlinePlayer, UUID resultID) {
         super("undefined", new Configuration().addValue("result", onlinePlayer));
         super.setResult(resultID);

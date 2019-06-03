@@ -20,14 +20,20 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdatePermissionHolder implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-        ProxiedPlayer proxiedPlayer = BungeecordBootstrap.getInstance().getProxy().getPlayer(permissionHolder.getUniqueID());
-        if (proxiedPlayer == null)
+        PermissionHolder permissionHolder = configuration
+            .getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+        ProxiedPlayer proxiedPlayer = BungeecordBootstrap.getInstance().getProxy()
+            .getPlayer(permissionHolder.getUniqueID());
+        if (proxiedPlayer == null) {
             return;
+        }
 
-        ReformCloudAPIBungee.getInstance().getCachedPermissionHolders().put(permissionHolder.getUniqueID(), permissionHolder);
-        BungeecordBootstrap.getInstance().getProxy().getPluginManager().callEvent(new PermissionHolderUpdateEvent(permissionHolder));
+        ReformCloudAPIBungee.getInstance().getCachedPermissionHolders()
+            .put(permissionHolder.getUniqueID(), permissionHolder);
+        BungeecordBootstrap.getInstance().getProxy().getPluginManager()
+            .callEvent(new PermissionHolderUpdateEvent(permissionHolder));
     }
 }

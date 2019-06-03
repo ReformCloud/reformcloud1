@@ -17,14 +17,19 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
  */
 
 public final class PacketInServerInfoUpdate implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+        final ServerInfo serverInfo = configuration
+            .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
-        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
+            .updateServerInfo(serverInfo);
         ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(
-                new PacketOutServerInfoUpdate(serverInfo, ReformCloudController.getInstance().getInternalCloudNetwork())
+            new PacketOutServerInfoUpdate(serverInfo,
+                ReformCloudController.getInstance().getInternalCloudNetwork())
         );
-        ReformCloudController.getInstance().getEventManager().fire(new ServerInfoUpdateEvent(serverInfo));
+        ReformCloudController.getInstance().getEventManager()
+            .fire(new ServerInfoUpdateEvent(serverInfo));
     }
 }

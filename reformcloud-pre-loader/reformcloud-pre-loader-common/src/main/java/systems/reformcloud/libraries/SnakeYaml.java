@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class SnakeYaml extends Dependency implements Serializable {
+
     public SnakeYaml() {
         super(null);
     }

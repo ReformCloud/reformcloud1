@@ -18,9 +18,11 @@ import java.util.List;
  */
 
 public final class PacketInParameterUpdate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudClient.getInstance().getParameterManager().update(configuration.getValue("parameters", new TypeToken<List<ParameterGroup>>() {
-        }.getType()));
+        ReformCloudClient.getInstance().getParameterManager()
+            .update(configuration.getValue("parameters", new TypeToken<List<ParameterGroup>>() {
+            }.getType()));
     }
 }

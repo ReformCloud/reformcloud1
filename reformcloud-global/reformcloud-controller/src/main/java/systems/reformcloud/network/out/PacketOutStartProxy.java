@@ -16,20 +16,34 @@ import java.util.UUID;
  */
 
 public final class PacketOutStartProxy extends Packet {
-    public PacketOutStartProxy(final ProxyGroup group, final String processName, final UUID proxyProcess, final Configuration configuration, final String id) {
+
+    public PacketOutStartProxy(final ProxyGroup group, final String processName,
+        final UUID proxyProcess, final Configuration configuration, final String id) {
         super("StartProxy",
-                new Configuration().addValue("group", group).addStringValue("name", processName).addValue("proxyProcess", proxyProcess).addConfigurationValue("preConfig", configuration).addIntegerValue("id", Integer.valueOf(id))
+            new Configuration().addValue("group", group).addStringValue("name", processName)
+                .addValue("proxyProcess", proxyProcess)
+                .addConfigurationValue("preConfig", configuration)
+                .addIntegerValue("id", Integer.valueOf(id))
         );
-        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_proxy_added_to_queue()
+        ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getLoadedLanguage()
+                .getController_proxy_added_to_queue()
                 .replace("%uid%", String.valueOf(proxyProcess))
                 .replace("%name%", processName));
     }
 
-    public PacketOutStartProxy(final ProxyGroup group, final String processName, final UUID proxyProcess, final Configuration configuration, final String id, final String template) {
+    public PacketOutStartProxy(final ProxyGroup group, final String processName,
+        final UUID proxyProcess, final Configuration configuration, final String id,
+        final String template) {
         super("StartProxy",
-                new Configuration().addValue("group", group).addStringValue("name", processName).addStringValue("template", template).addValue("proxyProcess", proxyProcess).addConfigurationValue("preConfig", configuration).addIntegerValue("id", Integer.valueOf(id))
+            new Configuration().addValue("group", group).addStringValue("name", processName)
+                .addStringValue("template", template).addValue("proxyProcess", proxyProcess)
+                .addConfigurationValue("preConfig", configuration)
+                .addIntegerValue("id", Integer.valueOf(id))
         );
-        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_proxy_added_to_queue()
+        ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getLoadedLanguage()
+                .getController_proxy_added_to_queue()
                 .replace("%uid%", String.valueOf(proxyProcess))
                 .replace("%name%", processName));
     }

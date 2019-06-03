@@ -18,14 +18,19 @@ import systems.reformcloud.utility.TypeTokenAdaptor;
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
-public final class PacketInQueryGetPermissionHolder implements Serializable, NetworkQueryInboundHandler {
+public final class PacketInQueryGetPermissionHolder implements Serializable,
+    NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
-        PermissionHolder permissionHolder = configuration.getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
-        ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(configuration.getStringValue("from"),
+        PermissionHolder permissionHolder = configuration
+            .getValue("holder", TypeTokenAdaptor.getPERMISSION_HOLDER_TYPE());
+        ReformCloudController.getInstance().getChannelHandler()
+            .sendDirectPacket(configuration.getStringValue("from"),
                 new PacketOutQueryGetPermissionHolder(
-                        PermissionsAddon.getInstance().getPermissionDatabase().getPermissionHolder(permissionHolder), resultID
+                    PermissionsAddon.getInstance().getPermissionDatabase()
+                        .getPermissionHolder(permissionHolder), resultID
                 )
-        );
+            );
     }
 }

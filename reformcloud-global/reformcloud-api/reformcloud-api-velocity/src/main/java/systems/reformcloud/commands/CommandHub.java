@@ -20,30 +20,39 @@ import systems.reformcloud.meta.info.ServerInfo;
  */
 
 public final class CommandHub implements Command {
+
     @Override
-    public void execute(@MaybePresent CommandSource commandSource, @NonNull @MaybePresent String[] strings) {
-        if (!(commandSource instanceof Player))
+    public void execute(@MaybePresent CommandSource commandSource,
+        @NonNull @MaybePresent String[] strings) {
+        if (!(commandSource instanceof Player)) {
             return;
+        }
 
         final Player proxiedPlayer = (Player) commandSource;
         if (ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager()
-                .getRegisteredServerByName(proxiedPlayer.getCurrentServer().get().getServerInfo().getName()) != null
-                && ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getServerProcessManager()
-                .getRegisteredServerByName(proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
-                .getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
-            proxiedPlayer.sendMessage(net.kyori.text.TextComponent.of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+            .getRegisteredServerByName(
+                proxiedPlayer.getCurrentServer().get().getServerInfo().getName()) != null
+            && ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+            .getServerProcessManager()
+            .getRegisteredServerByName(
+                proxiedPlayer.getCurrentServer().get().getServerInfo().getName())
+            .getServerGroup().getServerModeType().equals(ServerModeType.LOBBY)) {
+            proxiedPlayer.sendMessage(net.kyori.text.TextComponent
+                .of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
                     .getMessage("internal-api-bungee-command-hub-already")));
             return;
         }
 
         final ServerInfo fallback = ReformCloudAPIVelocity.getInstance().nextFreeLobby(
-                ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup(), proxiedPlayer
+            ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup(), proxiedPlayer
         );
-        if (fallback == null)
+        if (fallback == null) {
             proxiedPlayer.sendMessage(TextComponent.of(ReformCloudAPIVelocity.getInstance()
-                    .getInternalCloudNetwork().getMessage("internal-api-bungee-command-hub-not-available")));
-        else
+                .getInternalCloudNetwork()
+                .getMessage("internal-api-bungee-command-hub-not-available")));
+        } else {
             proxiedPlayer.createConnectionRequest(VelocityBootstrap.getInstance().getProxyServer()
-                    .getServer(fallback.getCloudProcess().getName()).get()).connect();
+                .getServer(fallback.getCloudProcess().getName()).get()).connect();
+        }
     }
 }

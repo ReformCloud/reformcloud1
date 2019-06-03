@@ -15,9 +15,10 @@ import java.util.UUID;
  */
 
 public final class PacketOutSendPlayerMessage extends Packet implements Serializable {
+
     public PacketOutSendPlayerMessage(UUID uniqueID, String message) {
         super("SendPlayerMessage", new Configuration().addValue("uuid", uniqueID)
-                .addStringValue("message", message)
+            .addStringValue("message", message)
         );
     }
 }

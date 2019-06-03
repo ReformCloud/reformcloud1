@@ -21,6 +21,7 @@ import systems.reformcloud.loader.CapableClassLoader;
  */
 
 final class CommonLoader implements Serializable {
+
     private static String version;
 
     static {
@@ -43,29 +44,37 @@ final class CommonLoader implements Serializable {
     }
 
     public static String getCurrentFallbackVersion() {
-        if (version == null)
+        if (version == null) {
             getCurrentFallbackVersion0();
+        }
 
         return version;
     }
 
     private static void getCurrentFallbackVersion0() {
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL("https://internal.reformcloud.systems/update/version.json").openConnection();
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+                "https://internal.reformcloud.systems/update/version.json").openConnection();
+            urlConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             urlConnection.setUseCaches(false);
             urlConnection.connect();
 
             StringBuilder stringBuilder = new StringBuilder();
             String line;
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
-                while ((line = bufferedReader.readLine()) != null)
+            try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(urlConnection.getInputStream()))) {
+                while ((line = bufferedReader.readLine()) != null) {
                     stringBuilder.append(line);
+                }
             }
 
             urlConnection.disconnect();
-            Matcher matcher = Pattern.compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}").matcher(stringBuilder.substring(0));
-            version = matcher.matches() ? matcher.group(1) : CommonLoader.class.getPackage().getImplementationVersion();
+            Matcher matcher = Pattern
+                .compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}")
+                .matcher(stringBuilder.substring(0));
+            version = matcher.matches() ? matcher.group(1)
+                : CommonLoader.class.getPackage().getImplementationVersion();
         } catch (final IOException ex) {
             if (ex instanceof UnknownHostException) {
                 version = CommonLoader.class.getPackage().getImplementationVersion();
@@ -78,13 +87,15 @@ final class CommonLoader implements Serializable {
     }
 
     private static void checkNonNull(Object x) {
-        if (x == null)
+        if (x == null) {
             throw new IllegalStateException("Invocation with null parameters");
+        }
     }
 
     private static void checkForJavaVersion() {
-        if (Double.parseDouble(System.getProperty("java.class.version")) < 52D)
+        if (Double.parseDouble(System.getProperty("java.class.version")) < 52D) {
             System.exit(2);
+        }
     }
 
     public static void setVersion(String version) {

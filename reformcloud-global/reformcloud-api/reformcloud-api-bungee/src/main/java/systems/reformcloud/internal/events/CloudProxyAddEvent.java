@@ -14,6 +14,7 @@ import systems.reformcloud.meta.info.ProxyInfo;
  */
 
 public final class CloudProxyAddEvent extends Event {
+
     private ProxyInfo proxyInfo;
 
     @java.beans.ConstructorProperties({"proxyInfo"})

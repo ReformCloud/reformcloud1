@@ -16,7 +16,9 @@ import java.util.UUID;
  */
 
 public final class OfflinePlayer extends DefaultPlayer implements Serializable {
-    public OfflinePlayer(String name, UUID uniqueID, Map<String, Object> playerMeta, long lastLogin, SpigotVersion lastSpigotVersion) {
+
+    public OfflinePlayer(String name, UUID uniqueID, Map<String, Object> playerMeta, long lastLogin,
+        SpigotVersion lastSpigotVersion) {
         super(name, uniqueID, playerMeta, lastLogin, lastSpigotVersion);
     }
 }

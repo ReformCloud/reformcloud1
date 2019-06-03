@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutSyncStandby extends Packet implements Serializable {
+
     public PacketOutSyncStandby(boolean standby) {
         super("SyncStandby", new Configuration().addBooleanValue("standby", standby));
     }

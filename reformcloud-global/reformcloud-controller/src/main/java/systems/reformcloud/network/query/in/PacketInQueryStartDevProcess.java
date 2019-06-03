@@ -19,24 +19,31 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 24.04.2019
  */
 
-public final class PacketInQueryStartDevProcess implements Serializable, NetworkQueryInboundHandler {
+public final class PacketInQueryStartDevProcess implements Serializable,
+    NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         ServerGroup serverGroup = configuration.getValue("group", new TypeToken<ServerGroup>() {
         });
-        String template = configuration.contains("template") ? configuration.getStringValue("template") : "default";
-        Configuration preConfig = configuration.contains("pre") ? configuration.getConfiguration("pre") : new Configuration();
+        String template =
+            configuration.contains("template") ? configuration.getStringValue("template")
+                : "default";
+        Configuration preConfig =
+            configuration.contains("pre") ? configuration.getConfiguration("pre")
+                : new Configuration();
 
         DevProcess devProcess = new DevProcess(
-                serverGroup,
-                preConfig,
-                template,
-                System.currentTimeMillis()
+            serverGroup,
+            preConfig,
+            template,
+            System.currentTimeMillis()
         );
-        ReformCloudController.getInstance().getCloudProcessOfferService().getDevProcesses().offer(devProcess);
+        ReformCloudController.getInstance().getCloudProcessOfferService().getDevProcesses()
+            .offer(devProcess);
         ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
-                configuration.getStringValue("from"),
-                new PacketOutStartDevProcessResult(resultID, devProcess)
+            configuration.getStringValue("from"),
+            new PacketOutStartDevProcessResult(resultID, devProcess)
         );
     }
 }

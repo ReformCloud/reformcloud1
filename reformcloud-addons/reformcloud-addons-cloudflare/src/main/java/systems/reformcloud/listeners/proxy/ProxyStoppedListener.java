@@ -15,6 +15,7 @@ import systems.reformcloud.event.utility.Listener;
  */
 
 public final class ProxyStoppedListener implements Serializable, Listener {
+
     @Handler
     public void handleStop(final ProxyStoppedEvent event) {
         CloudFlareUtil.getInstance().deleteProxyEntry(event.getProxyInfo());

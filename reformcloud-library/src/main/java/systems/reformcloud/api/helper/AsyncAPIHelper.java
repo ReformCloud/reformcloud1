@@ -34,7 +34,8 @@ import java.util.concurrent.CompletableFuture;
  * @author _Klaro | Pasqual K. / created on 25.04.2019
  */
 
-public interface IAsyncAPIHelper {
+public interface AsyncAPIHelper {
+
     void startGameServer(String serverGroupName);
 
     void startGameServer(String serverGroupName, Configuration preConfig);
@@ -63,21 +64,26 @@ public interface IAsyncAPIHelper {
 
     boolean stopServer(ServerInfo serverInfo);
 
-    void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, SpigotVersions spigotVersions);
+    void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients,
+        SpigotVersions spigotVersions);
 
     void createServerGroup(String name);
 
-    void createServerGroup(String name, ServerModeType serverModeType, Collection<Template> templates);
+    void createServerGroup(String name, ServerModeType serverModeType,
+        Collection<Template> templates);
 
-    void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients, Collection<Template> templates, SpigotVersions spigotVersions);
+    void createServerGroup(String name, ServerModeType serverModeType, Collection<String> clients,
+        Collection<Template> templates, SpigotVersions spigotVersions);
 
-    void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, ProxyVersions proxyVersions);
+    void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients,
+        ProxyVersions proxyVersions);
 
     void createProxyGroup(String name);
 
     void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<Template> templates);
 
-    void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients, Collection<Template> templates, ProxyVersions proxyVersions);
+    void createProxyGroup(String name, ProxyModeType proxyModeType, Collection<String> clients,
+        Collection<Template> templates, ProxyVersions proxyVersions);
 
     void createClient(String name, String host);
 
@@ -111,7 +117,8 @@ public interface IAsyncAPIHelper {
 
     CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template);
 
-    CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig);
+    CompletableFuture<DevProcess> startQueuedProcess(ServerGroup serverGroup, String template,
+        Configuration preConfig);
 
     CompletableFuture<OnlinePlayer> getOnlinePlayer(UUID uniqueId);
 
@@ -165,7 +172,8 @@ public interface IAsyncAPIHelper {
 
     void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess);
 
-    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess, NetworkQueryInboundHandler onFailure);
+    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
+        NetworkQueryInboundHandler onFailure);
 
     CompletableFuture<PacketFuture> createPacketFuture(Packet packet, String networkComponent);
 

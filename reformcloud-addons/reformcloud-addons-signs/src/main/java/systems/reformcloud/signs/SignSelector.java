@@ -17,29 +17,29 @@ import systems.reformcloud.utility.runtime.Shutdown;
  */
 
 public final class SignSelector implements Shutdown {
+
     private static SignSelector instance;
 
     private SignConfiguration signConfiguration;
 
     /**
      * Creates a new SignSelector instance
-     *
-     * @throws Throwable
      */
     public SignSelector() throws Throwable {
-        if (instance == null)
+        if (instance == null) {
             instance = this;
-        else
+        } else {
             throw new InstanceAlreadyExistsException();
+        }
 
         this.signConfiguration = new SignConfiguration();
         this.signConfiguration.loadAll();
 
         ReformCloudController.getInstance().getNettyHandler()
-                .registerHandler("CreateSign", new PacketInCreateSign())
-                .registerHandler("RemoveSign", new PacketInRemoveSign())
+            .registerHandler("CreateSign", new PacketInCreateSign())
+            .registerHandler("RemoveSign", new PacketInRemoveSign())
 
-                .registerQueryHandler("QueryGetSigns", new PacketInRequestSigns());
+            .registerQueryHandler("QueryGetSigns", new PacketInRequestSigns());
     }
 
     public static SignSelector getInstance() {

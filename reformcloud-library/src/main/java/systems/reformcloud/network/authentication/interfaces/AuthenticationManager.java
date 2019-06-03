@@ -14,13 +14,16 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public interface AuthenticationManager {
+
     /**
      * Handles the authentication of the a network participant
      *
-     * @param authenticationType            The authentication type
-     * @param packet                        The authentication packet send by the network participant
-     * @param channelHandlerContext         The channel handler context of the participant's channel
-     * @param channelHandler                The channel handler to register the process if the operation was successful
+     * @param authenticationType The authentication type
+     * @param packet The authentication packet send by the network participant
+     * @param channelHandlerContext The channel handler context of the participant's channel
+     * @param channelHandler The channel handler to register the process if the operation was
+     * successful
      */
-    void handleAuth(AuthenticationType authenticationType, Packet packet, ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler);
+    void handleAuth(AuthenticationType authenticationType, Packet packet,
+        ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler);
 }

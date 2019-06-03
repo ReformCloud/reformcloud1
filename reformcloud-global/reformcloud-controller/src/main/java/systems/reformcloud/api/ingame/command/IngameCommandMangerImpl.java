@@ -20,6 +20,7 @@ import java.util.Map;
  */
 
 public final class IngameCommandMangerImpl extends IngameCommandManger implements Serializable {
+
     private Map<String, IngameCommand> registeredIngameCommands = new HashMap<>();
 
     public IngameCommandMangerImpl() {
@@ -34,12 +35,13 @@ public final class IngameCommandMangerImpl extends IngameCommandManger implement
         this.registeredIngameCommands.replace(ingameCommand.getName(), ingameCommand);
 
         ReformCloudController.getInstance()
-                .getInternalCloudNetwork()
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        e.getCloudProcess().getName(),
-                        new PacketOutUpdateIngameCommands()
+            .getInternalCloudNetwork()
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .forEach(
+                e -> ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                    e.getCloudProcess().getName(),
+                    new PacketOutUpdateIngameCommands()
                 ));
     }
 
@@ -47,12 +49,13 @@ public final class IngameCommandMangerImpl extends IngameCommandManger implement
         this.registeredIngameCommands.remove(ingameCommand.getName());
 
         ReformCloudController.getInstance()
-                .getInternalCloudNetwork()
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        e.getCloudProcess().getName(),
-                        new PacketOutUpdateIngameCommands()
+            .getInternalCloudNetwork()
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .forEach(
+                e -> ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                    e.getCloudProcess().getName(),
+                    new PacketOutUpdateIngameCommands()
                 ));
     }
 
@@ -60,12 +63,13 @@ public final class IngameCommandMangerImpl extends IngameCommandManger implement
         this.registeredIngameCommands.remove(name);
 
         ReformCloudController.getInstance()
-                .getInternalCloudNetwork()
-                .getServerProcessManager()
-                .getAllRegisteredProxyProcesses()
-                .forEach(e -> ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        e.getCloudProcess().getName(),
-                        new PacketOutUpdateIngameCommands()
+            .getInternalCloudNetwork()
+            .getServerProcessManager()
+            .getAllRegisteredProxyProcesses()
+            .forEach(
+                e -> ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
+                    e.getCloudProcess().getName(),
+                    new PacketOutUpdateIngameCommands()
                 ));
     }
 

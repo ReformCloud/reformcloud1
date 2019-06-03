@@ -18,10 +18,12 @@ import java.util.Optional;
  */
 
 public final class PacketInUpdateProxySettings implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        Optional<ProxySettings> proxySettings = configuration.getValue("settings", new TypeToken<Optional<ProxySettings>>() {
-        }.getType());
+        Optional<ProxySettings> proxySettings = configuration
+            .getValue("settings", new TypeToken<Optional<ProxySettings>>() {
+            }.getType());
         ReformCloudAPIBungee.getInstance().setProxySettings(proxySettings.orElse(null));
     }
 }

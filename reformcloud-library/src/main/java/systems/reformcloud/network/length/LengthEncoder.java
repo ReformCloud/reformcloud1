@@ -15,11 +15,14 @@ import java.io.Serializable;
  */
 
 public final class LengthEncoder extends MessageToByteEncoder<ByteBuf> implements Serializable {
+
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf in, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf in, ByteBuf out)
+        throws Exception {
         int readAble = in.readableBytes(), space = getVarIntSize(readAble);
-        if (space > 3)
+        if (space > 3) {
             throw new IllegalStateException("Length space is bigger than 3");
+        }
 
         out.ensureWritable(space + readAble);
         write(out, readAble);
@@ -30,22 +33,24 @@ public final class LengthEncoder extends MessageToByteEncoder<ByteBuf> implement
         do {
             byte temp = (byte) (value & 0b01111111);
             value >>>= 7;
-            if (value != 0)
+            if (value != 0) {
                 temp |= 0b10000000;
+            }
 
             out.writeByte(temp);
         } while (value != 0);
     }
 
     private int getVarIntSize(int value) {
-        if ((value & -128) == 0)
+        if ((value & -128) == 0) {
             return 1;
-        else if ((value & -16384) == 0)
+        } else if ((value & -16384) == 0) {
             return 2;
-        else if ((value & -2097152) == 0)
+        } else if ((value & -2097152) == 0) {
             return 3;
-        else if ((value & -268435456) == 0)
+        } else if ((value & -268435456) == 0) {
             return 4;
+        }
 
         return 5;
     }
