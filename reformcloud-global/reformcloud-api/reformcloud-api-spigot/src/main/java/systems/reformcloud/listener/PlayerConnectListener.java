@@ -4,6 +4,11 @@
 
 package systems.reformcloud.listener;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,12 +27,6 @@ import systems.reformcloud.permissions.ReflectionUtil;
 import systems.reformcloud.permissions.permissible.Permissible;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -175,7 +174,8 @@ public final class PlayerConnectListener implements Listener, Serializable {
                 final ServerInfo serverInfo = ReformCloudAPISpigot.getInstance().getServerInfo();
                 serverInfo.getOnlinePlayers().remove(event.getPlayer().getUniqueId());
 
-                serverInfo.setOnline(serverInfo.getOnline() - 1);
+                serverInfo
+                    .setOnline(SpigotBootstrap.getInstance().getServer().getOnlinePlayers().size());
 
                 if (serverInfo.getOnline() >= serverInfo.getServerGroup().getMaxPlayers()) {
                     serverInfo.setFull(true);
