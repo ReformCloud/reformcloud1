@@ -40,6 +40,7 @@ public enum SpigotVersions implements Serializable {
     SPIGOT_1_13_2("Spigot 1.13.2", "1.13.2", "https://mcmirror.io/files/Spigot/Spigot-1.13.2-0c02b0c-20190425-0538.jar"),
     SPIGOT_1_14("Spigot 1.14", "1.14", "https://mcmirror.io/files/Spigot/Spigot-1.14-8043ebc-20190514-0000.jar"),
     SPIGOT_1_14_1("Spigot 1.14.1", "1.14.1", "https://cdn.getbukkit.org/spigot/spigot-1.14.1.jar"),
+    SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2", "https://cdn.getbukkit.org/spigot/spigot-1.14.2.jar"),
     /**
      * Paper Versions
      */
@@ -55,6 +56,7 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_12_2("Paper 1.12.2", "1.12.2", "https://mcmirror.io/files/Paper/Paper-1.12.2-ac69748-20181207-0309.jar"),
     PAPER_1_13_2("Paper 1.13.2", "1.13.2", "https://mcmirror.io/files/Paper/Paper-1.13.2-fb25dc1-20190422-2136.jar"),
     PAPER_1_14_1("Paper 1.14.1", "1.14.1", "https://papermc.io/api/v1/paper/1.14.1/28/download"),
+    PAPER_1_14_2("Paper 1.14.2", "1.14.2", "https://papermc.io/api/v1/paper/1.14.2/65/download"),
     /**
      * SpongeVanilla Versions
      */
@@ -132,7 +134,8 @@ public enum SpigotVersions implements Serializable {
                         "1.13.1",
                         "1.13.2",
                         "1.14",
-                        "1.14.1"
+                        "1.14.1",
+                        "1.14.2"
                 ));
             }
         }
