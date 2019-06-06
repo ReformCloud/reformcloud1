@@ -51,7 +51,6 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
         this.discordConfig = new DiscordConfig();
 
         final JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT)
-            .setAudioEnabled(false)
             .setAutoReconnect(true)
             .setToken(this.discordConfig.getDiscordInformation().getToken())
             .addEventListeners(new ConsoleInputHandler())
