@@ -34,7 +34,7 @@
         <dependency.spigot.version>1.13</dependency.spigot.version>
         <dependency.snakeyaml.version>1.24</dependency.snakeyaml.version>
         <dependency.commons-io.version>2.6</dependency.commons-io.version>
-        <dependency.jda.version>4.ALPHA.0_96</dependency.jda.version>
+        <dependency.jda.version>4.ALPHA.0_99</dependency.jda.version>
         <dependency.slf4j.version>1.7.26</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
     </properties>
