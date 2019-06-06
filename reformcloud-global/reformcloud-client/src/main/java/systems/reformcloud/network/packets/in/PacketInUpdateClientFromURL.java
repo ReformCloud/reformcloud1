@@ -16,9 +16,11 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateClientFromURL implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        DownloadManager.downloadAndDisconnect("the new client file", configuration.getStringValue("url"),
+        DownloadManager
+            .downloadAndDisconnect("the new client file", configuration.getStringValue("url"),
                 FileUtils.getInternalFileName());
     }
 }

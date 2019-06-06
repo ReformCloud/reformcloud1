@@ -18,6 +18,7 @@ import java.util.Arrays;
  */
 
 public class ControllerAddonImpl extends JavaAddon<ReformCloudController> implements Serializable {
+
     @Override
     public ReformCloudController getInternalReformCloudSystem() {
         return ReformCloudController.getInstance();
@@ -37,6 +38,7 @@ public class ControllerAddonImpl extends JavaAddon<ReformCloudController> implem
     }
 
     public void registerListener(final Listener... listeners) {
-        Arrays.stream(listeners).forEach(e -> ReformCloudController.getInstance().getEventManager().registerListener(e));
+        Arrays.stream(listeners).forEach(
+            e -> ReformCloudController.getInstance().getEventManager().registerListener(e));
     }
 }

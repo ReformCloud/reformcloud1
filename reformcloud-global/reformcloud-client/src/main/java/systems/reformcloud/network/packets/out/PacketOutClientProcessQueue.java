@@ -18,15 +18,18 @@ import java.util.Queue;
  */
 
 public final class PacketOutClientProcessQueue extends Packet implements Serializable {
+
     private static final long serialVersionUID = -4401703259647752493L;
 
-    public PacketOutClientProcessQueue(final Queue<ServerStartupInfo> servers, final Queue<ProxyStartupInfo> proxies) {
+    public PacketOutClientProcessQueue(final Queue<ServerStartupInfo> servers,
+        final Queue<ProxyStartupInfo> proxies) {
         super(
-                "ClientProcessQueue",
-                new Configuration()
-                        .addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                        .addValue("servers", servers)
-                        .addValue("proxies", proxies)
+            "ClientProcessQueue",
+            new Configuration()
+                .addStringValue("name",
+                    ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                .addValue("servers", servers)
+                .addValue("proxies", proxies)
         );
     }
 }

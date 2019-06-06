@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutStopProcess extends Packet implements Serializable {
+
     public PacketOutStopProcess(String id) {
         super("StopProcess", new Configuration().addStringValue("name", id));
     }

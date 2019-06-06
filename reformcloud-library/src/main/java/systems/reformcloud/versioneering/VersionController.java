@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public final class VersionController implements Serializable {
+
     /**
      * Checks if a new version of reformcloud is available
      *

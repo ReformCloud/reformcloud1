@@ -14,11 +14,12 @@ import java.io.Serializable;
  */
 
 public final class PacketOutTemplateDeployReady extends Packet implements Serializable {
+
     public PacketOutTemplateDeployReady(String group, String template, boolean proxy) {
         super("TemplateDeployReady", new Configuration()
-                .addStringValue("group", group)
-                .addStringValue("template", template)
-                .addBooleanValue("proxy", proxy)
+            .addStringValue("group", group)
+            .addStringValue("template", template)
+            .addBooleanValue("proxy", proxy)
         );
     }
 }

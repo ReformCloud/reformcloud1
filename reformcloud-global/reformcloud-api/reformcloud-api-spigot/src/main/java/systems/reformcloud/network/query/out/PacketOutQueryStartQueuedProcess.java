@@ -15,10 +15,12 @@ import java.io.Serializable;
  */
 
 public final class PacketOutQueryStartQueuedProcess extends Packet implements Serializable {
-    public PacketOutQueryStartQueuedProcess(ServerGroup serverGroup, String template, Configuration preConfig) {
+
+    public PacketOutQueryStartQueuedProcess(ServerGroup serverGroup, String template,
+        Configuration preConfig) {
         super("QueryStartQueuedProcess", new Configuration()
-                .addValue("group", serverGroup)
-                .addStringValue("template", template)
-                .addValue("pre", preConfig));
+            .addValue("group", serverGroup)
+            .addStringValue("template", template)
+            .addValue("pre", preConfig));
     }
 }

@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public final class EthernetAddress implements Serializable {
+
     /**
      * The host of the address
      */

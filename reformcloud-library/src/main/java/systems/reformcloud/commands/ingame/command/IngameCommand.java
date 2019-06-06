@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public abstract class IngameCommand implements Serializable {
+
     /**
      * The name of the ingame command
      */
@@ -31,7 +32,7 @@ public abstract class IngameCommand implements Serializable {
     /**
      * Creates a new ingame command
      *
-     * @param name      The name of the command
+     * @param name The name of the command
      */
     public IngameCommand(String name) {
         this.name = name;
@@ -41,9 +42,9 @@ public abstract class IngameCommand implements Serializable {
     /**
      * Creates a new ingame command
      *
-     * @param name              The name of the command
-     * @param permission        The permission of the command
-     * @param aliases           The aliases of the command
+     * @param name The name of the command
+     * @param permission The permission of the command
+     * @param aliases The aliases of the command
      */
     public IngameCommand(String name, String permission, String[] aliases) {
         this.name = name;
@@ -54,8 +55,8 @@ public abstract class IngameCommand implements Serializable {
     /**
      * Handles the command
      *
-     * @param commandSender     The command sender who send the command
-     * @param args              The arguments provided with the command
+     * @param commandSender The command sender who send the command
+     * @param args The arguments provided with the command
      */
     public abstract void handle(IngameCommandSender commandSender, String[] args);
 

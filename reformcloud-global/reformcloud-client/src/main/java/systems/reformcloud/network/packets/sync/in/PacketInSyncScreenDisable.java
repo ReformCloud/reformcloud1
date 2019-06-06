@@ -17,26 +17,29 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncScreenDisable implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = -918967605207956872L;
 
     @Override
     public void handle(Configuration configuration) {
-        if (configuration.getStringValue("name").equalsIgnoreCase(ReformCloudClient.getInstance().getCloudConfiguration().getClientName())) {
+        if (configuration.getStringValue("name").equalsIgnoreCase(
+            ReformCloudClient.getInstance().getCloudConfiguration().getClientName())) {
             ReformCloudClient.getInstance().getClientScreenHandler().disableScreen();
             return;
         }
 
         CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient.getInstance()
-                .getCloudProcessScreenService()
-                .getRegisteredServerHandler(configuration.getStringValue("name"));
+            .getCloudProcessScreenService()
+            .getRegisteredServerHandler(configuration.getStringValue("name"));
         if (cloudServerStartupHandler != null) {
             cloudServerStartupHandler.getScreenHandler().disableScreen();
         } else {
             ProxyStartupHandler proxyStartupHandler = ReformCloudClient.getInstance()
-                    .getCloudProcessScreenService()
-                    .getRegisteredProxyHandler(configuration.getStringValue("name"));
-            if (proxyStartupHandler != null)
+                .getCloudProcessScreenService()
+                .getRegisteredProxyHandler(configuration.getStringValue("name"));
+            if (proxyStartupHandler != null) {
                 proxyStartupHandler.getScreenHandler().disableScreen();
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ import java.util.Map;
  */
 
 public class DefaultUserCommandSender implements CommandSender {
+
     /**
      * The permissions of the command sender
      */
@@ -27,7 +28,7 @@ public class DefaultUserCommandSender implements CommandSender {
     /**
      * Sends a message to the console
      *
-     * @param message       The message which should be sent
+     * @param message The message which should be sent
      */
     @Override
     public void sendMessage(String message) {
@@ -37,16 +38,18 @@ public class DefaultUserCommandSender implements CommandSender {
     /**
      * Checks if the command sender has the given permission
      *
-     * @param permission        The permission which should be checked
-     * @return                  If the command sender has the permission
+     * @param permission The permission which should be checked
+     * @return If the command sender has the permission
      */
     @Override
     public boolean hasPermission(String permission) {
-        if (this.permissions.containsKey("*") && this.permissions.get("*"))
+        if (this.permissions.containsKey("*") && this.permissions.get("*")) {
             return true;
+        }
 
-        if (!this.permissions.containsKey(permission))
+        if (!this.permissions.containsKey(permission)) {
             return false;
+        }
 
         return this.permissions.get(permission);
     }

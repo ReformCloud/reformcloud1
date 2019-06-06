@@ -21,17 +21,25 @@ import java.io.Serializable;
  */
 
 public final class PacketInServerInfoUpdate implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
-        final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
-        final InternalCloudNetwork internalCloudNetwork = configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE());
+        final ServerInfo serverInfo = configuration
+            .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+        final InternalCloudNetwork internalCloudNetwork = configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE());
 
         ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(internalCloudNetwork);
-        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+        ReformCloudLibraryServiceProvider.getInstance()
+            .setInternalCloudNetwork(internalCloudNetwork);
 
-        if (serverInfo.getCloudProcess().getName().equals(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName()))
+        if (serverInfo.getCloudProcess().getName()
+            .equals(
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())) {
             ReformCloudAPISpigot.getInstance().setServerInfo(serverInfo);
+        }
 
-        SpigotBootstrap.getInstance().getServer().getPluginManager().callEvent(new CloudServerInfoUpdateEvent(serverInfo));
+        SpigotBootstrap.getInstance().getServer().getPluginManager()
+            .callEvent(new CloudServerInfoUpdateEvent(serverInfo));
     }
 }

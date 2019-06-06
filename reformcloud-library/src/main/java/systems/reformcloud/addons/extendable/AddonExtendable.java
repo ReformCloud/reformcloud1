@@ -9,6 +9,7 @@ package systems.reformcloud.addons.extendable;
  */
 
 public abstract class AddonExtendable {
+
     /**
      * This method will load the addons
      */

@@ -16,63 +16,75 @@ import systems.reformcloud.web.utils.WebHandler;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
  */
 
 public final class RestAPIDeploymentService implements Serializable, WebHandler {
+
     @Override
-    public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext, HttpRequest httpRequest) throws Exception {
-        if (!(httpRequest instanceof FullHttpRequest))
+    public FullHttpResponse handleRequest(ChannelHandlerContext channelHandlerContext,
+        HttpRequest httpRequest) throws Exception {
+        if (!(httpRequest instanceof FullHttpRequest)) {
             return null;
+        }
 
         FullHttpRequest fullHttpRequest = (FullHttpRequest) httpRequest;
 
-        FullHttpResponse fullHttpResponse = RestAPIUtility.createFullHttpResponse(httpRequest.protocolVersion());
+        FullHttpResponse fullHttpResponse = RestAPIUtility
+            .createFullHttpResponse(httpRequest.protocolVersion());
         Configuration answer = RestAPIUtility.createDefaultAnswer();
         HttpHeaders httpHeaders = httpRequest.headers();
 
-        InternalWebUser internalWebUser = ReformCloudController.getInstance().getInternalCloudNetwork().getInternalWebUser();
-        if (internalWebUser == null || !internalWebUser.getName().equals(httpHeaders.get("-XUser"))) {
-            answer.addValue("response", Arrays.asList("User by given -XUser not found"));
+        InternalWebUser internalWebUser = ReformCloudController.getInstance()
+            .getInternalCloudNetwork().getInternalWebUser();
+        if (internalWebUser == null || !internalWebUser.getName()
+            .equals(httpHeaders.get("-XUser"))) {
+            answer
+                .addValue("response", Collections.singletonList("User by given -XUser not found"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         if (!internalWebUser.getPassword().equals(httpHeaders.get("-XPassword"))) {
-            answer.addValue("response", Arrays.asList("Password given by -XPassword incorrect"));
+            answer.addValue("response",
+                Collections.singletonList("Password given by -XPassword incorrect"));
             fullHttpResponse.content().writeBytes(answer.getJsonString().getBytes());
             return fullHttpResponse;
         }
 
         Configuration configuration = Configuration.fromString(httpHeaders.get("-XConfig"));
-        if (configuration.contains("template") && configuration.contains("group") && configuration.contains("client")) {
+        if (configuration.contains("template") && configuration.contains("group") && configuration
+            .contains("client")) {
             File file = new File("reformcloud/files/" +
-                    configuration.getStringValue("group") + "/" +
-                    configuration.getStringValue("template") + ".zip"
+                configuration.getStringValue("group") + "/" +
+                configuration.getStringValue("template") + ".zip"
             );
             file.getParentFile().mkdirs();
             ZoneInformationProtocolUtility.toZip(
-                    fullHttpRequest.content().readBytes(fullHttpRequest.content().readableBytes()).array(),
-                    file
+                fullHttpRequest.content().readBytes(fullHttpRequest.content().readableBytes())
+                    .array(),
+                file
             );
 
             ReformCloudController.getInstance().getLoggerProvider().info("Downloaded template " +
-                    configuration.getStringValue("template") + " of group " + configuration.getStringValue("group"));
+                configuration.getStringValue("template") + " of group " + configuration
+                .getStringValue("group"));
 
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                    configuration.getStringValue("client"),
-                    new PacketOutTemplateDeployReady(
-                            configuration.getStringValue("group"),
-                            configuration.getStringValue("template"),
-                            configuration.getBooleanValue("proxy")
-                    )
+                configuration.getStringValue("client"),
+                new PacketOutTemplateDeployReady(
+                    configuration.getStringValue("group"),
+                    configuration.getStringValue("template"),
+                    configuration.getBooleanValue("proxy")
+                )
             );
 
             fullHttpResponse.setStatus(HttpResponseStatus.OK);
-            fullHttpResponse.content().writeBytes(answer.addValue("success", true).getJsonString().getBytes());
+            fullHttpResponse.content()
+                .writeBytes(answer.addValue("success", true).getJsonString().getBytes());
             return fullHttpResponse;
         }
 

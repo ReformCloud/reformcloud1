@@ -18,24 +18,31 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class AuthenticationHandler implements AuthenticationManager {
+
     /**
      * Handles the default auth of the processes
      *
-     * @param authenticationType            The authentication type
-     * @param packet                        The authentication packet send by the network participant
-     * @param channelHandlerContext         The channel handler context of the participant's channel
-     * @param channelHandler                The channel handler to register the process if the operation was successful
+     * @param authenticationType The authentication type
+     * @param packet The authentication packet send by the network participant
+     * @param channelHandlerContext The channel handler context of the participant's channel
+     * @param channelHandler The channel handler to register the process if the operation was
+     * successful
      */
     @Override
-    public void handleAuth(AuthenticationType authenticationType, Packet packet, ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler) {
+    public void handleAuth(AuthenticationType authenticationType, Packet packet,
+        ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler) {
         String name = packet.getConfiguration().getStringValue("name");
         switch (authenticationType) {
-            case SERVER: {
-                if (ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()), packet.getConfiguration().getStringValue("key"))) {
+            case SERVER:
+            case INTERNAL: {
+                if (ReformCloudLibraryService
+                    .check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()),
+                        packet.getConfiguration().getStringValue("key"))) {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addValue("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
+                        "InitializeCloudNetwork", new Configuration().addValue("networkProperties",
+                        ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();
@@ -43,24 +50,13 @@ public final class AuthenticationHandler implements AuthenticationManager {
                 break;
             }
             case PROXY: {
-                if (ReformCloudLibraryServiceProvider.getInstance().getKey().equals(packet.getConfiguration().getStringValue("key"))) {
+                if (ReformCloudLibraryServiceProvider.getInstance().getKey()
+                    .equals(packet.getConfiguration().getStringValue("key"))) {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
                     channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addValue("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
-                    ));
-                } else {
-                    channelHandlerContext.channel().close();
-                }
-                break;
-            }
-            case INTERNAL: {
-                if (ReformCloudLibraryService.check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getKey()),
-                        packet.getConfiguration().getStringValue("key"))) {
-                    channelHandler.registerChannel(name, channelHandlerContext);
-
-                    channelHandlerContext.channel().writeAndFlush(new Packet(
-                            "InitializeCloudNetwork", new Configuration().addValue("networkProperties", ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
+                        "InitializeCloudNetwork", new Configuration().addValue("networkProperties",
+                        ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
                 } else {
                     channelHandlerContext.channel().close();

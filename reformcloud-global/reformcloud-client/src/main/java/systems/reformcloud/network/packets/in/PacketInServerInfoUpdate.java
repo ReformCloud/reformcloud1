@@ -16,11 +16,14 @@ import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
  */
 
 public final class PacketInServerInfoUpdate implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        final InternalCloudNetwork internalCloudNetwork = configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE());
+        final InternalCloudNetwork internalCloudNetwork = configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE());
 
         ReformCloudClient.getInstance().setInternalCloudNetwork(internalCloudNetwork);
-        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+        ReformCloudLibraryServiceProvider.getInstance()
+            .setInternalCloudNetwork(internalCloudNetwork);
     }
 }

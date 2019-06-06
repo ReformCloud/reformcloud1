@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class ChannelDisconnectedEvent extends Event implements Serializable {
+
     private ChannelHandlerContext channelHandlerContext;
 
     @java.beans.ConstructorProperties({"channelHandlerContext"})

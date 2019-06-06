@@ -15,26 +15,32 @@ import java.io.Serializable;
  */
 
 public final class CommandAddons extends Command implements Serializable {
+
     public CommandAddons() {
-        super("addons", "List, enable and disable addons", "reformcloud.command.addons", new String[0]);
+        super("addons", "List, enable and disable addons", "reformcloud.command.addons",
+            new String[0]);
     }
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-            if (ReformCloudController.getInstance().getAddonParallelLoader().getJavaAddons().size() == 0) {
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_addons_no_addons_loaded());
+            if (ReformCloudController.getInstance().getAddonParallelLoader().getJavaAddons().size()
+                == 0) {
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_addons_no_addons_loaded());
             } else {
-                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_addons_following_loaded());
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
+                    .getCommand_addons_following_loaded());
                 ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                 ReformCloudController.getInstance().getAddonParallelLoader()
-                        .getJavaAddons()
-                        .forEach(e -> commandSender.sendMessage(
-                                ReformCloudController.getInstance().getLoadedLanguage().getCommand_addons_addon_description()
-                                        .replace("%name%", e.getAddonName())
-                                        .replace("%version%", e.getAddonClassConfig().getVersion())
-                                        .replace("%main%", e.getAddonClassConfig().getMain())
-                        ));
+                    .getJavaAddons()
+                    .forEach(e -> commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_addons_addon_description()
+                            .replace("%name%", e.getAddonName())
+                            .replace("%version%", e.getAddonClassConfig().getVersion())
+                            .replace("%main%", e.getAddonClassConfig().getMain())
+                    ));
             }
         } else {
             commandSender.sendMessage("addons list");

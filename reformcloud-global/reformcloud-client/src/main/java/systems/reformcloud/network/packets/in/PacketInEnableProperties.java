@@ -19,17 +19,19 @@ import java.io.Serializable;
  */
 
 public final class PacketInEnableProperties implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ReformCloudClient.getInstance().getChannelHandler().sendPacketQuerySync(
-                "ReformCloudController",
-                ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
-                new PacketOutRequestProperties(),
-                (configuration1, resultID) ->
-                        new PropertiesManager(configuration1.getValue("config", new TypeToken<PropertiesConfig>() {
-                        })),
-                (configuration2, resultId) -> {
-                }
+            "ReformCloudController",
+            ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
+            new PacketOutRequestProperties(),
+            (configuration1, resultID) ->
+                new PropertiesManager(
+                    configuration1.getValue("config", new TypeToken<PropertiesConfig>() {
+                    })),
+            (configuration2, resultId) -> {
+            }
         );
     }
 }

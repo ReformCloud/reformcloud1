@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketInEnableIcons implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         new IconManager();

@@ -14,12 +14,13 @@ import java.io.Serializable;
  */
 
 public final class PacketOutGetLog extends Packet implements Serializable {
+
     private static final long serialVersionUID = 7160830277462211122L;
 
     public PacketOutGetLog(final String url, final String process) {
         super(
-                "ProcessLog",
-                new Configuration().addStringValue("process", process).addStringValue("url", url)
+            "ProcessLog",
+            new Configuration().addStringValue("process", process).addStringValue("url", url)
         );
     }
 }

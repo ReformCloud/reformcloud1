@@ -15,7 +15,13 @@ import java.util.UUID;
  */
 
 public final class PacketOutCommandExecute extends Packet {
-    public PacketOutCommandExecute(final String name, final UUID uuid, final String command, final String server) {
-        super("CommandExecute", new Configuration().addValue("uuid", uuid).addStringValue("command", command).addStringValue("name", name).addStringValue("server", server).addStringValue("proxyName", ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName()));
+
+    public PacketOutCommandExecute(final String name, final UUID uuid, final String command,
+        final String server) {
+        super("CommandExecute",
+            new Configuration().addValue("uuid", uuid).addStringValue("command", command)
+                .addStringValue("name", name).addStringValue("server", server)
+                .addStringValue("proxyName",
+                    ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName()));
     }
 }

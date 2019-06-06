@@ -16,10 +16,14 @@ import java.util.UUID;
  */
 
 public final class PacketInLogoutPlayer implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getUuid().remove(configuration.getValue("uuid", UUID.class));
-        ReformCloudController.getInstance().getPlayerDatabase().logoutPlayer(configuration.getValue("uuid", UUID.class));
-        ReformCloudController.getInstance().getEventManager().fire(new PlayerDisconnectsEvent(configuration.getValue("uuid", UUID.class)));
+        ReformCloudController.getInstance().getUuid()
+            .remove(configuration.getValue("uuid", UUID.class));
+        ReformCloudController.getInstance().getPlayerDatabase()
+            .logoutPlayer(configuration.getValue("uuid", UUID.class));
+        ReformCloudController.getInstance().getEventManager()
+            .fire(new PlayerDisconnectsEvent(configuration.getValue("uuid", UUID.class)));
     }
 }

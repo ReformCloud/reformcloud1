@@ -14,10 +14,11 @@ import java.io.Serializable;
  */
 
 public final class PacketOutExecuteClientCommand extends Packet implements Serializable {
+
     public PacketOutExecuteClientCommand(String command) {
         super(
-                "ExecuteClientCommand",
-                new Configuration().addStringValue("cmd", command)
+            "ExecuteClientCommand",
+            new Configuration().addStringValue("cmd", command)
         );
     }
 }

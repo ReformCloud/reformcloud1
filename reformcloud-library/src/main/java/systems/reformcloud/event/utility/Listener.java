@@ -11,4 +11,5 @@ package systems.reformcloud.event.utility;
  */
 
 public interface Listener {
+
 }

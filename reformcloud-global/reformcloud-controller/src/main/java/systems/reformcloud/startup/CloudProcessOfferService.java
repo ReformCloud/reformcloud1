@@ -25,104 +25,140 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class CloudProcessOfferService implements Runnable, Serializable {
+
     private Map<String, String> waiting = ReformCloudLibraryService.concurrentHashMap();
 
     private Map<String, String> waitingPerClient = ReformCloudLibraryService.concurrentHashMap();
 
     private List<Trio<String, String, Integer>> servers = new ArrayList<>();
+
     private List<Trio<String, String, Integer>> proxies = new ArrayList<>();
 
     private Queue<DevProcess> devProcesses = new ConcurrentLinkedDeque<>();
 
     private void offerServers() {
-        ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().values().forEach(serverGroup -> {
-            Client client = ReformCloudController.getInstance().getBestClient(serverGroup.getClients(), serverGroup.getMemory());
+        ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().values()
+            .forEach(serverGroup -> {
+                Client client = ReformCloudController.getInstance()
+                    .getBestClient(serverGroup.getClients(), serverGroup.getMemory());
 
-            if (client == null)
-                return;
+                if (client == null) {
+                    return;
+                }
 
-            final Collection<String> servers = ReformCloudController.getInstance().getInternalCloudNetwork()
+                final Collection<String> servers = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork()
                     .getServerProcessManager().getOnlineServers(serverGroup.getName());
-            final Collection<String> waiting = this.getWaiting(serverGroup.getName());
+                final Collection<String> waiting = this.getWaiting(serverGroup.getName());
 
-            final int waitingAndOnline = servers.size() + waiting.size();
-            final String id = Integer.toString(this.nextServerID(serverGroup.getName()));
-            final String name = serverGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                final int waitingAndOnline = servers.size() + waiting.size();
+                final String id = Integer.toString(this.nextServerID(serverGroup.getName()));
+                final String name = serverGroup.getName() + ReformCloudController.getInstance()
+                    .getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "")
+                    + id;
 
-            if (waitingAndOnline < serverGroup.getMinOnline() && (serverGroup.getMaxOnline() > waitingAndOnline || serverGroup.getMaxOnline() == -1)) {
-                this.waiting.put(name, serverGroup.getName());
-                this.waitingPerClient.put(name, client.getName());
-                this.registerID(serverGroup.getName(), name, Integer.valueOf(id));
-                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
-                        new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(), new Configuration(), id)
-                );
-            }
-        });
+                if (waitingAndOnline < serverGroup.getMinOnline() && (
+                    serverGroup.getMaxOnline() > waitingAndOnline
+                        || serverGroup.getMaxOnline() == -1)) {
+                    this.waiting.put(name, serverGroup.getName());
+                    this.waitingPerClient.put(name, client.getName());
+                    this.registerID(serverGroup.getName(), name, Integer.valueOf(id));
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(client.getName(),
+                            new PacketOutStartGameServer(serverGroup, name, UUID.randomUUID(),
+                                new Configuration(), id)
+                        );
+                }
+            });
     }
 
     private void offerProxies() {
-        ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values().forEach(proxyGroup -> {
-            Client startup = ReformCloudController.getInstance().getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
+        ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values()
+            .forEach(proxyGroup -> {
+                Client startup = ReformCloudController.getInstance()
+                    .getBestClient(proxyGroup.getClients(), proxyGroup.getMemory());
 
-            if (startup == null)
-                return;
+                if (startup == null) {
+                    return;
+                }
 
-            final Collection<String> proxies = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
+                final Collection<String> proxies = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getServerProcessManager()
                     .getOnlineProxies(proxyGroup.getName());
-            final Collection<String> waiting = this.getWaiting(proxyGroup.getName());
+                final Collection<String> waiting = this.getWaiting(proxyGroup.getName());
 
-            final int waitingAndOnline = proxies.size() + waiting.size();
-            final String id = Integer.toString(this.nextProxyID(proxyGroup.getName()));
-            final String name = proxyGroup.getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+                final int waitingAndOnline = proxies.size() + waiting.size();
+                final String id = Integer.toString(this.nextProxyID(proxyGroup.getName()));
+                final String name = proxyGroup.getName() + ReformCloudController.getInstance()
+                    .getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "")
+                    + id;
 
-            if (waitingAndOnline < proxyGroup.getMinOnline() && (proxyGroup.getMaxOnline() > waitingAndOnline || proxyGroup.getMaxOnline() == -1)) {
-                this.waiting.put(name, proxyGroup.getName());
-                this.waitingPerClient.put(name, startup.getName());
-                this.registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
-                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(startup.getName(),
-                        new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(), new Configuration(), id)
-                );
-            }
-        });
+                if (waitingAndOnline < proxyGroup.getMinOnline() && (
+                    proxyGroup.getMaxOnline() > waitingAndOnline
+                        || proxyGroup.getMaxOnline() == -1)) {
+                    this.waiting.put(name, proxyGroup.getName());
+                    this.waitingPerClient.put(name, startup.getName());
+                    this.registerProxyID(proxyGroup.getName(), name, Integer.valueOf(id));
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(startup.getName(),
+                            new PacketOutStartProxy(proxyGroup, name, UUID.randomUUID(),
+                                new Configuration(), id)
+                        );
+                }
+            });
     }
 
     private void offerDevProcesses() {
         DevProcess devProcess = this.devProcesses.poll();
-        if (devProcess == null)
+        if (devProcess == null) {
             return;
+        }
 
-        Client startup = ReformCloudController.getInstance().getBestClient(devProcess.getServerGroup().getClients(), devProcess.getServerGroup().getMemory());
+        Client startup = ReformCloudController.getInstance()
+            .getBestClient(devProcess.getServerGroup().getClients(),
+                devProcess.getServerGroup().getMemory());
 
         if (startup == null) {
             devProcesses.offer(devProcess);
             return;
         }
 
-        final Collection<String> servers = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
-                .getOnlineServers(devProcess.getServerGroup().getName());
+        final Collection<String> servers = ReformCloudController.getInstance()
+            .getInternalCloudNetwork().getServerProcessManager()
+            .getOnlineServers(devProcess.getServerGroup().getName());
         final Collection<String> waiting = this.getWaiting(devProcess.getServerGroup().getName());
 
         final int waitingAndOnline = servers.size() + waiting.size();
-        final String id = Integer.toString(this.nextServerID(devProcess.getServerGroup().getName()));
-        final String name = devProcess.getServerGroup().getName() + ReformCloudController.getInstance().getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "") + id;
+        final String id = Integer
+            .toString(this.nextServerID(devProcess.getServerGroup().getName()));
+        final String name =
+            devProcess.getServerGroup().getName() + ReformCloudController.getInstance()
+                .getCloudConfiguration().getSplitter() + (Integer.parseInt(id) <= 9 ? "0" : "")
+                + id;
 
-        if (devProcess.getServerGroup().getMaxOnline() > waitingAndOnline || devProcess.getServerGroup().getMaxOnline() == -1) {
+        if (devProcess.getServerGroup().getMaxOnline() > waitingAndOnline
+            || devProcess.getServerGroup().getMaxOnline() == -1) {
             this.waiting.put(name, devProcess.getServerGroup().getName());
             this.waitingPerClient.put(name, startup.getName());
             this.registerID(devProcess.getServerGroup().getName(), name, Integer.valueOf(id));
-            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(startup.getName(),
-                    new PacketOutStartGameServer(devProcess.getServerGroup(), name, UUID.randomUUID(), devProcess.getPreConfig(), id, devProcess.getTemplate())
-            );
-        } else
+            ReformCloudController.getInstance().getChannelHandler()
+                .sendPacketAsynchronous(startup.getName(),
+                    new PacketOutStartGameServer(devProcess.getServerGroup(), name,
+                        UUID.randomUUID(), devProcess.getPreConfig(), id, devProcess.getTemplate())
+                );
+        } else {
             this.devProcesses.offer(devProcess);
+        }
     }
 
     public Collection<String> getWaiting(final String name) {
         Collection<String> collection = new ArrayList<>();
 
-        for (Map.Entry<String, String> map : this.waiting.entrySet())
-            if (map.getValue().equals(name))
+        for (Map.Entry<String, String> map : this.waiting.entrySet()) {
+            if (map.getValue().equals(name)) {
                 collection.add(map.getKey());
+            }
+        }
 
         return collection;
     }
@@ -130,18 +166,22 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
     public void unregisterID(final ServerInfo serverInfo) {
         List<Trio<String, String, Integer>> clone = new ArrayList<>(this.servers);
         clone.forEach(e -> {
-            if (e.getFirst().equals(serverInfo.getServerGroup().getName()) && e.getSecond().equals(serverInfo.getCloudProcess().getName()))
+            if (e.getFirst().equals(serverInfo.getServerGroup().getName()) && e.getSecond()
+                .equals(serverInfo.getCloudProcess().getName())) {
                 this.servers.remove(e);
+            }
         });
     }
 
     public int nextServerID(final String groupName) {
         List<Integer> servers = new ArrayList<>();
-        this.servers.stream().filter(e -> e.getFirst().equals(groupName)).forEach(e -> servers.add(e.getThird()));
+        this.servers.stream().filter(e -> e.getFirst().equals(groupName))
+            .forEach(e -> servers.add(e.getThird()));
 
         int id = 1;
-        while (servers.contains(id))
+        while (servers.contains(id)) {
             id++;
+        }
 
         return id;
     }
@@ -153,18 +193,22 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
     public void unregisterProxyID(final ProxyInfo proxyInfo) {
         List<Trio<String, String, Integer>> clone = new ArrayList<>(this.proxies);
         clone.forEach(e -> {
-            if (e.getFirst().equals(proxyInfo.getProxyGroup().getName()) && e.getSecond().equals(proxyInfo.getCloudProcess().getName()))
+            if (e.getFirst().equals(proxyInfo.getProxyGroup().getName()) && e.getSecond()
+                .equals(proxyInfo.getCloudProcess().getName())) {
                 this.proxies.remove(e);
+            }
         });
     }
 
     public int nextProxyID(final String groupName) {
         List<Integer> servers = new ArrayList<>();
-        this.proxies.stream().filter(e -> e.getFirst().equals(groupName)).forEach(e -> servers.add(e.getThird()));
+        this.proxies.stream().filter(e -> e.getFirst().equals(groupName))
+            .forEach(e -> servers.add(e.getThird()));
 
         int id = 1;
-        while (servers.contains(id))
+        while (servers.contains(id)) {
             id++;
+        }
 
         return id;
     }
@@ -178,14 +222,16 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
 
         List<Trio<String, String, Integer>> clone = new ArrayList<>(this.proxies);
         clone.forEach(e -> {
-            if (e.getSecond().equals(name))
+            if (e.getSecond().equals(name)) {
                 this.proxies.remove(e);
+            }
         });
 
         List<Trio<String, String, Integer>> cloneServers = new ArrayList<>(this.servers);
         cloneServers.forEach(e -> {
-            if (e.getSecond().equals(name))
+            if (e.getSecond().equals(name)) {
                 this.servers.remove(e);
+            }
         });
     }
 
@@ -196,7 +242,7 @@ public final class CloudProcessOfferService implements Runnable, Serializable {
             this.offerServers();
             this.offerProxies();
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 2);
+            ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 500);
         }
     }
 

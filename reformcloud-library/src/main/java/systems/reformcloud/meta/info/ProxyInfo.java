@@ -16,19 +16,29 @@ import java.util.UUID;
  */
 
 public final class ProxyInfo implements Serializable {
+
     private static final long serialVersionUID = -3889580749596738985L;
 
     private CloudProcess cloudProcess;
+
     private ProxyGroup proxyGroup;
 
     private String host;
-    private int port, online, maxMemory;
+
+    private int port;
+
+    private int online;
+
+    private int maxMemory;
 
     private boolean full;
+
     private List<UUID> onlinePlayers;
 
-    @java.beans.ConstructorProperties({"cloudProcess", "proxyGroup", "host", "port", "online", "maxMemory", "full", "onlinePlayers"})
-    public ProxyInfo(CloudProcess cloudProcess, ProxyGroup proxyGroup, String host, int port, int online, int maxMemory, boolean full, List<UUID> onlinePlayers) {
+    @java.beans.ConstructorProperties({"cloudProcess", "proxyGroup", "host", "port", "online",
+        "maxMemory", "full", "onlinePlayers"})
+    public ProxyInfo(CloudProcess cloudProcess, ProxyGroup proxyGroup, String host, int port,
+        int online, int maxMemory, boolean full, List<UUID> onlinePlayers) {
         this.cloudProcess = cloudProcess;
         this.proxyGroup = proxyGroup;
         this.host = host;

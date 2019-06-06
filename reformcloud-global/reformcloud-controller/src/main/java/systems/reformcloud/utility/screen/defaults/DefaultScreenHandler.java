@@ -19,9 +19,12 @@ import java.io.Serializable;
  */
 
 public final class DefaultScreenHandler extends ScreenHandler implements Serializable {
+
     private static final long serialVersionUID = -908658424519877940L;
 
-    private final String name, type;
+    private final String name;
+
+    private final String type;
 
     public DefaultScreenHandler(final String client, final String type, final String name) {
         super(client);
@@ -31,7 +34,8 @@ public final class DefaultScreenHandler extends ScreenHandler implements Seriali
 
     @Override
     public void sendLine(String in) {
-        ReformCloudController.getInstance().getLoggerProvider().coloured("[§eSCREEN §3" + name + "§r/§3" + type.toUpperCase() + "§r] " + in);
+        ReformCloudController.getInstance().getLoggerProvider()
+            .coloured("[§eSCREEN §3" + name + "§r/§3" + type.toUpperCase() + "§r] " + in);
     }
 
     @Override
@@ -39,36 +43,43 @@ public final class DefaultScreenHandler extends ScreenHandler implements Seriali
         switch (type.toLowerCase()) {
             case "proxy": {
                 final ProxyInfo proxyInfo = ReformCloudController.getInstance()
-                        .getInternalCloudNetwork()
-                        .getServerProcessManager()
-                        .getRegisteredProxyByName(name);
-                if (proxyInfo == null)
+                    .getInternalCloudNetwork()
+                    .getServerProcessManager()
+                    .getRegisteredProxyByName(name);
+                if (proxyInfo == null) {
                     return;
+                }
 
-                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
+                ReformCloudController.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
                         new PacketOutExecuteCommand(cmd, "proxy", name));
                 break;
             }
             case "server": {
                 final ServerInfo serverInfo = ReformCloudController.getInstance()
-                        .getInternalCloudNetwork()
-                        .getServerProcessManager()
-                        .getRegisteredServerByName(name);
-                if (serverInfo == null)
+                    .getInternalCloudNetwork()
+                    .getServerProcessManager()
+                    .getRegisteredServerByName(name);
+                if (serverInfo == null) {
                     return;
+                }
 
-                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
+                ReformCloudController.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
                         new PacketOutExecuteCommand(cmd, "server", name));
                 break;
             }
             case "client": {
-                final Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(name);
-                if (client == null || client.getClientInfo() == null)
+                final Client client = ReformCloudController.getInstance().getInternalCloudNetwork()
+                    .getClients().get(name);
+                if (client == null || client.getClientInfo() == null) {
                     return;
+                }
 
-                ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
+                ReformCloudController.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous(client.getName(),
                         new PacketOutExecuteClientCommand(cmd)
-                );
+                    );
             }
             default:
                 break;

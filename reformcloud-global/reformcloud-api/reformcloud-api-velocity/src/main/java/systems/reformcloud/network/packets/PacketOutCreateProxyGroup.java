@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutCreateProxyGroup extends Packet implements Serializable {
+
     public PacketOutCreateProxyGroup(ProxyGroup proxyGroup) {
         super("CreateProxyGroup", new Configuration().addValue("group", proxyGroup));
     }

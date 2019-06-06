@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <dependencies>
+        <dependency>
+            <groupId>systems.reformcloud</groupId>
+            <artifactId>reformcloud-pre-loader-common</artifactId>
+            <version>1.11</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>reformcloud-pre-loader-client</artifactId>
+
+    <parent>
+        <artifactId>reformcloud-pre-loader</artifactId>
+        <groupId>systems.reformcloud</groupId>
+        <version>1.11</version>
+    </parent>
+
+    <build>
+        <finalName>ReformCloudClient</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${plugin.shade.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${plugin.jar.version}</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>systems.reformcloud.ClientPreLoader</Main-Class>
+                            <Version>${project.version}</Version>
+                            <Implementation-Version>${service.version}</Implementation-Version>
+                            <Specification-Version>${service.type}</Specification-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

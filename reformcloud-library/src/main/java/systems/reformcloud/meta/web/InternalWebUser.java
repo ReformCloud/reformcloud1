@@ -11,9 +11,12 @@ import java.io.Serializable;
  */
 
 public class InternalWebUser implements Serializable {
+
     private static final long serialVersionUID = -8467193156656410810L;
 
-    private String name, password;
+    private String name;
+
+    private String password;
 
     @java.beans.ConstructorProperties({"name", "password"})
     public InternalWebUser(String name, String password) {

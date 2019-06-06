@@ -17,6 +17,7 @@ import java.util.UUID;
  */
 
 public final class ServerInfo implements Serializable {
+
     private static final long serialVersionUID = 8057730391607929124L;
 
     private CloudProcess cloudProcess;
@@ -25,15 +26,25 @@ public final class ServerInfo implements Serializable {
 
     private ServerState serverState;
 
-    private String host, motd;
-    private int port, online, maxMemory;
+    private String host;
+
+    private String motd;
+
+    private int port;
+
+    private int online;
+
+    private int maxMemory;
 
     private boolean full;
 
     private List<UUID> onlinePlayers;
 
-    @java.beans.ConstructorProperties({"cloudProcess", "serverGroup", "serverState", "host", "motd", "port", "online", "maxMemory", "full", "onlinePlayers"})
-    public ServerInfo(CloudProcess cloudProcess, ServerGroup serverGroup, ServerState serverState, String host, String motd, int port, int online, int maxMemory, boolean full, List<UUID> onlinePlayers) {
+    @java.beans.ConstructorProperties({"cloudProcess", "serverGroup", "serverState", "host", "motd",
+        "port", "online", "maxMemory", "full", "onlinePlayers"})
+    public ServerInfo(CloudProcess cloudProcess, ServerGroup serverGroup, ServerState serverState,
+        String host, String motd, int port, int online, int maxMemory, boolean full,
+        List<UUID> onlinePlayers) {
         this.cloudProcess = cloudProcess;
         this.serverGroup = serverGroup;
         this.serverState = serverState;

@@ -24,7 +24,8 @@ public final class Configuration {
             String key = (entry.getKey() == null) ? "null" : entry.getKey().toString();
 
             if (entry.getValue() instanceof Map) {
-                this.self.put(key, new Configuration((Map) entry.getValue(), (defaults == null) ? null : defaults.getSection(key)));
+                this.self.put(key, new Configuration((Map) entry.getValue(),
+                    (defaults == null) ? null : defaults.getSection(key)));
             } else {
                 this.self.put(key, entry.getValue());
             }
@@ -90,7 +91,8 @@ public final class Configuration {
 
     public void set(String path, Object value) {
         if (value instanceof Map) {
-            value = new Configuration((Map) value, (defaults == null) ? null : defaults.getSection(path));
+            value = new Configuration((Map) value,
+                (defaults == null) ? null : defaults.getSection(path));
         }
 
         Configuration section = getSectionFor(path);
@@ -112,7 +114,8 @@ public final class Configuration {
     /*------------------------------------------------------------------------*/
     public Configuration getSection(String path) {
         Object def = getDefault(path);
-        return (Configuration) get(path, (def instanceof Configuration) ? def : new Configuration((defaults == null) ? null : defaults.getSection(path)));
+        return (Configuration) get(path, (def instanceof Configuration) ? def
+            : new Configuration((defaults == null) ? null : defaults.getSection(path)));
     }
 
     /**
@@ -154,8 +157,8 @@ public final class Configuration {
     }
 
     public short getShort(String path, short def) {
-        Object val = get(path, def);
-        return (val instanceof Number) ? ((Number) val).shortValue() : def;
+        Number val = get(path, def);
+        return (val != null) ? val.shortValue() : def;
     }
 
     public List<Short> getShortList(String path) {

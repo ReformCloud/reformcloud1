@@ -6,17 +6,26 @@ package systems.reformcloud.parameters;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 14.04.2019
  */
 
 public final class ParameterGroup implements Serializable {
-    private String groupName, javaCommand;
-    private List<String> preParameters, afterParameters;
 
-    @java.beans.ConstructorProperties({"groupName", "javaCommand", "preParameters", "afterParameters"})
-    public ParameterGroup(String groupName, String javaCommand, List<String> preParameters, List<String> afterParameters) {
+    private String groupName;
+
+    private String javaCommand;
+
+    private List<String> preParameters;
+
+    private List<String> afterParameters;
+
+    @java.beans.ConstructorProperties({"groupName", "javaCommand", "preParameters",
+        "afterParameters"})
+    public ParameterGroup(String groupName, String javaCommand, List<String> preParameters,
+        List<String> afterParameters) {
         this.groupName = groupName;
         this.javaCommand = javaCommand;
         this.preParameters = preParameters;
@@ -56,24 +65,33 @@ public final class ParameterGroup implements Serializable {
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ParameterGroup)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ParameterGroup)) {
+            return false;
+        }
         final ParameterGroup other = (ParameterGroup) o;
         final Object this$groupName = this.getGroupName();
         final Object other$groupName = other.getGroupName();
-        if (this$groupName == null ? other$groupName != null : !this$groupName.equals(other$groupName)) return false;
+        if (!Objects.equals(this$groupName, other$groupName)) {
+            return false;
+        }
         final Object this$javaCommand = this.getJavaCommand();
         final Object other$javaCommand = other.getJavaCommand();
-        if (this$javaCommand == null ? other$javaCommand != null : !this$javaCommand.equals(other$javaCommand))
+        if (!Objects.equals(this$javaCommand, other$javaCommand)) {
             return false;
+        }
         final Object this$preParameters = this.getPreParameters();
         final Object other$preParameters = other.getPreParameters();
-        if (this$preParameters == null ? other$preParameters != null : !this$preParameters.equals(other$preParameters))
+        if (!Objects.equals(this$preParameters, other$preParameters)) {
             return false;
+        }
         final Object this$afterParameters = this.getAfterParameters();
         final Object other$afterParameters = other.getAfterParameters();
-        if (this$afterParameters == null ? other$afterParameters != null : !this$afterParameters.equals(other$afterParameters))
+        if (!Objects.equals(this$afterParameters, other$afterParameters)) {
             return false;
+        }
         return true;
     }
 
@@ -92,6 +110,8 @@ public final class ParameterGroup implements Serializable {
     }
 
     public String toString() {
-        return "ParameterGroup(groupName=" + this.getGroupName() + ", javaCommand=" + this.getJavaCommand() + ", preParameters=" + this.getPreParameters() + ", afterParameters=" + this.getAfterParameters() + ")";
+        return "ParameterGroup(groupName=" + this.getGroupName() + ", javaCommand=" + this
+            .getJavaCommand() + ", preParameters=" + this.getPreParameters() + ", afterParameters="
+            + this.getAfterParameters() + ")";
     }
 }

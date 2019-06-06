@@ -13,6 +13,7 @@ import systems.reformcloud.signs.Sign;
  */
 
 public final class PacketOutCreateSign extends Packet {
+
     public PacketOutCreateSign(final Sign sign) {
         super("CreateSign", new Configuration().addValue("sign", sign));
     }

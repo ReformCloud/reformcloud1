@@ -6,7 +6,7 @@ package systems.reformcloud.network.api.event;
 
 import io.netty.channel.ChannelHandlerContext;
 import net.kyori.text.TextComponent;
-import systems.reformcloud.api.IEventHandler;
+import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.configurations.Configuration;
 
@@ -16,7 +16,8 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 05.03.2019
  */
 
-public final class NetworkEventAdapter implements Serializable, IEventHandler {
+public final class NetworkEventAdapter implements Serializable, EventHandler {
+
     @Override
     public void handleCustomPacket(String channel, String targetType, Configuration configuration) {
     }
@@ -32,12 +33,13 @@ public final class NetworkEventAdapter implements Serializable, IEventHandler {
     @Override
     public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
         VelocityBootstrap.getInstance().getProxyServer().getAllPlayers().forEach(proxiedPlayer ->
-                proxiedPlayer.sendMessage(TextComponent.of(
-                        "Your current proxy lost the connection to the cloud"
-                )));
+            proxiedPlayer.sendMessage(TextComponent.of(
+                "Your current proxy lost the connection to the cloud"
+            )));
     }
 
     @Override
-    public void channelExceptionCaught(ChannelHandlerContext channelHandlerContext, Throwable cause) {
+    public void channelExceptionCaught(ChannelHandlerContext channelHandlerContext,
+        Throwable cause) {
     }
 }

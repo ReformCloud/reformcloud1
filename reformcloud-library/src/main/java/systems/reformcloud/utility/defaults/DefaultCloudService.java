@@ -5,8 +5,8 @@
 package systems.reformcloud.utility.defaults;
 
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.api.IAPIService;
-import systems.reformcloud.api.ICloudService;
+import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.CloudService;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.utility.Require;
 
@@ -19,29 +19,32 @@ import java.util.function.BiConsumer;
  * @author _Klaro | Pasqual K. / created on 21.04.2019
  */
 
-public final class DefaultCloudService implements Serializable, ICloudService {
-    public DefaultCloudService(IAPIService instance) {
+public final class DefaultCloudService implements Serializable, CloudService {
+
+    public DefaultCloudService(APIService instance) {
         Require.requireNotNull(instance);
-        ICloudService.instance.set(this);
+        CloudService.instance.set(this);
         this.fallback = instance;
     }
 
-    private IAPIService fallback;
+    private APIService fallback;
 
     @Override
     public OnlinePlayer getCachedPlayer(String name) {
-        if (IAPIService.instance.get() == null)
+        if (APIService.instance.get() == null) {
             return fallback.getOnlinePlayer(name);
-        else
-            return IAPIService.instance.get().getOnlinePlayer(name);
+        } else {
+            return APIService.instance.get().getOnlinePlayer(name);
+        }
     }
 
     @Override
     public OnlinePlayer getCachedPlayer(UUID uniqueId) {
-        if (IAPIService.instance.get() == null)
+        if (APIService.instance.get() == null) {
             return fallback.getOnlinePlayer(uniqueId);
-        else
-            return IAPIService.instance.get().getOnlinePlayer(uniqueId);
+        } else {
+            return APIService.instance.get().getOnlinePlayer(uniqueId);
+        }
     }
 
     @Override
@@ -56,7 +59,7 @@ public final class DefaultCloudService implements Serializable, ICloudService {
     @Override
     public void patchAsync(Runnable runnable, BiConsumer<? super Void, ? super Throwable> andThen) {
         CompletableFuture
-                .runAsync(runnable)
-                .whenCompleteAsync(andThen);
+            .runAsync(runnable)
+            .whenCompleteAsync(andThen);
     }
 }

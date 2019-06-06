@@ -22,19 +22,28 @@ import java.io.Serializable;
  */
 
 public final class PacketInProcessAdd implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
-            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
-            final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
+            final ServerInfo serverInfo = configuration
+                .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+            final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance()
+                .getInternalCloudNetwork().getProxyGroups()
+                .get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
 
-            if (proxyGroup == null || proxyGroup.getDisabledServerGroups().contains(serverInfo.getServerGroup().getName()))
+            if (proxyGroup == null || proxyGroup.getDisabledServerGroups()
+                .contains(serverInfo.getServerGroup().getName())) {
                 return;
+            }
 
-            ProxyServer.getInstance().getPluginManager().callEvent(new CloudServerAddEvent(serverInfo));
+            ProxyServer.getInstance().getPluginManager()
+                .callEvent(new CloudServerAddEvent(serverInfo));
         } else {
-            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-            ProxyServer.getInstance().getPluginManager().callEvent(new CloudProxyAddEvent(proxyInfo));
+            final ProxyInfo proxyInfo = configuration
+                .getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
+            ProxyServer.getInstance().getPluginManager()
+                .callEvent(new CloudProxyAddEvent(proxyInfo));
         }
     }
 }

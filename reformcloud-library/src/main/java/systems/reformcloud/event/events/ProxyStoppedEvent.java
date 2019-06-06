@@ -16,6 +16,7 @@ import java.io.Serializable;
  */
 
 public final class ProxyStoppedEvent extends Event implements Serializable {
+
     /**
      * The proxy info of the stopped process
      */

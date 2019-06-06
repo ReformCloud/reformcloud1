@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public final class ScreenSessionProvider implements Serializable {
+
     private static final long serialVersionUID = -7287732124453310814L;
 
     private final Map<String, ScreenHandler> screens = new ConcurrentHashMap<>();
@@ -24,7 +25,9 @@ public final class ScreenSessionProvider implements Serializable {
     public boolean joinScreen(final String name, final ScreenHandler screenHandler) {
         if (!this.isInScreen()) {
             this.screens.put(name, screenHandler);
-            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(screenHandler.getClient(), new PacketOutSyncScreenJoin(name));
+            ReformCloudController.getInstance().getChannelHandler()
+                .sendPacketAsynchronous(screenHandler.getClient(),
+                    new PacketOutSyncScreenJoin(name));
             return true;
         }
 
@@ -34,12 +37,15 @@ public final class ScreenSessionProvider implements Serializable {
     public boolean leaveScreen() {
         if (this.isInScreen()) {
             ScreenHandler screenHandler = this.screens.values().stream().findFirst().orElse(null);
-            if (screenHandler == null)
+            if (screenHandler == null) {
                 return false;
+            }
 
             final String name = this.getNameByScreen(screenHandler);
             this.screens.clear();
-            ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(screenHandler.getClient(), new PacketOutSyncScreenDisable(name));
+            ReformCloudController.getInstance().getChannelHandler()
+                .sendPacketAsynchronous(screenHandler.getClient(),
+                    new PacketOutSyncScreenDisable(name));
             return true;
         }
 
@@ -63,8 +69,9 @@ public final class ScreenSessionProvider implements Serializable {
     public void executeCommand(final String cmd) {
         if (this.isInScreen()) {
             ScreenHandler screenHandler = this.screens.values().stream().findFirst().orElse(null);
-            if (screenHandler == null)
+            if (screenHandler == null) {
                 return;
+            }
 
             screenHandler.executeCommand(cmd);
         }
@@ -72,8 +79,9 @@ public final class ScreenSessionProvider implements Serializable {
 
     private String getNameByScreen(final ScreenHandler screenHandler) {
         for (Map.Entry<String, ScreenHandler> map : this.screens.entrySet()) {
-            if (map.getValue().equals(screenHandler))
+            if (map.getValue().equals(screenHandler)) {
                 return map.getKey();
+            }
         }
 
         return null;

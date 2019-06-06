@@ -15,12 +15,14 @@ import java.io.Serializable;
  */
 
 public final class PacketOutSyncClientUpdateSuccess extends Packet implements Serializable {
+
     private static final long serialVersionUID = -3306501769364526001L;
 
     public PacketOutSyncClientUpdateSuccess() {
         super(
-                "ClientReloadSuccess",
-                new Configuration().addStringValue("name", ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+            "ClientReloadSuccess",
+            new Configuration().addStringValue("name",
+                ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
         );
     }
 }

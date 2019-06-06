@@ -15,8 +15,10 @@ import java.io.Serializable;
  */
 
 public final class CommandExit extends Command implements Serializable {
+
     public CommandExit() {
-        super("exit", "Stops the System", "reformcloud.command.exit", new String[]{"kill", "end", "stop", "shutdown"});
+        super("exit", "Stops the System", "reformcloud.command.exit",
+            new String[]{"kill", "end", "stop", "shutdown"});
     }
 
     @Override

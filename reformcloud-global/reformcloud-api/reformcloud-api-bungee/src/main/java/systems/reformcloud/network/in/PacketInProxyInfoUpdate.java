@@ -18,9 +18,11 @@ import java.io.Serializable;
  */
 
 public final class PacketInProxyInfoUpdate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ProxyInfo proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-        BungeecordBootstrap.getInstance().getProxy().getPluginManager().callEvent(new CloudProxyInfoUpdateEvent(proxyInfo));
+        BungeecordBootstrap.getInstance().getProxy().getPluginManager()
+            .callEvent(new CloudProxyInfoUpdateEvent(proxyInfo));
     }
 }

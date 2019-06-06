@@ -16,8 +16,10 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdatePermissionCache implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIVelocity.getInstance().setPermissionCache(configuration.getValue("cache", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE()));
+        ReformCloudAPIVelocity.getInstance().setPermissionCache(
+            configuration.getValue("cache", TypeTokenAdaptor.getPERMISSION_CACHE_TYPE()));
     }
 }

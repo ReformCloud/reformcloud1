@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutCreateClient extends Packet implements Serializable {
+
     public PacketOutCreateClient(Client client) {
         super("CreateClient", new Configuration().addValue("client", client));
     }

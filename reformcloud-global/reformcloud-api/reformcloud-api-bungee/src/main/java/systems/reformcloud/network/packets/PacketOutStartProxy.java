@@ -13,11 +13,16 @@ import systems.reformcloud.network.packet.Packet;
  */
 
 public final class PacketOutStartProxy extends Packet {
+
     public PacketOutStartProxy(final ProxyGroup proxyGroup, final Configuration preConfig) {
-        super("StartProxyProcess", new Configuration().addValue("group", proxyGroup).addConfigurationValue("pre", preConfig));
+        super("StartProxyProcess", new Configuration().addValue("group", proxyGroup)
+            .addConfigurationValue("pre", preConfig));
     }
 
-    public PacketOutStartProxy(final ProxyGroup proxyGroup, final Configuration preConfig, final String template) {
-        super("StartProxyProcess", new Configuration().addValue("group", proxyGroup).addStringValue("template", template).addConfigurationValue("pre", preConfig));
+    public PacketOutStartProxy(final ProxyGroup proxyGroup, final Configuration preConfig,
+        final String template) {
+        super("StartProxyProcess",
+            new Configuration().addValue("group", proxyGroup).addStringValue("template", template)
+                .addConfigurationValue("pre", preConfig));
     }
 }

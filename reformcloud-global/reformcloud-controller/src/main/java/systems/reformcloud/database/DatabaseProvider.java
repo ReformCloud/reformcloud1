@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public abstract class DatabaseProvider implements Serializable {
+
     private static final long serialVersionUID = 4215067458872524204L;
 
     /**

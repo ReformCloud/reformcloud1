@@ -4,24 +4,28 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.commands.defaults.CommandSender;
+import systems.reformcloud.commands.defaults.DefaultConsoleCommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.utility.StringUtil;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
 public final class CommandManager extends AbstractCommandManager implements Serializable {
+
     /**
      * The default cloud command sender
      */
-    private final CommandSender commandSender = new CommandSender();
+    private final DefaultConsoleCommandSender defaultConsoleCommandSender = new DefaultConsoleCommandSender();
 
     /**
      * The command list, where all commands are located in
@@ -31,48 +35,57 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     /**
      * Dispatches a specific command with the given command sender for security reasons
      *
-     * @param commandSender     The commandSender who send the command
-     * @param command           The command as string which was send
+     * @param commandSender The defaultConsoleCommandSender who send the command
+     * @param command The command as string which was send
      * @return if the command is registered or not
      */
     @Override
-    public boolean dispatchCommand(systems.reformcloud.commands.utility.CommandSender commandSender, String command) {
+    public boolean dispatchCommand(systems.reformcloud.commands.utility.CommandSender commandSender,
+        String command) {
         String[] strings = command.split(" ");
 
-        if (strings.length <= 0)
+        if (strings.length <= 0) {
             return false;
+        }
 
         Command command2;
         Optional<Command> cmd = commands.stream().filter(command1 ->
-                command1.getName().equalsIgnoreCase(strings[0]) || Arrays.asList(command1.getAliases()).contains(strings[0])
+            command1.getName().equalsIgnoreCase(strings[0]) || Arrays.asList(command1.getAliases())
+                .contains(strings[0])
         ).findFirst();
-        if (cmd.isPresent())
+        if (cmd.isPresent()) {
             command2 = cmd.get();
-        else
+        } else {
             return false;
+        }
 
-        if (command2.getPermission() == null || commandSender.hasPermission(command2.getPermission())) {
-            String string = command.replace((command.contains(" ") ? command.split(" ")[0] + " " : command), "");
+        if (command2.getPermission() == null || commandSender
+            .hasPermission(command2.getPermission())) {
+            String string = command
+                .replace((command.contains(" ") ? command.split(" ")[0] + " " : command), "");
             try {
-                if (string.equalsIgnoreCase(""))
+                if (string.equalsIgnoreCase("")) {
                     command2.executeCommand(commandSender, new String[0]);
-                else {
+                } else {
                     final String[] arguments = string.split(" ");
                     command2.executeCommand(commandSender, arguments);
                 }
             } catch (final Throwable throwable) {
-                StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while dispatching command", throwable);
+                StringUtil
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                        "Error while dispatching command", throwable);
             }
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
 
     /**
      * Registers a specific command
      *
-     * @param command       The command which should be registered
+     * @param command The command which should be registered
      * @return The class instance
      */
     @Override
@@ -92,7 +105,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     /**
      * Unregisters an specific command
      *
-     * @param name      The name of the command which should be unregistered
+     * @param name The name of the command which should be unregistered
      */
     @Override
     public void unregisterCommand(final String name) {
@@ -102,12 +115,14 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     /**
      * Checks if a command is registered
      *
-     * @param command       The command as string which should be checked
+     * @param command The command as string which should be checked
      * @return if the command is registered
      */
     @Override
     public boolean isCommandRegistered(final String command) {
-        return this.commands.stream().anyMatch(e -> e.getName().equalsIgnoreCase(command) || Arrays.asList(e.getAliases()).contains(command));
+        return this.commands.stream().anyMatch(
+            e -> e.getName().equalsIgnoreCase(command) || Arrays.asList(e.getAliases())
+                .contains(command));
     }
 
     /**
@@ -125,23 +140,24 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     }
 
     /**
-     * Dispatch a command with the default {@link CommandSender}
+     * Dispatch a command with the default {@link DefaultConsoleCommandSender}
      *
-     * @param command       The command as string
+     * @param command The command as string
      * @return if the command is registered
      */
     @Override
     public boolean dispatchCommand(String command) {
-        return this.dispatchCommand(this.commandSender, command);
+        return this.dispatchCommand(this.defaultConsoleCommandSender, command);
     }
 
     /**
      * Creates a new {@link DefaultUserCommandSender}
      *
-     * @param permissions       The permissions of the command sender
+     * @param permissions The permissions of the command sender
      * @return a new command sender
      */
-    public systems.reformcloud.commands.utility.CommandSender newCommandSender(final Map<String, Boolean> permissions) {
+    public systems.reformcloud.commands.utility.CommandSender newCommandSender(
+        final Map<String, Boolean> permissions) {
         return new DefaultUserCommandSender(permissions);
     }
 

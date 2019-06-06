@@ -8,20 +8,47 @@ import systems.reformcloud.utility.map.maps.Double;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 06.04.2019
  */
 
 public final class ProxySettings implements Serializable {
-    private String targetProxyGroup, tabHeader, tabFooter, maintenanceProtocol, protocol;
-    private String[] playerInfo;
-    private boolean protocolEnabled, tabEnabled, motdEnabled, slotCounter;
-    private int moreSlots;
-    private List<Double<String, String>> normalMotd, maintenanceMotd;
 
-    @java.beans.ConstructorProperties({"targetProxyGroup", "tabHeader", "tabFooter", "maintenanceProtocol", "protocol", "playerInfo", "protocolEnabled", "tabEnabled", "motdEnabled", "slotCounter", "moreSlots", "normalMotd", "maintenanceMotd"})
-    public ProxySettings(String targetProxyGroup, String tabHeader, String tabFooter, String maintenanceProtocol, String protocol, String[] playerInfo, boolean protocolEnabled, boolean tabEnabled, boolean motdEnabled, boolean slotCounter, int moreSlots, List<Double<String, String>> normalMotd, List<Double<String, String>> maintenanceMotd) {
+    private String targetProxyGroup;
+
+    private String tabHeader;
+
+    private String tabFooter;
+
+    private String maintenanceProtocol;
+
+    private String protocol;
+
+    private String[] playerInfo;
+
+    private boolean protocolEnabled;
+
+    private boolean tabEnabled;
+
+    private boolean motdEnabled;
+
+    private boolean slotCounter;
+
+    private int moreSlots;
+
+    private List<Double<String, String>> normalMotd;
+
+    private List<Double<String, String>> maintenanceMotd;
+
+    @java.beans.ConstructorProperties({"targetProxyGroup", "tabHeader", "tabFooter",
+        "maintenanceProtocol", "protocol", "playerInfo", "protocolEnabled", "tabEnabled",
+        "motdEnabled", "slotCounter", "moreSlots", "normalMotd", "maintenanceMotd"})
+    public ProxySettings(String targetProxyGroup, String tabHeader, String tabFooter,
+        String maintenanceProtocol, String protocol, String[] playerInfo, boolean protocolEnabled,
+        boolean tabEnabled, boolean motdEnabled, boolean slotCounter, int moreSlots,
+        List<Double<String, String>> normalMotd, List<Double<String, String>> maintenanceMotd) {
         this.targetProxyGroup = targetProxyGroup;
         this.tabHeader = tabHeader;
         this.tabFooter = tabFooter;
@@ -142,40 +169,66 @@ public final class ProxySettings implements Serializable {
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ProxySettings)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ProxySettings)) {
+            return false;
+        }
         final ProxySettings other = (ProxySettings) o;
         final Object this$targetProxyGroup = this.getTargetProxyGroup();
         final Object other$targetProxyGroup = other.getTargetProxyGroup();
-        if (this$targetProxyGroup == null ? other$targetProxyGroup != null : !this$targetProxyGroup.equals(other$targetProxyGroup))
+        if (!Objects.equals(this$targetProxyGroup, other$targetProxyGroup)) {
             return false;
+        }
         final Object this$tabHeader = this.getTabHeader();
         final Object other$tabHeader = other.getTabHeader();
-        if (this$tabHeader == null ? other$tabHeader != null : !this$tabHeader.equals(other$tabHeader)) return false;
+        if (!Objects.equals(this$tabHeader, other$tabHeader)) {
+            return false;
+        }
         final Object this$tabFooter = this.getTabFooter();
         final Object other$tabFooter = other.getTabFooter();
-        if (this$tabFooter == null ? other$tabFooter != null : !this$tabFooter.equals(other$tabFooter)) return false;
+        if (!Objects.equals(this$tabFooter, other$tabFooter)) {
+            return false;
+        }
         final Object this$maintenanceProtocol = this.getMaintenanceProtocol();
         final Object other$maintenanceProtocol = other.getMaintenanceProtocol();
-        if (this$maintenanceProtocol == null ? other$maintenanceProtocol != null : !this$maintenanceProtocol.equals(other$maintenanceProtocol))
+        if (!Objects.equals(this$maintenanceProtocol, other$maintenanceProtocol)) {
             return false;
+        }
         final Object this$protocol = this.getProtocol();
         final Object other$protocol = other.getProtocol();
-        if (this$protocol == null ? other$protocol != null : !this$protocol.equals(other$protocol)) return false;
-        if (!java.util.Arrays.deepEquals(this.getPlayerInfo(), other.getPlayerInfo())) return false;
-        if (this.isProtocolEnabled() != other.isProtocolEnabled()) return false;
-        if (this.isTabEnabled() != other.isTabEnabled()) return false;
-        if (this.isMotdEnabled() != other.isMotdEnabled()) return false;
-        if (this.isSlotCounter() != other.isSlotCounter()) return false;
-        if (this.getMoreSlots() != other.getMoreSlots()) return false;
+        if (!Objects.equals(this$protocol, other$protocol)) {
+            return false;
+        }
+        if (!java.util.Arrays.deepEquals(this.getPlayerInfo(), other.getPlayerInfo())) {
+            return false;
+        }
+        if (this.isProtocolEnabled() != other.isProtocolEnabled()) {
+            return false;
+        }
+        if (this.isTabEnabled() != other.isTabEnabled()) {
+            return false;
+        }
+        if (this.isMotdEnabled() != other.isMotdEnabled()) {
+            return false;
+        }
+        if (this.isSlotCounter() != other.isSlotCounter()) {
+            return false;
+        }
+        if (this.getMoreSlots() != other.getMoreSlots()) {
+            return false;
+        }
         final Object this$normalMotd = this.getNormalMotd();
         final Object other$normalMotd = other.getNormalMotd();
-        if (this$normalMotd == null ? other$normalMotd != null : !this$normalMotd.equals(other$normalMotd))
+        if (!Objects.equals(this$normalMotd, other$normalMotd)) {
             return false;
+        }
         final Object this$maintenanceMotd = this.getMaintenanceMotd();
         final Object other$maintenanceMotd = other.getMaintenanceMotd();
-        if (this$maintenanceMotd == null ? other$maintenanceMotd != null : !this$maintenanceMotd.equals(other$maintenanceMotd))
+        if (!Objects.equals(this$maintenanceMotd, other$maintenanceMotd)) {
             return false;
+        }
         return true;
     }
 
@@ -189,7 +242,8 @@ public final class ProxySettings implements Serializable {
         final Object $tabFooter = this.getTabFooter();
         result = result * PRIME + ($tabFooter == null ? 43 : $tabFooter.hashCode());
         final Object $maintenanceProtocol = this.getMaintenanceProtocol();
-        result = result * PRIME + ($maintenanceProtocol == null ? 43 : $maintenanceProtocol.hashCode());
+        result =
+            result * PRIME + ($maintenanceProtocol == null ? 43 : $maintenanceProtocol.hashCode());
         final Object $protocol = this.getProtocol();
         result = result * PRIME + ($protocol == null ? 43 : $protocol.hashCode());
         result = result * PRIME + java.util.Arrays.deepHashCode(this.getPlayerInfo());
@@ -206,6 +260,13 @@ public final class ProxySettings implements Serializable {
     }
 
     public String toString() {
-        return "ProxySettings(targetProxyGroup=" + this.getTargetProxyGroup() + ", tabHeader=" + this.getTabHeader() + ", tabFooter=" + this.getTabFooter() + ", maintenanceProtocol=" + this.getMaintenanceProtocol() + ", protocol=" + this.getProtocol() + ", playerInfo=" + java.util.Arrays.deepToString(this.getPlayerInfo()) + ", protocolEnabled=" + this.isProtocolEnabled() + ", tabEnabled=" + this.isTabEnabled() + ", motdEnabled=" + this.isMotdEnabled() + ", slotCounter=" + this.isSlotCounter() + ", moreSlots=" + this.getMoreSlots() + ", normalMotd=" + this.getNormalMotd() + ", maintenanceMotd=" + this.getMaintenanceMotd() + ")";
+        return "ProxySettings(targetProxyGroup=" + this.getTargetProxyGroup() + ", tabHeader="
+            + this.getTabHeader() + ", tabFooter=" + this.getTabFooter() + ", maintenanceProtocol="
+            + this.getMaintenanceProtocol() + ", protocol=" + this.getProtocol() + ", playerInfo="
+            + java.util.Arrays.deepToString(this.getPlayerInfo()) + ", protocolEnabled=" + this
+            .isProtocolEnabled() + ", tabEnabled=" + this.isTabEnabled() + ", motdEnabled=" + this
+            .isMotdEnabled() + ", slotCounter=" + this.isSlotCounter() + ", moreSlots=" + this
+            .getMoreSlots() + ", normalMotd=" + this.getNormalMotd() + ", maintenanceMotd=" + this
+            .getMaintenanceMotd() + ")";
     }
 }

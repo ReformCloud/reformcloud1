@@ -9,5 +9,6 @@ package systems.reformcloud.utility.map.pool;
  */
 
 public interface Callback<T> {
+
     void onCall(T t);
 }

@@ -14,6 +14,7 @@ import java.util.UUID;
  */
 
 public final class Sign implements Serializable {
+
     /**
      * The uuid of the sign
      */

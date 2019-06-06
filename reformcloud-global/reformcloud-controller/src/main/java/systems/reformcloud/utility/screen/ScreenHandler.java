@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public abstract class ScreenHandler implements Serializable {
+
     private static final long serialVersionUID = 937457820217096807L;
 
     private String client;

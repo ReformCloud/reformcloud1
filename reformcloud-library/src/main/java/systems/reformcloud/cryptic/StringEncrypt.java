@@ -14,6 +14,7 @@ import java.security.MessageDigest;
  */
 
 public final class StringEncrypt implements Serializable {
+
     private static final long serialVersionUID = -960370385552735958L;
 
     /**
@@ -29,7 +30,7 @@ public final class StringEncrypt implements Serializable {
     /**
      * Encrypts the string in sha 256
      *
-     * @param in        The string which should be encrypted
+     * @param in The string which should be encrypted
      * @return The encrypted string
      */
     public static String encryptSHA256(final String in) {
@@ -39,7 +40,7 @@ public final class StringEncrypt implements Serializable {
     /**
      * Encrypts the string in sha 384
      *
-     * @param in        The string which should be encrypted
+     * @param in The string which should be encrypted
      * @return The encrypted string
      */
     public static String encryptSHA384(final String in) {
@@ -60,7 +61,7 @@ public final class StringEncrypt implements Serializable {
      * Encrypts the string by the given message digest
      *
      * @param messageDigest The message digest which should be used to encrypt the string
-     * @param in            The string which should be encrypted
+     * @param in The string which should be encrypted
      * @return The encrypted string
      */
     public static String encrypt(MessageDigest messageDigest, String in) {

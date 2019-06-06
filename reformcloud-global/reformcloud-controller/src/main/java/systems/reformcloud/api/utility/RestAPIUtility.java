@@ -20,10 +20,12 @@ import java.util.Map;
  */
 
 public final class RestAPIUtility implements Serializable {
+
     private static final long serialVersionUID = -1253171241896584068L;
 
     public static FullHttpResponse createFullHttpResponse(final HttpVersion httpVersion) {
-        DefaultFullHttpResponse defaultFullHttpResponse = new DefaultFullHttpResponse(httpVersion, HttpResponseStatus.UNAUTHORIZED);
+        DefaultFullHttpResponse defaultFullHttpResponse = new DefaultFullHttpResponse(httpVersion,
+            HttpResponseStatus.UNAUTHORIZED);
         defaultFullHttpResponse.headers().set("Content-Type", "application/json");
         defaultFullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
 
@@ -31,7 +33,8 @@ public final class RestAPIUtility implements Serializable {
     }
 
     public static Configuration createDefaultAnswer() {
-        return new Configuration().addBooleanValue("success", false).addValue("response", new ArrayList<>());
+        return new Configuration().addBooleanValue("success", false)
+            .addValue("response", new ArrayList<>());
     }
 
     public static boolean hasPermission(final WebUser webUser, final String permission) {
@@ -39,8 +42,9 @@ public final class RestAPIUtility implements Serializable {
     }
 
     private static boolean hasPermission(String permission, Map<String, Boolean> permissions) {
-        if (permission == null || permissions == null)
+        if (permission == null || permissions == null) {
             return false;
+        }
 
         permission = permission.toLowerCase();
         return checkPermission(permissions, permission);
@@ -48,19 +52,17 @@ public final class RestAPIUtility implements Serializable {
 
     private static boolean checkPermission(Map<String, Boolean> permissions, String permission) {
         for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
-            if (entry.getKey().equalsIgnoreCase("*") && entry.getValue())
-                return true;
-
             if (entry.getKey().endsWith("*") && entry.getKey().length() > 1
-                    && permission.startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))
-                    && entry.getValue()) {
-                return true;
+                && permission
+                .startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))) {
+                return entry.getValue();
             }
 
-            if (entry.getKey().equalsIgnoreCase(permission) && entry.getValue())
-                return true;
+            if (entry.getKey().equalsIgnoreCase(permission)) {
+                return entry.getValue();
+            }
         }
 
-        return false;
+        return permissions.containsKey("*") && permissions.get("*");
     }
 }

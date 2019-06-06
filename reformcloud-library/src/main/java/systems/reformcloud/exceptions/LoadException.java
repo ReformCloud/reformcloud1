@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public final class LoadException extends Throwable implements Serializable {
+
     /**
      * The exception will be thrown if any error occurs while loading the cloud system
      *
@@ -21,8 +22,8 @@ public final class LoadException extends Throwable implements Serializable {
     }
 
     /**
-     * The exception will be thrown if any error occurs while loading the cloud system
-     * but gives no information about the cause
+     * The exception will be thrown if any error occurs while loading the cloud system but gives no
+     * information about the cause
      */
     public LoadException() {
         this(new IllegalStateException());

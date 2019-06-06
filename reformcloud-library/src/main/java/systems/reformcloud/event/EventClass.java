@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
  */
 
 final class EventClass implements Serializable {
+
     /**
      * The current listener class
      */
@@ -32,19 +33,25 @@ final class EventClass implements Serializable {
     /**
      * Calls the current listener
      *
-     * @param event                             The event which should be called
-     * @throws InvocationTargetException        If the method can not be invoked
-     * @throws IllegalAccessException           If the access to the class failed or the permission are not correct
+     * @param event The event which should be called
+     * @throws InvocationTargetException If the method can not be invoked
+     * @throws IllegalAccessException If the access to the class failed or the permission are not
+     * correct
      */
     void invoke(Object event) throws InvocationTargetException, IllegalAccessException {
         method.invoke(listener, event);
     }
 
-    private Object getListener() {
+    public Object getListener() {
         return this.listener;
     }
 
-    private Method getMethod() {
+    public Method getMethod() {
         return this.method;
+    }
+
+    @Override
+    public String toString() {
+        return "Listener=" + listener + "/Method=" + method;
     }
 }

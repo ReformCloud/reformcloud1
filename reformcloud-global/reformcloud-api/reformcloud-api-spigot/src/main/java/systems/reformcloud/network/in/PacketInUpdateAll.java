@@ -17,12 +17,23 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateAll implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
-        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
 
-        if (ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getProcessUID()) != null)
-            ReformCloudAPISpigot.getInstance().setServerInfo(ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByUID(ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getProcessUID()));
+        if (ReformCloudAPISpigot.getInstance().getInternalCloudNetwork().getServerProcessManager()
+            .getRegisteredServerByUID(
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess()
+                    .getProcessUID()) != null) {
+            ReformCloudAPISpigot.getInstance().setServerInfo(
+                ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
+                    .getServerProcessManager().getRegisteredServerByUID(
+                    ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess()
+                        .getProcessUID()));
+        }
     }
 }

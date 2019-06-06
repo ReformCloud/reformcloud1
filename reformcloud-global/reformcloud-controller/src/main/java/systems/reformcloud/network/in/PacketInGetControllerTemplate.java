@@ -22,6 +22,7 @@ import java.util.UUID;
  */
 
 public final class PacketInGetControllerTemplate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         String groupName = configuration.getStringValue("groupName");
@@ -31,43 +32,47 @@ public final class PacketInGetControllerTemplate implements Serializable, Networ
 
         switch (type.toLowerCase()) {
             case "proxy": {
-                if (!Files.exists(Paths.get("reformcloud/templates/proxies/" + groupName + "/" + template))) {
-                    FileUtils.createDirectory(Paths.get("reformcloud/templates/proxies/" + groupName + "/" + template));
+                if (!Files.exists(
+                    Paths.get("reformcloud/templates/proxies/" + groupName + "/" + template))) {
+                    FileUtils.createDirectory(
+                        Paths.get("reformcloud/templates/proxies/" + groupName + "/" + template));
                 }
 
                 byte[] zippedTemplate = ZoneInformationProtocolUtility.zipDirectoryToBytes(
-                        Paths.get("reformcloud/templates/proxies/" + groupName + "/" + template)
+                    Paths.get("reformcloud/templates/proxies/" + groupName + "/" + template)
                 );
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        client, new PacketOutGetControllerTemplateResult(
-                                Base64.getEncoder().encodeToString(zippedTemplate),
-                                configuration.getStringValue("name"),
-                                configuration.getValue("uuid", UUID.class),
-                                type,
-                                groupName
-                        )
+                    client, new PacketOutGetControllerTemplateResult(
+                        Base64.getEncoder().encodeToString(zippedTemplate),
+                        configuration.getStringValue("name"),
+                        configuration.getValue("uuid", UUID.class),
+                        type,
+                        groupName
+                    )
                 );
                 break;
             }
 
             case "server": {
-                if (!Files.exists(Paths.get("reformcloud/templates/servers/" + groupName + "/" + template))) {
-                    FileUtils.createDirectory(Paths.get("reformcloud/templates/servers/" + groupName + "/" + template));
+                if (!Files.exists(
+                    Paths.get("reformcloud/templates/servers/" + groupName + "/" + template))) {
+                    FileUtils.createDirectory(
+                        Paths.get("reformcloud/templates/servers/" + groupName + "/" + template));
                 }
 
                 byte[] zippedTemplate = ZoneInformationProtocolUtility.zipDirectoryToBytes(
-                        Paths.get("reformcloud/templates/servers/" + groupName + "/" + template)
+                    Paths.get("reformcloud/templates/servers/" + groupName + "/" + template)
                 );
 
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        client, new PacketOutGetControllerTemplateResult(
-                                Base64.getEncoder().encodeToString(zippedTemplate),
-                                configuration.getStringValue("name"),
-                                configuration.getValue("uuid", UUID.class),
-                                type,
-                                groupName
-                        )
+                    client, new PacketOutGetControllerTemplateResult(
+                        Base64.getEncoder().encodeToString(zippedTemplate),
+                        configuration.getStringValue("name"),
+                        configuration.getValue("uuid", UUID.class),
+                        type,
+                        groupName
+                    )
                 );
                 break;
             }

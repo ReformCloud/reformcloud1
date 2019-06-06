@@ -17,12 +17,16 @@ import java.util.UUID;
  */
 
 public final class PacketInConnectPlayer implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer().getPlayer(configuration.getValue("uuid", UUID.class)).orElse(null);
-        if (proxiedPlayer == null)
+        Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer()
+            .getPlayer(configuration.getValue("uuid", UUID.class)).orElse(null);
+        if (proxiedPlayer == null) {
             return;
+        }
 
-        proxiedPlayer.createConnectionRequest(VelocityBootstrap.getInstance().getProxyServer().getServer(configuration.getStringValue("to")).get()).connect();
+        proxiedPlayer.createConnectionRequest(VelocityBootstrap.getInstance().getProxyServer()
+            .getServer(configuration.getStringValue("to")).get()).connect();
     }
 }

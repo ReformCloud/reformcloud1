@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
  */
 
 public final class PermissionHolder implements Serializable {
+
     /**
      * The uuid of the player
      */
@@ -32,7 +33,8 @@ public final class PermissionHolder implements Serializable {
     private Map<String, Boolean> playerPermissions;
 
     @java.beans.ConstructorProperties({"uniqueID", "permissionGroups", "playerPermissions"})
-    public PermissionHolder(UUID uniqueID, Map<String, Long> permissionGroups, Map<String, Boolean> playerPermissions) {
+    public PermissionHolder(UUID uniqueID, Map<String, Long> permissionGroups,
+        Map<String, Boolean> playerPermissions) {
         this.uniqueID = uniqueID;
         this.permissionGroups = permissionGroups;
         this.playerPermissions = playerPermissions;
@@ -41,24 +43,26 @@ public final class PermissionHolder implements Serializable {
     /**
      * Checks if a player has the given permission
      *
-     * @param permission   The permission which should be checked
+     * @param permission The permission which should be checked
      * @param playerGroups The groups of the player
      * @return If the player has the permission
      */
     public boolean hasPermission(String permission, List<PermissionGroup> playerGroups) {
         if (permission != null && (permission.equalsIgnoreCase("bukkit.brodcast")
-                || permission.equalsIgnoreCase("bukkit.brodcast.admin"))) {
+            || permission.equalsIgnoreCase("bukkit.brodcast.admin"))) {
             return true;
         }
 
-        if (permission == null || playerGroups == null)
+        if (permission == null || playerGroups == null) {
             return false;
+        }
 
         permission = permission.toLowerCase();
 
         for (PermissionGroup permissionGroup : playerGroups) {
-            if (checkPermission0(permissionGroup.getPermissions(), permission))
+            if (checkPermission0(permissionGroup.getPermissions(), permission)) {
                 return true;
+            }
         }
 
         return checkPermission0(this.playerPermissions, permission);
@@ -67,32 +71,30 @@ public final class PermissionHolder implements Serializable {
     /**
      * Checks if the player has the given permission
      *
-     * @param permissions       The permission in which the cloud should search for the permission
-     * @param permission        The permission which should be checked
+     * @param permissions The permission in which the cloud should search for the permission
+     * @param permission The permission which should be checked
      * @return If the player has the permission or not
      */
     private boolean checkPermission0(Map<String, Boolean> permissions, String permission) {
-        if (permissions.containsKey("*") && permissions.get("*"))
-            return true;
-
         for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
             if (entry.getKey().endsWith("*") && entry.getKey().length() > 1
-                    && permission.startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))
-                    && entry.getValue()) {
-                return true;
+                && permission
+                .startsWith(entry.getKey().substring(0, entry.getKey().length() - 1))) {
+                return entry.getValue();
             }
 
-            if (entry.getKey().equalsIgnoreCase(permission) && entry.getValue())
-                return true;
+            if (entry.getKey().equalsIgnoreCase(permission)) {
+                return entry.getValue();
+            }
         }
 
-        return false;
+        return permissions.containsKey("*") && permissions.get("*");
     }
 
     /**
      * Adds the player a specific permission
      *
-     * @param perm  The permission which should be added
+     * @param perm The permission which should be added
      */
     public void addPermission(String perm) {
         this.playerPermissions.put(perm.toLowerCase(), true);
@@ -101,8 +103,8 @@ public final class PermissionHolder implements Serializable {
     /**
      * Adds the player a permission
      *
-     * @param perm  The permission which should be added
-     * @param set   If the permission should be enabled or not
+     * @param perm The permission which should be added
+     * @param set If the permission should be enabled or not
      */
     public void addPermission(String perm, boolean set) {
         this.playerPermissions.put(perm.toLowerCase(), set);
@@ -111,17 +113,19 @@ public final class PermissionHolder implements Serializable {
     /**
      * Returns all permissions of the player and the given permission group
      *
-     * @param permissionGroups      The permission groups which should be checked
+     * @param permissionGroups The permission groups which should be checked
      * @return A list containing all permission as string
      */
     public List<String> getAllPermissions(List<PermissionGroup> permissionGroups) {
         List<String> permissions = new ArrayList<>();
-        for (Map.Entry<String, Boolean> perms : this.playerPermissions.entrySet())
+        for (Map.Entry<String, Boolean> perms : this.playerPermissions.entrySet()) {
             permissions.add(perms.getValue() ? "" : "-" + perms.getKey());
+        }
 
         permissionGroups.forEach(permissionGroup -> {
-            for (Map.Entry<String, Boolean> perms : permissionGroup.getPermissions().entrySet())
+            for (Map.Entry<String, Boolean> perms : permissionGroup.getPermissions().entrySet()) {
                 permissions.add(perms.getValue() ? "" : "-" + perms.getKey());
+            }
         });
 
         return permissions;
@@ -130,17 +134,19 @@ public final class PermissionHolder implements Serializable {
     /**
      * Get all registered permission groups
      *
-     * @param permissionCache       The permission cache of the cloud
+     * @param permissionCache The permission cache of the cloud
      * @return A list containing all registered permission groups
      */
     public List<PermissionGroup> getAllPermissionGroups(PermissionCache permissionCache) {
-        List<PermissionGroup> permissionGroups = permissionCache.getAllRegisteredGroups().stream().filter(e -> this
+        List<PermissionGroup> permissionGroups = permissionCache.getAllRegisteredGroups().stream()
+            .filter(e -> this
                 .getPermissionGroups()
                 .containsKey(e.getName()))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
 
-        if (this.getPermissionGroups().containsKey(permissionCache.getDefaultGroup().getName()))
+        if (this.getPermissionGroups().containsKey(permissionCache.getDefaultGroup().getName())) {
             permissionGroups.add(permissionCache.getDefaultGroup());
+        }
 
         return permissionGroups;
     }
@@ -148,7 +154,7 @@ public final class PermissionHolder implements Serializable {
     /**
      * Get the highest permission group of the player
      *
-     * @param permissionCache   The permission cache of the cloud
+     * @param permissionCache The permission cache of the cloud
      * @return An optional containing the highest permission group of the player
      */
     public Optional<PermissionGroup> getHighestPlayerGroup(PermissionCache permissionCache) {
@@ -156,15 +162,34 @@ public final class PermissionHolder implements Serializable {
 
         PermissionGroup permissionGroup = null;
         for (PermissionGroup group : permissionGroups) {
-            if (permissionGroup == null)
+            if (permissionGroup == null) {
                 permissionGroup = group;
-            else {
-                if (group.getGroupID() > permissionGroup.getGroupID())
+            } else {
+                if (group.getGroupID() < permissionGroup.getGroupID()) {
                     permissionGroup = group;
+                }
             }
         }
 
         return Optional.ofNullable(permissionGroup);
+    }
+
+    /**
+     * Checks if a permission group is present
+     *
+     * @param name The name of the permission group
+     * @return If the permission group is one of the player groups and if the permission groups is not
+     * ran out of time
+     */
+    public boolean isPermissionGroupPresent(String name) {
+        for (Map.Entry<String, Long> s : this.permissionGroups.entrySet()) {
+            if (s.getKey().equals(name) && (s.getValue() > System.currentTimeMillis()
+                || s.getValue() == -1)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public UUID getUniqueID() {

@@ -19,8 +19,10 @@ import java.util.UUID;
  */
 
 public final class CommandWhitelist extends Command implements Serializable {
+
     public CommandWhitelist() {
-        super("whitelist", "Adds a player to a proxy whitelist", "reformcloud.command.whitelist", new String[]{"wl"});
+        super("whitelist", "Adds a player to a proxy whitelist", "reformcloud.command.whitelist",
+            new String[]{"wl"});
     }
 
     private final Language language = ReformCloudController.getInstance().getLoadedLanguage();
@@ -29,72 +31,101 @@ public final class CommandWhitelist extends Command implements Serializable {
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
             commandSender.sendMessage("ReformCloud whitelisted players: ");
-            ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values().forEach(e ->
+            ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values()
+                .forEach(e ->
                     e.getWhitelist().forEach(player -> commandSender.sendMessage("- " + player))
-            );
+                );
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("add")) {
                 UUID uuidInput = getUuidFromString(args[2]);
                 if (uuidInput == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "UUID or name not valid"));
                     return;
                 }
 
                 if (args[1].equalsIgnoreCase("--all")) {
-                    ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values().forEach(group -> {
+                    ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
+                        .values().forEach(group -> {
                         if (!group.getWhitelist().contains(uuidInput)) {
-                            ReformCloudController.getInstance().getCloudConfiguration().addPlayerToWhitelist(group.getName(), uuidInput);
+                            ReformCloudController.getInstance().getCloudConfiguration()
+                                .addPlayerToWhitelist(group.getName(), uuidInput);
                             commandSender.sendMessage(language.getCommand_whitelist_success()
-                                    .replace("%name%", uuidInput.toString())
-                                    .replace("%proxy%", group.getName()));
+                                .replace("%name%", uuidInput.toString())
+                                .replace("%proxy%", group.getName()));
                         }
                     });
-                    ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
-                } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
-                    if (!ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]).getWhitelist().contains(args[2])) {
-                        ReformCloudController.getInstance().getCloudConfiguration().addPlayerToWhitelist(args[1], uuidInput);
-                        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+                    ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
+                        new PacketOutUpdateAll(
+                            ReformCloudController.getInstance().getInternalCloudNetwork()));
+                } else if (ReformCloudController.getInstance().getInternalCloudNetwork()
+                    .getProxyGroups().containsKey(args[1])) {
+                    if (!ReformCloudController.getInstance().getInternalCloudNetwork()
+                        .getProxyGroups().get(args[1]).getWhitelist().contains(args[2])) {
+                        ReformCloudController.getInstance().getCloudConfiguration()
+                            .addPlayerToWhitelist(args[1], uuidInput);
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendToAllSynchronized(new PacketOutUpdateAll(
+                                ReformCloudController.getInstance().getInternalCloudNetwork()));
                         commandSender.sendMessage(language.getCommand_whitelist_success()
-                                .replace("%name%", uuidInput.toString())
-                                .replace("%proxy%", args[1]));
+                            .replace("%name%", uuidInput.toString())
+                            .replace("%proxy%", args[1]));
                     } else {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        commandSender.sendMessage(
+                            ReformCloudController.getInstance().getLoadedLanguage()
+                                .getCommand_error_occurred()
                                 .replace("%message%", "Player is already on the whitelist"));
                     }
                 } else {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "ProxyGroup isn't registered"));
                 }
             } else if (args[0].equalsIgnoreCase("remove")) {
                 UUID uuidInput = getUuidFromString(args[2]);
                 if (uuidInput == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "UUID or name not valid"));
                     return;
                 }
                 if (args[1].equalsIgnoreCase("--all")) {
-                    ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values().forEach(group -> {
+                    ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
+                        .values().forEach(group -> {
                         if (group.getWhitelist().contains(uuidInput)) {
-                            ReformCloudController.getInstance().getCloudConfiguration().removePlayerFromWhitelist(group.getName(), uuidInput);
+                            ReformCloudController.getInstance().getCloudConfiguration()
+                                .removePlayerFromWhitelist(group.getName(), uuidInput);
                             commandSender.sendMessage(language.getCommand_whitelist_removed()
-                                    .replace("%name%", uuidInput.toString())
-                                    .replace("%proxy%", group.getName()));
+                                .replace("%name%", uuidInput.toString())
+                                .replace("%proxy%", group.getName()));
                         }
                     });
-                } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().containsKey(args[1])) {
-                    if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]).getWhitelist().contains(args[2])) {
-                        ReformCloudController.getInstance().getCloudConfiguration().removePlayerFromWhitelist(args[1], uuidInput);
-                        ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+                } else if (ReformCloudController.getInstance().getInternalCloudNetwork()
+                    .getProxyGroups().containsKey(args[1])) {
+                    if (ReformCloudController.getInstance().getInternalCloudNetwork()
+                        .getProxyGroups().get(args[1]).getWhitelist().contains(args[2])) {
+                        ReformCloudController.getInstance().getCloudConfiguration()
+                            .removePlayerFromWhitelist(args[1], uuidInput);
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendToAllSynchronized(new PacketOutUpdateAll(
+                                ReformCloudController.getInstance().getInternalCloudNetwork()));
                         commandSender.sendMessage(language.getCommand_whitelist_removed()
-                                .replace("%name%", uuidInput.toString())
-                                .replace("%proxy%", args[1]));
+                            .replace("%name%", uuidInput.toString())
+                            .replace("%proxy%", args[1]));
                     } else {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        commandSender.sendMessage(
+                            ReformCloudController.getInstance().getLoadedLanguage()
+                                .getCommand_error_occurred()
                                 .replace("%message%", "Player isn't on the whitelist"));
                     }
                 } else {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "ProxyGroup isn't registered"));
                 }
             }
@@ -108,10 +139,11 @@ public final class CommandWhitelist extends Command implements Serializable {
     private UUID getUuidFromString(String in) {
         try {
             UUID uuidInput;
-            if (in.contains("-"))
+            if (in.contains("-")) {
                 uuidInput = UUID.fromString(in);
-            else
+            } else {
                 uuidInput = UUIDConverter.toUUID(in);
+            }
 
             return uuidInput;
         } catch (final IllegalArgumentException ignored) {

@@ -17,6 +17,7 @@ import java.util.Arrays;
  */
 
 public class ClientAddonImpl extends JavaAddon<ReformCloudClient> {
+
     @Override
     public ReformCloudClient getInternalReformCloudSystem() {
         return ReformCloudClient.getInstance();
@@ -36,6 +37,7 @@ public class ClientAddonImpl extends JavaAddon<ReformCloudClient> {
     }
 
     public void registerListener(final Listener... listeners) {
-        Arrays.stream(listeners).forEach(e -> ReformCloudClient.getInstance().getEventManager().registerListener(e));
+        Arrays.stream(listeners)
+            .forEach(e -> ReformCloudClient.getInstance().getEventManager().registerListener(e));
     }
 }

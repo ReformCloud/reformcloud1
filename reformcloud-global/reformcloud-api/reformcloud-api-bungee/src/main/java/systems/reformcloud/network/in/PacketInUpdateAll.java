@@ -17,12 +17,23 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateAll implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
-        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration.getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudAPIBungee.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(configuration
+            .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
 
-        if (ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByUID(ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getProcessUID()) != null)
-            ReformCloudAPIBungee.getInstance().setProxyInfo(ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByUID(ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getProcessUID()));
+        if (ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getServerProcessManager()
+            .getRegisteredProxyByUID(
+                ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getProcessUID())
+            != null) {
+            ReformCloudAPIBungee.getInstance().setProxyInfo(
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                    .getServerProcessManager().getRegisteredProxyByUID(
+                    ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess()
+                        .getProcessUID()));
+        }
     }
 }

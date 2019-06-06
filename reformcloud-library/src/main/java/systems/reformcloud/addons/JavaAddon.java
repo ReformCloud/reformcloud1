@@ -9,12 +9,15 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
 
+import java.util.Objects;
+
 /**
  * @author _Klaro | Pasqual K. / created on 10.12.2018
  */
 
 public abstract class JavaAddon<E> {
-    public JavaAddon() {
+
+    protected JavaAddon() {
     }
 
     /**
@@ -62,17 +65,19 @@ public abstract class JavaAddon<E> {
     /**
      * Gets the name of the current addon
      *
-     * @return The name of the addon, defined in the config or a random name starting with {@code Addon-}
+     * @return The name of the addon, defined in the config or a random name starting with {@code
+     * Addon-}
      */
     public String getAddonName() {
-        return addonClassConfig != null ? addonClassConfig.getName() : "Addon-" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong();
+        return addonClassConfig != null ? addonClassConfig.getName()
+            : "Addon-" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong();
     }
 
     public AddonClassConfig getAddonClassConfig() {
         return this.addonClassConfig;
     }
 
-    public AddonMainClassLoader getAddonMainClassLoader() {
+    private AddonMainClassLoader getAddonMainClassLoader() {
         return this.addonMainClassLoader;
     }
 
@@ -85,22 +90,30 @@ public abstract class JavaAddon<E> {
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof JavaAddon)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof JavaAddon)) {
+            return false;
+        }
         final JavaAddon<?> other = (JavaAddon<?>) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual(this)) {
+            return false;
+        }
         final Object this$addonClassConfig = this.getAddonClassConfig();
         final Object other$addonClassConfig = other.getAddonClassConfig();
-        if (this$addonClassConfig == null ? other$addonClassConfig != null : !this$addonClassConfig.equals(other$addonClassConfig))
+        if (!Objects.equals(this$addonClassConfig, other$addonClassConfig)) {
             return false;
+        }
         final Object this$addonMainClassLoader = this.getAddonMainClassLoader();
         final Object other$addonMainClassLoader = other.getAddonMainClassLoader();
-        if (this$addonMainClassLoader == null ? other$addonMainClassLoader != null : !this$addonMainClassLoader.equals(other$addonMainClassLoader))
+        if (!Objects.equals(this$addonMainClassLoader, other$addonMainClassLoader)) {
             return false;
+        }
         return true;
     }
 
-    protected boolean canEqual(final Object other) {
+    private boolean canEqual(final Object other) {
         return other instanceof JavaAddon;
     }
 
@@ -110,11 +123,13 @@ public abstract class JavaAddon<E> {
         final Object $addonClassConfig = this.getAddonClassConfig();
         result = result * PRIME + ($addonClassConfig == null ? 43 : $addonClassConfig.hashCode());
         final Object $addonMainClassLoader = this.getAddonMainClassLoader();
-        result = result * PRIME + ($addonMainClassLoader == null ? 43 : $addonMainClassLoader.hashCode());
+        result = result * PRIME + ($addonMainClassLoader == null ? 43
+            : $addonMainClassLoader.hashCode());
         return result;
     }
 
     public String toString() {
-        return "JavaAddon(addonClassConfig=" + this.getAddonClassConfig() + ", addonMainClassLoader=" + this.getAddonMainClassLoader() + ")";
+        return "JavaAddon(addonClassConfig=" + this.getAddonClassConfig()
+            + ", addonMainClassLoader=" + this.getAddonMainClassLoader() + ")";
     }
 }

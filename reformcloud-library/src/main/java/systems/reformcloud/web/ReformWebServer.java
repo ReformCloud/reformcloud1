@@ -30,15 +30,16 @@ import java.security.cert.CertificateException;
  */
 
 public final class ReformWebServer implements Serializable {
+
     /**
      * The boss group of the web server
      */
-    protected EventLoopGroup bossGroup = ReformCloudLibraryService.eventLoopGroup();
+    private EventLoopGroup bossGroup = ReformCloudLibraryService.eventLoopGroup();
 
     /**
      * The worker group of the web server
      */
-    protected EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup();
+    private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup();
 
     /**
      * The created server bootstrap
@@ -58,51 +59,56 @@ public final class ReformWebServer implements Serializable {
     /**
      * Will create a new web server instance and bind it to the given host and port
      *
-     * @param ethernetAddress           Ip and Port where the WebServer will be bound to
-     * @param ssl                       If ssl should be enabled or not
-     * @param certFile                  SSL-Certificate file, if this is {@code null} a
-     *                                  the server will sign a self signed ssl certificate
-     * @param keyFile                   SSL-Certificate key-file if this is {@code null}
-     *                                  the server will sign a self signed ssl certificate
-     * @throws CertificateException     If the Certificate cant be created
-     * @throws SSLException             If the Certificate cant be used
-     * @throws InterruptedException     If the Cloud cannot bind the Webservice
+     * @param ethernetAddress Ip and Port where the WebServer will be bound to
+     * @param ssl If ssl should be enabled or not
+     * @param certFile SSL-Certificate file, if this is {@code null} a the server will sign a self
+     * signed ssl certificate
+     * @param keyFile SSL-Certificate key-file if this is {@code null} the server will sign a self
+     * signed ssl certificate
+     * @throws CertificateException If the Certificate cant be created
+     * @throws SSLException If the Certificate cant be used
+     * @throws InterruptedException If the Cloud cannot bind the Webservice
      */
-    public ReformWebServer(EthernetAddress ethernetAddress, boolean ssl, final File certFile, final File keyFile) throws CertificateException, SSLException, InterruptedException {
+    public ReformWebServer(EthernetAddress ethernetAddress, boolean ssl, final File certFile,
+        final File keyFile) throws CertificateException, SSLException, InterruptedException {
         if (ssl) {
             if (certFile == null || keyFile == null) {
                 SelfSignedCertificate selfSignedCertificate = new SelfSignedCertificate();
-                sslContext = SslContextBuilder.forServer(selfSignedCertificate.key(), selfSignedCertificate.cert()).build();
+                sslContext = SslContextBuilder
+                    .forServer(selfSignedCertificate.key(), selfSignedCertificate.cert()).build();
             } else {
                 sslContext = SslContextBuilder.forServer(certFile, keyFile).build();
             }
         }
 
         serverBootstrap = new ServerBootstrap()
-                .group(bossGroup, workerGroup)
+            .group(bossGroup, workerGroup)
 
-                .childOption(ChannelOption.IP_TOS, 24)
-                .childOption(ChannelOption.AUTO_READ, true)
-                .childOption(ChannelOption.TCP_NODELAY, true)
+            .childOption(ChannelOption.IP_TOS, 24)
+            .childOption(ChannelOption.AUTO_READ, true)
+            .childOption(ChannelOption.TCP_NODELAY, true)
 
-                .channel(ReformCloudLibraryService.serverSocketChannel())
+            .channel(ReformCloudLibraryService.serverSocketChannel())
 
-                .childHandler(new ChannelInitializer<Channel>() {
-                    @Override
-                    protected void initChannel(Channel channel) {
-                        if (sslContext != null && ssl)
-                            channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
-
-                        channel.pipeline().addLast(
-                                new HttpServerCodec(),
-                                new HttpObjectAggregator(Integer.MAX_VALUE),
-                                new WebServerHandler(webHandlerAdapter)
-                        );
+            .childHandler(new ChannelInitializer<Channel>() {
+                @Override
+                protected void initChannel(Channel channel) {
+                    if (sslContext != null && ssl) {
+                        channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
                     }
-                });
-        serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel().closeFuture();
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getWebserver_bound()
+                    channel.pipeline().addLast(
+                        new HttpServerCodec(),
+                        new HttpObjectAggregator(Integer.MAX_VALUE),
+                        new WebServerHandler(webHandlerAdapter)
+                    );
+                }
+            });
+        serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel()
+            .closeFuture();
+
+        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getWebserver_bound()
                 .replace("%ip%", ethernetAddress.getHost())
                 .replace("%port%", Integer.toString(ethernetAddress.getPort())));
     }

@@ -16,6 +16,7 @@ import java.io.Serializable;
  */
 
 public final class ServerStartedEvent extends Event implements Serializable {
+
     /**
      * The server info of the started process
      */

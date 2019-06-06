@@ -14,10 +14,11 @@ import java.io.Serializable;
  */
 
 public final class PacketOutSyncControllerTime extends Packet implements Serializable {
+
     public PacketOutSyncControllerTime() {
         super(
-                "SyncControllerTime",
-                new Configuration().addLongValue("time", System.currentTimeMillis())
+            "SyncControllerTime",
+            new Configuration().addLongValue("time", System.currentTimeMillis())
         );
     }
 }

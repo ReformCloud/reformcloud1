@@ -11,10 +11,11 @@ import systems.reformcloud.logging.AbstractLoggerProvider;
  */
 
 public interface CommandSender {
+
     /**
      * Sends a message to the command sender
      *
-     * @param message       The message that should be sent
+     * @param message The message that should be sent
      */
     default void sendMessage(String message) {
         AbstractLoggerProvider.defaultLogger().info().accept(message);
@@ -23,8 +24,8 @@ public interface CommandSender {
     /**
      * Checks if the command sender has the given permission
      *
-     * @param permission        The permission which should be checked
-     * @return                  If the command sender has the permission
+     * @param permission The permission which should be checked
+     * @return If the command sender has the permission
      */
     boolean hasPermission(String permission);
 }

@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateServerTempStats extends Packet implements Serializable {
+
     public PacketOutUpdateServerTempStats(final TempServerStats tempServerStats) {
         super("UpdateTempServerStats", new Configuration().addValue("stats", tempServerStats));
     }

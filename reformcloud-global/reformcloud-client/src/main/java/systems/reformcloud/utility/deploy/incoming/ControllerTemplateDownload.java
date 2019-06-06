@@ -24,29 +24,37 @@ import java.nio.file.Paths;
  */
 
 public final class ControllerTemplateDownload implements Serializable {
+
     public void download(String group, String template, boolean proxy) {
         try {
             HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                    ReformCloudClient.getInstance().isSsl() ? "https://" : "http://" +
-                            ReformCloudClient.getInstance().getCloudConfiguration().getControllerIP() + ":" +
-                            ReformCloudClient.getInstance().getCloudConfiguration().getControllerWebPort() +
-                            "/api/download"
+                ReformCloudClient.getInstance().isSsl() ? "https://" : "http://" +
+                    ReformCloudClient.getInstance().getCloudConfiguration().getControllerIP() + ":"
+                    +
+                    ReformCloudClient.getInstance().getCloudConfiguration().getControllerWebPort() +
+                    "/api/download"
             ).openConnection();
 
             httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond());
-            httpURLConnection.setRequestProperty("-XUser", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getName());
-            httpURLConnection.setRequestProperty("-XPassword", ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser().getPassword());
+            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(),
+                DownloadManager.REQUEST_PROPERTY.getSecond());
+            httpURLConnection.setRequestProperty("-XUser",
+                ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser()
+                    .getName());
+            httpURLConnection.setRequestProperty("-XPassword",
+                ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser()
+                    .getPassword());
             httpURLConnection.setRequestProperty("-XConfig", new Configuration()
-                    .addStringValue("template", template)
-                    .addStringValue("group", group)
-                    .addBooleanValue("proxy", proxy).getJsonString());
+                .addStringValue("template", template)
+                .addStringValue("group", group)
+                .addBooleanValue("proxy", proxy).getJsonString());
             httpURLConnection.setUseCaches(false);
             httpURLConnection.setDoOutput(false);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
 
-            Path path = Paths.get("reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group);
+            Path path = Paths
+                .get("reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group);
 
             FileUtils.deleteFullDirectory(path + "/" + template);
             FileUtils.createDirectory(Paths.get(path + "/" + template));
@@ -55,28 +63,30 @@ public final class ControllerTemplateDownload implements Serializable {
 
             try {
                 ZoneInformationProtocolUtility.unZip(
-                        in,
-                        "reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group + "/" + template
+                    in,
+                    "reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group + "/"
+                        + template
                 );
             } catch (final Exception ex) {
                 StringUtil.printError(
-                        ReformCloudClient.getInstance().getLoggerProvider(),
-                        "Error while unzipping downloaded template",
-                        ex
+                    ReformCloudClient.getInstance().getLoggerProvider(),
+                    "Error while unzipping downloaded template",
+                    ex
                 );
                 return;
             }
 
             FileUtils.deleteFileIfExists(Paths.get(path + ".zip"));
 
-            ReformCloudClient.getInstance().getLoggerProvider().info("Successfully downloaded template " + template +
+            ReformCloudClient.getInstance().getLoggerProvider()
+                .info("Successfully downloaded template " + template +
                     " of group " + group + " from controller");
             httpURLConnection.disconnect();
         } catch (final IOException ex) {
             StringUtil.printError(
-                    ReformCloudClient.getInstance().getLoggerProvider(),
-                    "Error while downloading controller template",
-                    ex
+                ReformCloudClient.getInstance().getLoggerProvider(),
+                "Error while downloading controller template",
+                ex
             );
         }
     }

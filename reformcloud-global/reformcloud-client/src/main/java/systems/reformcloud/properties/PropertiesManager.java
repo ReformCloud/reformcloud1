@@ -13,11 +13,12 @@ import java.util.Properties;
  */
 
 public final class PropertiesManager implements Serializable {
+
     private PropertiesConfig propertiesConfig;
 
     public static boolean available = false;
 
-    public static PropertiesManager instance;
+    private static PropertiesManager instance;
 
     public PropertiesManager(PropertiesConfig propertiesConfig) {
         available = true;
@@ -30,12 +31,14 @@ public final class PropertiesManager implements Serializable {
     }
 
     public void fill(String group, Properties properties) {
-        if (this.propertiesConfig.forGroup(group) == null)
+        if (this.propertiesConfig.forGroup(group) == null) {
             return;
+        }
 
         Properties properties1 = this.propertiesConfig.forGroup(group).getProperties();
-        if (properties1 == null)
+        if (properties1 == null) {
             return;
+        }
 
         Enumeration enumeration = properties1.keys();
         while (enumeration.hasMoreElements()) {

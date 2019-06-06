@@ -15,53 +15,54 @@ import java.util.UUID;
  */
 
 public interface IngameCommandSender {
+
     /**
      * Get the display name of the sender
      *
-     * @return      The display name of the sender
+     * @return The display name of the sender
      */
     String getDisplayName();
 
     /**
      * Sets the display name of the command sender
      *
-     * @param name      The new name of the command sender
+     * @param name The new name of the command sender
      */
     void setDisplayName(String name);
 
     /**
      * Sends a message to the command sender
      *
-     * @param message       The message which should be send
+     * @param message The message which should be send
      */
     void sendMessage(String message);
 
     /**
      * Connects the player to the given server
      *
-     * @param server        The server info of the server
+     * @param server The server info of the server
      */
     void connect(ServerInfo server);
 
     /**
      * Get the current server of the player
      *
-     * @return      The server info of the current server
+     * @return The server info of the current server
      */
     ServerInfo getServer();
 
     /**
      * Get the ping of the online player
      *
-     * @return      The ping of the command sender
+     * @return The ping of the command sender
      */
     int getPing();
 
     /**
      * Send a message to the command sender
      *
-     * @param s         The channel for the message
-     * @param bytes     The message as byte array
+     * @param s The channel for the message
+     * @param bytes The message as byte array
      */
     void sendData(String s, byte[] bytes);
 
@@ -115,11 +116,11 @@ public interface IngameCommandSender {
     /**
      * Sends a title
      *
-     * @param title         The main title
-     * @param subTitle      The sub title
-     * @param fadeIn        The fade in time
-     * @param fadeOut       The fade out time
-     * @param stay          The stay time
+     * @param title The main title
+     * @param subTitle The sub title
+     * @param fadeIn The fade in time
+     * @param fadeOut The fade out time
+     * @param stay The stay time
      */
     void sendTitle(String title, String subTitle, int fadeIn, int fadeOut, int stay);
 
@@ -145,7 +146,7 @@ public interface IngameCommandSender {
     /**
      * The main hand enum to get the main hand side
      */
-    public enum MainHand {
+    enum MainHand {
         LEFT,
         RIGHT
     }
@@ -153,7 +154,7 @@ public interface IngameCommandSender {
     /**
      * The chat modes
      */
-    public enum ChatMode {
+    enum ChatMode {
         SHOWN,
         COMMANDS_ONLY,
         HIDDEN

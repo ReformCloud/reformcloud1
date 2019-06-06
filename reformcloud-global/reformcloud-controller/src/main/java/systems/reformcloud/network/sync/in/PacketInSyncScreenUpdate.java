@@ -15,12 +15,13 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncScreenUpdate implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = -7529295495170339243L;
 
     @Override
     public void handle(Configuration configuration) {
         ReformCloudController.getInstance().getScreenSessionProvider().sendScreenMessage(
-                configuration.getStringValue("line"), configuration.getStringValue("from")
+            configuration.getStringValue("line"), configuration.getStringValue("from")
         );
     }
 }

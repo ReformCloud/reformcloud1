@@ -17,12 +17,14 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncExceptionThrown implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         final Throwable cause = configuration.getValue("cause", new TypeToken<Throwable>() {
         }.getType());
-        if (cause != null)
+        if (cause != null) {
             StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
-                    "Exception caught on Client " + configuration.getStringValue("name"), cause);
+                "Exception caught on Client " + configuration.getStringValue("name"), cause);
+        }
     }
 }

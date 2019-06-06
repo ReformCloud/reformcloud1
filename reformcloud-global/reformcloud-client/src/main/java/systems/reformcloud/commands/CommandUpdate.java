@@ -7,9 +7,6 @@ package systems.reformcloud.commands;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
-import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.versioneering.VersionController;
-import systems.reformcloud.versioneering.VersionUpdater;
 
 import java.io.Serializable;
 
@@ -18,26 +15,15 @@ import java.io.Serializable;
  */
 
 public final class CommandUpdate extends Command implements Serializable {
+
     public CommandUpdate() {
-        super("update", "Updates the CloudSystem", "reformcloud.command.update", new String[]{"upgrade"});
+        super("update", "Updates the CloudSystem", "reformcloud.command.update",
+            new String[]{"upgrade"});
     }
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        if (args.length == 1 && args[0].equalsIgnoreCase("confirm")) {
-            if (VersionController.isVersionAvailable()) {
-                try {
-                    commandSender.sendMessage("Trying to update the full cloud system....");
-                    commandSender.sendMessage("! This will stop ReformCloud !");
-                    new VersionUpdater().update();
-                    commandSender.sendMessage("Update done");
-                } catch (final Throwable throwable) {
-                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(), "An error occurred while updating CloudSystem", throwable);
-                }
-            } else commandSender.sendMessage("Your version is already up-to-date.");
-        } else {
-            commandSender.sendMessage("Checking for updates...");
-            ReformCloudClient.getInstance().checkForUpdates();
-        }
+        commandSender.sendMessage("Checking for updates...");
+        ReformCloudClient.getInstance().checkForUpdates();
     }
 }

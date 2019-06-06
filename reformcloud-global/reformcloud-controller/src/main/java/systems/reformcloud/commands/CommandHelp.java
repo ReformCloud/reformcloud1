@@ -18,6 +18,7 @@ import java.util.Arrays;
  */
 
 public final class CommandHelp extends Command implements Serializable {
+
     private final DecimalFormat decimalFormat = new DecimalFormat("##.###");
 
     public CommandHelp() {
@@ -27,13 +28,24 @@ public final class CommandHelp extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         commandSender.sendMessage("The following Commands are registered:");
-        ReformCloudController.getInstance().getCommandManager().getCommands().forEach(command -> commandSender.sendMessage("   - " + command.getName() + " | Aliases: §e" + Arrays.asList(command.getAliases()) + "§r | Description: §3" + command.getDescription() + "§r | Permission: §e" + (command.getPermission() == null ? "none" : command.getPermission())));
+        ReformCloudController.getInstance().getCommandManager().getCommands().forEach(
+            command -> commandSender.sendMessage(
+                "   - " + command.getName() + " | Aliases: §e" + Arrays.asList(command.getAliases())
+                    + "§r | Description: §3" + command.getDescription() + "§r | Permission: §e" + (
+                    command.getPermission() == null ? "none" : command.getPermission())));
 
         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
 
-        commandSender.sendMessage("Ram: " + decimalFormat.format(ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.usedMemorySystem())) + "MB/" + decimalFormat.format(ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.maxMemorySystem())) + "MB");
-        commandSender.sendMessage("CPU (System/Internal): " + decimalFormat.format(ReformCloudLibraryService.cpuUsage()) + "/" + decimalFormat.format(ReformCloudLibraryService.internalCpuUsage()));
+        commandSender.sendMessage("Ram: " + decimalFormat.format(
+            ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.usedMemorySystem()))
+            + "MB/" + decimalFormat.format(
+            ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.maxMemorySystem()))
+            + "MB");
+        commandSender.sendMessage(
+            "CPU (System/Internal): " + decimalFormat.format(ReformCloudLibraryService.cpuUsage())
+                + "/" + decimalFormat.format(ReformCloudLibraryService.internalCpuUsage()));
         commandSender.sendMessage("Threads: " + Thread.getAllStackTraces().size());
-        commandSender.sendMessage("For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
+        commandSender.sendMessage(
+            "For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
     }
 }

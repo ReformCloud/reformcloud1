@@ -11,6 +11,7 @@ import systems.reformcloud.addons.JavaAddon;
  */
 
 public interface ModulePreLoader {
+
     /**
      * Loads the Addon main class and creates a new instance
      *

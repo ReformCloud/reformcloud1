@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public final class TemplateMap<F, S, T> implements Serializable {
+
     /**
      * The name of the group
      */

@@ -11,11 +11,24 @@ import java.io.Serializable;
  */
 
 public final class SelectorMobPosition implements Serializable {
-    private String targetGroup, world;
-    private double x, y, z, yaw, pitch;
+
+    private String targetGroup;
+
+    private String world;
+
+    private double x;
+
+    private double y;
+
+    private double z;
+
+    private double yaw;
+
+    private double pitch;
 
     @java.beans.ConstructorProperties({"targetGroup", "world", "x", "y", "z", "yaw", "pitch"})
-    public SelectorMobPosition(String targetGroup, String world, double x, double y, double z, double yaw, double pitch) {
+    public SelectorMobPosition(String targetGroup, String world, double x, double y, double z,
+        double yaw, double pitch) {
         this.targetGroup = targetGroup;
         this.world = world;
         this.x = x;

@@ -4,6 +4,12 @@
 
 package systems.reformcloud.meta.proxy;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
@@ -11,35 +17,57 @@ import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 
-import java.io.Serializable;
-import java.util.*;
-
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
 public class ProxyGroup implements Serializable {
+
     private static final long serialVersionUID = 4196459006374952552L;
 
-    protected String name;
+    private String name;
 
-    protected List<String> clients, disabledServerGroups;
-    protected List<Template> templates;
-    protected Collection<UUID> whitelist;
+    private List<String> clients;
 
-    protected AutoStart autoStart;
-    protected AutoStop autoStop;
+    private List<String> disabledServerGroups;
 
-    protected ProxyModeType proxyModeType;
+    private List<Template> templates;
 
-    protected boolean controllerCommandLogging, maintenance, save_logs;
+    private Collection<UUID> whitelist;
 
-    protected int startPort, minOnline, maxOnline, maxPlayers, memory;
+    private AutoStart autoStart;
+
+    private AutoStop autoStop;
+
+    private ProxyModeType proxyModeType;
+
+    private boolean controllerCommandLogging;
+
+    private boolean maintenance;
+
+    private boolean saveLogs;
+
+    private int startPort;
+
+    private int minOnline;
+
+    private int maxOnline;
+
+    private int maxPlayers;
+
+    private int memory;
 
     protected ProxyVersions proxyVersions;
 
-    @java.beans.ConstructorProperties({"name", "clients", "disabledServerGroups", "templates", "whitelist", "proxyModeType", "autoStart", "autoStop", "controllerCommandLogging", "maintenance", "save_logs", "startPort", "minOnline", "maxOnline", "maxPlayers", "memory", "proxyVersions"})
-    public ProxyGroup(String name, List<String> clients, List<String> disabledServerGroups, List<Template> templates, Collection<UUID> whitelist, ProxyModeType proxyModeType, AutoStart autoStart, AutoStop autoStop, boolean controllerCommandLogging, boolean maintenance, boolean save_logs, int startPort, int minOnline, int maxOnline, int maxPlayers, int memory, ProxyVersions proxyVersions) {
+    @java.beans.ConstructorProperties({"name", "clients", "disabledServerGroups", "templates",
+        "whitelist", "proxyModeType", "autoStart", "autoStop", "controllerCommandLogging",
+        "maintenance", "saveLogs", "startPort", "minOnline", "maxOnline", "maxPlayers", "memory",
+        "proxyVersions"})
+    public ProxyGroup(String name, List<String> clients, List<String> disabledServerGroups,
+        List<Template> templates, Collection<UUID> whitelist, ProxyModeType proxyModeType,
+        AutoStart autoStart, AutoStop autoStop, boolean controllerCommandLogging,
+        boolean maintenance, boolean saveLogs, int startPort, int minOnline, int maxOnline,
+        int maxPlayers, int memory, ProxyVersions proxyVersions) {
         this.name = name;
         this.clients = clients;
         this.disabledServerGroups = disabledServerGroups;
@@ -50,7 +78,7 @@ public class ProxyGroup implements Serializable {
         this.autoStart = autoStart;
         this.autoStop = autoStop;
         this.maintenance = maintenance;
-        this.save_logs = save_logs;
+        this.saveLogs = saveLogs;
         this.startPort = startPort;
         this.minOnline = minOnline;
         this.maxOnline = maxOnline;
@@ -60,11 +88,13 @@ public class ProxyGroup implements Serializable {
     }
 
     public Template getTemplate(final String name) {
-        return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(randomTemplate());
+        return this.templates.stream().filter(template -> template.getName().equals(name))
+            .findFirst().orElse(randomTemplate());
     }
 
     public Template getTemplateOrElseNull(final String name) {
-        return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(null);
+        return this.templates.stream().filter(template -> template.getName().equals(name))
+            .findFirst().orElse(null);
     }
 
     public Template randomTemplate() {
@@ -72,12 +102,21 @@ public class ProxyGroup implements Serializable {
             return new Template("default", null, TemplateBackend.CLIENT);
         }
 
-        return this.templates.get(new Random().nextInt(this.templates.size()));
+        for (Template template : this.templates) {
+            if (template.getName().equals("every")) {
+                continue;
+            }
+
+            return template;
+        }
+
+        return new Template("default", null, TemplateBackend.CLIENT);
     }
 
     public void deleteTemplate(String name) {
         List<Template> copyOf = new ArrayList<>(this.templates);
-        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst().ifPresent(template -> this.templates.remove(template));
+        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst()
+            .ifPresent(template -> this.templates.remove(template));
     }
 
     public boolean isStatic() {
@@ -116,8 +155,8 @@ public class ProxyGroup implements Serializable {
         return this.maintenance;
     }
 
-    public boolean isSave_logs() {
-        return this.save_logs;
+    public boolean isSaveLogs() {
+        return this.saveLogs;
     }
 
     public int getStartPort() {
@@ -176,8 +215,8 @@ public class ProxyGroup implements Serializable {
         this.maintenance = maintenance;
     }
 
-    public void setSave_logs(boolean save_logs) {
-        this.save_logs = save_logs;
+    public void setSaveLogs(boolean saveLogs) {
+        this.saveLogs = saveLogs;
     }
 
     public void setStartPort(int startPort) {
@@ -221,42 +260,75 @@ public class ProxyGroup implements Serializable {
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ProxyGroup)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ProxyGroup)) {
+            return false;
+        }
         final ProxyGroup other = (ProxyGroup) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual(this)) {
+            return false;
+        }
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+        if (!Objects.equals(this$name, other$name)) {
+            return false;
+        }
         final Object this$clients = this.getClients();
         final Object other$clients = other.getClients();
-        if (this$clients == null ? other$clients != null : !this$clients.equals(other$clients)) return false;
+        if (!Objects.equals(this$clients, other$clients)) {
+            return false;
+        }
         final Object this$disabledServerGroups = this.getDisabledServerGroups();
         final Object other$disabledServerGroups = other.getDisabledServerGroups();
-        if (this$disabledServerGroups == null ? other$disabledServerGroups != null : !this$disabledServerGroups.equals(other$disabledServerGroups))
+        if (!Objects.equals(this$disabledServerGroups, other$disabledServerGroups)) {
             return false;
+        }
         final Object this$templates = this.getTemplates();
         final Object other$templates = other.getTemplates();
-        if (this$templates == null ? other$templates != null : !this$templates.equals(other$templates)) return false;
+        if (!Objects.equals(this$templates, other$templates)) {
+            return false;
+        }
         final Object this$whitelist = this.getWhitelist();
         final Object other$whitelist = other.getWhitelist();
-        if (this$whitelist == null ? other$whitelist != null : !this$whitelist.equals(other$whitelist)) return false;
+        if (!Objects.equals(this$whitelist, other$whitelist)) {
+            return false;
+        }
         final Object this$proxyModeType = this.getProxyModeType();
         final Object other$proxyModeType = other.getProxyModeType();
-        if (this$proxyModeType == null ? other$proxyModeType != null : !this$proxyModeType.equals(other$proxyModeType))
+        if (!Objects.equals(this$proxyModeType, other$proxyModeType)) {
             return false;
-        if (this.isControllerCommandLogging() != other.isControllerCommandLogging()) return false;
-        if (this.isMaintenance() != other.isMaintenance()) return false;
-        if (this.isSave_logs() != other.isSave_logs()) return false;
-        if (this.getStartPort() != other.getStartPort()) return false;
-        if (this.getMinOnline() != other.getMinOnline()) return false;
-        if (this.getMaxOnline() != other.getMaxOnline()) return false;
-        if (this.getMaxPlayers() != other.getMaxPlayers()) return false;
-        if (this.getMemory() != other.getMemory()) return false;
+        }
+        if (this.isControllerCommandLogging() != other.isControllerCommandLogging()) {
+            return false;
+        }
+        if (this.isMaintenance() != other.isMaintenance()) {
+            return false;
+        }
+        if (this.isSaveLogs() != other.isSaveLogs()) {
+            return false;
+        }
+        if (this.getStartPort() != other.getStartPort()) {
+            return false;
+        }
+        if (this.getMinOnline() != other.getMinOnline()) {
+            return false;
+        }
+        if (this.getMaxOnline() != other.getMaxOnline()) {
+            return false;
+        }
+        if (this.getMaxPlayers() != other.getMaxPlayers()) {
+            return false;
+        }
+        if (this.getMemory() != other.getMemory()) {
+            return false;
+        }
         final Object this$proxyVersions = this.getProxyVersions();
         final Object other$proxyVersions = other.getProxyVersions();
-        if (this$proxyVersions == null ? other$proxyVersions != null : !this$proxyVersions.equals(other$proxyVersions))
+        if (!Objects.equals(this$proxyVersions, other$proxyVersions)) {
             return false;
+        }
         return true;
     }
 
@@ -272,7 +344,8 @@ public class ProxyGroup implements Serializable {
         final Object $clients = this.getClients();
         result = result * PRIME + ($clients == null ? 43 : $clients.hashCode());
         final Object $disabledServerGroups = this.getDisabledServerGroups();
-        result = result * PRIME + ($disabledServerGroups == null ? 43 : $disabledServerGroups.hashCode());
+        result = result * PRIME + ($disabledServerGroups == null ? 43
+            : $disabledServerGroups.hashCode());
         final Object $templates = this.getTemplates();
         result = result * PRIME + ($templates == null ? 43 : $templates.hashCode());
         final Object $whitelist = this.getWhitelist();
@@ -281,7 +354,7 @@ public class ProxyGroup implements Serializable {
         result = result * PRIME + ($proxyModeType == null ? 43 : $proxyModeType.hashCode());
         result = result * PRIME + (this.isControllerCommandLogging() ? 79 : 97);
         result = result * PRIME + (this.isMaintenance() ? 79 : 97);
-        result = result * PRIME + (this.isSave_logs() ? 79 : 97);
+        result = result * PRIME + (this.isSaveLogs() ? 79 : 97);
         result = result * PRIME + this.getStartPort();
         result = result * PRIME + this.getMinOnline();
         result = result * PRIME + this.getMaxOnline();
@@ -293,6 +366,13 @@ public class ProxyGroup implements Serializable {
     }
 
     public String toString() {
-        return "ProxyGroup(name=" + this.getName() + ", clients=" + this.getClients() + ", disabledServerGroups=" + this.getDisabledServerGroups() + ", templates=" + this.getTemplates() + ", whitelist=" + this.getWhitelist() + ", proxyModeType=" + this.getProxyModeType() + ", controllerCommandLogging=" + this.isControllerCommandLogging() + ", maintenance=" + this.isMaintenance() + ", save_logs=" + this.isSave_logs() + ", startPort=" + this.getStartPort() + ", minOnline=" + this.getMinOnline() + ", maxOnline=" + this.getMaxOnline() + ", maxPlayers=" + this.getMaxPlayers() + ", memory=" + this.getMemory() + ", proxyVersions=" + this.getProxyVersions() + ")";
+        return "ProxyGroup(name=" + this.getName() + ", clients=" + this.getClients()
+            + ", disabledServerGroups=" + this.getDisabledServerGroups() + ", templates=" + this
+            .getTemplates() + ", whitelist=" + this.getWhitelist() + ", proxyModeType=" + this
+            .getProxyModeType() + ", controllerCommandLogging=" + this.isControllerCommandLogging()
+            + ", maintenance=" + this.isMaintenance() + ", saveLogs=" + this.isSaveLogs()
+            + ", startPort=" + this.getStartPort() + ", minOnline=" + this.getMinOnline()
+            + ", maxOnline=" + this.getMaxOnline() + ", maxPlayers=" + this.getMaxPlayers()
+            + ", memory=" + this.getMemory() + ", proxyVersions=" + this.getProxyVersions() + ")";
     }
 }

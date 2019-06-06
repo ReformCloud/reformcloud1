@@ -16,8 +16,10 @@ import java.io.Serializable;
  */
 
 public final class CommandReload extends Command implements Serializable {
+
     public CommandReload() {
-        super("reload", "Reloads the CloudSystem", "reformcloud.command.reload", new String[]{"rl"});
+        super("reload", "Reloads the CloudSystem", "reformcloud.command.reload",
+            new String[]{"rl"});
     }
 
     @Override
@@ -25,7 +27,8 @@ public final class CommandReload extends Command implements Serializable {
         try {
             ReformCloudController.getInstance().reloadAll();
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(), "An error occurred while reloading CloudSystem", throwable);
+            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
+                "An error occurred while reloading CloudSystem", throwable);
         }
     }
 }

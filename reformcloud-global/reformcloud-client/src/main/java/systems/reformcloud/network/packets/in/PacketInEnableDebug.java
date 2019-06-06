@@ -15,8 +15,10 @@ import java.io.Serializable;
  */
 
 public final class PacketInEnableDebug implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudClient.getInstance().getLoggerProvider().setDebug(configuration.getBooleanValue("enabled"));
+        ReformCloudClient.getInstance().getLoggerProvider()
+            .setDebug(configuration.getBooleanValue("enabled"));
     }
 }

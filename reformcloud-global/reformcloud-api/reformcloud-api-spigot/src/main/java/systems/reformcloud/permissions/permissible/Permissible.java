@@ -5,39 +5,39 @@
 package systems.reformcloud.permissions.permissible;
 
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissibleBase;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.permissions.*;
+import org.bukkit.plugin.Plugin;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 
 import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
  */
 
 public final class Permissible extends PermissibleBase implements Serializable {
+
     private PermissionHolder permissionHolder;
-    private List<PermissionGroup> inGroups;
+
+    private List<PermissionGroup> permissionGroups;
+
+    private Set<PermissionAttachmentInfo> permissionAttachmentInfos;
 
     public Permissible(Player player, PermissionHolder permissionHolder) {
         super(player);
-
         player.setOp(false);
 
         this.permissionHolder = permissionHolder;
-        inGroups = ReformCloudAPISpigot.getInstance()
-                .getPermissionCache().getAllRegisteredGroups().stream().filter(e -> permissionHolder
-                        .getPermissionGroups().containsKey(e.getName()))
-                .collect(Collectors.toList());
-        if (permissionHolder.getPermissionGroups().containsKey(ReformCloudAPISpigot.getInstance()
-                .getPermissionCache().getDefaultGroup().getName())) {
-            inGroups.add(ReformCloudAPISpigot.getInstance().getPermissionCache().getDefaultGroup());
-        }
+    }
+
+    public Permissible(ServerOperator serverOperator, PermissionHolder permissionHolder) {
+        this((Player) serverOperator, permissionHolder);
     }
 
     @Override
@@ -51,7 +51,8 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public boolean hasPermission(String inName) {
-        return this.permissionHolder.hasPermission(inName, inGroups);
+        checkAvailable();
+        return this.permissionHolder.hasPermission(inName, this.getPermissionGroups());
     }
 
     @Override
@@ -71,26 +72,120 @@ public final class Permissible extends PermissibleBase implements Serializable {
 
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-        Map<String, Boolean> permissions = new HashMap<>(this.permissionHolder.getPlayerPermissions());
-        this.inGroups.forEach(permissionGroup -> permissions.putAll(permissionGroup.getPermissions()));
+        return this.getPermissionAttachmentInfos();
+    }
 
-        Set<PermissionAttachmentInfo> permissionAttachmentInfos = new HashSet<>();
-        for (Map.Entry<String, Boolean> perms : permissions.entrySet())
-            permissionAttachmentInfos.add(new PermissionAttachmentInfo(this, perms.getKey(), null, perms.getValue()));
+    @Override
+    public void recalculatePermissions() {
+        if (this.permissionHolder == null) {
+            return;
+        }
+
+        this.recalculatePermissions0();
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+        return new PermissionAttachment(plugin, this);
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin) {
+        return new PermissionAttachment(plugin, this);
+    }
+
+    @Override
+    public void removeAttachment(PermissionAttachment attachment) {
+    }
+
+    @Override
+    public synchronized void clearPermissions() {
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value,
+        int ticks) {
+        return new PermissionAttachment(plugin, this);
+    }
+
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+        return new PermissionAttachment(plugin, this);
+    }
+
+    private void recalculatePermissions0() {
+        if (this.permissionGroups != null && !this.permissionGroups.isEmpty()) {
+            this.permissionGroups.clear();
+        }
+
+        this.recalculatePermissions1();
+    }
+
+    private void recalculatePermissions1() {
+        this.permissionGroups = permissionHolder
+            .getAllPermissionGroups(ReformCloudAPISpigot.getInstance().getPermissionCache());
+    }
+
+    private void getPermissionAttachmentInfos0() {
+        if (this.permissionAttachmentInfos != null && !this.permissionAttachmentInfos.isEmpty()) {
+            this.permissionAttachmentInfos.clear();
+        }
+
+        this.getPermissionAttachmentInfos1();
+    }
+
+    private void getPermissionAttachmentInfos1() {
+        Set<PermissionAttachmentInfo> infos = new HashSet<>();
+        final Map<String, Boolean> playerDirectPermissions = this.getPermissionHolder()
+            .getPlayerPermissions();
+        playerDirectPermissions.forEach((k, v) -> {
+            PermissionAttachmentInfo permissionAttachmentInfo = new PermissionAttachmentInfo(this,
+                k, null, v);
+            infos.add(permissionAttachmentInfo);
+        });
+
+        this.getPermissionGroups()
+            .stream()
+            .filter(e -> permissionHolder.isPermissionGroupPresent(e.getName()))
+            .forEach(group ->
+                group.getPermissions().forEach((k, v) -> {
+                    PermissionAttachmentInfo permissionAttachmentInfo = new PermissionAttachmentInfo(
+                        this, k, null, v);
+                    infos.add(permissionAttachmentInfo);
+                })
+            );
+
+        this.permissionAttachmentInfos = infos;
+    }
+
+    private void checkAvailable() {
+        if (!isAvailable()) {
+            throw new IllegalStateException("PermissionHolder cannot be null");
+        }
+    }
+
+    private boolean isAvailable() {
+        return permissionHolder != null;
+    }
+
+    private PermissionHolder getPermissionHolder() {
+        checkAvailable();
+        return permissionHolder;
+    }
+
+    private Set<PermissionAttachmentInfo> getPermissionAttachmentInfos() {
+        if (this.permissionAttachmentInfos == null) {
+            this.getPermissionAttachmentInfos0();
+        }
 
         return permissionAttachmentInfos;
     }
 
-    private void checkAvailable() {
-        if (permissionHolder == null)
-            throw new IllegalStateException("PermissionHolder cannot be null");
-    }
+    private List<PermissionGroup> getPermissionGroups() {
+        if (this.permissionGroups == null) {
+            this.recalculatePermissions();
+        }
 
-    public PermissionHolder getPermissionHolder() {
-        return permissionHolder;
-    }
-
-    public List<PermissionGroup> getInGroups() {
-        return inGroups;
+        return permissionGroups;
     }
 }

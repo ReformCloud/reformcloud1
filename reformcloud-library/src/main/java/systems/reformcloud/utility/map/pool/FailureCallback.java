@@ -11,5 +11,6 @@ import jline.internal.Nullable;
  */
 
 public interface FailureCallback<T> {
+
     void onFailure(T t, @Nullable Throwable cause);
 }

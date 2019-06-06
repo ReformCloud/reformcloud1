@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class ServerTempStatsUpdateEvent extends Event implements Serializable {
+
     private TempServerStats tempServerStats;
 
     @java.beans.ConstructorProperties({"tempServerStats"})

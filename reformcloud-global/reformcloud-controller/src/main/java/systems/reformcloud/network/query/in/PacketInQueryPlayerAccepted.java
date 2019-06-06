@@ -18,12 +18,16 @@ import java.util.UUID;
  */
 
 public final class PacketInQueryPlayerAccepted implements Serializable, NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
-        if (ReformCloudController.getInstance().getUuid().contains(configuration.getValue("uuid", UUID.class)))
+        if (ReformCloudController.getInstance().getUuid()
+            .contains(configuration.getValue("uuid", UUID.class))) {
             ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
-                    configuration.getStringValue("from"),
-                    new Packet(StringUtil.NULL, new Configuration().addBooleanValue("checked", true), resultID)
+                configuration.getStringValue("from"),
+                new Packet(StringUtil.NULL, new Configuration().addBooleanValue("checked", true),
+                    resultID)
             );
+        }
     }
 }

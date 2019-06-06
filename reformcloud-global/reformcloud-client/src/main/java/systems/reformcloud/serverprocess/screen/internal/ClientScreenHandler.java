@@ -14,7 +14,9 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 06.02.2019
  */
 
-public final class ClientScreenHandler extends ScreenHandler implements Serializable, IConsoleInputHandler {
+public final class ClientScreenHandler extends ScreenHandler implements Serializable,
+    IConsoleInputHandler {
+
     public ClientScreenHandler() {
         super(ReformCloudClient.getInstance().getCloudConfiguration().getClientName());
     }

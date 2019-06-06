@@ -11,7 +11,9 @@ import java.io.Serializable;
  */
 
 public final class AutoStop implements Serializable {
+
     private boolean enabled;
+
     private long checkEverySeconds;
 
     @java.beans.ConstructorProperties({"enabled", "checkEverySeconds"})

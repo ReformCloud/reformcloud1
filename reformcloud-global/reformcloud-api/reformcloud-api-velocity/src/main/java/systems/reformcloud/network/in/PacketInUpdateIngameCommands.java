@@ -18,10 +18,12 @@ import java.util.List;
  */
 
 public final class PacketInUpdateIngameCommands implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        List<IngameCommand> ingameCommands = configuration.getValue("commands", new TypeToken<List<IngameCommand>>() {
-        }.getType());
+        List<IngameCommand> ingameCommands = configuration
+            .getValue("commands", new TypeToken<List<IngameCommand>>() {
+            }.getType());
         ReformCloudAPIVelocity.getInstance().updateIngameCommands(ingameCommands);
     }
 }

@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public final class SignPosition implements Serializable {
+
     /**
      * The general information about the sign
      */

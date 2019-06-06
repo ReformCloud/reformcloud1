@@ -7,6 +7,7 @@ package systems.reformcloud.player.permissions;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,20 +15,36 @@ import java.util.List;
  */
 
 public final class PermissionCache implements Serializable {
-    private boolean chatEnabled, tabEnabled;
+
+    private boolean chatEnabled;
+
+    private boolean tabEnabled;
+
     private String chatFormat;
 
     private List<PermissionGroup> allRegisteredGroups;
 
     private PermissionGroup defaultGroup;
 
-    @java.beans.ConstructorProperties({"chatEnabled", "tabEnabled", "chatFormat", "allRegisteredGroups", "defaultGroup"})
-    public PermissionCache(boolean chatEnabled, boolean tabEnabled, String chatFormat, List<PermissionGroup> allRegisteredGroups, PermissionGroup defaultGroup) {
+    @java.beans.ConstructorProperties({"chatEnabled", "tabEnabled", "chatFormat",
+        "allRegisteredGroups", "defaultGroup"})
+    public PermissionCache(boolean chatEnabled, boolean tabEnabled, String chatFormat,
+        List<PermissionGroup> allRegisteredGroups, PermissionGroup defaultGroup) {
         this.chatEnabled = chatEnabled;
         this.tabEnabled = tabEnabled;
         this.chatFormat = chatFormat;
         this.allRegisteredGroups = allRegisteredGroups;
         this.defaultGroup = defaultGroup;
+    }
+
+    public PermissionGroup getGroup(String name) {
+        for (PermissionGroup permissionGroup : this.getAllGroupsAndDefault()) {
+            if (permissionGroup.getName().equals(name)) {
+                return permissionGroup;
+            }
+        }
+
+        return null;
     }
 
     public boolean isChatEnabled() {
@@ -52,5 +69,11 @@ public final class PermissionCache implements Serializable {
 
     public void setDefaultGroup(PermissionGroup defaultGroup) {
         this.defaultGroup = defaultGroup;
+    }
+
+    public List<PermissionGroup> getAllGroupsAndDefault() {
+        List<PermissionGroup> out = new ArrayList<>(this.allRegisteredGroups);
+        out.add(defaultGroup);
+        return out;
     }
 }

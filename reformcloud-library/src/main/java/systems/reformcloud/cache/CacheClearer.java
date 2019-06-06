@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class CacheClearer implements Serializable {
+
     private List<Cache> caches = new ArrayList<>();
 
     public CacheClearer() {
@@ -27,7 +28,7 @@ public final class CacheClearer implements Serializable {
         });
     }
 
-    public void register(Cache cache) {
+    void register(Cache cache) {
         this.caches.add(cache);
     }
 }

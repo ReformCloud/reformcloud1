@@ -13,9 +13,13 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
  */
 
 public final class PacketInDispatchConsoleCommand implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().warn(ReformCloudController.getInstance().getLoadedLanguage().getController_command_executed_packet());
-        ReformCloudController.getInstance().getCommandManager().dispatchCommand(configuration.getStringValue("command"));
+        ReformCloudController.getInstance().getLoggerProvider().warn(
+            ReformCloudController.getInstance().getLoadedLanguage()
+                .getController_command_executed_packet());
+        ReformCloudController.getInstance().getCommandManager()
+            .dispatchCommand(configuration.getStringValue("command"));
     }
 }

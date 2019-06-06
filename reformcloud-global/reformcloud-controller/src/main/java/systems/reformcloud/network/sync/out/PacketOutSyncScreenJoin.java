@@ -14,13 +14,14 @@ import java.io.Serializable;
  */
 
 public final class PacketOutSyncScreenJoin extends Packet implements Serializable {
+
     private static final long serialVersionUID = -705467496092941785L;
 
     public PacketOutSyncScreenJoin(final String name) {
         super(
-                "JoinScreen",
-                new Configuration()
-                        .addStringValue("name", name)
+            "JoinScreen",
+            new Configuration()
+                .addStringValue("name", name)
         );
     }
 }

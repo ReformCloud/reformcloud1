@@ -18,17 +18,24 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateOnlinePlayer implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        OnlinePlayer onlinePlayer = configuration.getValue("player", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
+        OnlinePlayer onlinePlayer = configuration
+            .getValue("player", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
         OnlinePlayer before = null;
-        if (ReformCloudController.getInstance().getPlayerDatabase().cachedOnlinePlayers.containsKey(onlinePlayer.getUniqueID()))
-            before = ReformCloudController.getInstance().getOnlinePlayer(onlinePlayer.getUniqueID());
+        if (ReformCloudController.getInstance().getPlayerDatabase().cachedOnlinePlayers
+            .containsKey(onlinePlayer.getUniqueID())) {
+            before = ReformCloudController.getInstance()
+                .getOnlinePlayer(onlinePlayer.getUniqueID());
+        }
 
-        OnlinePlayerUpdateEvent onlinePlayerUpdateEvent = new OnlinePlayerUpdateEvent(before, onlinePlayer);
+        OnlinePlayerUpdateEvent onlinePlayerUpdateEvent = new OnlinePlayerUpdateEvent(before,
+            onlinePlayer);
         ReformCloudController.getInstance().getEventManager().fire(onlinePlayerUpdateEvent);
-        if (onlinePlayerUpdateEvent.isCancelled())
+        if (onlinePlayerUpdateEvent.isCancelled()) {
             return;
+        }
 
         ReformCloudController.getInstance().getPlayerDatabase().updateOnlinePlayer(onlinePlayer);
     }

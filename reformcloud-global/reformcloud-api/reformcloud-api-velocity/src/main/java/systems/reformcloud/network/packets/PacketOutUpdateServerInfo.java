@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateServerInfo extends Packet implements Serializable {
+
     public PacketOutUpdateServerInfo(ServerInfo serverInfo) {
         super("ServerInfoUpdate", new Configuration().addValue("serverInfo", serverInfo));
     }

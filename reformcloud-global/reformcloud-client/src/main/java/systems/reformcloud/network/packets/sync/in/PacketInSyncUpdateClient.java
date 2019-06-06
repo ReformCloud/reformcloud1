@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncUpdateClient implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         EventAdapter.instance.get().handleReload();

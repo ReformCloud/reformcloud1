@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class PacketOutGetProxySettings extends Packet implements Serializable {
+
     public PacketOutGetProxySettings() {
         super("GetProxyConfig", new Configuration());
     }

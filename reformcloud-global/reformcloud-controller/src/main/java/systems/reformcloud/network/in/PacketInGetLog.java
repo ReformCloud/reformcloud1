@@ -15,11 +15,13 @@ import java.io.Serializable;
  */
 
 public final class PacketInGetLog implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = -2757983690912958355L;
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_get_log_in()
+        ReformCloudController.getInstance().getLoggerProvider()
+            .info(ReformCloudController.getInstance().getLoadedLanguage().getController_get_log_in()
                 .replace("%name%", configuration.getStringValue("process"))
                 .replace("%url%", configuration.getStringValue("url")));
     }

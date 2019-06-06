@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
  */
 
 final class VersionLoader implements Serializable {
+
     /**
      * Gets the newest version of the cloud system
      *
@@ -29,22 +30,29 @@ final class VersionLoader implements Serializable {
      */
     static String getNewestVersion() {
         try {
-            URLConnection urlConnection = new URL("https://internal.reformcloud.systems/update/version.json").openConnection();
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            URLConnection urlConnection = new URL(
+                "https://internal.reformcloud.systems/update/version.json").openConnection();
+            urlConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             urlConnection.setUseCaches(false);
             urlConnection.connect();
 
-            try (JsonReader jsonReader = new JsonReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8))) {
-                return ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject().get("version").getAsString();
+            try (JsonReader jsonReader = new JsonReader(
+                new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8))) {
+                return ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
+                    .get("version").getAsString();
             }
         } catch (final IOException ex) {
             if (ex instanceof UnknownHostException) {
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve().accept("Cannot resolve update host," +
+                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve()
+                    .accept("Cannot resolve update host," +
                         " make sure you have an internet connection");
                 return StringUtil.REFORM_VERSION;
             }
 
-            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error while checking newest version", ex);
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    "Error while checking newest version", ex);
         }
 
         return StringUtil.REFORM_VERSION;

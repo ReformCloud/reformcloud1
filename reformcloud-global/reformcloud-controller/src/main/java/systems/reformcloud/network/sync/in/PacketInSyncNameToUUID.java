@@ -19,14 +19,16 @@ import java.util.UUID;
  */
 
 public final class PacketInSyncNameToUUID implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         final String name = configuration.getStringValue("requester");
         if (!name.equals(StringUtil.NULL)) {
             final UUID uuid = UUIDConverter.getUUIDFromName(configuration.getStringValue("player"));
-            if (uuid != null)
+            if (uuid != null) {
                 ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(name,
-                        new PacketOutSyncNameToUUID(uuid, configuration.getStringValue("player")));
+                    new PacketOutSyncNameToUUID(uuid, configuration.getStringValue("player")));
+            }
         }
     }
 }

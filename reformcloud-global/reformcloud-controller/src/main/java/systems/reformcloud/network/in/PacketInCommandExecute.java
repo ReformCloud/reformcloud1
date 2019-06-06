@@ -15,9 +15,11 @@ import java.util.UUID;
  */
 
 public final class PacketInCommandExecute implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_command_executed()
+        ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getLoadedLanguage().getController_command_executed()
                 .replace("%name%", configuration.getStringValue("name"))
                 .replace("%uuid%", String.valueOf(configuration.getValue("uuid", UUID.class)))
                 .replace("%proxy%", configuration.getStringValue("proxyName"))

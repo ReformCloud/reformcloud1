@@ -7,12 +7,14 @@ package systems.reformcloud.utility.map.maps;
 import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
 public final class Trio<F, S, T> implements Serializable {
+
     /**
      * The first value of the map
      */
@@ -39,7 +41,7 @@ public final class Trio<F, S, T> implements Serializable {
      * Checks if a specific parameter is in the trio
      *
      * @param toFind The key which should be checked for
-     * @param <V>    The type of the key
+     * @param <V> The type of the key
      * @return If the trio contains the key
      */
     public <V> boolean contains(V toFind) {
@@ -71,18 +73,28 @@ public final class Trio<F, S, T> implements Serializable {
     }
 
     public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Trio)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Trio)) {
+            return false;
+        }
         final Trio<?, ?, ?> other = (Trio<?, ?, ?>) o;
         final Object this$first = this.getFirst();
         final Object other$first = other.getFirst();
-        if (this$first == null ? other$first != null : !this$first.equals(other$first)) return false;
+        if (!Objects.equals(this$first, other$first)) {
+            return false;
+        }
         final Object this$second = this.getSecond();
         final Object other$second = other.getSecond();
-        if (this$second == null ? other$second != null : !this$second.equals(other$second)) return false;
+        if (!Objects.equals(this$second, other$second)) {
+            return false;
+        }
         final Object this$third = this.getThird();
         final Object other$third = other.getThird();
-        if (this$third == null ? other$third != null : !this$third.equals(other$third)) return false;
+        if (!Objects.equals(this$third, other$third)) {
+            return false;
+        }
         return true;
     }
 
@@ -99,6 +111,7 @@ public final class Trio<F, S, T> implements Serializable {
     }
 
     public String toString() {
-        return "Trio(first=" + this.getFirst() + ", second=" + this.getSecond() + ", third=" + this.getThird() + ")";
+        return "Trio(first=" + this.getFirst() + ", second=" + this.getSecond() + ", third=" + this
+            .getThird() + ")";
     }
 }

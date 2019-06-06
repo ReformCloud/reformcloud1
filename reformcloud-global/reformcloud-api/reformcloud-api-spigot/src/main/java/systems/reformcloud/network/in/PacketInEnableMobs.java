@@ -15,9 +15,11 @@ import java.io.Serializable;
  */
 
 public final class PacketInEnableMobs implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        if (MobSelector.getInstance() == null)
+        if (MobSelector.getInstance() == null) {
             new MobSelector();
+        }
     }
 }

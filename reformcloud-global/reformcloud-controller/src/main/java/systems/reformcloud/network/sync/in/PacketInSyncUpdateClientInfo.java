@@ -19,19 +19,25 @@ import java.io.Serializable;
  */
 
 public final class PacketInSyncUpdateClientInfo implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = -8551248371013672598L;
 
     @Override
     public void handle(Configuration configuration) {
-        Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(configuration.getStringValue("from"));
-        if (client == null)
+        Client client = ReformCloudController.getInstance().getInternalCloudNetwork().getClients()
+            .get(configuration.getStringValue("from"));
+        if (client == null) {
             return;
+        }
 
-        ClientInfo clientInfo = configuration.getValue("info", TypeTokenAdaptor.getCLIENT_INFO_TYPE());
+        ClientInfo clientInfo = configuration
+            .getValue("info", TypeTokenAdaptor.getCLIENT_INFO_TYPE());
         ReformCloudController.getInstance().getClientInfos().put(client.getName(), clientInfo);
         if (client.getClientInfo() == null) {
             client.setClientInfo(clientInfo);
-            ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
+            ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(
+                new PacketOutUpdateAll(
+                    ReformCloudController.getInstance().getInternalCloudNetwork()));
         }
     }
 }

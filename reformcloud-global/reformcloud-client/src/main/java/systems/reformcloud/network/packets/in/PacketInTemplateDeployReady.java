@@ -15,12 +15,13 @@ import java.io.Serializable;
  */
 
 public final class PacketInTemplateDeployReady implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         new ControllerTemplateDownload().download(
-                configuration.getStringValue("group"),
-                configuration.getStringValue("template"),
-                configuration.getBooleanValue("proxy")
+            configuration.getStringValue("group"),
+            configuration.getStringValue("template"),
+            configuration.getBooleanValue("proxy")
         );
     }
 }

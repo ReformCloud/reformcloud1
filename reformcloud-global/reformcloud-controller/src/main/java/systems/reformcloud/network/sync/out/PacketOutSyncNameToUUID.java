@@ -15,11 +15,12 @@ import java.util.UUID;
  */
 
 public final class PacketOutSyncNameToUUID extends Packet implements Serializable {
+
     public PacketOutSyncNameToUUID(final UUID uuid, final String whoIam) {
         super(
-                "SyncNameToUUID",
-                new Configuration().addStringValue("who", whoIam)
-                        .addValue("result", uuid)
+            "SyncNameToUUID",
+            new Configuration().addStringValue("who", whoIam)
+                .addValue("result", uuid)
         );
     }
 }

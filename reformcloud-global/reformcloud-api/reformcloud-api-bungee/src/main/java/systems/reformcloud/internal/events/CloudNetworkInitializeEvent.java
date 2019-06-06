@@ -16,6 +16,7 @@ import java.io.Serializable;
  */
 
 public final class CloudNetworkInitializeEvent extends Event implements Serializable {
+
     private static final long serialVersionUID = 1709467379313456906L;
 
     private InternalCloudNetwork internalCloudNetwork;

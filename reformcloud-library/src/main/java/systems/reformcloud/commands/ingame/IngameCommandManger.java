@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 public abstract class IngameCommandManger implements Serializable {
+
     /**
      * The instance of the current command manger
      */
@@ -30,28 +31,28 @@ public abstract class IngameCommandManger implements Serializable {
     /**
      * Registers a command
      *
-     * @param ingameCommand     The ingame command which should be registered
+     * @param ingameCommand The ingame command which should be registered
      */
     public abstract void registerCommand(IngameCommand ingameCommand);
 
     /**
      * Unregisters a command
      *
-     * @param ingameCommand     The ingame command which should be unregistered
+     * @param ingameCommand The ingame command which should be unregistered
      */
     public abstract void unregisterCommand(IngameCommand ingameCommand);
 
     /**
      * Unregisters a command
      *
-     * @param name      The name of the ingame command which should be unregistered
+     * @param name The name of the ingame command which should be unregistered
      */
     public abstract void unregisterCommand(String name);
 
     /**
      * Get a command which is registered
      *
-     * @param name      The name of the command
+     * @param name The name of the command
      * @return The registered command
      */
     public abstract IngameCommand getCommand(String name);

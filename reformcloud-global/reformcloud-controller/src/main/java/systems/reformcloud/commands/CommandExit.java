@@ -16,13 +16,16 @@ import java.io.Serializable;
  */
 
 public final class CommandExit extends Command implements Serializable {
+
     public CommandExit() {
-        super("exit", "Stops the System", "reformcloud.command.exit", new String[]{"kill", "end", "stop", "shutdown"});
+        super("exit", "Stops the System", "reformcloud.command.exit",
+            new String[]{"kill", "end", "stop", "shutdown"});
     }
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_exit_doing());
+        commandSender.sendMessage(
+            ReformCloudController.getInstance().getLoadedLanguage().getCommand_exit_doing());
         System.exit(ExitUtil.STOPPED_SUCESS);
     }
 }

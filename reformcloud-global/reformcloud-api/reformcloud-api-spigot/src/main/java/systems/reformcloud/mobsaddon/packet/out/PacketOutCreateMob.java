@@ -15,10 +15,11 @@ import java.io.Serializable;
  */
 
 public final class PacketOutCreateMob extends Packet implements Serializable {
+
     public PacketOutCreateMob(SelectorMob selectorMob) {
         super(
-                "CreateMob",
-                new Configuration().addValue("mob", selectorMob)
+            "CreateMob",
+            new Configuration().addValue("mob", selectorMob)
         );
     }
 }

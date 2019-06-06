@@ -17,12 +17,14 @@ import java.io.Serializable;
  */
 
 public final class PacketInCreateClient implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         Client client = configuration.getValue("client", new TypeToken<Client>() {
         });
-        if (client == null)
+        if (client == null) {
             return;
+        }
 
         ReformCloudController.getInstance().createClient(client);
     }

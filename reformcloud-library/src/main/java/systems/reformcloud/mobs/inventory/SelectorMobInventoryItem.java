@@ -11,8 +11,12 @@ import java.io.Serializable;
  */
 
 public final class SelectorMobInventoryItem implements Serializable {
-    private String name, materialName;
+    private String name;
+
+    private String materialName;
+
     private int slot;
+
     private short subId;
 
     @java.beans.ConstructorProperties({"name", "materialName", "slot", "subId"})

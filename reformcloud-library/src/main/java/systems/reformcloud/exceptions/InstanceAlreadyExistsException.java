@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 
 public final class InstanceAlreadyExistsException extends RuntimeException implements Serializable {
+
     /**
      * This exception will be thrown if the instance of any class already exists
      */

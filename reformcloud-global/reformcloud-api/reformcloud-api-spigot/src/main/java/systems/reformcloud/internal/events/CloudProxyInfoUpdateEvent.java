@@ -14,6 +14,7 @@ import java.io.Serializable;
  */
 
 public final class CloudProxyInfoUpdateEvent extends DefaultCloudEvent implements Serializable {
+
     private static final HandlerList handlerList = new HandlerList();
 
     private ProxyInfo proxyInfo;

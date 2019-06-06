@@ -18,11 +18,15 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateServerTempStats implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        final TempServerStats tempServerStats = configuration.getValue("stats", new TypeToken<TempServerStats>() {
-        }.getType());
-        ReformCloudController.getInstance().getStatisticsProvider().updateServerStats(tempServerStats);
-        ReformCloudController.getInstance().getEventManager().fire(new ServerTempStatsUpdateEvent(tempServerStats));
+        final TempServerStats tempServerStats = configuration
+            .getValue("stats", new TypeToken<TempServerStats>() {
+            }.getType());
+        ReformCloudController.getInstance().getStatisticsProvider()
+            .updateServerStats(tempServerStats);
+        ReformCloudController.getInstance().getEventManager()
+            .fire(new ServerTempStatsUpdateEvent(tempServerStats));
     }
 }

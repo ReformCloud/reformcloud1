@@ -13,6 +13,7 @@ import java.util.Locale;
  */
 
 public final class DateProvider {
+
     /**
      * Get a default simple date format
      *
@@ -25,7 +26,7 @@ public final class DateProvider {
     /**
      * Creates a simple date format
      *
-     * @param pattern       The pattern of the date format
+     * @param pattern The pattern of the date format
      * @return The created date format
      */
     public static DateFormat getDateFormat(final String pattern) {
@@ -35,7 +36,7 @@ public final class DateProvider {
     /**
      * Formats the given time in the default date format
      *
-     * @param current       The time which should be formatted
+     * @param current The time which should be formatted
      * @return The formatted time
      */
     public static String formatByDefaultFormat(final long current) {
@@ -45,8 +46,8 @@ public final class DateProvider {
     /**
      * Formats the given time with the given time pattern
      *
-     * @param pattern       The pattern of the date format
-     * @param current       The time which should be formatted
+     * @param pattern The pattern of the date format
+     * @param current The time which should be formatted
      * @return The formatted time
      */
     public static String formatByDefaultFormat(final String pattern, final long current) {

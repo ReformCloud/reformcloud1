@@ -16,8 +16,10 @@ import java.util.List;
  */
 
 public final class Decoder extends ByteToMessageDecoder {
+
     @Override
-    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) {
+    protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf,
+        List<Object> list) {
         try {
             final Packet packet = new Packet();
             packet.read(byteBuf);

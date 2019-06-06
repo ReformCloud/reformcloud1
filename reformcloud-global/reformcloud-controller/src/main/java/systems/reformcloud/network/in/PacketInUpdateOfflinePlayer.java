@@ -18,15 +18,20 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateOfflinePlayer implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        OfflinePlayer offlinePlayer = configuration.getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
-        OfflinePlayer before = ReformCloudController.getInstance().getOfflinePlayer(offlinePlayer.getUniqueID());
-        OfflinePlayerUpdateEvent offlinePlayerUpdateEvent = new OfflinePlayerUpdateEvent(before, offlinePlayer);
+        OfflinePlayer offlinePlayer = configuration
+            .getValue("player", TypeTokenAdaptor.getOFFLINE_PLAYER_TYPE());
+        OfflinePlayer before = ReformCloudController.getInstance()
+            .getOfflinePlayer(offlinePlayer.getUniqueID());
+        OfflinePlayerUpdateEvent offlinePlayerUpdateEvent = new OfflinePlayerUpdateEvent(before,
+            offlinePlayer);
 
         ReformCloudController.getInstance().getEventManager().fire(offlinePlayerUpdateEvent);
-        if (offlinePlayerUpdateEvent.isCancelled())
+        if (offlinePlayerUpdateEvent.isCancelled()) {
             return;
+        }
 
         ReformCloudController.getInstance().getPlayerDatabase().updateOfflinePlayer(offlinePlayer);
     }

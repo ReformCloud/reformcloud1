@@ -14,9 +14,10 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateClientAddon extends Packet implements Serializable {
+
     public PacketOutUpdateClientAddon(String name, String url) {
         super("UpdateClientAddon", new Configuration()
-                .addStringValue("name", name)
-                .addStringValue("url", url));
+            .addStringValue("name", name)
+            .addStringValue("url", url));
     }
 }

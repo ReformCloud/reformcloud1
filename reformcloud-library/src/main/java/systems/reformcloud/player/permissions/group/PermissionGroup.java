@@ -14,10 +14,19 @@ import java.util.Map;
  */
 
 public final class PermissionGroup implements Serializable {
+
     /**
      * General info about the group
      */
-    private String name, prefix, suffix, display, tabColorCode;
+    private String name;
+
+    private String prefix;
+
+    private String suffix;
+
+    private String display;
+
+    private String tabColorCode;
 
     /**
      * The group id
@@ -29,8 +38,10 @@ public final class PermissionGroup implements Serializable {
      */
     private Map<String, Boolean> permissions;
 
-    @java.beans.ConstructorProperties({"name", "prefix", "suffix", "display", "tabColorCode", "groupID", "permissions"})
-    public PermissionGroup(String name, String prefix, String suffix, String display, String tabColorCode, int groupID, Map<String, Boolean> permissions) {
+    @java.beans.ConstructorProperties({"name", "prefix", "suffix", "display", "tabColorCode",
+        "groupID", "permissions"})
+    public PermissionGroup(String name, String prefix, String suffix, String display,
+        String tabColorCode, int groupID, Map<String, Boolean> permissions) {
         this.name = name;
         this.prefix = prefix;
         this.suffix = suffix;
@@ -53,7 +64,7 @@ public final class PermissionGroup implements Serializable {
      * Adds the group a permission
      *
      * @param perm The permission which should be added
-     * @param set  If the permission should be enabled or not
+     * @param set If the permission should be enabled or not
      */
     public void addPermission(String perm, boolean set) {
         this.permissions.put(perm.toLowerCase(), set);
@@ -65,8 +76,9 @@ public final class PermissionGroup implements Serializable {
      * @return The prefix of the group
      */
     public String getPrefix() {
-        if (prefix == null)
+        if (prefix == null) {
             return StringUtil.EMPTY;
+        }
 
         return prefix;
     }
@@ -77,8 +89,9 @@ public final class PermissionGroup implements Serializable {
      * @return The suffix of the group
      */
     public String getSuffix() {
-        if (suffix == null)
+        if (suffix == null) {
             return StringUtil.EMPTY;
+        }
 
         return suffix;
     }
@@ -89,8 +102,9 @@ public final class PermissionGroup implements Serializable {
      * @return The display of the group
      */
     public String getDisplay() {
-        if (display == null)
+        if (display == null) {
             return StringUtil.EMPTY;
+        }
 
         return display;
     }
@@ -109,5 +123,33 @@ public final class PermissionGroup implements Serializable {
 
     public Map<String, Boolean> getPermissions() {
         return this.permissions;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
+    }
+
+    public void setTabColorCode(String tabColorCode) {
+        this.tabColorCode = tabColorCode;
+    }
+
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
+    }
+
+    public void setPermissions(Map<String, Boolean> permissions) {
+        this.permissions = permissions;
     }
 }

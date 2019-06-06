@@ -23,6 +23,7 @@ import java.util.Map;
  */
 
 public final class InternalCloudNetwork implements Serializable {
+
     private static final long serialVersionUID = 4564917986901138765L;
 
     /**
@@ -34,9 +35,11 @@ public final class InternalCloudNetwork implements Serializable {
      * The internal web user which will be used for some actions in the cloud system
      */
     private InternalWebUser internalWebUser = new InternalWebUser(
-            ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + "-internal",
-            StringEncrypt.encryptSHA512(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
-                    + StringUtil.EMPTY + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE))
+        ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE) + "-internal",
+        StringEncrypt
+            .encryptSHA512(ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong(0, Long.MAX_VALUE)
+                + StringUtil.EMPTY + ReformCloudLibraryService.THREAD_LOCAL_RANDOM
+                .nextLong(0, Long.MAX_VALUE))
     );
 
     /**
@@ -87,7 +90,7 @@ public final class InternalCloudNetwork implements Serializable {
      */
     private Map<String, Client> clients = ReformCloudLibraryService.concurrentHashMap();
 
-    public int getWebPort() {
+    private int getWebPort() {
         return this.webPort;
     }
 
@@ -155,42 +158,6 @@ public final class InternalCloudNetwork implements Serializable {
         this.clients = clients;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof InternalCloudNetwork)) return false;
-        final InternalCloudNetwork other = (InternalCloudNetwork) o;
-        if (this.getWebPort() != other.getWebPort()) return false;
-        final Object this$internalWebUser = this.getInternalWebUser();
-        final Object other$internalWebUser = other.getInternalWebUser();
-        if (this$internalWebUser == null ? other$internalWebUser != null : !this$internalWebUser.equals(other$internalWebUser))
-            return false;
-        final Object this$messages = this.getMessages();
-        final Object other$messages = other.getMessages();
-        if (this$messages == null ? other$messages != null : !this$messages.equals(other$messages)) return false;
-        final Object this$loaded = this.getLoaded();
-        final Object other$loaded = other.getLoaded();
-        if (this$loaded == null ? other$loaded != null : !this$loaded.equals(other$loaded)) return false;
-        final Object this$prefix = this.getPrefix();
-        final Object other$prefix = other.getPrefix();
-        if (this$prefix == null ? other$prefix != null : !this$prefix.equals(other$prefix)) return false;
-        final Object this$serverProcessManager = this.getServerProcessManager();
-        final Object other$serverProcessManager = other.getServerProcessManager();
-        if (this$serverProcessManager == null ? other$serverProcessManager != null : !this$serverProcessManager.equals(other$serverProcessManager))
-            return false;
-        final Object this$serverGroups = this.getServerGroups();
-        final Object other$serverGroups = other.getServerGroups();
-        if (this$serverGroups == null ? other$serverGroups != null : !this$serverGroups.equals(other$serverGroups))
-            return false;
-        final Object this$proxyGroups = this.getProxyGroups();
-        final Object other$proxyGroups = other.getProxyGroups();
-        if (this$proxyGroups == null ? other$proxyGroups != null : !this$proxyGroups.equals(other$proxyGroups))
-            return false;
-        final Object this$clients = this.getClients();
-        final Object other$clients = other.getClients();
-        if (this$clients == null ? other$clients != null : !this$clients.equals(other$clients)) return false;
-        return true;
-    }
-
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -204,7 +171,8 @@ public final class InternalCloudNetwork implements Serializable {
         final Object $prefix = this.getPrefix();
         result = result * PRIME + ($prefix == null ? 43 : $prefix.hashCode());
         final Object $serverProcessManager = this.getServerProcessManager();
-        result = result * PRIME + ($serverProcessManager == null ? 43 : $serverProcessManager.hashCode());
+        result = result * PRIME + ($serverProcessManager == null ? 43
+            : $serverProcessManager.hashCode());
         final Object $serverGroups = this.getServerGroups();
         result = result * PRIME + ($serverGroups == null ? 43 : $serverGroups.hashCode());
         final Object $proxyGroups = this.getProxyGroups();
@@ -215,6 +183,10 @@ public final class InternalCloudNetwork implements Serializable {
     }
 
     public String toString() {
-        return "InternalCloudNetwork(webPort=" + this.getWebPort() + ", internalWebUser=" + this.getInternalWebUser() + ", messages=" + this.getMessages() + ", loaded=" + this.getLoaded() + ", prefix=" + this.getPrefix() + ", serverProcessManager=" + this.getServerProcessManager() + ", serverGroups=" + this.getServerGroups() + ", proxyGroups=" + this.getProxyGroups() + ", clients=" + this.getClients() + ")";
+        return "InternalCloudNetwork(webPort=" + this.getWebPort() + ", internalWebUser=" + this
+            .getInternalWebUser() + ", messages=" + this.getMessages() + ", loaded=" + this
+            .getLoaded() + ", prefix=" + this.getPrefix() + ", serverProcessManager=" + this
+            .getServerProcessManager() + ", serverGroups=" + this.getServerGroups()
+            + ", proxyGroups=" + this.getProxyGroups() + ", clients=" + this.getClients() + ")";
     }
 }

@@ -26,52 +26,54 @@ import java.io.Serializable;
  */
 
 public final class NettySocketClient implements AutoCloseable, Serializable {
+
     private SslContext sslContext;
+
     private final EventLoopGroup eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
 
     /**
      * Connects to the ReformCloudController
      *
-     * @param ethernetAddress
-     * @param channelHandler
-     * @param ssl
-     * @param key
-     * @param name
      * @see io.netty.bootstrap.ServerBootstrap
      */
-    public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler, boolean ssl, String key, String name) {
+    public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler, boolean ssl,
+        String key, String name) {
         try {
-            if (ssl)
-                sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+            if (ssl) {
+                sslContext = SslContextBuilder.forClient()
+                    .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+            }
 
             Bootstrap bootstrap = new Bootstrap()
-                    .group(eventLoopGroup)
+                .group(eventLoopGroup)
 
-                    .option(ChannelOption.AUTO_READ, true)
-                    .option(ChannelOption.SO_KEEPALIVE, true)
-                    .option(ChannelOption.IP_TOS, 24)
-                    .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.AUTO_READ, true)
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.IP_TOS, 24)
+                .option(ChannelOption.TCP_NODELAY, true)
 
-                    .channel(ReformCloudLibraryService.clientSocketChannel())
+                .channel(ReformCloudLibraryService.clientSocketChannel())
 
-                    .handler(new ChannelInitializer<Channel>() {
+                .handler(new ChannelInitializer<Channel>() {
 
-                        @Override
-                        protected void initChannel(Channel channel) {
-                            if (ssl && sslContext != null)
-                                channel.pipeline().addLast(sslContext.newHandler(channel.alloc(),
-                                        ethernetAddress.getHost(), ethernetAddress.getPort()));
-
-                            ReformCloudLibraryService.prepareChannel(channel, channelHandler);
+                    @Override
+                    protected void initChannel(Channel channel) {
+                        if (ssl && sslContext != null) {
+                            channel.pipeline().addLast(sslContext.newHandler(channel.alloc(),
+                                ethernetAddress.getHost(), ethernetAddress.getPort()));
                         }
-                    });
 
-            bootstrap.connect(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel().writeAndFlush(new Packet("Auth",
+                        ReformCloudLibraryService.prepareChannel(channel, channelHandler);
+                    }
+                });
+
+            bootstrap.connect(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel()
+                .writeAndFlush(new Packet("Auth",
                     new Configuration()
-                            .addStringValue("key", key)
-                            .addStringValue("name", name)
-                            .addValue("AuthenticationType", AuthenticationType.PROXY)
-            ));
+                        .addStringValue("key", key)
+                        .addStringValue("name", name)
+                        .addValue("AuthenticationType", AuthenticationType.PROXY)
+                ));
         } catch (final Throwable ignored) {
         }
     }

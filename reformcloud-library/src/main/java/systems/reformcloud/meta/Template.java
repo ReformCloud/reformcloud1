@@ -13,15 +13,19 @@ import java.io.Serializable;
  */
 
 public class Template implements Serializable {
+
     private static final long serialVersionUID = -7937892033580579125L;
 
-    private String name, template_url;
+    private String name;
+
+    private String templateUrl;
+
     private TemplateBackend templateBackend;
 
-    @java.beans.ConstructorProperties({"name", "template_url", "templateBackend"})
-    public Template(String name, String template_url, TemplateBackend templateBackend) {
+    @java.beans.ConstructorProperties({"name", "templateUrl", "templateBackend"})
+    public Template(String name, String templateUrl, TemplateBackend templateBackend) {
         this.name = name;
-        this.template_url = template_url;
+        this.templateUrl = templateUrl;
         this.templateBackend = templateBackend;
     }
 
@@ -29,8 +33,8 @@ public class Template implements Serializable {
         return this.name;
     }
 
-    public String getTemplate_url() {
-        return this.template_url;
+    public String getTemplateUrl() {
+        return this.templateUrl;
     }
 
     public TemplateBackend getTemplateBackend() {
@@ -41,8 +45,8 @@ public class Template implements Serializable {
         this.name = name;
     }
 
-    public void setTemplate_url(String template_url) {
-        this.template_url = template_url;
+    public void setTemplateUrl(String templateUrl) {
+        this.templateUrl = templateUrl;
     }
 
     public void setTemplateBackend(TemplateBackend templateBackend) {

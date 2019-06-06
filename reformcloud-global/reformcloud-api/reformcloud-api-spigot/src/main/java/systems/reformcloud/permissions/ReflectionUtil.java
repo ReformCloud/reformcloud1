@@ -18,7 +18,9 @@ import java.lang.reflect.InvocationTargetException;
  */
 
 public final class ReflectionUtil implements Serializable {
-    private static final String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+
+    private static final String version = Bukkit.getServer().getClass().getPackage().getName()
+        .split("\\.")[3];
 
     private static final String craftPackage, nmsPackage;
 
@@ -48,14 +50,20 @@ public final class ReflectionUtil implements Serializable {
                 entityClazz.getMethod("save", nbt).invoke(nmsEntity, object);
             }
 
-            object.getClass().getMethod("setInt", String.class, int.class).invoke(object, "NoAI", 1);
-            object.getClass().getMethod("setInt", String.class, int.class).invoke(object, "Silent", 1);
+            object.getClass().getMethod("setInt", String.class, int.class)
+                .invoke(object, "NoAI", 1);
+            object.getClass().getMethod("setInt", String.class, int.class)
+                .invoke(object, "Silent", 1);
             entityClazz.getMethod("f", nbt).invoke(nmsEntity, object);
         } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException | InstantiationException ex) {
-            if (entity instanceof LivingEntity)
-                ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
+            if (entity instanceof LivingEntity) {
+                ((LivingEntity) entity).addPotionEffect(
+                    new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100));
+            }
 
-            System.out.println("[ReformCloud] Could not enable no ai for entity " + entity.getUniqueId() + ", trying to set slowness");
+            System.out.println(
+                "[ReformCloud] Could not enable no ai for entity " + entity.getUniqueId()
+                    + ", trying to set slowness");
             ex.printStackTrace();
         }
     }

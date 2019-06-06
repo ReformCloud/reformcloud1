@@ -20,12 +20,15 @@ import java.util.UUID;
  */
 
 public final class PacketInUpdateMobs implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        Map<UUID, SelectorMob> mobs = configuration.getValue("mobs", new TypeToken<Map<UUID, SelectorMob>>() {
-        });
-        SelectorMobConfig selectorMobConfig = configuration.getValue("config", new TypeToken<SelectorMobConfig>() {
-        });
+        Map<UUID, SelectorMob> mobs = configuration
+            .getValue("mobs", new TypeToken<Map<UUID, SelectorMob>>() {
+            });
+        SelectorMobConfig selectorMobConfig = configuration
+            .getValue("config", new TypeToken<SelectorMobConfig>() {
+            });
 
         MobSelector.getInstance().setMobs(mobs);
         MobSelector.getInstance().setSelectorMobConfig(selectorMobConfig);

@@ -21,10 +21,17 @@ import java.util.function.Consumer;
  */
 
 public final class EventManager implements Serializable {
+
     /**
      * The map contains all registered listeners and their handlers
      */
     protected Map<Class<?>, EventClass[]> handlers = ReformCloudLibraryService.concurrentHashMap();
+
+    /**
+     * The registered listeners by their class loader
+     */
+    private Map<ClassLoader, Class<?>> registeredListenersByClassLoader = ReformCloudLibraryService
+        .concurrentHashMap();
 
     /**
      * Consumer handel all fired events
@@ -34,27 +41,31 @@ public final class EventManager implements Serializable {
     /**
      * Get the handling events of the class
      *
-     * @param listener      The listener class which should be created
+     * @param listener The listener class which should be created
      * @return A map containing the handling events and the handlers in the event class itself
      */
     private Map<Class<?>, Set<Method>> getHandling(Object listener) {
         Map<Class<?>, Set<Method>> response = new HashMap<>();
         for (Method method : listener.getClass().getDeclaredMethods()) {
             Handler handler = method.getAnnotation(Handler.class);
-            if (!Modifier.isPublic(method.getModifiers()) || !method.getReturnType().equals(Void.TYPE))
+            if (!Modifier.isPublic(method.getModifiers()) || !method.getReturnType()
+                .equals(Void.TYPE)) {
                 continue;
+            }
 
             if (handler != null) {
                 Class<?>[] parameters = method.getParameterTypes();
                 if (parameters.length != 1) {
-                    AbstractLoggerProvider.defaultLogger().serve().accept("An handler tried to register a listener with"
-                            + parameters.length + "parameter(s)");
+                    AbstractLoggerProvider.defaultLogger().serve()
+                        .accept("An handler tried to register a listener with "
+                            + parameters.length + " parameter(s)");
                     continue;
                 }
 
                 Set<Method> handling = response.get(parameters[0]);
-                if (handling == null)
+                if (handling == null) {
                     handling = new HashSet<>();
+                }
 
                 handling.add(method);
                 response.put(parameters[0], handling);
@@ -67,9 +78,11 @@ public final class EventManager implements Serializable {
     /**
      * Registers a specific listener
      *
-     * @param listener      The listener which should be registered
+     * @param listener The listener which should be registered
      */
     private void registerListener0(Object listener) {
+        this.registeredListenersByClassLoader
+            .put(listener.getClass().getClassLoader(), listener.getClass());
         Map<Class<?>, Set<Method>> handling = this.getHandling(listener);
         List<EventClass> done = new ArrayList<>();
         for (Map.Entry<Class<?>, Set<Method>> methods : handling.entrySet()) {
@@ -80,13 +93,14 @@ public final class EventManager implements Serializable {
 
             EventClass[] eventClasses = new EventClass[done.size()];
             this.handlers.put(methods.getKey(), done.toArray(eventClasses));
+            done.clear();
         }
     }
 
     /**
      * Calls an event
      *
-     * @param event     The event which should be called
+     * @param event The event which should be called
      */
     private void callEvent(Object event) {
         EventClass[] eventClasses = this.handlers.get(event.getClass());
@@ -104,8 +118,8 @@ public final class EventManager implements Serializable {
     /**
      * Calls an event
      *
-     * @param event     The event which should be
-     * @param <T>       The event which should be called, extending the event class
+     * @param event The event which should be
+     * @param <T> The event which should be called, extending the event class
      */
     public <T extends Event> void fire(T event) {
         this.fireAndForget.accept(event);
@@ -114,7 +128,7 @@ public final class EventManager implements Serializable {
     /**
      * Registers a listener
      *
-     * @param listener      The listener which should be registered
+     * @param listener The listener which should be registered
      */
     public void registerListener(Object listener) {
         this.registerListener0(listener);
@@ -125,5 +139,14 @@ public final class EventManager implements Serializable {
      */
     public void unregisterAll() {
         this.handlers.clear();
+    }
+
+    public void unregisterListenerByClassLoader(ClassLoader classLoader) {
+        Class<?> clazz = this.registeredListenersByClassLoader.get(classLoader);
+        if (clazz == null) {
+            return;
+        }
+
+        this.handlers.remove(clazz);
     }
 }

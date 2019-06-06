@@ -11,10 +11,11 @@ import java.io.Serializable;
  */
 
 public final class Require implements Serializable {
+
     /**
      * Checks if the given parameter is non null
      *
-     * @param t   The given parameter which should be checked
+     * @param t The given parameter which should be checked
      * @param <T> The type of the given parameter
      */
     public static <T> void requireNotNull(T t) {
@@ -24,14 +25,15 @@ public final class Require implements Serializable {
     /**
      * Checks if the given parameter is non null
      *
-     * @param t             The given parameter which should be checked
-     * @param exception     The exception which should be thrown when the parameter is null
-     * @param <T>           The type of the given parameter
+     * @param t The given parameter which should be checked
+     * @param exception The exception which should be thrown when the parameter is null
+     * @param <T> The type of the given parameter
      * @return The parameter or throws an exception when the parameter is null
      */
-    public static <T> T requireNotNullOrThrow(T t, Throwable exception) {
-        if (t == null)
+    private static <T> T requireNotNullOrThrow(T t, Throwable exception) {
+        if (t == null) {
             throw new IllegalStateException(exception);
+        }
 
         return t;
     }
@@ -39,9 +41,9 @@ public final class Require implements Serializable {
     /**
      * Checks if the given parameter is non null
      *
-     * @param t             The given parameter which should be checked
-     * @param message       The message which should be thrown in the exception when the parameter is null
-     * @param <T>           The type of the given parameter
+     * @param t The given parameter which should be checked
+     * @param message The message which should be thrown in the exception when the parameter is null
+     * @param <T> The type of the given parameter
      * @return The parameter or throws an exception when the parameter is null
      */
     public static <T> T requireNotNull(T t, String message) {
@@ -51,26 +53,30 @@ public final class Require implements Serializable {
     /**
      * Checks if the given parameters are non null
      *
-     * @param t             The given parameters which should be checked
-     * @param <T>           The type of the given parameters
+     * @param t The given parameters which should be checked
+     * @param <T> The type of the given parameters
      */
+    @SafeVarargs
     public static <T> void requiresNotNull(T... t) {
         for (T check : t) {
-            if (check == null)
+            if (check == null) {
                 throw new IllegalStateException();
+            }
         }
     }
 
     /**
      * Checks if the argument is true
      *
-     * @param check   The argument which should be checked
-     * @param message The message which should be display in the exception when the argument is non null
+     * @param check The argument which should be checked
+     * @param message The message which should be display in the exception when the argument is non
+     * null
      * @return If the argument is true
      */
     public static boolean isTrue(boolean check, String message) {
-        if (!check)
+        if (!check) {
             throw new IllegalStateException(message);
+        }
 
         return true;
     }
@@ -78,13 +84,15 @@ public final class Require implements Serializable {
     /**
      * Checks if the argument is false
      *
-     * @param check         The argument which should be checked
-     * @param message       The message which should be display in the exception when the argument is non null
+     * @param check The argument which should be checked
+     * @param message The message which should be display in the exception when the argument is non
+     * null
      * @return If the argument is false
      */
     public static boolean isFalse(boolean check, String message) {
-        if (check)
+        if (check) {
             throw new IllegalStateException(message);
+        }
 
         return true;
     }

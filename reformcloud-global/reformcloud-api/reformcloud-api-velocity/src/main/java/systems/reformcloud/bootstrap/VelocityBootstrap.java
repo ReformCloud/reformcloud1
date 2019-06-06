@@ -17,35 +17,39 @@ import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import io.netty.util.ResourceLeakDetector;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Optional;
 import org.slf4j.Logger;
 import systems.reformcloud.ReformCloudAPIVelocity;
+import systems.reformcloud.addons.dependency.DependencyLoader;
+import systems.reformcloud.addons.dependency.util.DynamicDependency;
 import systems.reformcloud.commands.CommandHub;
 import systems.reformcloud.commands.CommandJumpto;
 import systems.reformcloud.commands.CommandReformCloud;
 import systems.reformcloud.commands.CommandWhereIAm;
-import systems.reformcloud.libloader.LibraryLoader;
 import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.CloudConnectListener;
 import systems.reformcloud.listener.CloudProcessListener;
 import systems.reformcloud.listener.CloudProxyPingListener;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * @author _Klaro | Pasqual K. / created on 24.03.2019
  */
 
 @Plugin(id = "reformcloudapi",
-        name = "ReformCloudAPIVelocity",
-        version = "1.0",
-        description = "Default ReformCloudAPI for Velocity",
-        authors = "_Klaro",
-        url = "https://reformcloud.systems")
+    name = "ReformCloudAPIVelocity",
+    version = "1.0",
+    description = "Default ReformCloudAPI for Velocity",
+    authors = {"_Klaro"},
+    url = "https://reformcloud.systems"
+)
 public final class VelocityBootstrap implements Serializable {
-    private static final LegacyChannelIdentifier LEGACY_BUNGEE_CHANNEL = new LegacyChannelIdentifier("BungeeCord");
-    private static final MinecraftChannelIdentifier MODERN_BUNGEE_CHANNEL = MinecraftChannelIdentifier.create("bungeecord", "main");
+
+    private static final LegacyChannelIdentifier LEGACY_BUNGEE_CHANNEL = new LegacyChannelIdentifier(
+        "BungeeCord");
+    private static final MinecraftChannelIdentifier MODERN_BUNGEE_CHANNEL = MinecraftChannelIdentifier
+        .create("bungeecord", "main");
 
     private static VelocityBootstrap instance;
 
@@ -53,14 +57,26 @@ public final class VelocityBootstrap implements Serializable {
 
     @Inject
     public VelocityBootstrap(ProxyServer proxyServer, Logger logger) {
+        DependencyLoader.loadDependency(new DynamicDependency(null) {
+            @Override
+            public String getGroupID() {
+                return "io.netty";
+            }
+
+            @Override
+            public String getName() {
+                return "netty-all";
+            }
+
+            @Override
+            public String getVersion() {
+                return "4.1.36.Final";
+            }
+        });
         instance = this;
 
         this.proxy = proxyServer;
-
-        new LibraryLoader().loadJarFileAndInjectLibraries();
-
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
-
         proxy.getConfiguration().getAttemptConnectionOrder().clear();
     }
 
@@ -77,10 +93,10 @@ public final class VelocityBootstrap implements Serializable {
         proxy.getChannelRegistrar().register(LEGACY_BUNGEE_CHANNEL, MODERN_BUNGEE_CHANNEL);
 
         Arrays.asList(
-                new CloudProxyPingListener(),
-                new CloudProcessListener(),
-                new CloudAddonsListener(),
-                new CloudConnectListener()
+            new CloudProxyPingListener(),
+            new CloudProcessListener(),
+            new CloudAddonsListener(),
+            new CloudConnectListener()
         ).forEach(listener -> this.proxy.getEventManager().register(this, listener));
 
         this.proxy.getCommandManager().register(new CommandJumpto(), "jumpto", "goto", "jt", "gt");
@@ -97,13 +113,16 @@ public final class VelocityBootstrap implements Serializable {
 
     @Subscribe
     public void handle(PluginMessageEvent event) {
-        if (!event.getIdentifier().equals(LEGACY_BUNGEE_CHANNEL) && !event.getIdentifier().equals(MODERN_BUNGEE_CHANNEL))
+        if (!event.getIdentifier().equals(LEGACY_BUNGEE_CHANNEL) && !event.getIdentifier()
+            .equals(MODERN_BUNGEE_CHANNEL)) {
             return;
+        }
 
         event.setResult(PluginMessageEvent.ForwardResult.handled());
 
-        if (!(event.getSource() instanceof ServerConnection))
+        if (!(event.getSource() instanceof ServerConnection)) {
             return;
+        }
 
         ServerConnection connection = (ServerConnection) event.getSource();
         ByteArrayDataInput in = event.dataAsDataStream();
@@ -111,7 +130,8 @@ public final class VelocityBootstrap implements Serializable {
 
         if (subChannel.equals("Connect")) {
             Optional<RegisteredServer> info = proxy.getServer(in.readUTF());
-            info.ifPresent(serverInfo -> connection.getPlayer().createConnectionRequest(serverInfo).fireAndForget());
+            info.ifPresent(serverInfo -> connection.getPlayer().createConnectionRequest(serverInfo)
+                .fireAndForget());
         }
     }
 

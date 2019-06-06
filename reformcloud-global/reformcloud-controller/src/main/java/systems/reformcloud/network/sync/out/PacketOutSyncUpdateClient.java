@@ -14,12 +14,13 @@ import java.io.Serializable;
  */
 
 public final class PacketOutSyncUpdateClient extends Packet implements Serializable {
+
     private static final long serialVersionUID = -7697566232691674568L;
 
     public PacketOutSyncUpdateClient() {
         super(
-                "ReloadClient",
-                new Configuration()
+            "ReloadClient",
+            new Configuration()
         );
     }
 }

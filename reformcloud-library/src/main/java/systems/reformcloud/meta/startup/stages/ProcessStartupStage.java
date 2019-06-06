@@ -13,8 +13,5 @@ public enum ProcessStartupStage {
     COPY,
     PREPARING,
     START,
-    DONE;
-
-    ProcessStartupStage() {
-    }
+    DONE
 }

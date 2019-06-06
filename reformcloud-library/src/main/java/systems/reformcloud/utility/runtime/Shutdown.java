@@ -9,6 +9,7 @@ package systems.reformcloud.utility.runtime;
  */
 
 public interface Shutdown {
+
     /**
      * Shutdowns something
      */

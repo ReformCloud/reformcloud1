@@ -12,8 +12,11 @@ import java.util.Collection;
  */
 
 public final class SelectorMobInventory implements Serializable {
+
     private String name;
+
     private int size;
+
     private Collection<SelectorMobInventoryItem> items;
 
     @java.beans.ConstructorProperties({"name", "size", "items"})

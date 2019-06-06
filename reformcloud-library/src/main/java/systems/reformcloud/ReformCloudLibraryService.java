@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
@@ -24,7 +23,9 @@ import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import systems.reformcloud.api.IAsyncAPI;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.MultithreadEventExecutorGroup;
+import systems.reformcloud.api.AsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
 import systems.reformcloud.logging.AbstractLoggerProvider;
@@ -37,10 +38,13 @@ import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
 
+import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 /**
@@ -48,13 +52,15 @@ import java.util.function.Predicate;
  */
 
 public final class ReformCloudLibraryService {
+
     static {
         String threadName = "ReformCloud-Main";
         THREAD_MAIN_NAME = threadName;
         Thread.currentThread().setName(threadName);
-        Thread.setDefaultUncaughtExceptionHandler((t, cause) -> AbstractLoggerProvider.defaultLogger().exception(cause));
+        Thread.setDefaultUncaughtExceptionHandler(
+            (t, cause) -> AbstractLoggerProvider.defaultLogger().exception(cause));
 
-        new IAsyncAPI();
+        new AsyncAPI();
 
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("io.netty.noPreferDirect", "true");
@@ -69,12 +75,13 @@ public final class ReformCloudLibraryService {
     /**
      * Get the reformcloud main thread name
      */
-    public static final String THREAD_MAIN_NAME;
+    private static final String THREAD_MAIN_NAME;
 
     /**
      * The cloud created gson instance
      */
-    public static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create();
+    public static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting()
+        .disableHtmlEscaping().create();
 
     /**
      * The cloud creates json parser instance
@@ -84,7 +91,7 @@ public final class ReformCloudLibraryService {
     /**
      * Netty booleans
      */
-    public static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
+    private static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();
 
     /**
      * The current thread local random instance
@@ -95,15 +102,17 @@ public final class ReformCloudLibraryService {
      * The executor service used by the cloud
      */
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder()
-                    .setDaemon(true)
-                    .setNameFormat("ReformCloud-PoolThread-%d")
-                    .setUncaughtExceptionHandler(((t, e) -> {
-                        if (ReformCloudLibraryServiceProvider.getInstance() != null)
-                            StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Error in thread group", e);
-                        else
-                            e.printStackTrace(System.err);
-                    })).build());
+        createThreadFactory(
+            (t, e) -> {
+                if (ReformCloudLibraryServiceProvider.getInstance() != null) {
+                    StringUtil.printError(
+                        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                        "Error in thread group", e);
+                } else {
+                    e.printStackTrace(System.err);
+                }
+            })
+    );
 
     /**
      * The cache clearer of the cloud system
@@ -123,13 +132,19 @@ public final class ReformCloudLibraryService {
     public static void sendHeader() {
         System.out.println(" ");
         System.out.println(
-                "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n" +
-                        "        |_____/ |______ |______ |     | |_____/ |  |  | |       |      |     | |     | |     \\\n" +
-                        "        |    \\_ |______ |       |_____| |    \\_ |  |  | |_____  |_____ |_____| |_____| |_____/\n" +
-                        "                                                                                              \n" +
-                        "                                     The official CloudSystem                               \n" +
-                        "      __________________________________________________________________________________________ \n\n" +
-                        "                            Support Discord: https://discord.gg/uskXdVZ      \n"
+            "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n"
+                +
+                "        |_____/ |______ |______ |     | |_____/ |  |  | |       |      |     | |     | |     \\\n"
+                +
+                "        |    \\_ |______ |       |_____| |    \\_ |  |  | |_____  |_____ |_____| |_____| |_____/\n"
+                +
+                "                                                                                              \n"
+                +
+                "                                     The official CloudSystem                               \n"
+                +
+                "      __________________________________________________________________________________________ \n\n"
+                +
+                "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
 
@@ -146,14 +161,20 @@ public final class ReformCloudLibraryService {
 
         System.out.println(" ");
         loggerProvider.coloured(
-                "§3" +
-                        "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n" +
-                        "        |_____/ |______ |______ |     | |_____/ |  |  | |       |      |     | |     | |     \\\n" +
-                        "        |    \\_ |______ |       |_____| |    \\_ |  |  | |_____  |_____ |_____| |_____| |_____/\n" +
-                        "                                                                                              \n" +
-                        "                                     §rThe official CloudSystem                               \n" +
-                        "      __________________________________________________________________________________________ \n\n" +
-                        "                            Support Discord: https://discord.gg/uskXdVZ      \n"
+            "§3" +
+                "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n"
+                +
+                "        |_____/ |______ |______ |     | |_____/ |  |  | |       |      |     | |     | |     \\\n"
+                +
+                "        |    \\_ |______ |       |_____| |    \\_ |  |  | |_____  |_____ |_____| |_____| |_____/\n"
+                +
+                "                                                                                              \n"
+                +
+                "                                     §rThe official CloudSystem                               \n"
+                +
+                "      __________________________________________________________________________________________ \n\n"
+                +
+                "                            Support Discord: https://discord.gg/uskXdVZ      \n"
         );
     }
 
@@ -175,17 +196,17 @@ public final class ReformCloudLibraryService {
     /**
      * Prepares the given Channel with all utilities
      *
-     * @param channel        The given channel where all Handlers should be added
-     * @param channelHandler The pre-initialized ChannelHandler where all channels are
-     *                       registered and handled
+     * @param channel The given channel where all Handlers should be added
+     * @param channelHandler The pre-initialized ChannelHandler where all channels are registered and
+     * handled
      */
     public static Channel prepareChannel(Channel channel, ChannelHandler channelHandler) {
         channel.pipeline().addLast(
-                new LengthDecoder(),
-                new Decoder(),
-                new LengthEncoder(),
-                new Encoder(),
-                new ChannelReader(channelHandler));
+            new LengthDecoder(),
+            new Decoder(),
+            new LengthEncoder(),
+            new Encoder(),
+            new ChannelReader(channelHandler));
 
         return channel;
     }
@@ -193,30 +214,39 @@ public final class ReformCloudLibraryService {
     /**
      * New EventLoopGroup
      *
-     * @return new EpollEventLoopGroup if EPOLL is available,
-     *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup
+     * @return new EpollEventLoopGroup if EPOLL is available, a new KQueueEventLoopGroup if KQUEUE is
+     * available or a new NioEventLoopGroup
      */
     public static EventLoopGroup eventLoopGroup() {
-        return EPOLL ? new EpollEventLoopGroup() : KQUEUE ? new KQueueEventLoopGroup() : new NioEventLoopGroup();
+        return EPOLL ? new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(),
+            createThreadFactory())
+            : KQUEUE ? new KQueueEventLoopGroup(Runtime.getRuntime().availableProcessors(),
+                createThreadFactory())
+                : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(),
+                    createThreadFactory());
     }
 
     /**
      * New EventLoopGroup
      *
-     * @return new EpollEventLoopGroup if EPOLL is available,
-     *              a new KQueueEventLoopGroup if KQUEUE is available or a new NioEventLoopGroup with the given threads
+     * @return new EpollEventLoopGroup if EPOLL is available, a new KQueueEventLoopGroup if KQUEUE is
+     * available or a new NioEventLoopGroup with the given threads
      */
     public static EventLoopGroup eventLoopGroup(int threads) {
-        return EPOLL ? new EpollEventLoopGroup(threads) : KQUEUE ? new KQueueEventLoopGroup(threads) : new NioEventLoopGroup(threads);
+        return EPOLL ? new EpollEventLoopGroup(threads, createThreadFactory())
+            : KQUEUE ? new KQueueEventLoopGroup(threads, createThreadFactory())
+                : new NioEventLoopGroup(threads, createThreadFactory());
     }
 
     /**
      * New ServerSocketChannel
      *
-     * @return EpollServerSocketChannel-Class if EPOLL is available or a new NioServerSocketChannel-Class
+     * @return EpollServerSocketChannel-Class if EPOLL is available or a new
+     * NioServerSocketChannel-Class
      */
     public static Class<? extends ServerSocketChannel> serverSocketChannel() {
-        return EPOLL ? EpollServerSocketChannel.class : KQUEUE ? KQueueServerSocketChannel.class : NioServerSocketChannel.class;
+        return EPOLL ? EpollServerSocketChannel.class
+            : KQUEUE ? KQueueServerSocketChannel.class : NioServerSocketChannel.class;
     }
 
     /**
@@ -225,13 +255,14 @@ public final class ReformCloudLibraryService {
      * @return EpollSocketChannel-Class if EPOLL is available or a new NioSocketChannel-Class
      */
     public static Class<? extends SocketChannel> clientSocketChannel() {
-        return EPOLL ? EpollSocketChannel.class : KQUEUE ? KQueueSocketChannel.class : NioSocketChannel.class;
+        return EPOLL ? EpollSocketChannel.class
+            : KQUEUE ? KQueueSocketChannel.class : NioSocketChannel.class;
     }
 
     /**
      * Let the main-thread sleep the given time
      *
-     * @param time      The time which should be slept
+     * @param time The time which should be slept
      */
     public static void sleep(long time) {
         sleep(TimeUnit.MILLISECONDS, time);
@@ -240,8 +271,8 @@ public final class ReformCloudLibraryService {
     /**
      * Let the given thread sleep the given time
      *
-     * @param thread        The thread on which the cloud should sleep
-     * @param time          The time which should be sleep
+     * @param thread The thread on which the cloud should sleep
+     * @param time The time which should be sleep
      */
     public static void sleep(Thread thread, long time) {
         try {
@@ -253,8 +284,8 @@ public final class ReformCloudLibraryService {
     /**
      * Let the main-thread sleep the given time
      *
-     * @param timeUnit      The TimeUnit in which the thread should sleep
-     * @param time          The time which should be sleep
+     * @param timeUnit The TimeUnit in which the thread should sleep
+     * @param time The time which should be sleep
      */
     public static void sleep(TimeUnit timeUnit, long time) {
         try {
@@ -266,7 +297,7 @@ public final class ReformCloudLibraryService {
     /**
      * Check if the given String is an integer
      *
-     * @param key       The incoming string which should be checked
+     * @param key The incoming string which should be checked
      * @return If the string is an int or not
      */
     public static boolean checkIsInteger(String key) {
@@ -281,7 +312,7 @@ public final class ReformCloudLibraryService {
     /**
      * Checks if the given string is a boolean or nor
      *
-     * @param key       The incoming string which should be checked
+     * @param key The incoming string which should be checked
      * @return If the string is an boolean or not
      */
     public static boolean checkIsValidBoolean(String key) {
@@ -294,7 +325,8 @@ public final class ReformCloudLibraryService {
      * @return the cpu usage of the system
      */
     public static double cpuUsage() {
-        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad() * 100;
+        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())
+            .getSystemCpuLoad() * 100;
     }
 
     /**
@@ -303,7 +335,8 @@ public final class ReformCloudLibraryService {
      * @return the cpu usage of the internal jar
      */
     public static double internalCpuUsage() {
-        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad() * 100;
+        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())
+            .getProcessCpuLoad() * 100;
     }
 
     /**
@@ -312,7 +345,8 @@ public final class ReformCloudLibraryService {
      * @return the memory usage of the system
      */
     public static long usedMemorySystem() {
-        return maxMemorySystem() - ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreePhysicalMemorySize();
+        return maxMemorySystem() - ((OperatingSystemMXBean) ManagementFactory
+            .getOperatingSystemMXBean()).getFreePhysicalMemorySize();
     }
 
     /**
@@ -321,7 +355,8 @@ public final class ReformCloudLibraryService {
      * @return The max memory of the system
      */
     public static long maxMemorySystem() {
-        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize();
+        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())
+            .getTotalPhysicalMemorySize();
     }
 
     /**
@@ -329,8 +364,17 @@ public final class ReformCloudLibraryService {
      *
      * @return The runtime mx bean of the current jvm
      */
-    public static RuntimeMXBean getRuntimeMXBean() {
+    private static RuntimeMXBean getRuntimeMXBean() {
         return ManagementFactory.getRuntimeMXBean();
+    }
+
+    /**
+     * Get the current class loading mx bean of the current jvm
+     *
+     * @return the current class loading mx bean of the current jvm
+     */
+    private static ClassLoadingMXBean getClassLoadingMXBean() {
+        return ManagementFactory.getClassLoadingMXBean();
     }
 
     /**
@@ -382,8 +426,8 @@ public final class ReformCloudLibraryService {
     /**
      * Checks if the object equals the parameters of the checkable
      *
-     * @param checkable     The checkable with the check parameters
-     * @param toCheck       The object which should be checked
+     * @param checkable The checkable with the check parameters
+     * @param toCheck The object which should be checked
      * @return If the parameters of the checkable are true or not
      */
     public static boolean check(Predicate<Object> checkable, final Object toCheck) {
@@ -393,12 +437,31 @@ public final class ReformCloudLibraryService {
     /**
      * Creates a new cache
      *
-     * @param maxSize       The maximum size of the cache
-     * @param <K>           The key value of the cache
-     * @param <V>           The values of the cache
+     * @param maxSize The maximum size of the cache
+     * @param <K> The key value of the cache
+     * @param <V> The values of the cache
      * @return The created cache using the given parameters
      */
     public static <K, V> Cache<K, V> newCache(long maxSize) {
         return new Cache<>(maxSize);
+    }
+
+    private static ThreadFactory createThreadFactory(
+        Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+        ThreadFactory threadFactory = Executors.defaultThreadFactory();
+        AtomicLong atomicLong = new AtomicLong(0);
+        return runnable -> {
+            Thread thread = threadFactory.newThread(runnable);
+            thread.setName(String
+                .format(Locale.ROOT, "ReformCloud-PoolThread-%d", atomicLong.getAndIncrement()));
+            thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);
+            thread.setDaemon(true);
+            return thread;
+        };
+    }
+
+    private static ThreadFactory createThreadFactory() {
+        return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true,
+            Thread.MIN_PRIORITY);
     }
 }

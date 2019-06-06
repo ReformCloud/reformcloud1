@@ -17,12 +17,14 @@ import java.io.Serializable;
  */
 
 public final class PacketInUpdateProxyGroup implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         ProxyGroup proxyGroup = configuration.getValue("group", new TypeToken<ProxyGroup>() {
         });
-        if (proxyGroup == null)
+        if (proxyGroup == null) {
             return;
+        }
 
         ReformCloudController.getInstance().getCloudConfiguration().updateProxyGroup(proxyGroup);
     }

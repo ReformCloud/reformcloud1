@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 
 public class Client implements Serializable {
+
     private static final long serialVersionUID = 7702400116714803106L;
 
     /**
@@ -38,10 +39,11 @@ public class Client implements Serializable {
      * @return The converted client state
      */
     public ClientState getCurrentState() {
-        if (clientInfo == null)
+        if (clientInfo == null) {
             return ClientState.DISCONNECTED;
-        else if (clientInfo.isReady())
+        } else if (clientInfo.isReady()) {
             return ClientState.READY;
+        }
 
         return ClientState.CONNECTED;
     }

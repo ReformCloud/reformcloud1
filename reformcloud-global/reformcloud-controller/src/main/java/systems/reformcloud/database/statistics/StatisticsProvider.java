@@ -19,6 +19,7 @@ import java.nio.file.Paths;
  */
 
 public final class StatisticsProvider extends DatabaseProvider implements Serializable {
+
     private static final long serialVersionUID = -209566855414655806L;
 
     private Stats stats;
@@ -32,91 +33,103 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
     public void load() {
         if (!Files.exists(Paths.get("reformcloud/database/stats/stats.json"))) {
             new Configuration().addValue("stats", new Stats(
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    System.currentTimeMillis(),
-                    System.currentTimeMillis(),
-                    0,
-                    0,
-                    0,
-                    0
+                0,
+                0,
+                0,
+                0,
+                0,
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                0,
+                0,
+                0,
+                0
             )).write(Paths.get("reformcloud/database/stats/stats.json"));
         }
 
         this.stats = Configuration.parse(Paths.get("reformcloud/database/stats/stats.json"))
-                .getValue("stats", new TypeToken<Stats>() {
-                }.getType());
+            .getValue("stats", new TypeToken<Stats>() {
+            }.getType());
     }
 
     @Override
     public void save() {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.setLastShutdown();
         Configuration.parse(Paths.get("reformcloud/database/stats/stats.json"))
-                .addValue("stats", this.stats)
-                .write(Paths.get("reformcloud/database/stats/stats.json"));
+            .addValue("stats", this.stats)
+            .write(Paths.get("reformcloud/database/stats/stats.json"));
     }
 
     public void addLogin() {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setLogin(this.stats.login + 1);
     }
 
     public void addStartup() {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setStartup(this.stats.startup + 1);
     }
 
     public void addRootStartup() {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setRootStartup(this.stats.rootStartup + 1);
     }
 
     public void addConsoleCommand() {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setConsoleCommands(this.stats.getConsoleCommands() + 1);
     }
 
     public void addIngameCommand() {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setIngameCommands(this.stats.getIngameCommands() + 1);
     }
 
     public void setLastStartup() {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setLastStartup(System.currentTimeMillis());
     }
 
     public void updateServerStats(final TempServerStats tempServerStats) {
-        if (!checkAvailable())
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setBlocksPlaced(this.stats.getBlocksPlaced() + tempServerStats.blocksPlaced);
-        this.stats.setWalkedDistance(this.stats.getWalkedDistance() + tempServerStats.distanceWalked);
-        if (tempServerStats.onlineTime != 0)
-            this.stats.setServerOnlineTime(this.stats.getServerOnlineTime() + tempServerStats.onlineTime);
+        this.stats
+            .setWalkedDistance(this.stats.getWalkedDistance() + tempServerStats.distanceWalked);
+        if (tempServerStats.onlineTime != 0) {
+            this.stats
+                .setServerOnlineTime(this.stats.getServerOnlineTime() + tempServerStats.onlineTime);
+        }
     }
 
-    public void setLastShutdown() {
-        if (!checkAvailable())
+    private void setLastShutdown() {
+        if (!checkAvailable()) {
             return;
+        }
 
         this.stats.setLastShutdown(System.currentTimeMillis());
     }
@@ -130,11 +143,16 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
     }
 
     public final class Stats {
+
         private int startup, rootStartup, login, consoleCommands, ingameCommands;
         private long firstStartup, lastStartup, lastShutdown, serverOnlineTime, walkedDistance, blocksPlaced;
 
-        @java.beans.ConstructorProperties({"startup", "rootStartup", "login", "consoleCommands", "ingameCommands", "firstStartup", "lastStartup", "lastShutdown", "serverOnlineTime", "walkedDistance", "blocksPlaced"})
-        public Stats(int startup, int rootStartup, int login, int consoleCommands, int ingameCommands, long firstStartup, long lastStartup, long lastShutdown, long serverOnlineTime, long walkedDistance, long blocksPlaced) {
+        @java.beans.ConstructorProperties({"startup", "rootStartup", "login", "consoleCommands",
+            "ingameCommands", "firstStartup", "lastStartup", "lastShutdown", "serverOnlineTime",
+            "walkedDistance", "blocksPlaced"})
+        Stats(int startup, int rootStartup, int login, int consoleCommands, int ingameCommands,
+            long firstStartup, long lastStartup, long lastShutdown, long serverOnlineTime,
+            long walkedDistance, long blocksPlaced) {
             this.startup = startup;
             this.rootStartup = rootStartup;
             this.login = login;
@@ -161,7 +179,8 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
         }
 
         private String getDateFormatted(final long time) {
-            return ReformCloudController.getInstance().getLoggerProvider().getDateFormat().format(time);
+            return ReformCloudController.getInstance().getLoggerProvider().getDateFormat()
+                .format(time);
         }
 
         public boolean hasShutdown() {
@@ -200,23 +219,23 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
             return this.blocksPlaced;
         }
 
-        public void setStartup(int startup) {
+        void setStartup(int startup) {
             this.startup = startup;
         }
 
-        public void setRootStartup(int rootStartup) {
+        void setRootStartup(int rootStartup) {
             this.rootStartup = rootStartup;
         }
 
-        public void setLogin(int login) {
+        void setLogin(int login) {
             this.login = login;
         }
 
-        public void setConsoleCommands(int consoleCommands) {
+        void setConsoleCommands(int consoleCommands) {
             this.consoleCommands = consoleCommands;
         }
 
-        public void setIngameCommands(int ingameCommands) {
+        void setIngameCommands(int ingameCommands) {
             this.ingameCommands = ingameCommands;
         }
 
@@ -224,23 +243,23 @@ public final class StatisticsProvider extends DatabaseProvider implements Serial
             this.firstStartup = firstStartup;
         }
 
-        public void setLastStartup(long lastStartup) {
+        void setLastStartup(long lastStartup) {
             this.lastStartup = lastStartup;
         }
 
-        public void setLastShutdown(long lastShutdown) {
+        void setLastShutdown(long lastShutdown) {
             this.lastShutdown = lastShutdown;
         }
 
-        public void setServerOnlineTime(long serverOnlineTime) {
+        void setServerOnlineTime(long serverOnlineTime) {
             this.serverOnlineTime = serverOnlineTime;
         }
 
-        public void setWalkedDistance(long walkedDistance) {
+        void setWalkedDistance(long walkedDistance) {
             this.walkedDistance = walkedDistance;
         }
 
-        public void setBlocksPlaced(long blocksPlaced) {
+        void setBlocksPlaced(long blocksPlaced) {
             this.blocksPlaced = blocksPlaced;
         }
     }

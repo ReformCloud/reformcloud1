@@ -15,11 +15,12 @@ import java.util.List;
  */
 
 public abstract class AbstractCommandManager implements Serializable {
+
     /**
      * Dispatches a command
      *
-     * @param commandSender     The command sender who sent the command
-     * @param command           The command which was executed
+     * @param commandSender The command sender who sent the command
+     * @param command The command which was executed
      * @return If the execution was successful
      */
     public abstract boolean dispatchCommand(CommandSender commandSender, String command);
@@ -27,7 +28,7 @@ public abstract class AbstractCommandManager implements Serializable {
     /**
      * Registers a command
      *
-     * @param command       The command which should be registered
+     * @param command The command which should be registered
      * @return The current instance of this class
      */
     public abstract AbstractCommandManager registerCommand(Command command);
@@ -40,14 +41,14 @@ public abstract class AbstractCommandManager implements Serializable {
     /**
      * Unregisters a specific command
      *
-     * @param command   The command which should be unregistered
+     * @param command The command which should be unregistered
      */
     public abstract void unregisterCommand(String command);
 
     /**
      * Get if a specific command is registered
      *
-     * @param command       The command which should be checked
+     * @param command The command which should be checked
      * @return If the command is registered
      */
     public abstract boolean isCommandRegistered(String command);
@@ -62,7 +63,7 @@ public abstract class AbstractCommandManager implements Serializable {
     /**
      * Dispatches a command using the default command manager
      *
-     * @param command       The command which should be dispatched
+     * @param command The command which should be dispatched
      * @return If the execution was successful
      */
     public abstract boolean dispatchCommand(String command);

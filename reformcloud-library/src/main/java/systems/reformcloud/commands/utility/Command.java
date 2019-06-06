@@ -11,10 +11,15 @@ import java.io.Serializable;
  */
 
 public abstract class Command implements Serializable {
+
     /**
      * Some general information about the command
      */
-    private String name, description, permission;
+    private String name;
+
+    private String description;
+
+    private String permission;
 
     /**
      * The aliases of the command
@@ -22,7 +27,7 @@ public abstract class Command implements Serializable {
     private String[] aliases;
 
     @java.beans.ConstructorProperties({"name", "description", "permission", "aliases"})
-    public Command(String name, String description, String permission, String[] aliases) {
+    protected Command(String name, String description, String permission, String[] aliases) {
         this.name = name;
         this.description = description;
         this.permission = permission;
@@ -32,8 +37,8 @@ public abstract class Command implements Serializable {
     /**
      * Executes the command
      *
-     * @param commandSender     The command sender who sent the command
-     * @param args              The given command arguments
+     * @param commandSender The command sender who sent the command
+     * @param args The given command arguments
      */
     public abstract void executeCommand(CommandSender commandSender, String[] args);
 

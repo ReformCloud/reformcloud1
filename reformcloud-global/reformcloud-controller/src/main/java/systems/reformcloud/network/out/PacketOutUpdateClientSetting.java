@@ -15,12 +15,13 @@ import java.io.Serializable;
  */
 
 public final class PacketOutUpdateClientSetting extends Packet implements Serializable {
+
     public PacketOutUpdateClientSetting(ClientSettings clientSettings, String newValue) {
         super(
-                "UpdateClientSetting",
-                new Configuration()
-                        .addValue("setting", clientSettings)
-                        .addStringValue("value", newValue)
+            "UpdateClientSetting",
+            new Configuration()
+                .addValue("setting", clientSettings)
+                .addStringValue("value", newValue)
         );
     }
 }

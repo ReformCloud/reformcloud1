@@ -22,21 +22,25 @@ public final class CloudProxyPingListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void handle(final ProxyPingEvent event) {
-        if (ReformCloudAPIBungee.getInstance().getProxySettings() != null)
+        if (ReformCloudAPIBungee.getInstance().getProxySettings() != null) {
             return;
+        }
 
-        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null)
+        if (IconManager.getInstance() != null && IconManager.getInstance().getCurrent() != null) {
             event.getResponse().setFavicon(IconManager.getInstance().getCurrent());
+        }
 
         final ProxyGroup proxyGroup = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
-                .getProxyGroups().get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
-        if (proxyGroup == null)
+            .getProxyGroups()
+            .get(ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup().getName());
+        if (proxyGroup == null) {
             return;
+        }
 
         event.getResponse().setPlayers(new ServerPing.Players(
-                proxyGroup.getMaxPlayers(),
-                BungeecordBootstrap.getInstance().getProxy().getPlayers().size(),
-                event.getResponse().getPlayers().getSample()
+            proxyGroup.getMaxPlayers(),
+            BungeecordBootstrap.getInstance().getProxy().getPlayers().size(),
+            event.getResponse().getPlayers().getSample()
         ));
 
         event.setResponse(event.getResponse());

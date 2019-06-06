@@ -21,12 +21,15 @@ import java.util.UUID;
  */
 
 public final class PacketInSignUpdate implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
         if (SignSelector.getInstance() != null) {
-            SignLayoutConfiguration signLayoutConfiguration = configuration.getValue("signConfig", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
-            Map<UUID, Sign> map = configuration.getValue("signMap", new TypeToken<Map<UUID, Sign>>() {
-            }.getType());
+            SignLayoutConfiguration signLayoutConfiguration = configuration
+                .getValue("signConfig", TypeTokenAdaptor.getSIGN_LAYOUT_CONFIG_TYPE());
+            Map<UUID, Sign> map = configuration
+                .getValue("signMap", new TypeToken<Map<UUID, Sign>>() {
+                }.getType());
             SignSelector.getInstance().setSignLayoutConfiguration(signLayoutConfiguration);
             SignSelector.getInstance().setSignMap(map);
         }

@@ -15,8 +15,10 @@ import java.io.Serializable;
  */
 
 public final class PacketInRemoveProxyProcessQueue implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudClient.getInstance().getCloudProcessStartupHandler().removeProxyProcess(configuration.getStringValue("name"));
+        ReformCloudClient.getInstance().getCloudProcessStartupHandler()
+            .removeProxyProcess(configuration.getStringValue("name"));
     }
 }

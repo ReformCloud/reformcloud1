@@ -15,8 +15,10 @@ import java.io.Serializable;
  */
 
 public final class PacketInExecuteClientCommand implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudClient.getInstance().getCommandManager().dispatchCommand(configuration.getStringValue("cmd"));
+        ReformCloudClient.getInstance().getCommandManager()
+            .dispatchCommand(configuration.getStringValue("cmd"));
     }
 }

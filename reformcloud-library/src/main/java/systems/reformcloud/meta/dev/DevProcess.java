@@ -14,13 +14,18 @@ import java.io.Serializable;
  */
 
 public final class DevProcess implements Serializable {
+
     private ServerGroup serverGroup;
+
     private Configuration preConfig;
+
     private String template;
+
     private long waitingSince;
 
     @java.beans.ConstructorProperties({"serverGroup", "preConfig", "template", "waitingSince"})
-    public DevProcess(ServerGroup serverGroup, Configuration preConfig, String template, long waitingSince) {
+    public DevProcess(ServerGroup serverGroup, Configuration preConfig, String template,
+        long waitingSince) {
         this.serverGroup = serverGroup;
         this.preConfig = preConfig;
         this.template = template;

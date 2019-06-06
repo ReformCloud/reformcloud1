@@ -19,6 +19,7 @@ import java.io.Serializable;
  */
 
 public final class CommandWhereIAm extends Command implements Serializable {
+
     public CommandWhereIAm() {
         super("whereiam", "reformcloud.command.whereiam", "whereami");
     }
@@ -27,8 +28,9 @@ public final class CommandWhereIAm extends Command implements Serializable {
     public void execute(CommandSender commandSender, String[] strings) {
         if (!(commandSender instanceof ProxiedPlayer)) {
             commandSender.sendMessage(TextComponent.fromLegacyText(
-                    ChatColor.translateAlternateColorCodes('&',
-                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " An §cerror §7occurred"))
+                ChatColor.translateAlternateColorCodes('&',
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix()
+                        + " An §cerror §7occurred"))
             );
             return;
         }
@@ -36,31 +38,34 @@ public final class CommandWhereIAm extends Command implements Serializable {
         final ProxiedPlayer proxiedPlayer = (ProxiedPlayer) commandSender;
         if (proxiedPlayer.getServer() == null || proxiedPlayer.getServer().getInfo() == null) {
             proxiedPlayer.sendMessage(TextComponent.fromLegacyText(
-                    ChatColor.translateAlternateColorCodes('&',
-                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " An §cerror §7occurred"))
+                ChatColor.translateAlternateColorCodes('&',
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix()
+                        + " An §cerror §7occurred"))
             );
             return;
         }
 
         ServerInfo serverInfo = ReformCloudAPIBungee.getInstance()
-                .getInternalCloudNetwork()
-                .getServerProcessManager()
-                .getRegisteredServerByName(proxiedPlayer.getServer().getInfo().getName());
+            .getInternalCloudNetwork()
+            .getServerProcessManager()
+            .getRegisteredServerByName(proxiedPlayer.getServer().getInfo().getName());
         if (serverInfo == null) {
             proxiedPlayer.sendMessage(TextComponent.fromLegacyText(
-                    ChatColor.translateAlternateColorCodes('&',
-                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " An §cerror §7occurred"))
+                ChatColor.translateAlternateColorCodes('&',
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix()
+                        + " An §cerror §7occurred"))
             );
             return;
         }
 
         proxiedPlayer.sendMessage(TextComponent.fromLegacyText(
-                ChatColor.translateAlternateColorCodes('&',
-                        ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() +
-                                " You are currently connected to §e" + serverInfo.getCloudProcess().getName() +
-                                " §7on ServerGroup §e" + serverInfo.getServerGroup().getName() + "§7 (Process UniqueID: §e" +
-                                serverInfo.getCloudProcess().getProcessUID() + ")")
-                )
+            ChatColor.translateAlternateColorCodes('&',
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() +
+                    " You are currently connected to §e" + serverInfo.getCloudProcess().getName() +
+                    " §7on ServerGroup §e" + serverInfo.getServerGroup().getName()
+                    + "§7 (Process UniqueID: §e" +
+                    serverInfo.getCloudProcess().getProcessUID() + ")")
+            )
         );
     }
 }

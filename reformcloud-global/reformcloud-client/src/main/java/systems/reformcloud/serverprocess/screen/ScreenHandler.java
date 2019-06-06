@@ -16,7 +16,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  */
 
 public class ScreenHandler implements Serializable {
+
     private final Queue<String> log = new ConcurrentLinkedDeque<>();
+
     private boolean enabled = false;
 
     private final String name;
@@ -26,11 +28,13 @@ public class ScreenHandler implements Serializable {
     }
 
     public void addScreenLine(final String line) {
-        if (line == null)
+        if (line == null) {
             return;
+        }
 
-        while (log.size() >= ReformCloudClient.getInstance().getCloudConfiguration().getLogSize())
+        while (log.size() >= ReformCloudClient.getInstance().getCloudConfiguration().getLogSize()) {
             log.poll();
+        }
 
         this.log.offer(line);
 
@@ -40,8 +44,9 @@ public class ScreenHandler implements Serializable {
     }
 
     public void enableScreen() {
-        for (String line : log)
+        for (String line : log) {
             this.sendLine(line);
+        }
 
         this.enabled = true;
     }
@@ -50,14 +55,17 @@ public class ScreenHandler implements Serializable {
         this.enabled = false;
     }
 
-    public void sendLine(final String line) {
-        if (line == null || line.trim().isEmpty())
+    private void sendLine(final String line) {
+        if (line == null || line.trim().isEmpty()) {
             return;
+        }
 
         this.sendScreenLine(line);
     }
 
     private void sendScreenLine(final String text) {
-        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController", new PacketOutSyncScreenUpdate(text, name));
+        ReformCloudClient.getInstance().getChannelHandler()
+            .sendPacketAsynchronous("ReformCloudController",
+                new PacketOutSyncScreenUpdate(text, name));
     }
 }

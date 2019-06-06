@@ -21,52 +21,99 @@ import java.io.Serializable;
  */
 
 public final class CommandCopy extends Command implements Serializable {
+
     public CommandCopy() {
-        super("copy", "Copies a server or proxy into the template", "reformcloud.command.copy", new String[0]);
+        super("copy", "Copies a server or proxy into the template", "reformcloud.command.copy",
+            new String[0]);
     }
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        if (args.length == 1) {
-            if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[0]) != null) {
-                final ServerInfo serverInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredServerByName(args[0]);
-                if (serverInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend().equals(TemplateBackend.CLIENT)) {
+        if (args.length == 1 || args.length == 2) {
+            if (ReformCloudController.getInstance().getInternalCloudNetwork()
+                .getServerProcessManager().getRegisteredServerByName(args[0]) != null) {
+                final ServerInfo serverInfo = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getServerProcessManager()
+                    .getRegisteredServerByName(args[0]);
+                if (serverInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend()
+                    .equals(TemplateBackend.CLIENT)) {
                     ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(
-                            serverInfo.getCloudProcess().getClient(),
-                            new PacketOutExecuteCommand("save-all", "server", serverInfo.getCloudProcess().getName())
+                        serverInfo.getCloudProcess().getClient(),
+                        new PacketOutExecuteCommand("save-all", "server",
+                            serverInfo.getCloudProcess().getName())
                     );
                     ReformCloudLibraryService.sleep(100);
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(serverInfo.getCloudProcess().getName() + "-" + serverInfo.getCloudProcess().getProcessUID(),
-                            serverInfo.getCloudProcess().getName(), "server", serverInfo.getServerGroup().getName()));
+                    if (args.length == 2) {
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
+                                new PacketOutCopyServerIntoTemplate(
+                                    serverInfo.getCloudProcess().getName() + "-" + serverInfo
+                                        .getCloudProcess().getProcessUID(),
+                                    serverInfo.getCloudProcess().getName(), "server",
+                                    serverInfo.getServerGroup().getName(), args[1]));
+                    } else {
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous(serverInfo.getCloudProcess().getClient(),
+                                new PacketOutCopyServerIntoTemplate(
+                                    serverInfo.getCloudProcess().getName() + "-" + serverInfo
+                                        .getCloudProcess().getProcessUID(),
+                                    serverInfo.getCloudProcess().getName(), "server",
+                                    serverInfo.getServerGroup().getName()));
+                    }
                     commandSender.sendMessage(
-                            ReformCloudController.getInstance().getLoadedLanguage().getCommand_copy_try()
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_copy_try()
                     );
                 } else {
                     commandSender.sendMessage(
-                            ReformCloudController.getInstance().getLoadedLanguage().getCommand_copy_backend_not_client()
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_copy_backend_not_client()
                     );
                 }
-            } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]) != null) {
-                final ProxyInfo proxyInfo = ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager().getRegisteredProxyByName(args[0]);
-                if (proxyInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend().equals(TemplateBackend.CLIENT)) {
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(), new PacketOutCopyServerIntoTemplate(proxyInfo.getCloudProcess().getName() + "-" + proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(),
-                            "proxy", proxyInfo.getProxyGroup().getName()));
+            } else if (ReformCloudController.getInstance().getInternalCloudNetwork()
+                .getServerProcessManager().getRegisteredProxyByName(args[0]) != null) {
+                final ProxyInfo proxyInfo = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getServerProcessManager()
+                    .getRegisteredProxyByName(args[0]);
+                if (proxyInfo.getCloudProcess().getLoadedTemplate().getTemplateBackend()
+                    .equals(TemplateBackend.CLIENT)) {
+                    if (args.length == 2) {
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
+                                new PacketOutCopyServerIntoTemplate(
+                                    proxyInfo.getCloudProcess().getName() + "-" + proxyInfo
+                                        .getCloudProcess().getProcessUID(),
+                                    proxyInfo.getCloudProcess().getName(),
+                                    "proxy", proxyInfo.getProxyGroup().getName(), args[1]));
+                    } else {
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous(proxyInfo.getCloudProcess().getClient(),
+                                new PacketOutCopyServerIntoTemplate(
+                                    proxyInfo.getCloudProcess().getName() + "-" + proxyInfo
+                                        .getCloudProcess().getProcessUID(),
+                                    proxyInfo.getCloudProcess().getName(),
+                                    "proxy", proxyInfo.getProxyGroup().getName()));
+                    }
                     commandSender.sendMessage(
-                            ReformCloudController.getInstance().getLoadedLanguage().getCommand_copy_try()
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_copy_try()
                     );
                 } else {
                     commandSender.sendMessage(
-                            ReformCloudController.getInstance().getLoadedLanguage().getCommand_copy_backend_not_client()
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_copy_backend_not_client()
                     );
                 }
             } else {
                 commandSender.sendMessage(
-                        ReformCloudController.getInstance().getLoadedLanguage().getProcess_not_connected()
-                                .replace("%name%", args[0])
+                    ReformCloudController.getInstance().getLoadedLanguage()
+                        .getProcess_not_connected()
+                        .replace("%name%", args[0])
                 );
             }
         } else {
             commandSender.sendMessage("copy <name>");
+            commandSender.sendMessage("copy <name> <file/directory>");
         }
     }
 }

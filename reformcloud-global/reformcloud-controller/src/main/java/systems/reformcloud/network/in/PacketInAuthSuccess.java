@@ -13,9 +13,11 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
  */
 
 public final class PacketInAuthSuccess implements NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().info(ReformCloudController.getInstance().getLoadedLanguage().getController_process_ready()
+        ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getLoadedLanguage().getController_process_ready()
                 .replace("%name%", configuration.getStringValue("name")));
     }
 }

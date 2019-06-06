@@ -15,9 +15,11 @@ import java.io.Serializable;
  */
 
 public final class PacketInDisableProperties implements Serializable, NetworkInboundHandler {
+
     @Override
     public void handle(Configuration configuration) {
-        if (PropertiesManager.available)
+        if (PropertiesManager.available) {
             PropertiesManager.getInstance().delete();
+        }
     }
 }

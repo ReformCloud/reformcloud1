@@ -15,22 +15,27 @@ import java.io.Serializable;
  */
 
 public final class CommandAddons extends Command implements Serializable {
+
     public CommandAddons() {
-        super("addons", "List, enable and disable addons", "reformcloud.command.addons", new String[0]);
+        super("addons", "List, enable and disable addons", "reformcloud.command.addons",
+            new String[0]);
     }
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-            if (ReformCloudClient.getInstance().getAddonParallelLoader().getJavaAddons().size() == 0) {
+            if (ReformCloudClient.getInstance().getAddonParallelLoader().getJavaAddons().size()
+                == 0) {
                 commandSender.sendMessage("There are no addons loaded");
             } else {
                 commandSender.sendMessage("The following addons are loaded: ");
                 ReformCloudClient.getInstance().getLoggerProvider().emptyLine();
                 ReformCloudClient.getInstance().getAddonParallelLoader()
-                        .getJavaAddons()
-                        .stream()
-                        .forEach(e -> commandSender.sendMessage("    - " + e.getAddonName() + " | Version: " + e.getAddonClassConfig().getVersion()));
+                    .getJavaAddons()
+                    .stream()
+                    .forEach(e -> commandSender.sendMessage(
+                        "    - " + e.getAddonName() + " | Version: " + e.getAddonClassConfig()
+                            .getVersion()));
                 ReformCloudClient.getInstance().getLoggerProvider().emptyLine();
             }
 
@@ -45,7 +50,8 @@ public final class CommandAddons extends Command implements Serializable {
 
         switch (args[0]) {
             case "enable": {
-                if (ReformCloudClient.getInstance().getAddonParallelLoader().isAddonEnabled(args[1])) {
+                if (ReformCloudClient.getInstance().getAddonParallelLoader()
+                    .isAddonEnabled(args[1])) {
                     commandSender.sendMessage("Addon is already enabled");
                     return;
                 }
@@ -57,12 +63,14 @@ public final class CommandAddons extends Command implements Serializable {
                 break;
             }
             case "disable": {
-                if (!ReformCloudClient.getInstance().getAddonParallelLoader().isAddonEnabled(args[1])) {
+                if (!ReformCloudClient.getInstance().getAddonParallelLoader()
+                    .isAddonEnabled(args[1])) {
                     commandSender.sendMessage("Addon is not enabled");
                     return;
                 }
 
-                if (ReformCloudClient.getInstance().getAddonParallelLoader().disableAddon(args[1])) {
+                if (ReformCloudClient.getInstance().getAddonParallelLoader()
+                    .disableAddon(args[1])) {
                     commandSender.sendMessage("The Addon was disabled successfully");
                     return;
                 }

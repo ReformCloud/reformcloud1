@@ -12,7 +12,9 @@ import java.util.Properties;
  */
 
 public final class PropertiesGroup implements Serializable {
+
     private String targetGroup;
+
     private Properties properties;
 
     @java.beans.ConstructorProperties({"targetGroup", "properties"})

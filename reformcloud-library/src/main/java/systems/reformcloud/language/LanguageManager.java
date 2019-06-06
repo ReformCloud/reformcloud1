@@ -21,12 +21,13 @@ import java.nio.file.Paths;
  */
 
 public final class LanguageManager implements Serializable {
+
     private static final long serialVersionUID = 6566354787998684748L;
 
     /**
      * The currently loaded language
      */
-    public final Language loaded;
+    private final Language loaded;
 
     /**
      * Loads the language
@@ -42,18 +43,22 @@ public final class LanguageManager implements Serializable {
         new File("reformcloud/language").mkdirs();
 
         if (!Files.exists(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json"))) {
-            if (lang.equalsIgnoreCase("german"))
-                new Configuration().addValue("lang", new German()).write(Paths.get("reformcloud/language/german.json"));
-            else if (lang.equalsIgnoreCase("english"))
-                new Configuration().addValue("lang", new English()).write(Paths.get("reformcloud/language/english.json"));
-            else {
+            if (lang.equalsIgnoreCase("german")) {
+                new Configuration().addValue("lang", new German())
+                    .write(Paths.get("reformcloud/language/german.json"));
+            } else if (lang.equalsIgnoreCase("english")) {
+                new Configuration().addValue("lang", new English())
+                    .write(Paths.get("reformcloud/language/english.json"));
+            } else {
                 this.loaded = new English();
                 return;
             }
         }
 
-        loaded = Configuration.parse(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json")).getValue("lang", new TypeToken<Language>() {
-        }.getType());
+        loaded = Configuration
+            .parse(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json"))
+            .getValue("lang", new TypeToken<Language>() {
+            }.getType());
     }
 
     public Language getLoaded() {

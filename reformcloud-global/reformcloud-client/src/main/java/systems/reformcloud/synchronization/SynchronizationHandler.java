@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public final class SynchronizationHandler implements Serializable, Runnable {
+
     private static final long serialVersionUID = -7527313886584796220L;
 
     private boolean deleted = false;
@@ -35,10 +36,10 @@ public final class SynchronizationHandler implements Serializable, Runnable {
             int startedProxyCount = current.getStartedProxies().size();
 
             if (lastInfo.getCpuUsage() != cpuUsage
-                    || lastInfo.getSystemMemoryUsage() != memory
-                    || lastInfo.getUsedMemory() != internalMemory
-                    || lastInfo.getStartedServers().size() != startedServerCount
-                    || lastInfo.getStartedProxies().size() != startedProxyCount) {
+                || lastInfo.getSystemMemoryUsage() != memory
+                || lastInfo.getUsedMemory() != internalMemory
+                || lastInfo.getStartedServers().size() != startedServerCount
+                || lastInfo.getStartedProxies().size() != startedProxyCount) {
                 lastInfo.setCpuUsage(cpuUsage);
                 lastInfo.setSystemMemoryUsage(memory);
                 lastInfo.setUsedMemory(internalMemory);
@@ -47,7 +48,7 @@ public final class SynchronizationHandler implements Serializable, Runnable {
                 lastInfo = current;
 
                 ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous(
-                        "ReformCloudController", new PacketOutSyncUpdateClientInfo(lastInfo)
+                    "ReformCloudController", new PacketOutSyncUpdateClientInfo(lastInfo)
                 );
             }
 

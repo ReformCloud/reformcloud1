@@ -4,6 +4,9 @@
 
 package systems.reformcloud.meta.server;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
@@ -11,38 +14,56 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
 public class ServerGroup implements Serializable {
+
     private static final long serialVersionUID = -6849497313084944255L;
 
-    protected String name, motd, join_permission;
+    private String name;
 
-    protected List<String> clients;
-    protected List<Template> templates;
+    private String motd;
 
-    protected int memory, minOnline, maxOnline, maxPlayers, startPort;
+    private String joinPermission;
 
-    protected boolean maintenance, save_logs;
-    protected ServerModeType serverModeType;
+    private List<String> clients;
+
+    private List<Template> templates;
+
+    private int memory;
+
+    private int minOnline;
+
+    private int maxOnline;
+
+    private int maxPlayers;
+
+    private int startPort;
+
+    private boolean maintenance;
+
+    private boolean saveLogs;
+
+    private ServerModeType serverModeType;
 
     private AutoStart autoStart;
+
     private AutoStop autoStop;
 
-    protected SpigotVersions spigotVersions;
+    private SpigotVersions spigotVersions;
 
-    @java.beans.ConstructorProperties({"name", "motd", "join_permission", "clients", "templates", "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "save_logs", "autoStart", "autoStop", "serverModeType", "spigotVersions"})
-    public ServerGroup(String name, String motd, String join_permission, List<String> clients, List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers, int startPort, boolean maintenance, boolean save_logs, AutoStart autoStart, AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions) {
+    @java.beans.ConstructorProperties({"name", "motd", "joinPermission", "clients", "templates",
+        "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "saveLogs",
+        "autoStart", "autoStop", "serverModeType", "spigotVersions"})
+    public ServerGroup(String name, String motd, String joinPermission, List<String> clients,
+        List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers,
+        int startPort, boolean maintenance, boolean saveLogs, AutoStart autoStart,
+        AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions) {
         this.name = name;
         this.motd = motd;
-        this.join_permission = join_permission;
+        this.joinPermission = joinPermission;
         this.clients = clients;
         this.templates = templates;
         this.memory = memory;
@@ -51,7 +72,7 @@ public class ServerGroup implements Serializable {
         this.maxPlayers = maxPlayers;
         this.startPort = startPort;
         this.maintenance = maintenance;
-        this.save_logs = save_logs;
+        this.saveLogs = saveLogs;
         this.autoStart = autoStart;
         this.autoStop = autoStop;
         this.serverModeType = serverModeType;
@@ -59,11 +80,13 @@ public class ServerGroup implements Serializable {
     }
 
     public Template getTemplate(final String name) {
-        return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(randomTemplate());
+        return this.templates.stream().filter(template -> template.getName().equals(name))
+            .findFirst().orElse(randomTemplate());
     }
 
     public Template getTemplateOrElseNull(final String name) {
-        return this.templates.stream().filter(template -> template.getName().equals(name)).findFirst().orElse(null);
+        return this.templates.stream().filter(template -> template.getName().equals(name))
+            .findFirst().orElse(null);
     }
 
     public Template randomTemplate() {
@@ -71,12 +94,21 @@ public class ServerGroup implements Serializable {
             return new Template("default", null, TemplateBackend.CLIENT);
         }
 
-        return this.templates.get(new Random().nextInt(this.templates.size()));
+        for (Template template : this.templates) {
+            if (template.getName().equals("every")) {
+                continue;
+            }
+
+            return template;
+        }
+
+        return new Template("default", null, TemplateBackend.CLIENT);
     }
 
     public void deleteTemplate(String name) {
         List<Template> copyOf = new ArrayList<>(this.templates);
-        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst().ifPresent(template -> this.templates.remove(template));
+        copyOf.stream().filter(template -> template.getName().equals(name)).findFirst()
+            .ifPresent(template -> this.templates.remove(template));
     }
 
     public String getName() {
@@ -87,8 +119,8 @@ public class ServerGroup implements Serializable {
         return this.motd;
     }
 
-    public String getJoin_permission() {
-        return this.join_permission;
+    public String getJoinPermission() {
+        return this.joinPermission;
     }
 
     public List<String> getClients() {
@@ -123,8 +155,8 @@ public class ServerGroup implements Serializable {
         return this.maintenance;
     }
 
-    public boolean isSave_logs() {
-        return this.save_logs;
+    public boolean isSaveLogs() {
+        return this.saveLogs;
     }
 
     public ServerModeType getServerModeType() {
@@ -143,8 +175,8 @@ public class ServerGroup implements Serializable {
         this.motd = motd;
     }
 
-    public void setJoin_permission(String join_permission) {
-        this.join_permission = join_permission;
+    public void setJoinPermission(String joinPermission) {
+        this.joinPermission = joinPermission;
     }
 
     public void setClients(List<String> clients) {
@@ -179,8 +211,8 @@ public class ServerGroup implements Serializable {
         this.maintenance = maintenance;
     }
 
-    public void setSave_logs(boolean save_logs) {
-        this.save_logs = save_logs;
+    public void setSaveLogs(boolean saveLogs) {
+        this.saveLogs = saveLogs;
     }
 
     public void setServerModeType(ServerModeType serverModeType) {

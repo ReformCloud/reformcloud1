@@ -17,31 +17,35 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 08.03.2019
  */
 
-public final class PacketInQueryGetOnlinePlayer implements Serializable, NetworkQueryInboundHandler {
+public final class PacketInQueryGetOnlinePlayer implements Serializable,
+    NetworkQueryInboundHandler {
+
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         if (configuration.contains("uuid")) {
             OnlinePlayer onlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-                    .getOnlinePlayer(configuration.getValue("uuid", UUID.class));
+                .getOnlinePlayer(configuration.getValue("uuid", UUID.class));
             if (onlinePlayer != null) {
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        configuration.getStringValue("from"), new PacketOutQueryOnlinePlayerResult(
-                                onlinePlayer, resultID
-                        )
+                    configuration.getStringValue("from"), new PacketOutQueryOnlinePlayerResult(
+                        onlinePlayer, resultID
+                    )
                 );
             }
         } else {
-            UUID uuid = ReformCloudController.getInstance().getPlayerDatabase().getFromName(configuration.getStringValue("name"));
-            if (uuid == null)
+            UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
+                .getFromName(configuration.getStringValue("name"));
+            if (uuid == null) {
                 return;
+            }
 
             OnlinePlayer onlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-                    .getOnlinePlayer(uuid);
+                .getOnlinePlayer(uuid);
             if (onlinePlayer != null) {
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                        configuration.getStringValue("from"), new PacketOutQueryOnlinePlayerResult(
-                                onlinePlayer, resultID
-                        )
+                    configuration.getStringValue("from"), new PacketOutQueryOnlinePlayerResult(
+                        onlinePlayer, resultID
+                    )
                 );
             }
         }

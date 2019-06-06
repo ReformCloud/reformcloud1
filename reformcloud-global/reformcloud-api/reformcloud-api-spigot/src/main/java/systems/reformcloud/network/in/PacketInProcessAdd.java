@@ -20,14 +20,19 @@ import java.io.Serializable;
  */
 
 public final class PacketInProcessAdd implements NetworkInboundHandler, Serializable {
+
     @Override
     public void handle(Configuration configuration) {
         if (configuration.contains("serverInfo")) {
-            final ServerInfo serverInfo = configuration.getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
-            SpigotBootstrap.getInstance().getServer().getPluginManager().callEvent(new CloudServerAddEvent(serverInfo));
+            final ServerInfo serverInfo = configuration
+                .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+            SpigotBootstrap.getInstance().getServer().getPluginManager()
+                .callEvent(new CloudServerAddEvent(serverInfo));
         } else {
-            final ProxyInfo proxyInfo = configuration.getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-            SpigotBootstrap.getInstance().getServer().getPluginManager().callEvent(new CloudProxyAddEvent(proxyInfo));
+            final ProxyInfo proxyInfo = configuration
+                .getValue("proxyInfo", TypeTokenAdaptor.getPROXY_INFO_TYPE());
+            SpigotBootstrap.getInstance().getServer().getPluginManager()
+                .callEvent(new CloudProxyAddEvent(proxyInfo));
         }
     }
 }

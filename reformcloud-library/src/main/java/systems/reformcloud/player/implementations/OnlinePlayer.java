@@ -16,7 +16,9 @@ import java.util.UUID;
  */
 
 public final class OnlinePlayer extends DefaultPlayer implements Serializable {
-    public OnlinePlayer(String name, UUID uniqueID, SpigotVersion spigotVersion, String currentServer, String currentProxy) {
+
+    public OnlinePlayer(String name, UUID uniqueID, SpigotVersion spigotVersion,
+        String currentServer, String currentProxy) {
         super(name, uniqueID, new HashMap<>(), System.currentTimeMillis(), spigotVersion);
         this.currentProxy = currentProxy;
         this.currentServer = currentServer;

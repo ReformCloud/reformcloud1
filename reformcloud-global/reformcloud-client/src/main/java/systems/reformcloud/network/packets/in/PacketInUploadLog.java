@@ -24,6 +24,7 @@ import java.nio.file.Paths;
  */
 
 public final class PacketInUploadLog implements Serializable, NetworkInboundHandler {
+
     private static final long serialVersionUID = 4582766821019976794L;
 
     @Override
@@ -33,34 +34,44 @@ public final class PacketInUploadLog implements Serializable, NetworkInboundHand
 
         switch (type) {
             case "bungee": {
-                ProxyStartupHandler proxyStartupHandler = ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredProxyHandler(name);
+                ProxyStartupHandler proxyStartupHandler = ReformCloudClient.getInstance()
+                    .getCloudProcessScreenService().getRegisteredProxyHandler(name);
                 if (proxyStartupHandler != null) {
                     try {
                         String url = proxyStartupHandler.uploadLog();
-                        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                        ReformCloudClient.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous("ReformCloudController",
                                 new PacketOutGetLog(url, name));
                     } catch (final IOException ex) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not upload log", ex);
+                        StringUtil.printError(
+                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            "Could not upload log", ex);
                     }
                 } else {
-                    ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                    ReformCloudClient.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous("ReformCloudController",
                             new PacketOutGetLog(StringUtil.NULL, name));
                 }
                 break;
             }
 
             case "spigot": {
-                CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient.getInstance().getCloudProcessScreenService().getRegisteredServerHandler(name);
+                CloudServerStartupHandler cloudServerStartupHandler = ReformCloudClient
+                    .getInstance().getCloudProcessScreenService().getRegisteredServerHandler(name);
                 if (cloudServerStartupHandler != null) {
                     try {
                         String url = cloudServerStartupHandler.uploadLog();
-                        ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                        ReformCloudClient.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous("ReformCloudController",
                                 new PacketOutGetLog(url, name));
                     } catch (final IOException ex) {
-                        StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not upload log", ex);
+                        StringUtil.printError(
+                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            "Could not upload log", ex);
                     }
                 } else {
-                    ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                    ReformCloudClient.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous("ReformCloudController",
                             new PacketOutGetLog(StringUtil.NULL, name));
                 }
                 break;
@@ -69,14 +80,19 @@ public final class PacketInUploadLog implements Serializable, NetworkInboundHand
             case "client": {
                 StringBuilder stringBuilder = new StringBuilder();
                 try {
-                    Files.readAllLines(Paths.get("reformcloud/logs/CloudLog.0"), StandardCharsets.UTF_8)
-                            .forEach(s -> stringBuilder.append(s).append("\n"));
+                    Files.readAllLines(Paths.get("reformcloud/logs/latest.0"),
+                        StandardCharsets.UTF_8)
+                        .forEach(s -> stringBuilder.append(s).append("\n"));
                 } catch (final IOException ex) {
-                    StringUtil.printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(), "Could not read log", ex);
+                    StringUtil.printError(
+                        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                        "Could not read log", ex);
                 }
 
-                final String url = ReformCloudClient.getInstance().getLoggerProvider().uploadLog(stringBuilder.substring(0));
-                ReformCloudClient.getInstance().getChannelHandler().sendPacketAsynchronous("ReformCloudController",
+                final String url = ReformCloudClient.getInstance().getLoggerProvider()
+                    .uploadLog(stringBuilder.substring(0));
+                ReformCloudClient.getInstance().getChannelHandler()
+                    .sendPacketAsynchronous("ReformCloudController",
                         new PacketOutGetLog(url, name));
                 break;
             }

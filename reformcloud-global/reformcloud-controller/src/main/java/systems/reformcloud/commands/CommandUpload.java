@@ -24,8 +24,10 @@ import java.nio.file.Paths;
  */
 
 public final class CommandUpload extends Command implements Serializable {
+
     public CommandUpload() {
-        super("upload", "Uploads the given file to the specific position", "reformcloud.command.upload", new String[0]);
+        super("upload", "Uploads the given file to the specific position",
+            "reformcloud.command.upload", new String[0]);
     }
 
     @Override
@@ -41,32 +43,42 @@ public final class CommandUpload extends Command implements Serializable {
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("controller")) {
                 if (!this.isURLValid(args[1])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
-                DownloadManager.download("the new ControllerFile", args[1], FileUtils.getInternalFileName());
+                DownloadManager
+                    .download("the new ControllerFile", args[1], FileUtils.getInternalFileName());
                 commandSender.sendMessage("Please restart the controller load the new file");
                 return;
             } else if (args[0].equalsIgnoreCase("clients")) {
                 if (!this.isURLValid(args[1])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
-                ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values().forEach(client -> {
-                    if (client.getClientInfo() == null) {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
-                                .replace("%message%", "Client isn't connected"));
-                        return;
-                    }
+                ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values()
+                    .forEach(client -> {
+                        if (client.getClientInfo() == null) {
+                            commandSender.sendMessage(
+                                ReformCloudController.getInstance().getLoadedLanguage()
+                                    .getCommand_error_occurred()
+                                    .replace("%message%", "Client isn't connected"));
+                            return;
+                        }
 
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
-                            new PacketOutUpdateClientFromURL(args[1]));
-                    commandSender.sendMessage("Trying to update client " + client.getName() + "...");
-                });
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous(client.getName(),
+                                new PacketOutUpdateClientFromURL(args[1]));
+                        commandSender
+                            .sendMessage("Trying to update client " + client.getName() + "...");
+                    });
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
                 commandSender.sendMessage("upload PLUGIN <GROUPNAME> <NAME> <URL>");
@@ -80,14 +92,16 @@ public final class CommandUpload extends Command implements Serializable {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("controlleraddon")) {
                 if (!this.isURLValid(args[2])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
                 FileUtils.deleteFileIfExists(Paths.get("addons/" + args[1] + ".jar"));
                 DownloadManager.downloadAndDisconnect("addon " + args[1], args[2],
-                        "addons/" + args[1] + ".jar");
+                    "addons/" + args[1] + ".jar");
                 commandSender.sendMessage("Updated controllerAddon " + args[1]);
                 return;
             } else if (args[0].equalsIgnoreCase("clientaddon")) {
@@ -96,17 +110,22 @@ public final class CommandUpload extends Command implements Serializable {
                     return;
                 }
 
-                ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values().forEach(client -> {
-                    if (client.getClientInfo() == null) {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
-                                .replace("%message%", "Client isn't connected"));
-                        return;
-                    }
+                ReformCloudController.getInstance().getInternalCloudNetwork().getClients().values()
+                    .forEach(client -> {
+                        if (client.getClientInfo() == null) {
+                            commandSender.sendMessage(
+                                ReformCloudController.getInstance().getLoadedLanguage()
+                                    .getCommand_error_occurred()
+                                    .replace("%message%", "Client isn't connected"));
+                            return;
+                        }
 
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client.getName(),
-                            new PacketOutUpdateClientAddon(args[1], args[2]));
-                    commandSender.sendMessage("Trying to update clientAddon " + args[1] + "...");
-                });
+                        ReformCloudController.getInstance().getChannelHandler()
+                            .sendPacketAsynchronous(client.getName(),
+                                new PacketOutUpdateClientAddon(args[1], args[2]));
+                        commandSender
+                            .sendMessage("Trying to update clientAddon " + args[1] + "...");
+                    });
                 return;
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
@@ -119,49 +138,66 @@ public final class CommandUpload extends Command implements Serializable {
         }
 
         if (args.length == 4 && args[0].equalsIgnoreCase("plugin")) {
-            if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]) != null) {
+            if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups()
+                .get(args[1]) != null) {
                 if (!this.isURLValid(args[3])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
-                ServerGroup serverGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]);
+                ServerGroup serverGroup = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getServerGroups().get(args[1]);
                 serverGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        commandSender.sendMessage(
+                            ReformCloudController.getInstance().getLoadedLanguage()
+                                .getCommand_error_occurred()
                                 .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client1.getName(),
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(client1.getName(),
                             new PacketOutUpdateServerGroupPlugin(
-                                    serverGroup.getName(), args[2], args[3]
+                                serverGroup.getName(), args[2], args[3]
                             ));
-                    commandSender.sendMessage("Trying to update plugin on serverGroup " + serverGroup.getName() + "...");
+                    commandSender.sendMessage(
+                        "Trying to update plugin on serverGroup " + serverGroup.getName() + "...");
                 });
-            } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]) != null) {
+            } else if (
+                ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
+                    .get(args[1]) != null) {
                 if (!this.isURLValid(args[3])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
-                ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
+                ProxyGroup proxyGroup = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getProxyGroups().get(args[1]);
                 proxyGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        commandSender.sendMessage(
+                            ReformCloudController.getInstance().getLoadedLanguage()
+                                .getCommand_error_occurred()
                                 .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client1.getName(),
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(client1.getName(),
                             new PacketOutUpdateProxyGroupPlugin(
-                                    proxyGroup.getName(), args[2], args[3]
+                                proxyGroup.getName(), args[2], args[3]
                             ));
-                    commandSender.sendMessage("Trying to update plugin on proxyGroup " + proxyGroup.getName() + "...");
+                    commandSender.sendMessage(
+                        "Trying to update plugin on proxyGroup " + proxyGroup.getName() + "...");
                 });
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
@@ -174,17 +210,23 @@ public final class CommandUpload extends Command implements Serializable {
         }
 
         if (args.length == 5 && args[0].equalsIgnoreCase("plugin")) {
-            if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]) != null) {
+            if (ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups()
+                .get(args[1]) != null) {
                 if (!this.isURLValid(args[4])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
-                ServerGroup serverGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().get(args[1]);
+                ServerGroup serverGroup = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getServerGroups().get(args[1]);
 
                 if (serverGroup.getTemplate(args[2]) == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Template doesn't exists"));
                     return;
                 }
@@ -192,27 +234,38 @@ public final class CommandUpload extends Command implements Serializable {
                 serverGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        commandSender.sendMessage(
+                            ReformCloudController.getInstance().getLoadedLanguage()
+                                .getCommand_error_occurred()
                                 .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client1.getName(),
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(client1.getName(),
                             new PacketOutUpdateServerGroupPluginTemplate(
-                                    serverGroup.getName(), args[2], args[3], args[4]
+                                serverGroup.getName(), args[2], args[3], args[4]
                             ));
-                    commandSender.sendMessage("Trying to update plugin on serverGroup " + serverGroup.getName() + "...");
+                    commandSender.sendMessage(
+                        "Trying to update plugin on serverGroup " + serverGroup.getName() + "...");
                 });
-            } else if (ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]) != null) {
+            } else if (
+                ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
+                    .get(args[1]) != null) {
                 if (!this.isURLValid(args[4])) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "The given url is not valid"));
                     return;
                 }
 
-                ProxyGroup proxyGroup = ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().get(args[1]);
+                ProxyGroup proxyGroup = ReformCloudController.getInstance()
+                    .getInternalCloudNetwork().getProxyGroups().get(args[1]);
                 if (proxyGroup.getTemplate(args[2]) == null) {
-                    commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                    commandSender.sendMessage(
+                        ReformCloudController.getInstance().getLoadedLanguage()
+                            .getCommand_error_occurred()
                             .replace("%message%", "Template doesn't exists"));
                     return;
                 }
@@ -220,16 +273,20 @@ public final class CommandUpload extends Command implements Serializable {
                 proxyGroup.getClients().forEach(client -> {
                     Client client1 = ReformCloudController.getInstance().getClient(client);
                     if (client1 == null || client1.getClientInfo() == null) {
-                        commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getCommand_error_occurred()
+                        commandSender.sendMessage(
+                            ReformCloudController.getInstance().getLoadedLanguage()
+                                .getCommand_error_occurred()
                                 .replace("%message%", "Client isn't connected"));
                         return;
                     }
 
-                    ReformCloudController.getInstance().getChannelHandler().sendPacketAsynchronous(client1.getName(),
+                    ReformCloudController.getInstance().getChannelHandler()
+                        .sendPacketAsynchronous(client1.getName(),
                             new PacketOutUpdateProxyGroupPluginTemplate(
-                                    proxyGroup.getName(), args[2], args[3], args[4]
+                                proxyGroup.getName(), args[2], args[3], args[4]
                             ));
-                    commandSender.sendMessage("Trying to update plugin on proxyGroup " + proxyGroup.getName() + "...");
+                    commandSender.sendMessage(
+                        "Trying to update plugin on proxyGroup " + proxyGroup.getName() + "...");
                 });
             } else {
                 commandSender.sendMessage("upload <CONTROLLER, CLIENTS> URL");
@@ -251,7 +308,7 @@ public final class CommandUpload extends Command implements Serializable {
         try {
             URLConnection urlConnection = new URL(url).openConnection();
             urlConnection.setRequestProperty("User-Agent",
-                    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             urlConnection.setConnectTimeout(1000);
             urlConnection.setUseCaches(false);
             urlConnection.connect();
