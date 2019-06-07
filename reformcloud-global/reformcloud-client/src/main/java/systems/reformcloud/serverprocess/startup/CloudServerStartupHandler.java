@@ -186,11 +186,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             FileUtils.createDirectory(Paths.get(path + "/plugins"));
         }
 
-        if (!Files.exists(Paths.get(path + "/configs")) && this.serverStartupInfo
-            .getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            FileUtils.createDirectory(Paths.get(path + "/configs"));
-        }
-
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
