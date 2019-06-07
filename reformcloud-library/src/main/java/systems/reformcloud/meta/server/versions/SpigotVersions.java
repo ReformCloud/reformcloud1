@@ -160,9 +160,7 @@ public enum SpigotVersions implements Serializable {
     /**
      * ShortSpigot Versions
      */
-    SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", 
-         "https://dl.shortspigot.sh/file/latest");
-    /**    
+    SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", "https://dl.shortspigot.sh/file/latest");   
 
     private static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();
