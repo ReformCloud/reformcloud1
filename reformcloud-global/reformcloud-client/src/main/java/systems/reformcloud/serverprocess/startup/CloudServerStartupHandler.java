@@ -245,24 +245,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             } catch (final IOException ex) {
                 return;
             }
-        }
-
-        FileUtils.createDirectory(Paths.get(path + "/reformcloud"));
-
-        FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
-
-        this.processStartupStage = ProcessStartupStage.PREPARING;
-        if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            if (!Files.exists(Paths.get(path + "/configs/spigot.yml"))) {
-                FileUtils.copyCompiledFile("reformcloud/spigot/spigot.yml",
-                    path + "/configs/spigot.yml");
-            }
-
-            if (!Files.exists(Paths.get(path + "/configs/server.properties"))) {
-                FileUtils.copyCompiledFile("reformcloud/default/server.properties",
-                    path + "/configs/server.properties");
-            }
         } else {
             if (serverStartupInfo.getServerGroup().getSpigotVersions()
                 .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
