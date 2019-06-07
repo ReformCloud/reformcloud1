@@ -186,11 +186,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             FileUtils.createDirectory(Paths.get(path + "/plugins"));
         }
 
-        if (!Files.exists(Paths.get(path + "/configs")) && this.serverStartupInfo
-            .getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            FileUtils.createDirectory(Paths.get(path + "/configs"));
-        }
-
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
@@ -253,18 +248,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
         if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            if (!Files.exists(Paths.get(path + "/configs/spigot.yml"))) {
-                FileUtils.copyCompiledFile("reformcloud/spigot/spigot.yml",
-                    path + "/configs/spigot.yml");
-            }
-
-            if (!Files.exists(Paths.get(path + "/configs/server.properties"))) {
-                FileUtils.copyCompiledFile("reformcloud/default/server.properties",
-                    path + "/configs/server.properties");
-            }
-        } else {
-            if (serverStartupInfo.getServerGroup().getSpigotVersions()
                 .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
                 if (!Files.exists(Paths.get(path + "/config"))) {
                     FileUtils.createDirectory(Paths.get(path + "/config"));
@@ -284,7 +267,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                         path + "/server.properties");
                 }
             }
-        }
 
         this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
             .getServerProcessManager()
@@ -296,17 +278,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         Properties properties = new Properties();
         if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(
-                Files.newInputStream(Paths.get(path + "/configs/server.properties")))) {
-                properties.load(inputStreamReader);
-            } catch (final IOException ex) {
-                StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
-                        "Could not load server.properties", ex);
-                return;
-            }
-        } else if (serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             try (InputStreamReader inputStreamReader = new InputStreamReader(
                 Files.newInputStream(Paths.get(path + "/config/glowstone.yml")),
@@ -361,17 +332,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             properties.setProperty("server-port", port + StringUtil.EMPTY);
             properties.setProperty("server-name", serverStartupInfo.getName());
             properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
-
-            if (serverStartupInfo.getServerGroup().getSpigotVersions()
-                .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-                try (OutputStream outputStream = Files
-                    .newOutputStream(Paths.get(path + "/configs/server.properties"))) {
-                    properties.store(outputStream, "");
-                } catch (final IOException ex) {
-                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
-                        "Cannot store server.properties", ex);
-                    return;
-                }
+            
             } else {
                 try (OutputStream outputStream = Files
                     .newOutputStream(Paths.get(path + "/server.properties"))) {
@@ -382,7 +343,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                     return;
                 }
             }
-        }
 
         if (!Files.exists(Paths.get(path + "/spigot.jar"))) {
             if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
