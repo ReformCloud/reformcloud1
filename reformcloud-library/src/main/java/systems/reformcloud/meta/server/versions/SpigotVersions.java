@@ -121,11 +121,6 @@ public enum SpigotVersions implements Serializable {
     SPONGEFORGE_1_12_2("SpongeForge 1.12.2", "1.12.2",
         "https://dl.reformcloud.systems/forge/sponge-1.12.2.zip"),
     /**
-	 * ShortSpigot Versions
-     */     
-	 SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", 
-        "https://dl.shortspigot.sh/file/latest"),
-    /**
      * TacoSpigot Versions
      */
     TACO_1_8_8("Taco 1.8.8", "1.8.8",
