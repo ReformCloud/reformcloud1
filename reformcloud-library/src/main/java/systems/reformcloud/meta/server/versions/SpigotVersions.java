@@ -65,10 +65,10 @@ public enum SpigotVersions implements Serializable {
         "https://mcmirror.io/files/Spigot/Spigot-1.13.2-0c02b0c-20190425-0538.jar"),
     SPIGOT_1_14("Spigot 1.14", "1.14",
         "https://mcmirror.io/files/Spigot/Spigot-1.14-8043ebc-20190514-0000.jar"),
-    SPIGOT_1_14_1("Spigot 1.14.1", "1.14.1", "https://cdn.getbukkit"
-        + ".org/spigot/spigot-1.14.1.jar"),
-    SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2", "https://cdn.getbukkit"
-        + ".org/spigot/spigot-1.14.2.jar"),
+    SPIGOT_1_14_1("Spigot 1.14.1", "1.14.1", 
+        "https://mcmirror.io/grab/Spigot/Spigot-1.14.1-03bd4b0-20190520-1053.jar"),
+    SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2", 
+        "https://mcmirror.io/grab/Spigot/Spigot-1.14.2-baafee9-20190602-0956.jar"),
 
     /**
      * Paper Versions
@@ -95,10 +95,10 @@ public enum SpigotVersions implements Serializable {
         "https://mcmirror.io/files/Paper/Paper-1.12.2-ac69748-20181207-0309.jar"),
     PAPER_1_13_2("Paper 1.13.2", "1.13.2",
         "https://mcmirror.io/files/Paper/Paper-1.13.2-fb25dc1-20190422-2136.jar"),
-    PAPER_1_14_1("Paper 1.14.1", "1.14.1", "https://papermc.io/api/v1/paper/1"
-        + ".14.1/28/download"),
-    PAPER_1_14_2("Paper 1.14.2", "1.14.2", "https://papermc.io/api/v1/paper/1"
-        + ".14.2/65/download"),
+    PAPER_1_14_1("Paper 1.14.1", "1.14.1", 
+        "https://yivesmirror.com/files/paper/Paper-1.14.1-b42.jar"),
+    PAPER_1_14_2("Paper 1.14.2", "1.14.2", 
+        "https://yivesmirror.com/files/paper/Paper-1.14.2-b58.jar"),
 
     /**
      * SpongeVanilla Versions
@@ -141,13 +141,12 @@ public enum SpigotVersions implements Serializable {
     /**
      * Hose Versions
      */
-    HOSE_1_8_8("Hose 1.8.8", "1.8.8", "https://archive.mcmirror.io/HOSE/hose-1.8.8.jar"),
-    HOSE_1_9_4("Hose 1.9.4", "1.9.4", "https://archive.mcmirror.io/HOSE/hose-1.9.4.jar"),
-    HOSE_1_10_2("Hose 1.10.2", "1.10.2", "https://archive.mcmirror.io/HOSE/hose-1.10.2.jar"),
-    /**
-     * ShortSpigot Versions
-     */
-    SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", "https://dl.shortspigot.sh/file/latest"),
+    HOSE_1_8_8("Hose 1.8.8", "1.8.8", 
+        "https://archive.mcmirror.io/HOSE/hose-1.8.8.jar"),
+    HOSE_1_9_4("Hose 1.9.4", "1.9.4", 
+        "https://archive.mcmirror.io/HOSE/hose-1.9.4.jar"),
+    HOSE_1_10_2("Hose 1.10.2", "1.10.2", 
+        "https://archive.mcmirror.io/HOSE/hose-1.10.2.jar"),
     /**
      * Akarin Versions
      */
@@ -157,7 +156,13 @@ public enum SpigotVersions implements Serializable {
      * GlowStone Versions
      */
     GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2",
-        "https://github.com/GlowstoneMC/Glowstone/releases/download/2018.9.0/glowstone.jar");
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar"),
+    /**
+     * ShortSpigot Versions
+     */
+    SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", 
+         "https://dl.shortspigot.sh/file/latest");
+    /**    
 
     private static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();
