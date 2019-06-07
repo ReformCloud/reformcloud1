@@ -328,28 +328,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             properties.setProperty("server-name", serverStartupInfo.getName());
             properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
-            if (serverStartupInfo.getServerGroup().getSpigotVersions()
-                .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-                try (OutputStream outputStream = Files
-                    .newOutputStream(Paths.get(path + "/configs/server.properties"))) {
-                    properties.store(outputStream, "");
-                } catch (final IOException ex) {
-                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
-                        "Cannot store server.properties", ex);
-                    return;
-                }
-            } else {
-                try (OutputStream outputStream = Files
-                    .newOutputStream(Paths.get(path + "/server.properties"))) {
-                    properties.store(outputStream, "");
-                } catch (final IOException ex) {
-                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
-                        "Cannot store server.properties", ex);
-                    return;
-                }
-            }
-        }
-
         if (!Files.exists(Paths.get(path + "/spigot.jar"))) {
             if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
                 .equals(SpigotVersions.SPONGEFORGE_1_8_9)
