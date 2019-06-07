@@ -273,17 +273,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         Properties properties = new Properties();
         if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(
-                Files.newInputStream(Paths.get(path + "/configs/server.properties")))) {
-                properties.load(inputStreamReader);
-            } catch (final IOException ex) {
-                StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
-                        "Could not load server.properties", ex);
-                return;
-            }
-        } else if (serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             try (InputStreamReader inputStreamReader = new InputStreamReader(
                 Files.newInputStream(Paths.get(path + "/config/glowstone.yml")),
