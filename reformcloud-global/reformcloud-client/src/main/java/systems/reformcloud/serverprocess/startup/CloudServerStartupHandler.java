@@ -384,7 +384,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 );
                 FileUtils.rename(path + "/sponge.jar", path + "/spigot.jar");
             }
-        }
+        };
 
         if (!Files.exists(Paths
             .get("reformcloud/apis/ReformAPISpigot-" + StringUtil.SPIGOT_API_DOWNLOAD + ".jar"))) {
