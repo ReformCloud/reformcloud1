@@ -156,11 +156,7 @@ public enum SpigotVersions implements Serializable {
      * GlowStone Versions
      */
     GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar"),
-    /**
-     * ShortSpigot Versions
-     */
-    SHORTSPIGOT_1_12_2("ShortSpigot 1.12.2", "1.12.2", "https://dl.shortspigot.sh/file/latest");   
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar");
 
     private static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();
