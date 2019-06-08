@@ -13,10 +13,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 
-        <api.default.version>111PRESTABLE02061655</api.default.version>
+        <api.default.version>112PRESTABLE07062349</api.default.version>
         <service.type>PRE-STABLE</service.type>
 
-        <service.version>1.11</service.version>
+        <service.version>1.12</service.version>
 
         <plugin.shade.version>3.2.1</plugin.shade.version>
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
@@ -64,7 +64,7 @@
         </developer>
     </developers>
 
-    <version>1.11</version>
+    <version>1.12</version>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
