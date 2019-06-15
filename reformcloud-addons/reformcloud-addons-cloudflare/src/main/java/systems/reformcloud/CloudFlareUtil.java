@@ -158,6 +158,9 @@ public final class CloudFlareUtil implements Serializable {
                         proxyInfo.getCloudProcess().getName()
                     );
                     results.add(result);
+                } else if (jsonObject.get("message").getAsString().contains("The record already exists.")) {
+                    ReformCloudController.getInstance().getLoggerProvider().warn().accept("CloudFlare Record could not be created because it already exists.");
+                    return;
                 } else {
                     StringUtil.printError(
                         ReformCloudController.getInstance().getLoggerProvider(),
@@ -212,6 +215,9 @@ public final class CloudFlareUtil implements Serializable {
                         client.getName()
                     );
                     results.add(result);
+                } else if (jsonObject.get("message").getAsString().contains("The record already exists.")) {
+                    ReformCloudController.getInstance().getLoggerProvider().warn().accept("CloudFlare Record could not be created because it already exists.");
+                    return;
                 } else {
                     StringUtil.printError(
                         ReformCloudController.getInstance().getLoggerProvider(),
