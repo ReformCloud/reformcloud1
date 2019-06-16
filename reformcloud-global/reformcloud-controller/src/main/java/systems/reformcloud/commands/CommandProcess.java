@@ -359,16 +359,18 @@ public final class CommandProcess extends Command implements Serializable {
                         .forEach(connectedClients::add);
 
                     commandSender.sendMessage("The following Clients are connected: ");
-                    connectedClients.forEach(e -> {
-                        ClientInfo clientInfo = ReformCloudController.getInstance().getClientInfos()
-                            .get(e.getName());
+                    connectedClients.forEach(client -> {
+                        ClientInfo clientInfo = ReformCloudController.getInstance().getConnectedClient(client.getName());
                         commandSender.sendMessage(
-                            "    - " + e.getName() + " | Host=" + e.getIp() + " | Memory-Usage="
+                            "    - " + client.getName() + " | Host: " + client.getIp() + " | Memory-Usage: "
                                 + clientInfo.getUsedMemory() + "MB/" + clientInfo.getMaxMemory()
                                 + "MB | Processors: " + clientInfo.getCpuCoresSystem()
                                 + " | CPU-Usage: " + decimalFormat.format(clientInfo.getCpuUsage())
                                 + "% | Started-Processes: " + (clientInfo.getStartedProxies().size()
                                 + clientInfo.getStartedServers().size()));
+                    });
+
+                    connectedClients.forEach(e -> {
                         ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                         commandSender.sendMessage(
                             "The following proxies are started on \"" + e.getName() + "\": ");
@@ -388,7 +390,6 @@ public final class CommandProcess extends Command implements Serializable {
                             "    - " + info.getCloudProcess().getName() + " | State=" + info
                                 .getServerState() + " | Player=" + info.getOnline() + "/" + info
                                 .getServerGroup().getMaxPlayers()));
-                        ReformCloudController.getInstance().getLoggerProvider().emptyLine();
                     });
                 } else {
                     switch (args[1].toLowerCase()) {

@@ -158,8 +158,8 @@ public final class CloudFlareUtil implements Serializable {
                         proxyInfo.getCloudProcess().getName()
                     );
                     results.add(result);
-                } else if (jsonObject.get("message").getAsString().contains("The record already exists.")) {
-                    ReformCloudController.getInstance().getLoggerProvider().warn().accept("CloudFlare Record could not be created because it already exists.");
+                } else if (jsonObject.get("errors") != null && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString().contains("The record already exists.")) {
+                    ReformCloudController.getInstance().getLoggerProvider().warn().accept("§cCloudFlare Record for §e" + proxyInfo.getCloudProcess().getName() + "§c could not be created because it already exists.");
                     return;
                 } else {
                     StringUtil.printError(
@@ -215,8 +215,8 @@ public final class CloudFlareUtil implements Serializable {
                         client.getName()
                     );
                     results.add(result);
-                } else if (jsonObject.get("message").getAsString().contains("The record already exists.")) {
-                    ReformCloudController.getInstance().getLoggerProvider().warn().accept("CloudFlare Record could not be created because it already exists.");
+                } else if (jsonObject.get("errors") != null && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString().contains("The record already exists.")) {
+                    ReformCloudController.getInstance().getLoggerProvider().warn().accept("§cCloudFlare Record for §e" + client.getName() + "§c could not be created because it already exists.");
                     return;
                 } else {
                     StringUtil.printError(
