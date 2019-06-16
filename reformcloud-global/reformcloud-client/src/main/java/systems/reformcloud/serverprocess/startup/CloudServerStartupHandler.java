@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import net.md_5.config.ConfigurationProvider;
 import net.md_5.config.YamlConfiguration;
 import systems.reformcloud.ReformCloudClient;
@@ -74,6 +76,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
     private long finishedTime;
 
+    private final Lock runtimeLock = new ReentrantLock();
+
     /**
      * Creates a instance of a CloudServerStartupHandler
      */
@@ -87,14 +91,14 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         if (this.serverStartupInfo.getServerGroup().getServerModeType()
             .equals(ServerModeType.STATIC)) {
             this.path =
-                Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName() + "/plugins");
-            FileUtils.createDirectory(path);
+                Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName());
+            FileUtils.createDirectory(Paths.get(path + "/plugins"));
         } else {
             this.path = Paths.get(
                 "reformcloud/temp/servers/" + serverStartupInfo.getName() + "-" + serverStartupInfo
-                    .getUid() + "/plugins");
+                    .getUid());
             FileUtils.deleteFullDirectory(path);
-            FileUtils.createDirectory(path);
+            FileUtils.createDirectory(Paths.get(path + "/plugins"));
         }
     }
 
@@ -106,10 +110,10 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
     @Override
     public boolean bootstrap() {
         try {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            runtimeLock.lock();
             this.bootstrap0();
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+            runtimeLock.unlock();
         }
 
         return true;
@@ -248,25 +252,25 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
         if (serverStartupInfo.getServerGroup().getSpigotVersions()
-                .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
-                if (!Files.exists(Paths.get(path + "/config"))) {
-                    FileUtils.createDirectory(Paths.get(path + "/config"));
-                }
-                if (!Files.exists(Paths.get(path + "/config/glowstone.yml"))) {
-                    FileUtils.copyCompiledFile("reformcloud/glowstone/glowstone.yml",
-                        path + "/config/glowstone.yml");
-                }
-            } else {
-                if (!Files.exists(Paths.get(path + "/spigot.yml"))) {
-                    FileUtils
-                        .copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
-                }
-
-                if (!Files.exists(Paths.get(path + "/server.properties"))) {
-                    FileUtils.copyCompiledFile("reformcloud/default/server.properties",
-                        path + "/server.properties");
-                }
+            .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
+            if (!Files.exists(Paths.get(path + "/config"))) {
+                FileUtils.createDirectory(Paths.get(path + "/config"));
             }
+            if (!Files.exists(Paths.get(path + "/config/glowstone.yml"))) {
+                FileUtils.copyCompiledFile("reformcloud/glowstone/glowstone.yml",
+                    path + "/config/glowstone.yml");
+            }
+        } else {
+            if (!Files.exists(Paths.get(path + "/spigot.yml"))) {
+                FileUtils
+                    .copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
+            }
+
+            if (!Files.exists(Paths.get(path + "/server.properties"))) {
+                FileUtils.copyCompiledFile("reformcloud/default/server.properties",
+                    path + "/server.properties");
+            }
+        }
 
         this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
             .getServerProcessManager()
@@ -332,17 +336,17 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             properties.setProperty("server-port", port + StringUtil.EMPTY);
             properties.setProperty("server-name", serverStartupInfo.getName());
             properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
-            
-            } else {
-                try (OutputStream outputStream = Files
-                    .newOutputStream(Paths.get(path + "/server.properties"))) {
-                    properties.store(outputStream, "");
-                } catch (final IOException ex) {
-                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
-                        "Cannot store server.properties", ex);
-                    return;
-                }
+
+        } else {
+            try (OutputStream outputStream = Files
+                .newOutputStream(Paths.get(path + "/server.properties"))) {
+                properties.store(outputStream, "");
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+                    "Cannot store server.properties", ex);
+                return;
             }
+        }
 
         if (!Files.exists(Paths.get(path + "/spigot.jar"))) {
             if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
@@ -541,10 +545,10 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
     @Override
     public void shutdown(boolean update) {
         try {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            runtimeLock.lock();
             shutdown0(update);
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+            runtimeLock.unlock();
         }
     }
 
@@ -588,9 +592,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         ReformCloudLibraryService.sleep(500);
 
         try {
-            if (this.isAlive()) {
-                this.process.destroy();
-            }
+            this.process.destroyForcibly();
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
                 "Error on CloudServer shutdown", throwable);
@@ -621,6 +623,20 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         if (!this.serverStartupInfo.getServerGroup().getServerModeType()
             .equals(ServerModeType.STATIC)) {
             FileUtils.deleteFullDirectory(path);
+        }
+
+        try {
+            this.process.exitValue();
+        } catch (final Throwable ignored) {
+            this.process.destroy();
+            ReformCloudLibraryService.sleep(100);
+        }
+
+        try {
+            this.process.exitValue();
+        } catch (final Throwable ignored) {
+            this.process.destroy();
+            ReformCloudLibraryService.sleep(100);
         }
 
         try {

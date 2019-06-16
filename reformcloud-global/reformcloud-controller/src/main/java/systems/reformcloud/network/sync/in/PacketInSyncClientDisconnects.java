@@ -4,6 +4,9 @@
 
 package systems.reformcloud.network.sync.in;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.LinkedList;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.events.ProxyStoppedEvent;
@@ -11,10 +14,7 @@ import systems.reformcloud.event.events.ServerStoppedEvent;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.LinkedList;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -89,5 +89,10 @@ public final class PacketInSyncClientDisconnects implements Serializable, Networ
                 new PacketOutUpdateAll(
                     ReformCloudController.getInstance().getInternalCloudNetwork()));
         }
+    }
+
+    @Override
+    public long handlingChannel() {
+        return ChannelConstants.REFORMCLOUD_SYNC_CLIENT_COMMUNICATION_CHANNEL;
     }
 }

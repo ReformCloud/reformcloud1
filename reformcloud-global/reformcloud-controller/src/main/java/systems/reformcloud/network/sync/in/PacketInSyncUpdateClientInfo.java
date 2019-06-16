@@ -4,15 +4,15 @@
 
 package systems.reformcloud.network.sync.in;
 
+import java.io.Serializable;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 02.02.2019
@@ -39,5 +39,10 @@ public final class PacketInSyncUpdateClientInfo implements Serializable, Network
                 new PacketOutUpdateAll(
                     ReformCloudController.getInstance().getInternalCloudNetwork()));
         }
+    }
+
+    @Override
+    public long handlingChannel() {
+        return ChannelConstants.REFORMCLOUD_SYNC_CLIENT_COMMUNICATION_CHANNEL;
     }
 }
