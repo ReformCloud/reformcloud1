@@ -12,15 +12,15 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import java.io.Serializable;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 24.10.2018
@@ -90,7 +90,9 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
                                 .getControllerKey())
                         .addStringValue("name",
                             ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                        .addValue("AuthenticationType", AuthenticationType.INTERNAL)
+                        .addValue("AuthenticationType",
+                            AuthenticationType.INTERNAL),
+                    ChannelConstants.REFORMCLOUD_AUTHENTICATION_CHANNEL
                 ));
 
             ReformCloudClient.getInstance().getLoggerProvider()

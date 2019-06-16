@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.imageio.ImageIO;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
@@ -48,18 +50,24 @@ import systems.reformcloud.utility.startup.ServiceAble;
 public final class ProxyStartupHandler implements Serializable, ServiceAble {
 
     private ProxyStartupInfo proxyStartupInfo;
+
     private Path path;
+
     private Process process;
+
     private int port;
 
     private boolean toShutdown = false;
 
     private ScreenHandler screenHandler;
+
     private ProcessStartupStage processStartupStage;
 
     private Template template;
 
-    private long startupTime, finishedTime;
+    private final Lock runtimeLock = new ReentrantLock();
+    private long startupTime;
+    private long finishedTime;
 
     /**
      * Creates a instance of a ProxyStartupHandler
@@ -84,10 +92,10 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
     @Override
     public boolean bootstrap() {
         try {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            runtimeLock.lock();
             bootstrap0();
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+            runtimeLock.unlock();
         }
 
         return true;
@@ -419,19 +427,19 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
     @Override
     public void shutdown(boolean update) {
         try {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            runtimeLock.lock();
             shutdown0(null, update);
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+            runtimeLock.unlock();
         }
     }
 
     public void shutdown(String message, boolean update) {
         try {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            runtimeLock.lock();
             shutdown0(message, update);
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+            runtimeLock.unlock();
         }
     }
 

@@ -4,6 +4,11 @@
 
 package systems.reformcloud.serverprocess;
 
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
@@ -12,12 +17,6 @@ import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMes
 import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
 import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
 import systems.reformcloud.utility.files.FileUtils;
-
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
@@ -131,9 +130,7 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
     }
 
     /**
-     * Sends a message to ReformCloudController and to Client Console
-     *
-     * @see PacketOutSendControllerConsoleMessage
+     * Sends a message to client console as {@code info}
      */
     private void send(String message) {
         ReformCloudClient.getInstance().getLoggerProvider().info(message);

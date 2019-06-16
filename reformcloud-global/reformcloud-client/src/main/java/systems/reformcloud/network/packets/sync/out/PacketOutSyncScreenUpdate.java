@@ -4,10 +4,10 @@
 
 package systems.reformcloud.network.packets.sync.out;
 
+import java.io.Serializable;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.packet.Packet;
-
-import java.io.Serializable;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 
 /**
  * @author _Klaro | Pasqual K. / created on 05.02.2019
@@ -22,7 +22,8 @@ public final class PacketOutSyncScreenUpdate extends Packet implements Serializa
             "ScreenUpdate",
             new Configuration()
                 .addStringValue("line", line)
-                .addStringValue("from", who)
+                .addStringValue("from", who),
+            ChannelConstants.REFORMCLOUD_SYNC_CLIENT_COMMUNICATION_CHANNEL
         );
     }
 }

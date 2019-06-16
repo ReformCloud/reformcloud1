@@ -6,19 +6,20 @@ package systems.reformcloud.network.channel;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.util.Objects;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.event.events.IncomingPacketEvent;
 import systems.reformcloud.network.authentication.AuthenticationHandler;
+import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -73,7 +74,8 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
 
         if (!channelHandler.getChannelList().contains(channelHandlerContext)) {
             if (!packet.getType().equalsIgnoreCase("Auth") || !packet.getConfiguration()
-                .contains("AuthenticationType")) {
+                .contains("AuthenticationType")
+                || packet.getChannel() != ChannelConstants.REFORMCLOUD_AUTHENTICATION_CHANNEL) {
                 channelHandlerContext.channel().close();
                 return;
             }
@@ -90,12 +92,16 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
         if (packet.getResult() != null) {
             if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
                 .isQueryHandlerRegistered(packet.getType())) {
-                ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
-                    .getQueryHandler(packet.getType())
-                    .handle(packet.getConfiguration(), packet.getResult());
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
-                    .debug("Query packet handler " +
-                        "found, trying to handle packet");
+                NetworkQueryInboundHandler networkQueryInboundHandler =
+                    ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
+                        .getQueryHandler(packet.getType());
+                if (networkQueryInboundHandler.handlingChannel() == packet.getChannel()) {
+                    networkQueryInboundHandler
+                        .handle(packet.getConfiguration(), packet.getResult());
+                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+                        .debug("Query packet handler " +
+                            "found, trying to handle packet");
+                }
             } else if (channelHandler.getResults().containsKey(packet.getResult())) {
                 channelHandler.getResults().get(packet.getResult()).handleIncoming(packet);
                 ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
@@ -120,7 +126,8 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
         }
 
         if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
-            .handle(packet.getType(), packet.getConfiguration())) {
+            .handle(packet.getChannel(), packet.getType(),
+                packet.getConfiguration())) {
             ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
                 .debug("Successfully handled incoming packet " +
                     "with packet handler");

@@ -4,6 +4,9 @@
 
 package systems.reformcloud.network;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
@@ -11,10 +14,6 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.StringUtil;
-
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -41,9 +40,14 @@ public final class NettyHandler implements Serializable {
      * @param configuration The configuration of the incoming packet
      * @return If a handler for the packet could be found
      */
-    public boolean handle(String type, Configuration configuration) {
+    public boolean handle(long channel, String type,
+        Configuration configuration) {
         if (this.networkInboundHandlerMap.containsKey(type)) {
-            this.networkInboundHandlerMap.get(type).handle(configuration);
+            NetworkInboundHandler networkInboundHandler =
+                this.networkInboundHandlerMap.get(type);
+            if (networkInboundHandler.handlingChannel() == channel) {
+                networkInboundHandler.handle(configuration);
+            }
             return true;
         } else {
             return false;
@@ -57,7 +61,8 @@ public final class NettyHandler implements Serializable {
      * @return If a handler for the packet could be found
      */
     public boolean handle(Packet packet) {
-        return this.handle(packet.getType(), packet.getConfiguration());
+        return this.handle(packet.getChannel(), packet.getType(),
+            packet.getConfiguration());
     }
 
     /**

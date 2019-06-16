@@ -216,6 +216,10 @@ public final class CloudConnectListener implements Listener {
 
     @EventHandler(priority = -128)
     public void handle(final PlayerDisconnectEvent event) {
+        ReformCloudAPIBungee.getInstance().getChannelHandler()
+            .sendDirectPacket("ReformCloudController",
+                new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));
+
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
             ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
 
@@ -235,9 +239,6 @@ public final class CloudConnectListener implements Listener {
             }
 
             proxyInfo.setOnline(BungeecordBootstrap.getInstance().getProxy().getOnlineCount());
-            ReformCloudAPIBungee.getInstance().getChannelHandler()
-                .sendDirectPacket("ReformCloudController",
-                    new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));
             ReformCloudAPIBungee.getInstance().getChannelHandler().sendDirectPacket(
                 "ReformCloudController",
                 new PacketOutProxyInfoUpdate(proxyInfo)

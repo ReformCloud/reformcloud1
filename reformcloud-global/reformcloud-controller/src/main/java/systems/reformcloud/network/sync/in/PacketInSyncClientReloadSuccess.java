@@ -4,11 +4,11 @@
 
 package systems.reformcloud.network.sync.in;
 
+import java.io.Serializable;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
-
-import java.io.Serializable;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 
 /**
  * @author _Klaro | Pasqual K. / created on 06.02.2019
@@ -23,5 +23,10 @@ public final class PacketInSyncClientReloadSuccess implements Serializable, Netw
                 .getClient_controller_info_reload_success()
                 .replace("%name%", configuration.getStringValue("name"))
         );
+    }
+
+    @Override
+    public long handlingChannel() {
+        return ChannelConstants.REFORMCLOUD_SYNC_CLIENT_COMMUNICATION_CHANNEL;
     }
 }
