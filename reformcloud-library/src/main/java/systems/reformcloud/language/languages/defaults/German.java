@@ -49,7 +49,7 @@ public final class German extends Language implements Serializable {
             "Log für den §3Prozess §e[Name=\"%name%\"]§r: §e%url%",
             "ServerProzess §e[Name=%uid%] §rwurde zur Warteschlange hinzugefügt",
             "ProxyProzess §e[Name=%uid%] §rwurde zur Warteschlange hinzugefügt",
-            "Versuche den Prozess §e[Name=%name%] §czustoppen§r...",
+            "Versuche den Prozess §e[Name=%name%] §czu stoppen§r...",
             "ReformCloud kopiert das §eTemplate§r in §e\"%path%\"§r, dies könnte einen kleinen Moment dauern...",
             "Warte auf Prozess §e[Name=%name%/UID=%uid%/Group=%group%/Service=%type%]§r zum §astarten...",
             "Channel §e[Address=%ip%/Port=%port%/Service=%name%]§r wurde §cgetrennt",
