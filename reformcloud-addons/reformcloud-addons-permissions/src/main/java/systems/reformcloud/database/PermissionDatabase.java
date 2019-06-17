@@ -4,16 +4,6 @@
 
 package systems.reformcloud.database;
 
-import java.io.File;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
@@ -28,6 +18,12 @@ import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+
+import java.io.File;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
@@ -133,7 +129,7 @@ public final class PermissionDatabase implements Serializable {
                         return permissionHolder1;
                     } catch (final Throwable throwable) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not load PermissionHolder", throwable);
                         return null;
                     }
@@ -184,7 +180,7 @@ public final class PermissionDatabase implements Serializable {
                         return permissionHolder1;
                     } catch (final Throwable throwable) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not load PermissionHolder", throwable);
                         return null;
                     }

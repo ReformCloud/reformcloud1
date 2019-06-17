@@ -18,7 +18,7 @@ public final class PacketInCommandExecute implements NetworkInboundHandler {
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_command_executed()
                 .replace("%name%", configuration.getStringValue("name"))
                 .replace("%uuid%", String.valueOf(configuration.getValue("uuid", UUID.class)))

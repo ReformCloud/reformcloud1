@@ -18,7 +18,7 @@ public final class PacketInEnableDebug implements Serializable, NetworkInboundHa
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudClient.getInstance().getLoggerProvider()
+        ReformCloudClient.getInstance().getColouredConsoleProvider()
             .setDebug(configuration.getBooleanValue("enabled"));
     }
 }

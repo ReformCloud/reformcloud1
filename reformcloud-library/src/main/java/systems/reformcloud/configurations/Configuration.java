@@ -260,7 +260,7 @@ public final class Configuration {
             return true;
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while storing configuration file", ex);
         }
         return false;
@@ -301,7 +301,7 @@ public final class Configuration {
                 ReformCloudLibraryService.PARSER.parse(bufferedReader).getAsJsonObject());
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while loading configuration", ex);
         }
         return new Configuration();

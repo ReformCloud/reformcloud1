@@ -8,7 +8,7 @@ import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.logging.console.InfinitySleeper;
 import systems.reformcloud.logging.console.ReformAsyncConsole;
 import systems.reformcloud.utility.ExitUtil;
@@ -61,19 +61,19 @@ final class ReformCloudLauncher implements Serializable {
         }
 
         final CommandManager commandManager = new CommandManager();
-        final LoggerProvider loggerProvider = new LoggerProvider();
+        final ColouredConsoleProvider colouredConsoleProvider = new ColouredConsoleProvider();
 
-        ReformCloudLibraryService.sendHeader(loggerProvider);
+        ReformCloudLibraryService.sendHeader(colouredConsoleProvider);
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
-        loggerProvider.setDebug(options.contains("--debug"));
-        new ReformCloudController(loggerProvider, commandManager, options.contains("--ssl"),
+        colouredConsoleProvider.setDebug(options.contains("--debug"));
+        new ReformCloudController(colouredConsoleProvider, commandManager, options.contains("--ssl"),
             current);
 
-        loggerProvider
+        colouredConsoleProvider
             .info(ReformCloudController.getInstance().getLoadedLanguage().getHelp_default());
-        new ReformAsyncConsole(loggerProvider, commandManager, "Controller");
+        new ReformAsyncConsole(colouredConsoleProvider, commandManager, "Controller");
 
         infinitySleeper.sleep();
     }

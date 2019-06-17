@@ -4,9 +4,6 @@
 
 package systems.reformcloud.network;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
@@ -14,6 +11,10 @@ import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.utility.StringUtil;
+
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -119,7 +120,7 @@ public final class NettyHandler implements Serializable {
             this.networkInboundHandlerMap.put(type, clazz.newInstance());
         } catch (final InstantiationException | IllegalAccessException ex) {
             StringUtil.printError(
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                 "Error while registering network handler", ex
             );
         }
@@ -140,7 +141,7 @@ public final class NettyHandler implements Serializable {
             this.networkQueryInboundHandlerMap.put(type, clazz.newInstance());
         } catch (final InstantiationException | IllegalAccessException ex) {
             StringUtil.printError(
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                 "Error while registering query network handler", ex
             );
         }

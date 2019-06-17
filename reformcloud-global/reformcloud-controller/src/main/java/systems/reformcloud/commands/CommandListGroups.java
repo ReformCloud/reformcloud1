@@ -34,7 +34,7 @@ public final class CommandListGroups extends Command implements Serializable {
                         + e.getMaxOnline() + " | MaxPlayers: " + e.getMaxPlayers() + " | Version: "
                         + e.getProxyVersions().getName() + " | Clients: " + e.getClients())
             );
-        ReformCloudController.getInstance().getLoggerProvider().emptyLine();
+        ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
         commandSender.sendMessage(
             ReformCloudController.getInstance().getLoadedLanguage().getCommand_listgroup_list()
                 .replace("%type%", "server"));

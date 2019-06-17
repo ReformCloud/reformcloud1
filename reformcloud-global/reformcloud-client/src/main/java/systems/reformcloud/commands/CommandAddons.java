@@ -29,14 +29,14 @@ public final class CommandAddons extends Command implements Serializable {
                 commandSender.sendMessage("There are no addons loaded");
             } else {
                 commandSender.sendMessage("The following addons are loaded: ");
-                ReformCloudClient.getInstance().getLoggerProvider().emptyLine();
+                ReformCloudClient.getInstance().getColouredConsoleProvider().emptyLine();
                 ReformCloudClient.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
                     .forEach(e -> commandSender.sendMessage(
                         "    - " + e.getAddonName() + " | Version: " + e.getAddonClassConfig()
                             .getVersion()));
-                ReformCloudClient.getInstance().getLoggerProvider().emptyLine();
+                ReformCloudClient.getInstance().getColouredConsoleProvider().emptyLine();
             }
 
             return;

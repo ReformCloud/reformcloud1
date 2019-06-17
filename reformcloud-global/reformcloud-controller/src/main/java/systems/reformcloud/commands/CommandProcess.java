@@ -4,12 +4,6 @@
 
 package systems.reformcloud.commands;
 
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
@@ -22,12 +16,14 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.network.out.PacketOutGetClientProcessQueue;
-import systems.reformcloud.network.out.PacketOutRemoveProxyQueueProcess;
-import systems.reformcloud.network.out.PacketOutRemoveServerQueueProcess;
-import systems.reformcloud.network.out.PacketOutStartGameServer;
-import systems.reformcloud.network.out.PacketOutStartProxy;
-import systems.reformcloud.network.out.PacketOutStopProcess;
+import systems.reformcloud.network.out.*;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -369,7 +365,7 @@ public final class CommandProcess extends Command implements Serializable {
                                 + " | CPU-Usage: " + decimalFormat.format(clientInfo.getCpuUsage())
                                 + "% | Started-Processes: " + (clientInfo.getStartedProxies().size()
                                 + clientInfo.getStartedServers().size()));
-                        ReformCloudController.getInstance().getLoggerProvider().emptyLine();
+                        ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
                         commandSender.sendMessage(
                             "The following proxies are started on \"" + e.getName() + "\": ");
                         ReformCloudController.getInstance().getInternalCloudNetwork()
@@ -378,7 +374,7 @@ public final class CommandProcess extends Command implements Serializable {
                                 .equals(e.getName())).forEach(info -> commandSender.sendMessage(
                             "    - " + info.getCloudProcess().getName() + " | Player=" + info
                                 .getOnline() + "/" + info.getProxyGroup().getMaxPlayers()));
-                        ReformCloudController.getInstance().getLoggerProvider().emptyLine();
+                        ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
                         commandSender.sendMessage(
                             "The following cloud-servers are started on \"" + e.getName() + "\": ");
                         ReformCloudController.getInstance().getInternalCloudNetwork()
@@ -388,7 +384,7 @@ public final class CommandProcess extends Command implements Serializable {
                             "    - " + info.getCloudProcess().getName() + " | State=" + info
                                 .getServerState() + " | Player=" + info.getOnline() + "/" + info
                                 .getServerGroup().getMaxPlayers()));
-                        ReformCloudController.getInstance().getLoggerProvider().emptyLine();
+                        ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
                     });
                 } else {
                     switch (args[1].toLowerCase()) {

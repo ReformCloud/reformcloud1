@@ -47,6 +47,9 @@ public enum ClientSettings implements Serializable {
         return clientSettings;
     }
 
+    /**
+     * @return the config string of the client setting
+     */
     public String getConfigString() {
         return this.configString;
     }

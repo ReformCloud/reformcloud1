@@ -4,17 +4,14 @@
 
 package systems.reformcloud.commands;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.defaults.DefaultConsoleCommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.utility.StringUtil;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -72,7 +69,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
                 }
             } catch (final Throwable throwable) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while dispatching command", throwable);
             }
             return true;

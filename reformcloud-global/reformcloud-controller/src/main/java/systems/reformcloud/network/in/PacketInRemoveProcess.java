@@ -44,7 +44,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                     serverInfo.getPort()
                 );
 
-            ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getColouredConsoleProvider().info(
                 ReformCloudController.getInstance().getLoadedLanguage()
                     .getController_process_stopped()
                     .replace("%name%", serverInfo.getCloudProcess().getName())
@@ -59,7 +59,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                 .getScreenSessionProvider();
             if (screenSessionProvider.isInScreen(serverInfo.getCloudProcess().getName())) {
                 screenSessionProvider.leaveScreen();
-                ReformCloudController.getInstance().getLoggerProvider().info(
+                ReformCloudController.getInstance().getColouredConsoleProvider().info(
                     ReformCloudController.getInstance().getLoadedLanguage()
                         .getScreen_kicked_process_disconnect()
                 );
@@ -84,7 +84,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                     proxyInfo.getPort()
                 );
 
-            ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getColouredConsoleProvider().info(
                 ReformCloudController.getInstance().getLoadedLanguage()
                     .getController_process_stopped()
                     .replace("%name%", proxyInfo.getCloudProcess().getName())
@@ -99,7 +99,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
                 .getScreenSessionProvider();
             if (screenSessionProvider.isInScreen(proxyInfo.getCloudProcess().getName())) {
                 screenSessionProvider.leaveScreen();
-                ReformCloudController.getInstance().getLoggerProvider().info(
+                ReformCloudController.getInstance().getColouredConsoleProvider().info(
                     ReformCloudController.getInstance().getLoadedLanguage()
                         .getScreen_kicked_process_disconnect()
                 );

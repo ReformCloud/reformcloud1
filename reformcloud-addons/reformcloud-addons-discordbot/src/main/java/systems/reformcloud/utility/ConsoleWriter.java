@@ -4,14 +4,15 @@
 
 package systems.reformcloud.utility;
 
-import java.io.Serializable;
-import java.util.Deque;
-import java.util.LinkedList;
 import systems.reformcloud.DiscordAddon;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+
+import java.io.Serializable;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
@@ -22,7 +23,7 @@ public final class ConsoleWriter implements Serializable, Runnable, IConsoleInpu
     private Deque<String> consoleMessages = new LinkedList<>();
 
     public ConsoleWriter() {
-        ReformCloudController.getInstance().getLoggerProvider().registerLoggerHandler(this);
+        ReformCloudController.getInstance().getColouredConsoleProvider().registerLoggerHandler(this);
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(this);
     }
 

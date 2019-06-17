@@ -134,7 +134,7 @@ public final class CommandDeveloper extends Command implements Serializable {
 
             if (args[2].toLowerCase().equalsIgnoreCase("--all")) {
                 boolean enable = args[1].equalsIgnoreCase("enable");
-                ReformCloudController.getInstance().getLoggerProvider().setDebug(enable);
+                ReformCloudController.getInstance().getColouredConsoleProvider().setDebug(enable);
                 ReformCloudController.getInstance().getChannelHandler()
                     .sendToAllSynchronized(new PacketOutEnableDebug(enable));
                 if (args[1].equalsIgnoreCase("enable")) {
@@ -152,7 +152,7 @@ public final class CommandDeveloper extends Command implements Serializable {
             }
 
             if (args[2].toLowerCase().equalsIgnoreCase("controller")) {
-                ReformCloudController.getInstance().getLoggerProvider()
+                ReformCloudController.getInstance().getColouredConsoleProvider()
                     .setDebug(args[1].equalsIgnoreCase("enable"));
                 if (args[1].equalsIgnoreCase("enable")) {
                     commandSender.sendMessage(

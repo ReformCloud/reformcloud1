@@ -16,7 +16,7 @@ public final class PacketInAuthSuccess implements NetworkInboundHandler {
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_process_ready()
                 .replace("%name%", configuration.getStringValue("name")));
     }

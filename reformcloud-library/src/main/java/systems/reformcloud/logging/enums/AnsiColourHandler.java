@@ -64,6 +64,13 @@ public enum AnsiColourHandler {
         return input;
     }
 
+    public static String stripAll(String text) {
+        text = stripColor(text);
+        text = stripColourCodes(text);
+
+        return text;
+    }
+
     public static String toColouredString(String text) {
         if (text == null) {
             throw new IllegalStateException("text");

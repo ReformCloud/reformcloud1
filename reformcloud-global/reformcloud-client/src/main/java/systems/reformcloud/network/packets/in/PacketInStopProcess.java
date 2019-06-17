@@ -24,7 +24,7 @@ public final class PacketInStopProcess implements NetworkInboundHandler {
                 .getInstance().getCloudProcessScreenService()
                 .getRegisteredServerHandler(configuration.getStringValue("name"));
             cloudServerStartupHandler.shutdown(true);
-            ReformCloudClient.getInstance().getLoggerProvider().info(
+            ReformCloudClient.getInstance().getColouredConsoleProvider().info(
                 ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
                     .getClient_shutdown_process()
                     .replace("%name%", cloudServerStartupHandler.getServerStartupInfo().getName()));
@@ -34,7 +34,7 @@ public final class PacketInStopProcess implements NetworkInboundHandler {
                 .getCloudProcessScreenService()
                 .getRegisteredProxyHandler(configuration.getStringValue("name"));
             proxyStartupHandler.shutdown(null, true);
-            ReformCloudClient.getInstance().getLoggerProvider().info(
+            ReformCloudClient.getInstance().getColouredConsoleProvider().info(
                 ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
                     .getClient_shutdown_process()
                     .replace("%name%", proxyStartupHandler.getProxyStartupInfo().getName()));

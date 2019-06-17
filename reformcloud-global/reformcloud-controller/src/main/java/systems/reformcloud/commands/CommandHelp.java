@@ -34,7 +34,7 @@ public final class CommandHelp extends Command implements Serializable {
                     + "§r | Description: §3" + command.getDescription() + "§r | Permission: §e" + (
                     command.getPermission() == null ? "none" : command.getPermission())));
 
-        ReformCloudController.getInstance().getLoggerProvider().emptyLine();
+        ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
 
         commandSender.sendMessage("Ram: " + decimalFormat.format(
             ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.usedMemorySystem()))

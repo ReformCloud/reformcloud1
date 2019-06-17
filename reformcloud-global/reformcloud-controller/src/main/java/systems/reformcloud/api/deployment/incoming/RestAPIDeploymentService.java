@@ -69,7 +69,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
                 file
             );
 
-            ReformCloudController.getInstance().getLoggerProvider().info("Downloaded template " +
+            ReformCloudController.getInstance().getColouredConsoleProvider().info("Downloaded template " +
                 configuration.getStringValue("template") + " of group " + configuration
                 .getStringValue("group"));
 

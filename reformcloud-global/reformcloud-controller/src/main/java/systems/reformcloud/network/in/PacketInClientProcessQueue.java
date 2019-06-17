@@ -7,7 +7,7 @@ package systems.reformcloud.network.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -23,9 +23,9 @@ public final class PacketInClientProcessQueue implements Serializable, NetworkIn
 
     @Override
     public void handle(Configuration configuration) {
-        final LoggerProvider loggerProvider = ReformCloudController.getInstance()
-            .getLoggerProvider();
-        loggerProvider
+        final ColouredConsoleProvider colouredConsoleProvider = ReformCloudController.getInstance()
+            .getColouredConsoleProvider();
+        colouredConsoleProvider
             .info("ProcessQueue of Client §3" + configuration.getStringValue("name") + ":");
 
         Queue<ServerStartupInfo> servers = configuration
@@ -35,22 +35,22 @@ public final class PacketInClientProcessQueue implements Serializable, NetworkIn
             .getValue("proxies", new TypeToken<Queue<ProxyStartupInfo>>() {
             }.getType());
 
-        loggerProvider.info(" - ServerProcesses: ");
+        colouredConsoleProvider.info(" - ServerProcesses: ");
         if (servers.isEmpty()) {
-            loggerProvider.info("    There are §c0§r server processes in the §3Client§r queue");
+            colouredConsoleProvider.info("    There are §c0§r server processes in the §3Client§r queue");
         } else {
-            servers.forEach(e -> loggerProvider.info(
+            servers.forEach(e -> colouredConsoleProvider.info(
                 "    - " + e.getName() + " | Group: " + e.getServerGroup().getName() + " | UID: "
                     + e.getUid()));
         }
 
-        loggerProvider.emptyLine();
+        colouredConsoleProvider.emptyLine();
 
-        loggerProvider.info(" - ProxyProcesses: ");
+        colouredConsoleProvider.info(" - ProxyProcesses: ");
         if (proxies.isEmpty()) {
-            loggerProvider.info("    There are §c0§r proxy processes in the §3Client§r queue");
+            colouredConsoleProvider.info("    There are §c0§r proxy processes in the §3Client§r queue");
         } else {
-            proxies.forEach(e -> loggerProvider.info(
+            proxies.forEach(e -> colouredConsoleProvider.info(
                 "    - " + e.getName() + " | Group: " + e.getProxyGroup().getName() + " | UID: " + e
                     .getUid()));
         }

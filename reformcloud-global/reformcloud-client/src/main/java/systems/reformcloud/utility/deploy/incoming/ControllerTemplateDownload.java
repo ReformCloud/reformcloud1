@@ -69,7 +69,7 @@ public final class ControllerTemplateDownload implements Serializable {
                 );
             } catch (final Exception ex) {
                 StringUtil.printError(
-                    ReformCloudClient.getInstance().getLoggerProvider(),
+                    ReformCloudClient.getInstance().getColouredConsoleProvider(),
                     "Error while unzipping downloaded template",
                     ex
                 );
@@ -78,13 +78,13 @@ public final class ControllerTemplateDownload implements Serializable {
 
             FileUtils.deleteFileIfExists(Paths.get(path + ".zip"));
 
-            ReformCloudClient.getInstance().getLoggerProvider()
+            ReformCloudClient.getInstance().getColouredConsoleProvider()
                 .info("Successfully downloaded template " + template +
                     " of group " + group + " from controller");
             httpURLConnection.disconnect();
         } catch (final IOException ex) {
             StringUtil.printError(
-                ReformCloudClient.getInstance().getLoggerProvider(),
+                ReformCloudClient.getInstance().getColouredConsoleProvider(),
                 "Error while downloading controller template",
                 ex
             );

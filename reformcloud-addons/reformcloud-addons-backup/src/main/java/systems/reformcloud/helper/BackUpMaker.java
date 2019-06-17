@@ -4,9 +4,6 @@
 
 package systems.reformcloud.helper;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPSClient;
 import systems.reformcloud.ReformCloudController;
@@ -16,6 +13,10 @@ import systems.reformcloud.backup.util.FTPUtil;
 import systems.reformcloud.network.out.PacketOutDisableBackup;
 import systems.reformcloud.network.out.PacketOutEnableBackup;
 import systems.reformcloud.utility.StringUtil;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 12.05.2019
@@ -62,7 +63,7 @@ public final class BackUpMaker implements Serializable {
                     }
                 } catch (final IOException ex) {
                     StringUtil.printError(
-                        ReformCloudController.getInstance().getLoggerProvider(),
+                        ReformCloudController.getInstance().getColouredConsoleProvider(),
                         "Error while opening ftp connection",
                         ex
                     );

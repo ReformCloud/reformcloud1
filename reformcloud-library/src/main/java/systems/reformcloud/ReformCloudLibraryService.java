@@ -29,7 +29,7 @@ import systems.reformcloud.api.AsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
 import systems.reformcloud.logging.AbstractLoggerProvider;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.handler.Decoder;
@@ -106,7 +106,7 @@ public final class ReformCloudLibraryService {
             (t, e) -> {
                 if (ReformCloudLibraryServiceProvider.getInstance() != null) {
                     StringUtil.printError(
-                        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error in thread group", e);
                 } else {
                     e.printStackTrace(System.err);
@@ -151,16 +151,16 @@ public final class ReformCloudLibraryService {
     /**
      * Sends the cloud header colored
      *
-     * @param loggerProvider The logger provider which should be used to print the header coloured
+     * @param colouredConsoleProvider The logger provider which should be used to print the header coloured
      */
-    public static void sendHeader(final LoggerProvider loggerProvider) {
-        if (loggerProvider == null) {
+    public static void sendHeader(final ColouredConsoleProvider colouredConsoleProvider) {
+        if (colouredConsoleProvider == null) {
             sendHeader();
             return;
         }
 
         System.out.println(" ");
-        loggerProvider.coloured(
+        colouredConsoleProvider.coloured(
             "§3" +
                 "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n"
                 +

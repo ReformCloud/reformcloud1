@@ -44,7 +44,7 @@ public final class PacketInUploadLog implements Serializable, NetworkInboundHand
                                 new PacketOutGetLog(url, name));
                     } catch (final IOException ex) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not upload log", ex);
                     }
                 } else {
@@ -66,7 +66,7 @@ public final class PacketInUploadLog implements Serializable, NetworkInboundHand
                                 new PacketOutGetLog(url, name));
                     } catch (final IOException ex) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not upload log", ex);
                     }
                 } else {
@@ -85,11 +85,11 @@ public final class PacketInUploadLog implements Serializable, NetworkInboundHand
                         .forEach(s -> stringBuilder.append(s).append("\n"));
                 } catch (final IOException ex) {
                     StringUtil.printError(
-                        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Could not read log", ex);
                 }
 
-                final String url = ReformCloudClient.getInstance().getLoggerProvider()
+                final String url = ReformCloudClient.getInstance().getColouredConsoleProvider()
                     .uploadLog(stringBuilder.substring(0));
                 ReformCloudClient.getInstance().getChannelHandler()
                     .sendPacketAsynchronous("ReformCloudController",

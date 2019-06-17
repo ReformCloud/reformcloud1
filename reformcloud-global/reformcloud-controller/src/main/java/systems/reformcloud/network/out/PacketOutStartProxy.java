@@ -25,7 +25,7 @@ public final class PacketOutStartProxy extends Packet {
                 .addConfigurationValue("preConfig", configuration)
                 .addIntegerValue("id", Integer.valueOf(id))
         );
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_proxy_added_to_queue()
                 .replace("%uid%", String.valueOf(proxyProcess))
@@ -41,7 +41,7 @@ public final class PacketOutStartProxy extends Packet {
                 .addConfigurationValue("preConfig", configuration)
                 .addIntegerValue("id", Integer.valueOf(id))
         );
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_proxy_added_to_queue()
                 .replace("%uid%", String.valueOf(proxyProcess))

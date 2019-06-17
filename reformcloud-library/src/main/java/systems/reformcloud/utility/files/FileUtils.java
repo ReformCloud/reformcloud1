@@ -74,7 +74,7 @@ public final class FileUtils implements Serializable {
             Files.copy(Paths.get(from), Paths.get(to), StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not copy file", ex);
         }
     }
@@ -111,7 +111,7 @@ public final class FileUtils implements Serializable {
             Files.copy(localInputStream, Paths.get(to), StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not copy local file", ex);
         }
     }
@@ -195,7 +195,7 @@ public final class FileUtils implements Serializable {
             );
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not copy files", ex);
         }
     }
@@ -233,7 +233,7 @@ public final class FileUtils implements Serializable {
             );
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not copy files", ex);
         }
     }
@@ -274,7 +274,7 @@ public final class FileUtils implements Serializable {
             );
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not copy files", ex);
         }
     }
@@ -289,7 +289,7 @@ public final class FileUtils implements Serializable {
             Files.deleteIfExists(path);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not delete file", ex);
         }
     }
@@ -349,7 +349,7 @@ public final class FileUtils implements Serializable {
             fileOutputStream.close();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while writing string to file", ex);
         }
     }

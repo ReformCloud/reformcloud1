@@ -88,13 +88,13 @@ public final class NettySocketServer extends ChannelInitializer<Channel> impleme
                 .bind(ethernetAddress.getHost(), ethernetAddress.getPort())
                 .addListener((handler) -> {
                     if (handler.isSuccess()) {
-                        ReformCloudController.getInstance().getLoggerProvider().info(
+                        ReformCloudController.getInstance().getColouredConsoleProvider().info(
                             ReformCloudController.getInstance().getLoadedLanguage()
                                 .getController_socket_bind_success()
                                 .replace("%ip%", ethernetAddress.getHost())
                                 .replace("%port%", Integer.toString(ethernetAddress.getPort())));
                     } else {
-                        ReformCloudController.getInstance().getLoggerProvider().serve(
+                        ReformCloudController.getInstance().getColouredConsoleProvider().serve(
                             ReformCloudController.getInstance().getLoadedLanguage()
                                 .getNetty_server_bound()
                                 .replace("%ip%", ethernetAddress.getHost())
@@ -106,7 +106,7 @@ public final class NettySocketServer extends ChannelInitializer<Channel> impleme
             channelFuture.sync().channel().closeFuture();
         } catch (final Throwable throwable) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while binding socket server", throwable);
         }
     }
@@ -122,7 +122,7 @@ public final class NettySocketServer extends ChannelInitializer<Channel> impleme
 
             ReformCloudLibraryService
                 .prepareChannel(channel, ReformCloudController.getInstance().getChannelHandler());
-            ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getColouredConsoleProvider().info(
                 ReformCloudController.getInstance().getLoadedLanguage()
                     .getController_channel_connected()
                     .replace("%ip%", inetSocketAddress.getAddress().getHostAddress())

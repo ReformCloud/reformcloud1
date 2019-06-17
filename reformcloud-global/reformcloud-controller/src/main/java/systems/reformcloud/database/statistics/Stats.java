@@ -68,7 +68,7 @@ public final class Stats implements Serializable {
     }
 
     private String getDateFormatted(final long time) {
-        return ReformCloudController.getInstance().getLoggerProvider().getDateFormat()
+        return ReformCloudController.getInstance().getColouredConsoleProvider().getDateFormat()
             .format(time);
     }
 

@@ -5,14 +5,6 @@
 package systems.reformcloud.signs.configuration;
 
 import com.google.gson.reflect.TypeToken;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
@@ -27,6 +19,11 @@ import systems.reformcloud.signs.netty.packets.PacketOutSignUpdate;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.files.FileUtils;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 12.12.2018
@@ -166,7 +163,7 @@ public class SignConfiguration {
         }.getType());
 
         if (signs == null) {
-            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Could not load sign database", new LoadException(
                     new IllegalArgumentException("Sign Database broken or not loadable")));
             return;

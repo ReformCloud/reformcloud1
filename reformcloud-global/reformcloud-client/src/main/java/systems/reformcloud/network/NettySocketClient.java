@@ -12,7 +12,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-import java.io.Serializable;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
@@ -21,6 +20,8 @@ import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
+
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 24.10.2018
@@ -44,7 +45,7 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
         }
 
         try {
-            ReformCloudClient.getInstance().getLoggerProvider()
+            ReformCloudClient.getInstance().getColouredConsoleProvider()
                 .info("Trying to connect to §3ReformCloudController §e@" +
                     ethernetAddress.getHost() + ":" + ethernetAddress.getPort() + "§r ["
                     + connections + "/7]");
@@ -95,18 +96,18 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
                     ChannelConstants.REFORMCLOUD_AUTHENTICATION_CHANNEL
                 ));
 
-            ReformCloudClient.getInstance().getLoggerProvider()
+            ReformCloudClient.getInstance().getColouredConsoleProvider()
                 .info("ReformCloud is now §aready§r and §aconnected§r to §e" + ethernetAddress
                     .getHost() + ":" + ethernetAddress.getPort());
 
             connections = -1;
         } catch (final Throwable throwable) {
             connections++;
-            ReformCloudClient.getInstance().getLoggerProvider().serve(
+            ReformCloudClient.getInstance().getColouredConsoleProvider().serve(
                 "ReformCloud could not connect to " + ethernetAddress.getHost() + ":"
                     + ethernetAddress.getPort());
             if (throwable.getCause() != null) {
-                ReformCloudClient.getInstance().getLoggerProvider()
+                ReformCloudClient.getInstance().getColouredConsoleProvider()
                     .serve("The following error occurred: " + throwable.getCause().toString());
             }
         }

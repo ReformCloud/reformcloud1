@@ -44,14 +44,14 @@ final class VersionLoader implements Serializable {
             }
         } catch (final IOException ex) {
             if (ex instanceof UnknownHostException) {
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().serve()
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().serve()
                     .accept("Cannot resolve update host," +
                         " make sure you have an internet connection");
                 return StringUtil.REFORM_VERSION;
             }
 
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while checking newest version", ex);
         }
 

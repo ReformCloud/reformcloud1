@@ -56,7 +56,7 @@ final class ZipUtil implements Serializable {
             fileOutputStream.close();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while zipping dir", ex);
         }
     }

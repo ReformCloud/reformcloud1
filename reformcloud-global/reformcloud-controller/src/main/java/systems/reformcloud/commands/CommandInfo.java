@@ -44,7 +44,7 @@ public final class CommandInfo extends Command implements Serializable {
         commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
         commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
         commandSender.sendMessage("JVM start time: " +
-            ReformCloudController.getInstance().getLoggerProvider().getDateFormat()
+            ReformCloudController.getInstance().getColouredConsoleProvider().getDateFormat()
                 .format(ReformCloudLibraryService.systemStartTime()));
         commandSender.sendMessage("JVM uptime: " +
             dataFormat.format(ReformCloudLibraryService.systemUpTime()));

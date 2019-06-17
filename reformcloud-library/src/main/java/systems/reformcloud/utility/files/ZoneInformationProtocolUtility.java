@@ -131,7 +131,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
             Files.write(to, zip);
         } catch (final IOException ex) {
             StringUtil.printError(
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                 "Error while writing byte array to zip file",
                 ex
             );
@@ -227,7 +227,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
             return bytes;
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while zipping dir", ex);
             return null;
         }
@@ -266,7 +266,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
             return bytes;
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while zipping dir", ex);
             return null;
         }
@@ -339,7 +339,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
             return byteArrayOutputStream.toByteArray();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while zipping dir", ex);
             return null;
         }
@@ -361,7 +361,7 @@ public final class ZoneInformationProtocolUtility implements Serializable {
             fileOutputStream.close();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while zipping dir", ex);
         }
     }

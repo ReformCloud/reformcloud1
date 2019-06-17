@@ -57,7 +57,7 @@ public final class BackupHelper implements Serializable {
                     }
                 } catch (final IOException ex) {
                     StringUtil.printError(
-                        ReformCloudClient.getInstance().getLoggerProvider(),
+                        ReformCloudClient.getInstance().getColouredConsoleProvider(),
                         "Error while opening ftp connection",
                         ex
                     );

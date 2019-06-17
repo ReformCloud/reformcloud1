@@ -67,7 +67,7 @@ public final class PlayerDatabase extends DatabaseProvider implements SavePlayer
                         return offlinePlayer;
                     } catch (final Throwable throwable) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not load OfflinePlayer", throwable);
                         return null;
                     }
@@ -115,7 +115,7 @@ public final class PlayerDatabase extends DatabaseProvider implements SavePlayer
                         return offlinePlayer;
                     } catch (final Throwable throwable) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not load OfflinePlayer", throwable);
                         return null;
                     }
@@ -144,7 +144,7 @@ public final class PlayerDatabase extends DatabaseProvider implements SavePlayer
                         return configuration.getValue("uuid", UUID.class);
                     } catch (final Throwable throwable) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not load uuid", throwable);
                         return null;
                     }

@@ -31,7 +31,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
     public void handle(Configuration configuration) {
         ReformCloudClient.getInstance().setInternalCloudNetwork(configuration
             .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
-        ReformCloudClient.getInstance().getLoggerProvider()
+        ReformCloudClient.getInstance().getColouredConsoleProvider()
             .info("NetworkProperties are now set and ReformCloudClient is now ready");
 
         ReformCloudClient.getInstance().getChannelHandler()

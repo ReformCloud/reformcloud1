@@ -14,7 +14,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.defaults.DefaultProxyGroup;
@@ -120,7 +120,7 @@ public final class CloudConfiguration implements Serializable {
             properties.store(outputStream, "ReformCloud default Configuration");
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Cannot store configuration file", ex);
         }
 
@@ -133,55 +133,55 @@ public final class CloudConfiguration implements Serializable {
             return false;
         }
 
-        final LoggerProvider loggerProvider = ReformCloudController.getInstance()
-            .getLoggerProvider();
+        final ColouredConsoleProvider colouredConsoleProvider = ReformCloudController.getInstance()
+            .getColouredConsoleProvider();
 
-        loggerProvider.info("Please enter a language [\"german\", \"english\"]");
-        String lang = this.readString(loggerProvider,
+        colouredConsoleProvider.info("Please enter a language [\"german\", \"english\"]");
+        String lang = this.readString(colouredConsoleProvider,
             s -> s.equalsIgnoreCase("german") || s.equalsIgnoreCase("english"));
 
         Language language = new LanguageManager(lang).getLoaded();
 
-        loggerProvider.info(language.getSetup_controller_ip());
-        String controllerIP = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
+        colouredConsoleProvider.info(language.getSetup_controller_ip());
+        String controllerIP = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
 
-        loggerProvider.info(language.getSetup_name_of_first_client());
-        String clientName = this.readString(loggerProvider, s -> true);
-        loggerProvider.info(language.getSetup_ip_of_new_client());
-        String ip = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
+        colouredConsoleProvider.info(language.getSetup_name_of_first_client());
+        String clientName = this.readString(colouredConsoleProvider, s -> true);
+        colouredConsoleProvider.info(language.getSetup_ip_of_new_client());
+        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
 
         new Configuration()
             .addValue("client", Collections.singletonList(new Client(clientName, ip, null)))
             .write(Paths.get("reformcloud/clients.json"));
 
-        loggerProvider.info(language.getSetup_ram_of_default_group());
-        int lobbyMemory = this.readInt(loggerProvider, integer -> integer >= 50);
-        loggerProvider.info(language.getSetup_choose_minecraft_version());
-        SpigotVersions.AVAILABLE_VERSIONS.forEach(loggerProvider::info);
+        colouredConsoleProvider.info(language.getSetup_ram_of_default_group());
+        int lobbyMemory = this.readInt(colouredConsoleProvider, integer -> integer >= 50);
+        colouredConsoleProvider.info(language.getSetup_choose_minecraft_version());
+        SpigotVersions.AVAILABLE_VERSIONS.forEach(colouredConsoleProvider::info);
         String version = this
-            .readString(loggerProvider, SpigotVersions.AVAILABLE_VERSIONS::contains);
-        loggerProvider.info(language.getSetup_choose_spigot_version());
+            .readString(colouredConsoleProvider, SpigotVersions.AVAILABLE_VERSIONS::contains);
+        colouredConsoleProvider.info(language.getSetup_choose_spigot_version());
         SpigotVersions.sortedByVersion(version).values()
-            .forEach(e -> loggerProvider.info("   " + e.name()));
-        String provider = this.readString(loggerProvider, s -> SpigotVersions.getByName(s) != null);
+            .forEach(e -> colouredConsoleProvider.info("   " + e.name()));
+        String provider = this.readString(colouredConsoleProvider, s -> SpigotVersions.getByName(s) != null);
 
         new Configuration().addValue("group",
             new LobbyGroup(SpigotVersions.getByName(provider), lobbyMemory, clientName))
             .write(Paths.get("reformcloud/groups/servers/Lobby.json"));
 
-        loggerProvider.info(language.getSetup_ram_of_default_proxy_group());
-        int memory = this.readInt(loggerProvider, integer -> integer >= 50);
-        loggerProvider.info(language.getSetup_choose_proxy_version());
-        ProxyVersions.sorted().values().forEach(e -> loggerProvider.info("   " + e.name()));
-        String in = this.readString(loggerProvider, s -> ProxyVersions.getByName(s) != null);
+        colouredConsoleProvider.info(language.getSetup_ram_of_default_proxy_group());
+        int memory = this.readInt(colouredConsoleProvider, integer -> integer >= 50);
+        colouredConsoleProvider.info(language.getSetup_choose_proxy_version());
+        ProxyVersions.sorted().values().forEach(e -> colouredConsoleProvider.info("   " + e.name()));
+        String in = this.readString(colouredConsoleProvider, s -> ProxyVersions.getByName(s) != null);
 
         new Configuration().addValue("group",
             new DefaultProxyGroup(memory, clientName, ProxyVersions.getByName(in)))
             .write(Paths.get("reformcloud/groups/proxies/Proxy.json"));
 
-        loggerProvider.info(language.getSetup_load_default_addons());
+        colouredConsoleProvider.info(language.getSetup_load_default_addons());
         String addons = this
-            .readString(loggerProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
+            .readString(colouredConsoleProvider, s -> s.equalsIgnoreCase("yes") || s.equalsIgnoreCase("no"));
         if (addons.equalsIgnoreCase("yes")) {
             DownloadManager.downloadSilentAndDisconnect(
                 "https://dl.reformcloud.systems/addons/ReformCloudSigns.jar",
@@ -223,7 +223,7 @@ public final class CloudConfiguration implements Serializable {
             Collections.singletonList(new WebUser("administrator", StringEncrypt.encryptSHA512(web),
                 Collections.singletonMap("*", true)))).write(Paths.get("reformcloud/users.json"));
 
-        loggerProvider.info(language.getSetup_default_user_created().replace("%password%", web));
+        colouredConsoleProvider.info(language.getSetup_default_user_created().replace("%password%", web));
         this.init(controllerIP, lang);
 
         return true;
@@ -236,7 +236,7 @@ public final class CloudConfiguration implements Serializable {
             properties.load(inputStreamReader);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not load configuration", ex);
         }
 
@@ -279,9 +279,9 @@ public final class CloudConfiguration implements Serializable {
                         serverGroups.add(serverGroup);
                     } catch (final Throwable throwable) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not load ServerGroup", throwable);
-                        ReformCloudController.getInstance().getLoggerProvider()
+                        ReformCloudController.getInstance().getColouredConsoleProvider()
                             .serve("Failed to load ServerGroup " + file.getName() + "!");
                     }
                 }
@@ -303,9 +303,9 @@ public final class CloudConfiguration implements Serializable {
                         proxyGroups.add(proxyGroup);
                     } catch (final Throwable throwable) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not load ProxyGroup", throwable);
-                        ReformCloudController.getInstance().getLoggerProvider()
+                        ReformCloudController.getInstance().getColouredConsoleProvider()
                             .serve("Failed to load DefaultProxyGroup " + file.getName() + "!");
                     }
                 }
@@ -431,7 +431,7 @@ public final class CloudConfiguration implements Serializable {
     public void createServerGroup(final ServerGroup serverGroup) {
         new Configuration().addValue("group", serverGroup)
             .write(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_loading_server()
                 .replace("%name%", serverGroup.getName())
                 .replace("%clients%", serverGroup.getClients() + StringUtil.EMPTY));
@@ -451,7 +451,7 @@ public final class CloudConfiguration implements Serializable {
     public void createProxyGroup(final ProxyGroup proxyGroup) {
         new Configuration().addValue("group", proxyGroup)
             .write(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_loading_proxy()
                 .replace("%name%", proxyGroup.getName())
                 .replace("%clients%", proxyGroup.getClients() + StringUtil.EMPTY));
@@ -476,7 +476,7 @@ public final class CloudConfiguration implements Serializable {
         clients.add(client);
         configuration.addValue("client", clients).write(Paths.get("reformcloud/clients.json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_loading_client()
                 .replace("%name%", client.getName())
                 .replace("%ip%", client.getIp()));
@@ -570,7 +570,7 @@ public final class CloudConfiguration implements Serializable {
     public void deleteServerGroup(final ServerGroup serverGroup) throws IOException {
         Files.delete(Paths.get("reformcloud/groups/servers/" + serverGroup.getName() + ".json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_deleting_servergroup()
                 .replace("%name%", serverGroup.getName())
@@ -603,7 +603,7 @@ public final class CloudConfiguration implements Serializable {
     public void deleteProxyGroup(final ProxyGroup proxyGroup) throws IOException {
         Files.delete(Paths.get("reformcloud/groups/proxies/" + proxyGroup.getName() + ".json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_deleting_servergroup()
                 .replace("%name%", proxyGroup.getName())
@@ -641,7 +641,7 @@ public final class CloudConfiguration implements Serializable {
         clients.remove(client);
         configuration.addValue("client", clients).write(Paths.get("reformcloud/clients.json"));
 
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_delete_client()
                 .replace("%name%", client.getName())
                 .replace("%clients%", client.getIp()));
@@ -660,7 +660,7 @@ public final class CloudConfiguration implements Serializable {
         new Configuration().addValue("users", this.webUsers)
             .write(Paths.get("reformcloud/users.json"));
 
-        ReformCloudController.getInstance().getLoggerProvider()
+        ReformCloudController.getInstance().getColouredConsoleProvider()
             .info("Deleting WebUser [Name=" + webUser.getUser() + "]...");
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
             new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
@@ -684,26 +684,26 @@ public final class CloudConfiguration implements Serializable {
             .write(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
     }
 
-    public String readString(final LoggerProvider loggerProvider, Predicate<String> checkable) {
-        String readLine = loggerProvider.readLine();
+    public String readString(final ColouredConsoleProvider colouredConsoleProvider, Predicate<String> checkable) {
+        String readLine = colouredConsoleProvider.readLine();
         while (readLine == null
             || !checkable.test(readLine)
             || readLine.trim().isEmpty()) {
-            loggerProvider.info("Input invalid, please try again");
-            readLine = loggerProvider.readLine();
+            colouredConsoleProvider.info("Input invalid, please try again");
+            readLine = colouredConsoleProvider.readLine();
         }
 
         return readLine;
     }
 
-    private Integer readInt(final LoggerProvider loggerProvider, Predicate<Integer> checkable) {
-        String readLine = loggerProvider.readLine();
+    private Integer readInt(final ColouredConsoleProvider colouredConsoleProvider, Predicate<Integer> checkable) {
+        String readLine = colouredConsoleProvider.readLine();
         while (readLine == null
             || readLine.trim().isEmpty()
             || !ReformCloudLibraryService.checkIsInteger(readLine)
             || !checkable.test(Integer.parseInt(readLine))) {
-            loggerProvider.info("Input invalid, please try again");
-            readLine = loggerProvider.readLine();
+            colouredConsoleProvider.info("Input invalid, please try again");
+            readLine = colouredConsoleProvider.readLine();
         }
 
         return Integer.parseInt(readLine);

@@ -6,10 +6,6 @@ package systems.reformcloud.network.channel;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.util.Objects;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.api.EventHandler;
@@ -20,6 +16,11 @@ import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -46,7 +47,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
 
         Packet packet = (Packet) object;
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .debug("Handling incoming packet " +
                 "[Type=" + packet.getType() + "/Query=" + (packet.getResult() != null) + "/Message="
                 + packet.getConfiguration());
@@ -66,7 +67,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
             && ReformCloudLibraryService
             .check(s -> s.equals(ReformCloudLibraryServiceProvider.getInstance().getControllerIP()),
                 address)) {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .debug("Incoming packet sender is controller, " +
                     "channel was registered");
             channelHandler.registerChannel("ReformCloudController", channelHandlerContext);
@@ -80,7 +81,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
                 return;
             }
 
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .debug("Trying to handle authentication of " +
                     "channel [IP=" + address + "]");
             new AuthenticationHandler().handleAuth(Objects.requireNonNull(
@@ -98,13 +99,13 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
                 if (networkQueryInboundHandler.handlingChannel() == packet.getChannel()) {
                     networkQueryInboundHandler
                         .handle(packet.getConfiguration(), packet.getResult());
-                    ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+                    ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                         .debug("Query packet handler " +
                             "found, trying to handle packet");
                 }
             } else if (channelHandler.getResults().containsKey(packet.getResult())) {
                 channelHandler.getResults().get(packet.getResult()).handleIncoming(packet);
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                     .debug("QueryPacket was send by " +
                         "this instance, handling");
             }
@@ -116,7 +117,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
             EventHandler.instance.get()
                 .handleCustomPacket(packet.getConfiguration().getStringValue("from"),
                     packet.getType(), packet.getConfiguration());
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .debug("Handling custom packet from " +
                     "[ServiceName=" + packet.getConfiguration().getStringValue("from") + "/Channel="
                     + address + "]");
@@ -128,11 +129,11 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
         if (ReformCloudLibraryServiceProvider.getInstance().getNettyHandler()
             .handle(packet.getChannel(), packet.getType(),
                 packet.getConfiguration())) {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .debug("Successfully handled incoming packet " +
                     "with packet handler");
         } else {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .debug("Cannot handle incoming packet, no handler found");
         }
     }
@@ -154,7 +155,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
         if (!ctx.channel().isActive() && !ctx.channel().isOpen() && !ctx.channel().isWritable()
             && inetSocketAddress != null) {
             final String serviceName = channelHandler.getChannelNameByValue(ctx);
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                 ReformCloudLibraryServiceProvider.getInstance().getLoaded()
                     .getChannel_global_disconnected()
                     .replace("%ip%", inetSocketAddress.getAddress().getHostAddress())
@@ -170,15 +171,15 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
         EventHandler.instance.get().channelExceptionCaught(ctx, cause);
         if (!(cause instanceof IOException)) {
             StringUtil.printError(
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                 "An exceptionCaught() event was fired, and it reached at the " +
                     "tail of the pipeline. It usually means the last handler in the " +
                     "pipeline did not handle the exception.",
                 cause
             );
-        } else if (ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().isDebug()) {
+        } else if (ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().isDebug()) {
             StringUtil.printError(
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                 "An exceptionCaught() event was fired, and it reached at the " +
                     "tail of the pipeline. It usually means the last handler in the " +
                     "pipeline did not handle the exception.",

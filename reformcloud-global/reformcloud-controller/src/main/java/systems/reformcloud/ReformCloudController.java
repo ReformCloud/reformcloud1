@@ -36,7 +36,7 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
@@ -103,7 +103,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private CommandManager commandManager;
 
-    private LoggerProvider loggerProvider;
+    private ColouredConsoleProvider colouredConsoleProvider;
 
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
@@ -144,27 +144,27 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     /**
      * Creates a new instance of the ReformCloudController and prepares all needed handlers
      *
-     * @param loggerProvider Main Cloud logger, will be used everywhere
+     * @param colouredConsoleProvider Main Cloud logger, will be used everywhere
      * @param commandManager Main CommandManager to manage all available commands
      * @param ssl If this is {@code true} the cloud will use a self- signed certificate
      * @param time Startup time for start time
      * @throws Throwable If an error occurs while starting CloudSystem the error will be thrown here
      */
-    public ReformCloudController(LoggerProvider loggerProvider, CommandManager commandManager,
-        boolean ssl, long time) throws Throwable {
+    public ReformCloudController(ColouredConsoleProvider colouredConsoleProvider, CommandManager commandManager,
+                                 boolean ssl, long time) throws Throwable {
         if (instance == null) {
             instance = this;
         } else {
-            StringUtil.printError(loggerProvider, "ReformCloudController Instance already exists",
+            StringUtil.printError(colouredConsoleProvider, "ReformCloudController Instance already exists",
                 new LoadException(new InstanceAlreadyExistsException()));
         }
 
-        this.loggerProvider = loggerProvider;
+        this.colouredConsoleProvider = colouredConsoleProvider;
         this.commandManager = commandManager;
 
         cloudConfiguration = new CloudConfiguration();
         this.reformCloudLibraryServiceProvider = new ReformCloudLibraryServiceProvider(
-            loggerProvider,
+            colouredConsoleProvider,
             this.cloudConfiguration.getControllerKey(), null, eventManager,
             cloudConfiguration.getLoadedLang());
         this.internalCloudNetwork
@@ -174,19 +174,19 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.channelHandler = new ChannelHandler();
 
         cloudConfiguration.getClients().forEach(client -> {
-            loggerProvider.info(this.getLoadedLanguage().getController_loading_client()
+            colouredConsoleProvider.info(this.getLoadedLanguage().getController_loading_client()
                 .replace("%name%", client.getName())
                 .replace("%ip%", client.getIp()));
             this.internalCloudNetwork.getClients().put(client.getName(), client);
         });
         cloudConfiguration.getServerGroups().forEach(group -> {
-            loggerProvider.info(this.getLoadedLanguage().getController_loading_server()
+            colouredConsoleProvider.info(this.getLoadedLanguage().getController_loading_server()
                 .replace("%name%", group.getName())
                 .replace("%clients%", group.getClients().toString()));
             this.internalCloudNetwork.getServerGroups().put(group.getName(), group);
         });
         cloudConfiguration.getProxyGroups().forEach(proxy -> {
-            loggerProvider.info(this.getLoadedLanguage().getController_loading_proxy()
+            colouredConsoleProvider.info(this.getLoadedLanguage().getController_loading_proxy()
                 .replace("%name%", proxy.getName())
                 .replace("%clients%", proxy.getClients().toString()));
             this.internalCloudNetwork.getProxyGroups().put(proxy.getName(), proxy);
@@ -252,7 +252,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         new DefaultCloudService(this);
         DefaultPlayerProvider.instance.set(new PlayerProvider());
 
-        loggerProvider.info(this.getLoadedLanguage().getLoading_done()
+        colouredConsoleProvider.info(this.getLoadedLanguage().getLoading_done()
             .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
 
         this.eventManager.fire(new StartedEvent());
@@ -402,7 +402,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
      */
     @Override
     public void reloadAll() {
-        this.loggerProvider.info(this.getLoadedLanguage().getController_reload());
+        this.colouredConsoleProvider.info(this.getLoadedLanguage().getController_reload());
 
         this.updateAllConnectedClients();
 
@@ -422,19 +422,19 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
         this.cloudConfiguration = new CloudConfiguration();
         cloudConfiguration.getClients().forEach(client -> {
-            loggerProvider.info(this.getLoadedLanguage().getController_loading_client()
+            colouredConsoleProvider.info(this.getLoadedLanguage().getController_loading_client()
                 .replace("%name%", client.getName())
                 .replace("%ip%", client.getIp()));
             this.internalCloudNetwork.getClients().put(client.getName(), client);
         });
         cloudConfiguration.getServerGroups().forEach(group -> {
-            loggerProvider.info(this.getLoadedLanguage().getController_loading_server()
+            colouredConsoleProvider.info(this.getLoadedLanguage().getController_loading_server()
                 .replace("%name%", group.getName())
                 .replace("%clients%", group.getClients().toString()));
             this.internalCloudNetwork.getServerGroups().put(group.getName(), group);
         });
         cloudConfiguration.getProxyGroups().forEach(proxy -> {
-            loggerProvider.info(this.getLoadedLanguage().getController_loading_proxy()
+            colouredConsoleProvider.info(this.getLoadedLanguage().getController_loading_proxy()
                 .replace("%name%", proxy.getName())
                 .replace("%clients%", proxy.getClients().toString()));
             this.internalCloudNetwork.getProxyGroups().put(proxy.getName(), proxy);
@@ -469,7 +469,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.addonParallelLoader.enableAddons();
         this.checkForUpdates();
 
-        this.loggerProvider.info(this.getLoadedLanguage().getGlobal_reload_done());
+        this.colouredConsoleProvider.info(this.getLoadedLanguage().getGlobal_reload_done());
         this.eventManager.fire(new ReloadDoneEvent());
     }
 
@@ -493,16 +493,16 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.statisticsProvider.save();
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses()
-            .forEach(e -> this.loggerProvider
+            .forEach(e -> this.colouredConsoleProvider
                 .info(this.getLoadedLanguage().getController_servprocess_stopped()
                     .replace("%name%", e.getCloudProcess().getName())));
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredProxyProcesses()
-            .forEach(e -> this.loggerProvider
+            .forEach(e -> this.colouredConsoleProvider
                 .info(this.getLoadedLanguage().getController_proxyprocess_stopped()
                     .replace("%name%", e.getCloudProcess().getName())));
 
-        this.loggerProvider.info(this.getLoadedLanguage().getWaiting_for_tasks());
+        this.colouredConsoleProvider.info(this.getLoadedLanguage().getWaiting_for_tasks());
 
         if (this.reformWebServer != null) {
             this.reformWebServer.shutdown();
@@ -516,9 +516,9 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     public void checkForUpdates() {
         if (VersionController.isVersionAvailable()) {
-            loggerProvider.warn(this.getLoadedLanguage().getVersion_available());
+            colouredConsoleProvider.warn(this.getLoadedLanguage().getVersion_available());
         } else {
-            loggerProvider.info(this.getLoadedLanguage().getVersion_update());
+            colouredConsoleProvider.info(this.getLoadedLanguage().getVersion_update());
         }
     }
 
@@ -1438,7 +1438,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         try {
             this.reloadAll();
         } catch (Throwable throwable) {
-            StringUtil.printError(loggerProvider, "Error while reloading cloudsystem", throwable);
+            StringUtil.printError(colouredConsoleProvider, "Error while reloading cloudsystem", throwable);
         }
     }
 
@@ -1450,8 +1450,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.commandManager;
     }
 
-    public LoggerProvider getLoggerProvider() {
-        return this.loggerProvider;
+    public ColouredConsoleProvider getColouredConsoleProvider() {
+        return this.colouredConsoleProvider;
     }
 
     public InternalCloudNetwork getInternalCloudNetwork() {

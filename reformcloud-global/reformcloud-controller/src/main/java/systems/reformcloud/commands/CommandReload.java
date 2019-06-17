@@ -27,7 +27,7 @@ public final class CommandReload extends Command implements Serializable {
         try {
             ReformCloudController.getInstance().reloadAll();
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "An error occurred while reloading CloudSystem", throwable);
         }
     }

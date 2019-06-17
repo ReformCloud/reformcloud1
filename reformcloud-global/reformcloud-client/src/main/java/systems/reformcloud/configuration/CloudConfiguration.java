@@ -7,7 +7,7 @@ package systems.reformcloud.configuration;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.annotiations.ForRemoval;
@@ -54,7 +54,7 @@ public final class CloudConfiguration implements Serializable {
     public CloudConfiguration(final boolean reload) {
         if (!Files.exists(Paths.get("configuration.properties")) && !Files
             .exists(Paths.get("ControllerKEY"))) {
-            ReformCloudClient.getInstance().getLoggerProvider().serve(
+            ReformCloudClient.getInstance().getColouredConsoleProvider().serve(
                 "Please copy the \"ControllerKEY\" file in the root directory of the client");
             ReformCloudLibraryService.sleep(2000);
             System.exit(ExitUtil.CONTROLLERKEY_MISSING);
@@ -102,16 +102,16 @@ public final class CloudConfiguration implements Serializable {
             return false;
         }
 
-        LoggerProvider loggerProvider = ReformCloudClient.getInstance().getLoggerProvider();
+        ColouredConsoleProvider colouredConsoleProvider = ReformCloudClient.getInstance().getColouredConsoleProvider();
 
-        loggerProvider.info("Please provide the internal ReformCloudClient ip");
-        String ip = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
-        loggerProvider.info("Please provide the Controller IP");
-        String controllerIP = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
+        colouredConsoleProvider.info("Please provide the internal ReformCloudClient ip");
+        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        colouredConsoleProvider.info("Please provide the Controller IP");
+        String controllerIP = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
 
-        ReformCloudClient.getInstance().getLoggerProvider()
+        ReformCloudClient.getInstance().getColouredConsoleProvider()
             .info("Please provide the name of this Client. (Recommended: Client-01)");
-        String clientID = this.readString(loggerProvider, s -> true);
+        String clientID = this.readString(colouredConsoleProvider, s -> true);
 
         Properties properties = new Properties();
 
@@ -130,7 +130,7 @@ public final class CloudConfiguration implements Serializable {
             properties.store(outputStream, "ReformCloud default Configuration");
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not store configuration.properties", ex);
             return false;
         }
@@ -172,7 +172,7 @@ public final class CloudConfiguration implements Serializable {
             properties.load(inputStreamReader);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not load configuration.properties", ex);
         }
 
@@ -192,22 +192,22 @@ public final class CloudConfiguration implements Serializable {
             .readFileAsString(new File("reformcloud/files/ControllerKEY"));
     }
 
-    private String readString(final LoggerProvider loggerProvider, Predicate<String> checkable) {
-        String readLine = loggerProvider.readLine();
+    private String readString(final ColouredConsoleProvider colouredConsoleProvider, Predicate<String> checkable) {
+        String readLine = colouredConsoleProvider.readLine();
         while (readLine == null || !checkable.test(readLine) || readLine.trim().isEmpty()) {
-            loggerProvider.info("Input invalid, please try again");
-            readLine = loggerProvider.readLine();
+            colouredConsoleProvider.info("Input invalid, please try again");
+            readLine = colouredConsoleProvider.readLine();
         }
 
         return readLine;
     }
 
-    private Integer readInt(final LoggerProvider loggerProvider, Predicate<Integer> checkable) {
-        String readLine = loggerProvider.readLine();
+    private Integer readInt(final ColouredConsoleProvider colouredConsoleProvider, Predicate<Integer> checkable) {
+        String readLine = colouredConsoleProvider.readLine();
         while (readLine == null || readLine.trim().isEmpty() || !ReformCloudLibraryService
             .checkIsInteger(readLine) || !checkable.test(Integer.parseInt(readLine))) {
-            loggerProvider.info("Input invalid, please try again");
-            readLine = loggerProvider.readLine();
+            colouredConsoleProvider.info("Input invalid, please try again");
+            readLine = colouredConsoleProvider.readLine();
         }
 
         return Integer.parseInt(readLine);

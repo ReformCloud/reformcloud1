@@ -8,7 +8,7 @@ import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.logging.console.InfinitySleeper;
 import systems.reformcloud.logging.console.ReformAsyncConsole;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncExceptionThrown;
@@ -59,7 +59,7 @@ final class ReformCloudLauncher {
             }
 
             if (ReformCloudClient.getInstance() != null) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+                StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                     "Exception caught", t);
                 ReformCloudClient.getInstance().getChannelHandler()
                     .sendPacketAsynchronous("ReformCloudController",
@@ -78,19 +78,19 @@ final class ReformCloudLauncher {
 
         System.out.println();
 
-        final LoggerProvider loggerProvider = new LoggerProvider();
+        final ColouredConsoleProvider colouredConsoleProvider = new ColouredConsoleProvider();
         final CommandManager commandManager = new CommandManager();
 
-        ReformCloudLibraryService.sendHeader(loggerProvider);
+        ReformCloudLibraryService.sendHeader(colouredConsoleProvider);
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
-        loggerProvider.setDebug(options.contains("--debug"));
-        new ReformCloudClient(loggerProvider, commandManager, options.contains("--ssl"), current);
+        colouredConsoleProvider.setDebug(options.contains("--debug"));
+        new ReformCloudClient(colouredConsoleProvider, commandManager, options.contains("--ssl"), current);
 
-        loggerProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
+        colouredConsoleProvider.info(ReformCloudClient.getInstance().getInternalCloudNetwork().getLoaded()
             .getHelp_default());
-        new ReformAsyncConsole(loggerProvider, commandManager, "Client");
+        new ReformAsyncConsole(colouredConsoleProvider, commandManager, "Client");
 
         infinitySleeper.sleep();
     }
