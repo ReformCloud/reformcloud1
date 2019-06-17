@@ -26,6 +26,19 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.MultithreadEventExecutorGroup;
+import java.lang.management.ClassLoadingMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 import systems.reformcloud.api.AsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
@@ -40,17 +53,6 @@ import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.map.pool.Callable;
-import systems.reformcloud.utility.map.pool.FailureCallback;
-
-import java.lang.management.ClassLoadingMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.Locale;
-import java.util.UUID;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -121,17 +123,6 @@ public final class ReformCloudLibraryService {
                 }
             })
     );
-
-    public static final Callable FIRE_EXCEPTION_ON_FAILURE =
-        (FailureCallback) (o, cause) -> {
-            if (cause != null) {
-                StringUtil.printError(
-                    ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
-                    "",
-                    cause
-                );
-            }
-        };
 
     /**
      * The cache clearer of the cloud system

@@ -4,10 +4,9 @@
 
 package systems.reformcloud.addons;
 
-import systems.reformcloud.addons.extendable.AddonExtendable;
-
 import java.io.Serializable;
 import java.util.Queue;
+import systems.reformcloud.addons.extendable.AddonExtendable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 17.06.2019
@@ -15,11 +14,11 @@ import java.util.Queue;
 
 public abstract class AddonLoader extends AddonExtendable implements Serializable {
 
-    public abstract boolean disableAddon(final String name);
+    public abstract boolean disableAddon(final String arg1);
 
-    public abstract boolean enableAddon(final String name);
+    public abstract boolean enableAddon(final String arg1);
 
-    public abstract boolean isAddonEnabled(final String name);
+    public abstract boolean isAddonEnabled(final String arg1);
 
     public abstract Queue<JavaAddon> getJavaAddons();
 }
