@@ -217,6 +217,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             }
         }
 
+        this.processStartupStage = ProcessStartupStage.PREPARING;
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEFORGE_1_8_9)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
