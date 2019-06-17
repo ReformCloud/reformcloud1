@@ -8,7 +8,7 @@ package systems.reformcloud.utility.map.pool;
  * @author _Klaro | Pasqual K. / created on 20.04.2019
  */
 
-public interface Callback<T> {
+public interface Callback<T> extends Callable<Void> {
 
     void onCall(T t);
 }

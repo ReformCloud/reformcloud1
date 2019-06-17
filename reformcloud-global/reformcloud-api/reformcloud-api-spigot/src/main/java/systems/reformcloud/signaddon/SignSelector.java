@@ -8,12 +8,6 @@ import com.google.common.base.Enums;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.reflect.TypeToken;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -48,6 +42,13 @@ import systems.reformcloud.signs.SignPosition;
 import systems.reformcloud.signs.map.TemplateMap;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.map.MapUtility;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.12.2018
@@ -554,7 +555,7 @@ public final class SignSelector {
                     }
                 }
 
-                ReformCloudLibraryService.sleep(Worker.this, 1000 / this.animations);
+                ReformCloudLibraryService.sleep(1000 / this.animations);
             }
         }
     }

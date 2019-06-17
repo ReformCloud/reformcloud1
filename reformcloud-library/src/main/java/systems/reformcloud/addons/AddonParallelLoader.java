@@ -6,13 +6,13 @@ package systems.reformcloud.addons;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
-import systems.reformcloud.addons.extendable.AddonExtendable;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -23,7 +23,7 @@ import java.util.jar.JarFile;
  * @author _Klaro | Pasqual K. / created on 10.12.2018
  */
 
-public class AddonParallelLoader extends AddonExtendable {
+public class AddonParallelLoader extends AddonLoader implements Serializable {
 
     private Queue<JavaAddon> javaAddons = new ConcurrentLinkedDeque<>();
 
@@ -88,6 +88,7 @@ public class AddonParallelLoader extends AddonExtendable {
         } while (!javaAddons.isEmpty());
     }
 
+    @Override
     public boolean disableAddon(final String name) {
         JavaAddon javaAddon = this.javaAddons
             .stream()
@@ -114,6 +115,7 @@ public class AddonParallelLoader extends AddonExtendable {
      * @param name The name of the addon that should be found
      * @return If the addon file exists and if the addon could be loaded
      */
+    @Override
     public boolean enableAddon(final String name) {
         Set<AddonClassConfig> moduleConfigs = new HashSet<>();
 
@@ -190,6 +192,7 @@ public class AddonParallelLoader extends AddonExtendable {
      * @param name The name of the addon
      * @return If the addon is enabled or not
      */
+    @Override
     public boolean isAddonEnabled(final String name) {
         return this.javaAddons
             .stream()
@@ -240,6 +243,7 @@ public class AddonParallelLoader extends AddonExtendable {
         return moduleConfigs;
     }
 
+    @Override
     public Queue<JavaAddon> getJavaAddons() {
         return this.javaAddons;
     }

@@ -7,6 +7,7 @@ package systems.reformcloud;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.google.gson.internal.bind.TypeAdapters;
 import com.sun.management.OperatingSystemMXBean;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -28,6 +29,8 @@ import io.netty.util.concurrent.MultithreadEventExecutorGroup;
 import systems.reformcloud.api.AsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.configurations.ConfigurationAdapter;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.network.channel.ChannelHandler;
@@ -37,6 +40,8 @@ import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.map.pool.Callable;
+import systems.reformcloud.utility.map.pool.FailureCallback;
 
 import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.ManagementFactory;
@@ -80,7 +85,10 @@ public final class ReformCloudLibraryService {
     /**
      * The cloud created gson instance
      */
-    public static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting()
+    public static final Gson GSON = new GsonBuilder()
+        .serializeNulls()
+        .setPrettyPrinting()
+        .registerTypeAdapterFactory(TypeAdapters.newTypeHierarchyFactory(Configuration.class, new ConfigurationAdapter()))
         .disableHtmlEscaping().create();
 
     /**
@@ -113,6 +121,17 @@ public final class ReformCloudLibraryService {
                 }
             })
     );
+
+    public static final Callable FIRE_EXCEPTION_ON_FAILURE =
+        (FailureCallback) (o, cause) -> {
+            if (cause != null) {
+                StringUtil.printError(
+                    ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
+                    "",
+                    cause
+                );
+            }
+        };
 
     /**
      * The cache clearer of the cloud system
@@ -195,12 +214,10 @@ public final class ReformCloudLibraryService {
 
     /**
      * Prepares the given Channel with all utilities
-     *
-     * @param channel The given channel where all Handlers should be added
+     *  @param channel        The given channel where all Handlers should be added
      * @param channelHandler The pre-initialized ChannelHandler where all channels are registered and
-     * handled
      */
-    public static Channel prepareChannel(Channel channel, ChannelHandler channelHandler) {
+    public static void prepareChannel(Channel channel, ChannelHandler channelHandler) {
         channel.pipeline().addLast(
             new LengthDecoder(),
             new Decoder(),
@@ -208,7 +225,6 @@ public final class ReformCloudLibraryService {
             new Encoder(),
             new ChannelReader(channelHandler));
 
-        return channel;
     }
 
     /**
@@ -221,9 +237,9 @@ public final class ReformCloudLibraryService {
         return EPOLL ? new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(),
             createThreadFactory())
             : KQUEUE ? new KQueueEventLoopGroup(Runtime.getRuntime().availableProcessors(),
-                createThreadFactory())
-                : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(),
-                    createThreadFactory());
+            createThreadFactory())
+            : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(),
+            createThreadFactory());
     }
 
     /**
@@ -235,7 +251,7 @@ public final class ReformCloudLibraryService {
     public static EventLoopGroup eventLoopGroup(int threads) {
         return EPOLL ? new EpollEventLoopGroup(threads, createThreadFactory())
             : KQUEUE ? new KQueueEventLoopGroup(threads, createThreadFactory())
-                : new NioEventLoopGroup(threads, createThreadFactory());
+            : new NioEventLoopGroup(threads, createThreadFactory());
     }
 
     /**
@@ -269,23 +285,10 @@ public final class ReformCloudLibraryService {
     }
 
     /**
-     * Let the given thread sleep the given time
-     *
-     * @param thread The thread on which the cloud should sleep
-     * @param time The time which should be sleep
-     */
-    public static void sleep(Thread thread, long time) {
-        try {
-            Thread.sleep(time);
-        } catch (final InterruptedException ignored) {
-        }
-    }
-
-    /**
      * Let the main-thread sleep the given time
      *
      * @param timeUnit The TimeUnit in which the thread should sleep
-     * @param time The time which should be sleep
+     * @param time     The time which should be sleep
      */
     public static void sleep(TimeUnit timeUnit, long time) {
         try {
@@ -427,7 +430,7 @@ public final class ReformCloudLibraryService {
      * Checks if the object equals the parameters of the checkable
      *
      * @param checkable The checkable with the check parameters
-     * @param toCheck The object which should be checked
+     * @param toCheck   The object which should be checked
      * @return If the parameters of the checkable are true or not
      */
     public static boolean check(Predicate<Object> checkable, final Object toCheck) {
@@ -438,8 +441,8 @@ public final class ReformCloudLibraryService {
      * Creates a new cache
      *
      * @param maxSize The maximum size of the cache
-     * @param <K> The key value of the cache
-     * @param <V> The values of the cache
+     * @param <K>     The key value of the cache
+     * @param <V>     The values of the cache
      * @return The created cache using the given parameters
      */
     public static <K, V> Cache<K, V> newCache(long maxSize) {

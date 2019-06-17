@@ -4,6 +4,7 @@
 
 package systems.reformcloud;
 
+import systems.reformcloud.addons.AddonLoader;
 import systems.reformcloud.addons.AddonParallelLoader;
 import systems.reformcloud.api.*;
 import systems.reformcloud.api.deployment.incoming.RestAPIDeploymentService;
@@ -113,7 +114,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private final ChannelHandler channelHandler;
 
-    private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
+    private final AddonLoader addonParallelLoader = new AddonParallelLoader();
 
     private final CloudProcessOfferService cloudProcessOfferService = new CloudProcessOfferService();
 
@@ -1470,7 +1471,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.channelHandler;
     }
 
-    public AddonParallelLoader getAddonParallelLoader() {
+    public AddonLoader getAddonParallelLoader() {
         return this.addonParallelLoader;
     }
 

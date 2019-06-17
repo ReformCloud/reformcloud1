@@ -5,26 +5,24 @@
 package systems.reformcloud.logging;
 
 import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
 import jline.console.ConsoleReader;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.time.DateProvider;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -440,26 +438,43 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
 
     @Override
     public String uploadLog(String input) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("https://paste.reformcloud.systems/documents");
-
         try {
-            httpPost.setEntity(new StringEntity(AnsiColourHandler.stripColourCodes(input),
-                ContentType.TEXT_PLAIN));
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL("https://paste" +
+                ".reformcloud.systems/documents").openConnection();
 
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-            final String result = EntityUtils.toString(httpResponse.getEntity());
-            JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(result)
-                .getAsJsonObject();
-            if (httpResponse.getStatusLine().getStatusCode() != 201 || jsonObject.has("message")) {
-                return "The following error occurred: " + jsonObject.get("message").getAsString();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond());
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.connect();
+
+            try (DataOutputStream dataOutputStream =
+                     new DataOutputStream(httpURLConnection.getOutputStream())) {
+                dataOutputStream.writeBytes(input);
+                dataOutputStream.flush();
             }
 
-            return "https://paste.reformcloud.systems/" + jsonObject.get("key").getAsString();
+            JsonObject jsonObject;
+            try (JsonReader jsonReader =
+                     new JsonReader(new InputStreamReader(httpURLConnection.getInputStream()))) {
+                jsonObject = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject();
+            }
+
+            if (jsonObject == null) {
+                return "Could not post log on \"paste.reformcloud.systems\"!";
+            }
+
+            if (jsonObject.has("message")) {
+                return "An error occurred: " + jsonObject.get("message").getAsString();
+            }
+
+            Configuration configuration = new Configuration(jsonObject);
+            return "https://paste.reformcloud.systems/" + configuration.getStringValue("key");
         } catch (final IOException ex) {
-            StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
-                    "Error while uploading log", ex);
+            StringUtil.printError(
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
+                "Could not post log on \"paste.reformcloud.systems\"!",
+                ex
+            );
         }
 
         return "Could not post log on \"paste.reformcloud.systems\"!";

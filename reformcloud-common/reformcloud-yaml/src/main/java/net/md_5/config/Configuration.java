@@ -5,7 +5,9 @@ import java.util.*;
 public final class Configuration {
 
     private static final char SEPARATOR = '.';
-    public final Map<String, Object> self;
+
+    final Map<String, Object> self;
+
     private final Configuration defaults;
 
     public Configuration() {

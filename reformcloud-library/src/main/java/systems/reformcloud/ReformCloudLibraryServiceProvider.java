@@ -74,10 +74,9 @@ public final class ReformCloudLibraryServiceProvider {
      * @param key The controller key
      * @param controllerIP The controller ip address
      * @param eventManager The event manager of the cloud
-     * @throws Throwable Will be thrown if any exception occurs
      */
     public ReformCloudLibraryServiceProvider(ColouredConsoleProvider colouredConsoleProvider, String key,
-                                             String controllerIP, EventManager eventManager, String lang) throws Throwable {
+                                             String controllerIP, EventManager eventManager, String lang) {
         if (instance == null) {
             instance = this;
         } else {
@@ -143,28 +142,12 @@ public final class ReformCloudLibraryServiceProvider {
         this.loaded = loaded;
     }
 
-    public void setEventManager(EventManager eventManager) {
-        this.eventManager = eventManager;
-    }
-
     public void setChannelHandler(ChannelHandler channelHandler) {
         this.channelHandler = channelHandler;
     }
 
-    public void setColouredConsoleProvider(ColouredConsoleProvider colouredConsoleProvider) {
-        this.colouredConsoleProvider = colouredConsoleProvider;
-    }
-
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public void setControllerIP(String controllerIP) {
-        this.controllerIP = controllerIP;
-    }
-
-    public void setTaskScheduler(TaskScheduler taskScheduler) {
-        this.taskScheduler = taskScheduler;
     }
 
     public boolean equals(final Object o) {
@@ -217,10 +200,7 @@ public final class ReformCloudLibraryServiceProvider {
         }
         final Object this$taskScheduler = this.getTaskScheduler();
         final Object other$taskScheduler = other.getTaskScheduler();
-        if (!Objects.equals(this$taskScheduler, other$taskScheduler)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this$taskScheduler, other$taskScheduler);
     }
 
     public int hashCode() {
@@ -242,7 +222,7 @@ public final class ReformCloudLibraryServiceProvider {
         final Object $controllerIP = this.getControllerIP();
         result = result * PRIME + ($controllerIP == null ? 43 : $controllerIP.hashCode());
         final Object $nettyHandler = this.getNettyHandler();
-        result = result * PRIME + ($nettyHandler == null ? 43 : $nettyHandler.hashCode());
+        result = result * PRIME + $nettyHandler.hashCode();
         final Object $taskScheduler = this.getTaskScheduler();
         result = result * PRIME + ($taskScheduler == null ? 43 : $taskScheduler.hashCode());
         return result;

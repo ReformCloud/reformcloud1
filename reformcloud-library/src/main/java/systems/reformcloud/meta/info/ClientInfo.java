@@ -112,4 +112,12 @@ public final class ClientInfo implements Serializable {
     public void setSystemMemoryMax(long systemMemoryMax) {
         this.systemMemoryMax = systemMemoryMax;
     }
+
+    public void setStartedProxies(List<String> startedProxies) {
+        this.startedProxies = startedProxies;
+    }
+
+    public void setStartedServers(List<String> startedServers) {
+        this.startedServers = startedServers;
+    }
 }

@@ -112,9 +112,18 @@ final class LibraryPreLoader implements Serializable {
 
     private static void prepareDependencies0(boolean installNetty) {
         dependencies = new LinkedList<>(
-            Arrays.asList(new SnakeYaml(), new CommonsIO(), new JLine(), new ApacheCommonsNet(),
-                new Gson(), new CommonsCodec(), new CommonsLogging(), new ApacheHttpCore(),
-                new ApacheHttpComponents()));
+            Arrays.asList(
+                new SnakeYaml(),
+                new CommonsIO(),
+                new JLine(),
+                new ApacheCommonsNet(),
+                new Gson(),
+                new CommonsCodec(),
+                new CommonsLogging(),
+                new ApacheHttpCore(),
+                new ApacheHttpComponents()
+            )
+        );
 
         if (installNetty) {
             dependencies.add(new Netty());

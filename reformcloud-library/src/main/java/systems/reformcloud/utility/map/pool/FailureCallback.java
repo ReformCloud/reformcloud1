@@ -4,13 +4,18 @@
 
 package systems.reformcloud.utility.map.pool;
 
-import jline.internal.Nullable;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 /**
  * @author _Klaro | Pasqual K. / created on 20.04.2019
  */
 
-public interface FailureCallback<T> {
+public interface FailureCallback<T> extends Callable<Throwable> {
 
-    void onFailure(T t, @Nullable Throwable cause);
+    void onFailure(T t, @MayNotBePresent Throwable cause);
+
+    @Override
+    default void call(Throwable throwable) {
+        onFailure(null, throwable);
+    }
 }
