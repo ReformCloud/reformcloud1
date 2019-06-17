@@ -217,7 +217,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             }
         }
 
-        this.processStartupStage = ProcessStartupStage.PREPARING;
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEFORGE_1_8_9)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
@@ -251,6 +250,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
 
+        this.processStartupStage = ProcessStartupStage.PREPARING;
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_7_9)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
