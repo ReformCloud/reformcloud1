@@ -104,7 +104,7 @@ public final class UUIDConverter implements Serializable {
     /**
      * Gets a name from the given uuid
      *
-     * @param uuid The name of the player
+     * @param uuid The uuid of the player
      * @return The name of the player
      */
     public static String getNameFromUUID(final UUID uuid) {
