@@ -48,6 +48,11 @@ public final class UUIDConverter implements Serializable {
     private static Cache<String, UUID> uuids = ReformCloudLibraryService.newCache(300);
 
     /**
+     * The cache in which all names are cached
+     */
+    private static Cache<UUID, String> names = ReformCloudLibraryService.newCache(300);
+
+    /**
      * Gets a uuid from the given name
      *
      * @param name The name of the player
@@ -90,6 +95,46 @@ public final class UUIDConverter implements Serializable {
             uuids.add(name, uuid);
 
             return uuid;
+        } catch (final IOException ignored) {
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets a name from the given uuid
+     *
+     * @param uuid The name of the player
+     * @return The name of the player
+     */
+    public static String getNameFromUUID(final UUID uuid) {
+        if (names.contains(uuid)) {
+            return names.getSave(uuid).get();
+        }
+
+        try {
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
+                "https://api.mojang.com/user/profile/" + uuid.toString().replace("-", "")).openConnection();
+            httpURLConnection.setDoOutput(false);
+            httpURLConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            httpURLConnection.setUseCaches(true);
+            httpURLConnection.connect();
+
+            String name;
+            try (JsonReader jsonReader = new JsonReader(
+                new InputStreamReader(httpURLConnection.getInputStream()))) {
+                try {
+                    name = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
+                        .get("name").getAsString();
+                } catch (final Throwable throwable) {
+                    return null;
+                }
+            }
+
+            names.add(uuid, name);
+
+            return name;
         } catch (final IOException ignored) {
         }
 

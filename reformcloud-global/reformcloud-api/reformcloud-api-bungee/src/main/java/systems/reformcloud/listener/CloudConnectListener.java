@@ -195,10 +195,10 @@ public final class CloudConnectListener implements Listener {
             .sendPacketSynchronized("ReformCloudController",
                 new PacketOutProxyInfoUpdate(proxyInfo),
                 new PacketOutSendControllerConsoleMessage(
-                    "Player [Name=" + event.getConnection().getName() + "/UUID="
+                    "Player §e[Name=" + event.getConnection().getName() + "/UUID="
                         + event.getConnection().getUniqueId() + "/IP="
                         + event.getConnection().getAddress().getAddress().getHostAddress()
-                        + "] is now connected"));
+                        + "]§r is now §aconnected§r on §e[Proxy=" + proxyInfo.getCloudProcess().getName() + "/Server=" + event.getConnection().getListener().getFallbackServer() + "]§r"));
     }
 
     @EventHandler(priority = -127)
@@ -246,11 +246,11 @@ public final class CloudConnectListener implements Listener {
             ReformCloudAPIBungee.getInstance().getChannelHandler()
                 .sendPacketAsynchronous("ReformCloudController",
                     new PacketOutSendControllerConsoleMessage(
-                        "Player [Name=" + event.getPlayer().getName() + "/UUID=" +
+                        "Player §e[Name=" + event.getPlayer().getName() + "/UUID=" +
                             event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer()
                             .getAddress()
                             .getAddress().getHostAddress() +
-                            "] is now disconnected"));
+                            "]§r is now §cdisconnected§r from §e" + proxyInfo.getCloudProcess().getName()));
             BungeecordBootstrap.getInstance().getProxy().getPlayers()
                 .forEach(CloudConnectListener::initTab);
             ReformCloudAPIBungee.getInstance().getCachedPermissionHolders()
