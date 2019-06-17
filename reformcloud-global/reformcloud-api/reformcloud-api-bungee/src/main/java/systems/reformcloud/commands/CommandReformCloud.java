@@ -67,7 +67,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
 
         if (strings[0].equalsIgnoreCase("version")) {
             commandSender.sendMessage(TextComponent
-                .fromLegacyText("§7You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
+                .fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
             return;
         }
 
