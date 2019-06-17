@@ -82,7 +82,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
      * Creates a instance of a CloudServerStartupHandler
      */
     public CloudServerStartupHandler(final ServerStartupInfo serverStartupInfo,
-        final boolean firstGroupStart) {
+                                     final boolean firstGroupStart) {
         this.startupTime = System.currentTimeMillis();
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.serverStartupInfo = serverStartupInfo;
@@ -250,9 +250,20 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
 
-        this.processStartupStage = ProcessStartupStage.PREPARING;
-        if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_12_2))
+        {
+
             if (!Files.exists(Paths.get(path + "/config"))) {
                 FileUtils.createDirectory(Paths.get(path + "/config"));
             }
@@ -281,7 +292,17 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         }
 
         Properties properties = new Properties();
-        if (serverStartupInfo.getServerGroup().getSpigotVersions()
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             try (InputStreamReader inputStreamReader = new InputStreamReader(
                 Files.newInputStream(Paths.get(path + "/config/glowstone.yml")),
@@ -308,7 +329,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                         .save(configuration, outputStreamWriter);
                 }
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+                StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                     "Error while reading glowstone config", ex);
                 return;
             }
@@ -318,13 +339,23 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 properties.load(inputStreamReader);
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Could not load server.properties", ex);
                 return;
             }
         }
 
-        if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             if (PropertiesManager.available && PropertiesManager.getInstance() != null) {
                 PropertiesManager.getInstance()
@@ -337,12 +368,11 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             properties.setProperty("server-name", serverStartupInfo.getName());
             properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
-        } else {
             try (OutputStream outputStream = Files
                 .newOutputStream(Paths.get(path + "/server.properties"))) {
                 properties.store(outputStream, "");
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+                StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                     "Cannot store server.properties", ex);
                 return;
             }
@@ -450,7 +480,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .addStringValue("controllerKey",
                 ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
             .addBooleanValue("ssl", ReformCloudClient.getInstance().isSsl())
-            .addBooleanValue("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
+            .addBooleanValue("debug", ReformCloudClient.getInstance().getColouredConsoleProvider().isDebug())
             .addValue("startupInfo", serverStartupInfo)
 
             .write(Paths.get(path + "/reformcloud/config.json"));
@@ -492,7 +522,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                 "Could not launch ServerStartup", ex);
             return;
         }
@@ -594,7 +624,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         try {
             this.process.destroyForcibly();
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                 "Error on CloudServer shutdown", throwable);
             return;
         }
@@ -676,7 +706,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
      * @see PacketOutSendControllerConsoleMessage
      */
     private void sendMessage(final String message) {
-        ReformCloudClient.getInstance().getLoggerProvider().info(message);
+        ReformCloudClient.getInstance().getColouredConsoleProvider().info(message);
         ReformCloudClient.getInstance().getChannelHandler()
             .sendPacketSynchronized("ReformCloudController",
                 new PacketOutSendControllerConsoleMessage(message));
@@ -692,7 +722,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         Files.readAllLines(Paths.get(this.path + "/logs/latest.log"), StandardCharsets.UTF_8)
             .forEach(e -> stringBuilder.append(e).append("\n"));
 
-        return ReformCloudClient.getInstance().getLoggerProvider()
+        return ReformCloudClient.getInstance().getColouredConsoleProvider()
             .uploadLog(stringBuilder.substring(0));
     }
 
