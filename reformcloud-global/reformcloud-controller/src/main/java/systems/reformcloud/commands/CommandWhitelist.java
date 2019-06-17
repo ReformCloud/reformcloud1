@@ -33,7 +33,7 @@ public final class CommandWhitelist extends Command implements Serializable {
             commandSender.sendMessage("ReformCloud whitelisted players: ");
             ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values()
                 .forEach(e ->
-                    e.getWhitelist().forEach(player -> commandSender.sendMessage("- " + player))
+                    e.getWhitelist().forEach(player -> commandSender.sendMessage("- §e" + UUIDConverter.getNameFromUUID(player) + "§r | §e" + player))
                 );
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("add")) {
@@ -53,7 +53,7 @@ public final class CommandWhitelist extends Command implements Serializable {
                             ReformCloudController.getInstance().getCloudConfiguration()
                                 .addPlayerToWhitelist(group.getName(), uuidInput);
                             commandSender.sendMessage(language.getCommand_whitelist_success()
-                                .replace("%name%", uuidInput.toString())
+                                .replace("%name%", (args[2].contains("-") ? "§e" + uuidInput.toString() + "§r" : "§e[Name=" + args[2] + "§e/UUID=" + uuidInput.toString() + "§e]§r"))
                                 .replace("%proxy%", group.getName()));
                         }
                     });
@@ -70,7 +70,7 @@ public final class CommandWhitelist extends Command implements Serializable {
                             .sendToAllSynchronized(new PacketOutUpdateAll(
                                 ReformCloudController.getInstance().getInternalCloudNetwork()));
                         commandSender.sendMessage(language.getCommand_whitelist_success()
-                            .replace("%name%", uuidInput.toString())
+                            .replace("%name%", (args[2].contains("-") ? "§e" + uuidInput.toString() + "§r" : "§e[Name=" + args[2] + "§e/UUID=" + uuidInput.toString() + "§e]§r"))
                             .replace("%proxy%", args[1]));
                     } else {
                         commandSender.sendMessage(
@@ -100,7 +100,7 @@ public final class CommandWhitelist extends Command implements Serializable {
                             ReformCloudController.getInstance().getCloudConfiguration()
                                 .removePlayerFromWhitelist(group.getName(), uuidInput);
                             commandSender.sendMessage(language.getCommand_whitelist_removed()
-                                .replace("%name%", uuidInput.toString())
+                                .replace("%name%", (args[2].contains("-") ? "§e" + uuidInput.toString() + "§r" : "§e[Name=" + args[2] + "§e/UUID=" + uuidInput.toString() + "§e]§r"))
                                 .replace("%proxy%", group.getName()));
                         }
                     });
@@ -114,7 +114,7 @@ public final class CommandWhitelist extends Command implements Serializable {
                             .sendToAllSynchronized(new PacketOutUpdateAll(
                                 ReformCloudController.getInstance().getInternalCloudNetwork()));
                         commandSender.sendMessage(language.getCommand_whitelist_removed()
-                            .replace("%name%", uuidInput.toString())
+                            .replace("%name%", (args[2].contains("-") ? "§e" + uuidInput.toString() + "§r" : "§e[Name=" + args[2] + "§e/UUID=" + uuidInput.toString() + "§e]§r"))
                             .replace("%proxy%", args[1]));
                     } else {
                         commandSender.sendMessage(
