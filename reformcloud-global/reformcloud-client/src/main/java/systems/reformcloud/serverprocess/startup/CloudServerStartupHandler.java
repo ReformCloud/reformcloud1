@@ -4,6 +4,21 @@
 
 package systems.reformcloud.serverprocess.startup;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import net.md_5.config.ConfigurationProvider;
 import net.md_5.config.YamlConfiguration;
 import systems.reformcloud.ReformCloudClient;
@@ -19,7 +34,11 @@ import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.network.packets.out.*;
+import systems.reformcloud.network.packets.out.PacketOutAddProcess;
+import systems.reformcloud.network.packets.out.PacketOutGetControllerTemplate;
+import systems.reformcloud.network.packets.out.PacketOutRemoveProcess;
+import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
+import systems.reformcloud.network.packets.out.PacketOutUpdateControllerTemplate;
 import systems.reformcloud.properties.PropertiesManager;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
@@ -28,17 +47,6 @@ import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.utility.startup.ServiceAble;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -329,7 +337,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             properties.setProperty("server-name", serverStartupInfo.getName());
             properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
-        } else {
             try (OutputStream outputStream = Files
                 .newOutputStream(Paths.get(path + "/server.properties"))) {
                 properties.store(outputStream, "");
