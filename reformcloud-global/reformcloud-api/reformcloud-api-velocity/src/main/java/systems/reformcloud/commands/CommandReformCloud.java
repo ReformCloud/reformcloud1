@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
+import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
@@ -54,6 +55,21 @@ public final class CommandReformCloud implements Command {
         if (strings[0].equalsIgnoreCase("version")) {
             commandSource.sendMessage(
                 TextComponent.of("You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("maintenance")) {
+            ProxyGroup proxyGroup =
+                ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup();
+            ReformCloudAPIVelocity.getInstance().dispatchConsoleCommand(
+                "asg proxygroup " + proxyGroup.getName() +
+                    " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
+                    "true --update")
+            );
+            commandSource.sendMessage(TextComponent.of(
+                ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                    .getMessage("internal-api-bungee-command-send-controller")
+            ));
             return;
         }
 
@@ -224,7 +240,8 @@ public final class CommandReformCloud implements Command {
             return registeredGroups();
         }
 
-        return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
+        return Arrays.asList("copy", "whitelist", "execute", "process",
+            "reload", "version", "maintenance");
     }
 
     private List<String> registered() {
@@ -274,6 +291,9 @@ public final class CommandReformCloud implements Command {
     private void sendHelp(CommandSource commandSource, String prefix) {
         commandSource.sendMessage(TextComponent
             .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
+        commandSource.sendMessage(TextComponent
+            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud "
+                + "maintenance\n"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
             + "§7/reformcloud copy <name> <file/dir> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")

@@ -14,6 +14,7 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.launcher.BungeecordBootstrap;
+import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
@@ -67,6 +68,21 @@ public final class CommandReformCloud extends Command implements Serializable, T
         if (strings[0].equalsIgnoreCase("version")) {
             commandSender.sendMessage(TextComponent
                 .fromLegacyText("§7You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("maintenance")) {
+            ProxyGroup proxyGroup =
+                ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup();
+            ReformCloudAPIBungee.getInstance().dispatchConsoleCommand(
+                "asg proxygroup " + proxyGroup.getName() +
+                    " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
+                    "true --update")
+            );
+            commandSender.sendMessage(TextComponent.fromLegacyText(
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                    .getMessage("internal-api-bungee-command-send-controller")
+            ));
             return;
         }
 
@@ -232,7 +248,8 @@ public final class CommandReformCloud extends Command implements Serializable, T
             return registeredGroups();
         }
 
-        return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
+        return Arrays.asList("copy", "whitelist", "execute", "process",
+            "reload", "version", "maintenance");
     }
 
     private Collection<String> registered() {
@@ -282,6 +299,9 @@ public final class CommandReformCloud extends Command implements Serializable, T
         commandSender.sendMessage(
             new TextComponent(TextComponent.fromLegacyText(
                 prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n")),
+            new TextComponent(TextComponent.fromLegacyText(
+                prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud "
+                    + "maintenance\n")),
             new TextComponent(TextComponent.fromLegacyText(
                 prefix + (prefix.endsWith(" ") ? "" : " ")
                     + "§7/reformcloud copy <name> <file/dir> \n")),
