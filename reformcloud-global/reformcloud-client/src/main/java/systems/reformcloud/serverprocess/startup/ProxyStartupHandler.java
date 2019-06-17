@@ -484,9 +484,7 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
         }
 
         try {
-            if (this.isAlive()) {
-                this.process.destroy();
-            }
+            this.process.destroyForcibly();
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                 "Error on Proxy shutdown", throwable);
@@ -532,6 +530,20 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
                 proxyStartupInfo.getProxyGroup().getProxyVersions().equals(ProxyVersions.VELOCITY)
                     ? path + "/plugins/ReformAPIVelocity.jar"
                     : path + "/plugins/ReformAPIBungee.jar");
+        }
+
+        try {
+            this.process.exitValue();
+        } catch (final Throwable ignored) {
+            this.process.destroy();
+            ReformCloudLibraryService.sleep(100);
+        }
+
+        try {
+            this.process.exitValue();
+        } catch (final Throwable ignored) {
+            this.process.destroy();
+            ReformCloudLibraryService.sleep(100);
         }
 
         try {
