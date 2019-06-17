@@ -4,38 +4,8 @@
 
 package systems.reformcloud;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import systems.reformcloud.addons.AddonParallelLoader;
-import systems.reformcloud.api.APIService;
-import systems.reformcloud.api.DefaultPlayerProvider;
-import systems.reformcloud.api.RestAPIAuth;
-import systems.reformcloud.api.RestAPIClientList;
-import systems.reformcloud.api.RestAPIClients;
-import systems.reformcloud.api.RestAPIGetOfflinePlayer;
-import systems.reformcloud.api.RestAPIPermissionCheck;
-import systems.reformcloud.api.RestAPIProxyGroupList;
-import systems.reformcloud.api.RestAPIProxyList;
-import systems.reformcloud.api.RestAPIServerGroupList;
-import systems.reformcloud.api.RestAPIServerList;
-import systems.reformcloud.api.RestAPIStartGameserver;
-import systems.reformcloud.api.RestAPIStartProxy;
-import systems.reformcloud.api.RestAPIStopProxy;
-import systems.reformcloud.api.RestAPIStopServer;
+import systems.reformcloud.api.*;
 import systems.reformcloud.api.deployment.incoming.RestAPIDeploymentService;
 import systems.reformcloud.api.deployment.outgoing.RestAPIDownloadService;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
@@ -44,30 +14,7 @@ import systems.reformcloud.api.network.event.EventAdapter;
 import systems.reformcloud.api.player.PlayerProvider;
 import systems.reformcloud.api.save.SaveAPIImpl;
 import systems.reformcloud.api.save.SaveAPIService;
-import systems.reformcloud.commands.CommandAddons;
-import systems.reformcloud.commands.CommandAssignment;
-import systems.reformcloud.commands.CommandClear;
-import systems.reformcloud.commands.CommandCopy;
-import systems.reformcloud.commands.CommandCreate;
-import systems.reformcloud.commands.CommandDelete;
-import systems.reformcloud.commands.CommandDeploy;
-import systems.reformcloud.commands.CommandDeveloper;
-import systems.reformcloud.commands.CommandExecute;
-import systems.reformcloud.commands.CommandExit;
-import systems.reformcloud.commands.CommandHelp;
-import systems.reformcloud.commands.CommandInfo;
-import systems.reformcloud.commands.CommandInstall;
-import systems.reformcloud.commands.CommandListGroups;
-import systems.reformcloud.commands.CommandLog;
-import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.commands.CommandProcess;
-import systems.reformcloud.commands.CommandReload;
-import systems.reformcloud.commands.CommandScreen;
-import systems.reformcloud.commands.CommandUpdate;
-import systems.reformcloud.commands.CommandUpload;
-import systems.reformcloud.commands.CommandVersion;
-import systems.reformcloud.commands.CommandWebPermissions;
-import systems.reformcloud.commands.CommandWhitelist;
+import systems.reformcloud.commands.*;
 import systems.reformcloud.commands.ingame.IngameCommandManger;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
@@ -77,6 +24,8 @@ import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.database.DatabaseProvider;
 import systems.reformcloud.database.DatabaseSaver;
 import systems.reformcloud.database.player.PlayerDatabase;
+import systems.reformcloud.database.player.SavePlayerDatabase;
+import systems.reformcloud.database.statistics.SaveStatisticsProvider;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.EventManager;
 import systems.reformcloud.event.events.ProxyInfoUpdateEvent;
@@ -107,58 +56,17 @@ import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketServer;
 import systems.reformcloud.network.channel.ChannelHandler;
-import systems.reformcloud.network.in.PacketInAddProcess;
-import systems.reformcloud.network.in.PacketInAuthSuccess;
-import systems.reformcloud.network.in.PacketInClientProcessQueue;
-import systems.reformcloud.network.in.PacketInCommandExecute;
-import systems.reformcloud.network.in.PacketInConnectPlayer;
-import systems.reformcloud.network.in.PacketInCreateClient;
-import systems.reformcloud.network.in.PacketInCreateProxyGroup;
-import systems.reformcloud.network.in.PacketInCreateServerGroup;
-import systems.reformcloud.network.in.PacketInCreateWebUser;
-import systems.reformcloud.network.in.PacketInDispatchConsoleCommand;
-import systems.reformcloud.network.in.PacketInExecuteCommandSilent;
-import systems.reformcloud.network.in.PacketInGetControllerTemplate;
-import systems.reformcloud.network.in.PacketInGetLog;
-import systems.reformcloud.network.in.PacketInIconSizeIncorrect;
-import systems.reformcloud.network.in.PacketInKickPlayer;
-import systems.reformcloud.network.in.PacketInLoginPlayer;
-import systems.reformcloud.network.in.PacketInLogoutPlayer;
-import systems.reformcloud.network.in.PacketInProxyInfoUpdate;
-import systems.reformcloud.network.in.PacketInRemoveInternalProcess;
-import systems.reformcloud.network.in.PacketInRemoveProcess;
-import systems.reformcloud.network.in.PacketInSendControllerConsoleMessage;
-import systems.reformcloud.network.in.PacketInSendPlayerMessage;
-import systems.reformcloud.network.in.PacketInServerInfoUpdate;
-import systems.reformcloud.network.in.PacketInStartGameProcess;
-import systems.reformcloud.network.in.PacketInStartProxyProcess;
-import systems.reformcloud.network.in.PacketInStopProcess;
-import systems.reformcloud.network.in.PacketInUpdateControllerTemplate;
-import systems.reformcloud.network.in.PacketInUpdateInternalCloudNetwork;
-import systems.reformcloud.network.in.PacketInUpdateOfflinePlayer;
-import systems.reformcloud.network.in.PacketInUpdateOnlinePlayer;
-import systems.reformcloud.network.in.PacketInUpdateServerGroup;
-import systems.reformcloud.network.in.PacketInUpdateServerTempStats;
+import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.out.PacketOutProxyInfoUpdate;
-import systems.reformcloud.network.out.PacketOutServerInfoUpdate;
-import systems.reformcloud.network.out.PacketOutStartGameServer;
-import systems.reformcloud.network.out.PacketOutStartProxy;
-import systems.reformcloud.network.out.PacketOutStopProcess;
-import systems.reformcloud.network.out.PacketOutUpdateAll;
+import systems.reformcloud.network.out.*;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.query.in.PacketInQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.in.PacketInQueryGetPlayer;
 import systems.reformcloud.network.query.in.PacketInQueryPlayerAccepted;
 import systems.reformcloud.network.query.in.PacketInQueryStartDevProcess;
-import systems.reformcloud.network.sync.in.PacketInSyncClientDisconnects;
-import systems.reformcloud.network.sync.in.PacketInSyncClientReloadSuccess;
-import systems.reformcloud.network.sync.in.PacketInSyncExceptionThrown;
-import systems.reformcloud.network.sync.in.PacketInSyncNameToUUID;
-import systems.reformcloud.network.sync.in.PacketInSyncScreenUpdate;
-import systems.reformcloud.network.sync.in.PacketInSyncUpdateClientInfo;
+import systems.reformcloud.network.sync.in.*;
 import systems.reformcloud.network.sync.out.PacketOutSyncUpdateClient;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -175,13 +83,21 @@ import systems.reformcloud.utility.time.TimeSync;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
 
+import java.io.File;
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
 public final class ReformCloudController implements Serializable, Shutdown, Reload, APIService {
-
-    private static volatile boolean RUNNING = false;
 
     private static ReformCloudController instance;
 
@@ -191,9 +107,9 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
-    private final StatisticsProvider statisticsProvider = new StatisticsProvider();
+    private final SaveStatisticsProvider statisticsProvider = new StatisticsProvider();
 
-    private final PlayerDatabase playerDatabase = new PlayerDatabase();
+    private final SavePlayerDatabase playerDatabase = new PlayerDatabase();
 
     private final ChannelHandler channelHandler;
 
@@ -330,8 +246,6 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
         this.addonParallelLoader.enableAddons();
         this.checkForUpdates();
-
-        RUNNING = true;
 
         SaveAPIService.instance.set(new SaveAPIImpl());
         APIService.instance.set(this);
@@ -487,7 +401,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
      * Reloads the ReformCloudController
      */
     @Override
-    public void reloadAll() throws Throwable {
+    public void reloadAll() {
         this.loggerProvider.info(this.getLoadedLanguage().getController_reload());
 
         this.updateAllConnectedClients();
@@ -574,7 +488,6 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
      */
     @Override
     public void shutdownAll() {
-        RUNNING = false;
 
         this.taskScheduler.close();
         this.statisticsProvider.save();
@@ -1545,11 +1458,11 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.internalCloudNetwork;
     }
 
-    public StatisticsProvider getStatisticsProvider() {
+    public SaveStatisticsProvider getStatisticsProvider() {
         return this.statisticsProvider;
     }
 
-    public PlayerDatabase getPlayerDatabase() {
+    public SavePlayerDatabase getPlayerDatabase() {
         return this.playerDatabase;
     }
 
@@ -1597,28 +1510,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.reformWebServer;
     }
 
-    public NettySocketServer getNettySocketServer() {
-        return this.nettySocketServer;
-    }
-
-    public ReformCloudLibraryServiceProvider getReformCloudLibraryServiceProvider() {
-        return this.reformCloudLibraryServiceProvider;
-    }
-
     public CloudConfiguration getCloudConfiguration() {
         return this.cloudConfiguration;
-    }
-
-    public Thread getShutdownHook() {
-        return this.shutdownHook;
-    }
-
-    public void setCommandManager(CommandManager commandManager) {
-        this.commandManager = commandManager;
-    }
-
-    public void setLoggerProvider(LoggerProvider loggerProvider) {
-        this.loggerProvider = loggerProvider;
     }
 
     public void setInternalCloudNetwork(InternalCloudNetwork internalCloudNetwork) {
@@ -1627,26 +1520,5 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     public void setUuid(List<UUID> uuid) {
         this.uuid = uuid;
-    }
-
-    public void setDatabaseProviders(List<DatabaseProvider> databaseProviders) {
-        this.databaseProviders = databaseProviders;
-    }
-
-    public void setReformWebServer(ReformWebServer reformWebServer) {
-        this.reformWebServer = reformWebServer;
-    }
-
-    public void setReformCloudLibraryServiceProvider(
-        ReformCloudLibraryServiceProvider reformCloudLibraryServiceProvider) {
-        this.reformCloudLibraryServiceProvider = reformCloudLibraryServiceProvider;
-    }
-
-    public void setCloudConfiguration(CloudConfiguration cloudConfiguration) {
-        this.cloudConfiguration = cloudConfiguration;
-    }
-
-    public void setShutdownHook(Thread shutdownHook) {
-        this.shutdownHook = shutdownHook;
     }
 }
