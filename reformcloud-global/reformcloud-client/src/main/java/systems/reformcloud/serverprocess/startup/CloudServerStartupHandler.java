@@ -346,17 +346,17 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             }
         }
 
-        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+        if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_7_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_8_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_9_4)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_10_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_11_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             if (PropertiesManager.available && PropertiesManager.getInstance() != null) {
                 PropertiesManager.getInstance()
