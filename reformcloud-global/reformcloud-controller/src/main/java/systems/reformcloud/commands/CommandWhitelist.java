@@ -60,7 +60,7 @@ public final class CommandWhitelist extends Command implements Serializable {
 
                             commandSender.sendMessage(language.getCommand_whitelist_success()
                                 .replace("%name%", "§e[Name=" + name + "/UUID=" + uuidInput.toString() + "]§r")
-                                .replace("%proxy%", group.getName()));
+                                .replace("%proxy%", "§e" + group.getName() + "§r"));
                         }
                     });
                     ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
