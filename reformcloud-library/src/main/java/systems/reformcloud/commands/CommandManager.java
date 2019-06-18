@@ -9,6 +9,7 @@ import systems.reformcloud.commands.defaults.DefaultConsoleCommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 import java.io.Serializable;
 import java.util.*;
@@ -91,12 +92,24 @@ public final class CommandManager extends AbstractCommandManager implements Seri
         return this;
     }
 
+    @Override
+    public List<Command> commands() {
+        return commands;
+    }
+
     /**
      * Unregisters all commands
      */
     @Override
     public void clearCommands() {
         this.commands.clear();
+    }
+
+    @Override
+    @MayNotBePresent
+    public Command findCommand(String commandLine) {
+        return this.commands.stream().filter(e -> e.getName().equalsIgnoreCase(commandLine) || Arrays.asList(e.getAliases())
+            .contains(commandLine)).findFirst().orElse(null);
     }
 
     /**
