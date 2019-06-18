@@ -4,15 +4,15 @@
 
 package systems.reformcloud.meta.info;
 
-import systems.reformcloud.meta.CloudProcess;
-import systems.reformcloud.meta.enums.ServerState;
-import systems.reformcloud.meta.process.ProcessStartupInformation;
-import systems.reformcloud.meta.server.ServerGroup;
-
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
+import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.enums.ServerState;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
+import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
@@ -22,25 +22,59 @@ public final class ServerInfo implements Serializable {
 
     private static final long serialVersionUID = 8057730391607929124L;
 
+    /**
+     * The cloud process information of the process
+     */
     private CloudProcess cloudProcess;
 
+    /**
+     * The server group of the process
+     */
     private ServerGroup serverGroup;
 
+    /**
+     * The process startup information
+     */
     private ProcessStartupInformation processStartupInformation;
 
+    /**
+     * The server state of the process
+     */
     private ServerState serverState;
 
+    /**
+     * The host of the current server
+     */
     private String host;
 
+    /**
+     * The motd of the current server
+     */
     private String motd;
 
+    /**
+     * The port which is selected
+     */
     private int port;
 
+    /**
+     * The online count of the process
+     */
     private int online;
 
+    /**
+     * The max memory of the process
+     */
     private int maxMemory;
 
+    /**
+     * The status if the server is full this is {@code true}
+     */
     private boolean full;
+
+    /**
+     * A list of uuid's containing all online players uuid's
+     */
     private List<UUID> onlinePlayers;
 
     @ConstructorProperties({"cloudProcess", "serverGroup", "processStartupInformation", "serverState",
@@ -111,6 +145,10 @@ public final class ServerInfo implements Serializable {
 
     public ProcessStartupInformation getProcessStartupInformation() {
         return processStartupInformation;
+    }
+
+    public EthernetAddress toEtherNetAddress() {
+        return new EthernetAddress(host, port);
     }
 
     public void setCloudProcess(CloudProcess cloudProcess) {

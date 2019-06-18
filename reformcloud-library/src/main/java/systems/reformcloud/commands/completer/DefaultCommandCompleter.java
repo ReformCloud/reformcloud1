@@ -4,15 +4,14 @@
 
 package systems.reformcloud.commands.completer;
 
-import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
-import systems.reformcloud.commands.abstracts.CommandMap;
-import systems.reformcloud.commands.utility.Command;
-
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
+import systems.reformcloud.commands.abstracts.CommandMap;
+import systems.reformcloud.commands.utility.Command;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.06.2019
@@ -44,7 +43,7 @@ public final class DefaultCommandCompleter extends AbstractCommandCompleter impl
         } else {
             Command command = commandMap.fromFirstArgument(buffer);
             if (command != null) {
-                String[] args = buffer.replaceFirst(buffer.split(" ")[0] + " ", "").split(" ");
+                String[] args = buffer.replaceFirst(buffer.split(" ")[0], "").split(" ");
                 out.addAll(((TabCompleter) command).complete(buffer, args));
             }
         }

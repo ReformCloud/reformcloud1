@@ -4,11 +4,13 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -45,5 +47,14 @@ public final class CommandAddons extends Command implements Serializable {
         } else {
             commandSender.sendMessage("addons list");
         }
+    }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        if (args.length == 0) {
+            return Collections.singletonList("list");
+        }
+
+        return new ArrayList<>();
     }
 }

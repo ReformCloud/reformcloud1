@@ -12,10 +12,19 @@ import java.io.Serializable;
 
 public final class AutoStart implements Serializable {
 
+    /**
+     * The current state of the auto start
+     */
     private boolean enabled;
 
+    /**
+     * The max players when a server should be started
+     */
     private int playerMax;
 
+    /**
+     * The allowed
+     */
     private long allowAutoStartEverySeconds;
 
     @java.beans.ConstructorProperties({"enabled", "playerMax", "allowAutoStartEverySeconds"})

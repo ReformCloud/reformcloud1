@@ -4,9 +4,8 @@
 
 package systems.reformcloud.meta;
 
-import systems.reformcloud.meta.enums.TemplateBackend;
-
 import java.io.Serializable;
+import systems.reformcloud.meta.enums.TemplateBackend;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
@@ -16,10 +15,19 @@ public class Template implements Serializable {
 
     private static final long serialVersionUID = -7937892033580579125L;
 
+    /**
+     * The name of the template
+     */
     private String name;
 
+    /**
+     * The url of the template
+     */
     private String templateUrl;
 
+    /**
+     * The backend of the template
+     */
     private TemplateBackend templateBackend;
 
     @java.beans.ConstructorProperties({"name", "templateUrl", "templateBackend"})
