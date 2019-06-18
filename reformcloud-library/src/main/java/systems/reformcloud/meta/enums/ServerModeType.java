@@ -9,8 +9,20 @@ package systems.reformcloud.meta.enums;
  */
 
 public enum ServerModeType {
+    /**
+     * The server group can be used as lobby
+     */
     LOBBY,
+
+    /**
+     * The server is static an in an extra directory
+     */
     STATIC,
+
+    /**
+     * The server is dynamic and will be deleted after the stop and loaded
+     * out of a template
+     */
     DYNAMIC;
 
     /**

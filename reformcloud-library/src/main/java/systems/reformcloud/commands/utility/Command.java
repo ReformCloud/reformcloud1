@@ -4,13 +4,17 @@
 
 package systems.reformcloud.commands.utility;
 
+import systems.reformcloud.commands.completer.TabCompleter;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public abstract class Command implements Serializable {
+public abstract class Command implements TabCompleter, Serializable {
 
     /**
      * Some general information about the command
@@ -41,6 +45,11 @@ public abstract class Command implements Serializable {
      * @param args The given command arguments
      */
     public abstract void executeCommand(CommandSender commandSender, String[] args);
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        return new ArrayList<>();
+    }
 
     public String getName() {
         return this.name;

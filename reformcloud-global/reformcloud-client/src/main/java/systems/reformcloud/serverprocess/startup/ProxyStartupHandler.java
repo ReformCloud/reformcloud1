@@ -12,6 +12,7 @@ import systems.reformcloud.meta.CloudProcess;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
@@ -36,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -62,7 +64,9 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
     private Template template;
 
     private final Lock runtimeLock = new ReentrantLock();
+
     private long startupTime;
+
     private long finishedTime;
 
     /**
@@ -305,7 +309,7 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
 
                 final File dir = new File("reformcloud/apis");
                 if (dir.listFiles() != null) {
-                    Arrays.stream(dir.listFiles()).forEach(file -> {
+                    Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
                         if (file.getName().startsWith("ReformAPIVelocity")
                             && file.getName().endsWith(".jar")
                             && !file.getName().contains(StringUtil.VELOCITY_API_DOWNLOAD)) {
@@ -327,6 +331,8 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
                 proxyStartupInfo.getProxyGroup().getName(), proxyStartupInfo.getConfiguration(),
                 template, proxyStartupInfo.getId()),
             proxyStartupInfo.getProxyGroup(),
+            new ProcessStartupInformation(startupTime,
+                System.currentTimeMillis(), -1),
             ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
             this.port, 0, proxyStartupInfo.getProxyGroup().getMemory(), false, new ArrayList<>()
         );

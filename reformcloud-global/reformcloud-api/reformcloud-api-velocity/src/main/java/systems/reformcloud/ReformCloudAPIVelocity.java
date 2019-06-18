@@ -40,6 +40,7 @@ import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.api.event.NetworkEventAdapter;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
@@ -78,7 +79,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
 
     private final NettySocketClient nettySocketClient;
 
-    private final ChannelHandler channelHandler;
+    private final AbstractChannelHandler channelHandler;
 
     private ProxySettings proxySettings;
 
@@ -177,6 +178,10 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
 
     public static ReformCloudAPIVelocity getInstance() {
         return ReformCloudAPIVelocity.instance;
+    }
+
+    public void updateProxyInfo() {
+        this.updateProxyInfo(this.proxyInfo);
     }
 
     @Override
@@ -1220,7 +1225,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
         return this.nettySocketClient;
     }
 
-    public ChannelHandler getChannelHandler() {
+    public AbstractChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 

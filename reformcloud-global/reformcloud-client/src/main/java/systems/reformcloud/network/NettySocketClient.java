@@ -15,8 +15,8 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
-import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
@@ -38,8 +38,9 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
     /**
      * Connects to the ReformCloudController
      */
-    public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler,
-        boolean ssl) {
+    public void connect(EthernetAddress ethernetAddress,
+                        AbstractChannelHandler channelHandler,
+                        boolean ssl) {
         if (eventLoopGroup == null) {
             eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
         }
@@ -125,14 +126,6 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
 
     public int getConnections() {
         return this.connections;
-    }
-
-    public SslContext getSslContext() {
-        return this.sslContext;
-    }
-
-    public EventLoopGroup getEventLoopGroup() {
-        return this.eventLoopGroup;
     }
 
     public void setConnections(int connections) {

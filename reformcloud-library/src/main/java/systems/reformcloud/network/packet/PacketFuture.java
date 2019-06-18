@@ -4,7 +4,7 @@
 
 package systems.reformcloud.network.packet;
 
-import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 
 import java.io.Serializable;
@@ -34,7 +34,7 @@ public final class PacketFuture implements Serializable {
     /**
      * The channel handler used to identify the query packets
      */
-    private ChannelHandler channelHandler;
+    private AbstractChannelHandler channelHandler;
 
     /**
      * The sent packet to the other network participant
@@ -53,8 +53,8 @@ public final class PacketFuture implements Serializable {
      * @param packet The packet which should be sent
      * @param executorService The executor service which should be used to send the packets
      */
-    public PacketFuture(ChannelHandler channelHandler, Packet packet,
-        ExecutorService executorService) {
+    public PacketFuture(AbstractChannelHandler channelHandler, Packet packet,
+                        ExecutorService executorService) {
         this.completableFuture = new CompletableFuture<>();
         this.executorService = executorService;
         this.channelHandler = channelHandler;
@@ -69,8 +69,8 @@ public final class PacketFuture implements Serializable {
      * @param executorService The executor service which should be used to send the packets
      * @param to The name of the network participant who should receive the packet
      */
-    public PacketFuture(ChannelHandler channelHandler, Packet packet,
-        ExecutorService executorService, String to) {
+    public PacketFuture(AbstractChannelHandler channelHandler, Packet packet,
+                        ExecutorService executorService, String to) {
         this.completableFuture = new CompletableFuture<>();
         this.executorService = executorService;
         this.channelHandler = channelHandler;
@@ -229,7 +229,7 @@ public final class PacketFuture implements Serializable {
         return this.onFailure;
     }
 
-    public ChannelHandler getChannelHandler() {
+    public AbstractChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 

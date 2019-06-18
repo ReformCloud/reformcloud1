@@ -22,36 +22,84 @@ public class ServerGroup implements Serializable {
 
     private static final long serialVersionUID = -6849497313084944255L;
 
+    /**
+     * The name of the server group
+     */
     private String name;
 
+    /**
+     * The motd of the server group
+     */
     private String motd;
 
+    /**
+     * The join permission of the server
+     */
     private String joinPermission;
 
+    /**
+     * The list of the clients
+     */
     private List<String> clients;
 
+    /**
+     * All templates of the server group
+     */
     private List<Template> templates;
 
+    /**
+     * The max memory of the group
+     */
     private int memory;
 
+    /**
+     * The min online service count
+     */
     private int minOnline;
 
+    /**
+     * The max online count
+     */
     private int maxOnline;
 
+    /**
+     * The max players of the group
+     */
     private int maxPlayers;
 
+    /**
+     * The start port of the group
+     */
     private int startPort;
 
+    /**
+     * The maintenance state of the group
+     */
     private boolean maintenance;
 
+    /**
+     * The log save state of the group
+     */
     private boolean saveLogs;
 
+    /**
+     * The server type
+     */
     private ServerModeType serverModeType;
 
+    /**
+     * The auto start config
+     */
     private AutoStart autoStart;
 
+    /**
+     * The auto stop config
+     */
     private AutoStop autoStop;
 
+    /**
+     * The spigot version of the group
+     */
     private SpigotVersions spigotVersions;
 
     @java.beans.ConstructorProperties({"name", "motd", "joinPermission", "clients", "templates",
