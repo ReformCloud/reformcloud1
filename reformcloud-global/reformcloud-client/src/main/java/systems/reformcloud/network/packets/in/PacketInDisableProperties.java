@@ -6,7 +6,7 @@ package systems.reformcloud.network.packets.in;
 
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
-import systems.reformcloud.properties.PropertiesManager;
+import systems.reformcloud.properties.DefaultPropertiesManager;
 
 import java.io.Serializable;
 
@@ -18,8 +18,8 @@ public final class PacketInDisableProperties implements Serializable, NetworkInb
 
     @Override
     public void handle(Configuration configuration) {
-        if (PropertiesManager.available) {
-            PropertiesManager.getInstance().delete();
+        if (DefaultPropertiesManager.available) {
+            DefaultPropertiesManager.getInstance().delete();
         }
     }
 }

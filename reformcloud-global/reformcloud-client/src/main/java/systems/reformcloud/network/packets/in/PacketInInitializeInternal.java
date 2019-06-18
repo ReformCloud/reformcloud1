@@ -15,8 +15,8 @@ import systems.reformcloud.network.packets.out.PacketOutRequestParameters;
 import systems.reformcloud.network.packets.out.PacketOutRequestProperties;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncUpdateClientInfo;
 import systems.reformcloud.parameters.ParameterGroup;
+import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.properties.PropertiesConfig;
-import systems.reformcloud.properties.PropertiesManager;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.util.List;
@@ -66,7 +66,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
             ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
             new PacketOutRequestProperties(),
             (configuration1, resultID) ->
-                new PropertiesManager(
+                new DefaultPropertiesManager(
                     configuration1.getValue("config", new TypeToken<PropertiesConfig>() {
                     })),
             (configuration2, resultId) -> {

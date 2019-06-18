@@ -6,8 +6,10 @@ package systems.reformcloud.meta.info;
 
 import systems.reformcloud.meta.CloudProcess;
 import systems.reformcloud.meta.enums.ServerState;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
 import systems.reformcloud.meta.server.ServerGroup;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +26,8 @@ public final class ServerInfo implements Serializable {
 
     private ServerGroup serverGroup;
 
+    private ProcessStartupInformation processStartupInformation;
+
     private ServerState serverState;
 
     private String host;
@@ -37,16 +41,24 @@ public final class ServerInfo implements Serializable {
     private int maxMemory;
 
     private boolean full;
-
     private List<UUID> onlinePlayers;
 
-    @java.beans.ConstructorProperties({"cloudProcess", "serverGroup", "serverState", "host", "motd",
-        "port", "online", "maxMemory", "full", "onlinePlayers"})
-    public ServerInfo(CloudProcess cloudProcess, ServerGroup serverGroup, ServerState serverState,
-        String host, String motd, int port, int online, int maxMemory, boolean full,
-        List<UUID> onlinePlayers) {
+    @ConstructorProperties({"cloudProcess", "serverGroup", "processStartupInformation", "serverState",
+        "host", "motd", "port", "online", "maxMemory", "full", "onlinePlayers"})
+    public ServerInfo(CloudProcess cloudProcess,
+                      ServerGroup serverGroup,
+                      ProcessStartupInformation processStartupInformation,
+                      ServerState serverState,
+                      String host,
+                      String motd,
+                      int port,
+                      int online,
+                      int maxMemory,
+                      boolean full,
+                      List<UUID> onlinePlayers) {
         this.cloudProcess = cloudProcess;
         this.serverGroup = serverGroup;
+        this.processStartupInformation = processStartupInformation;
         this.serverState = serverState;
         this.host = host;
         this.motd = motd;
@@ -95,6 +107,10 @@ public final class ServerInfo implements Serializable {
 
     public List<UUID> getOnlinePlayers() {
         return this.onlinePlayers;
+    }
+
+    public ProcessStartupInformation getProcessStartupInformation() {
+        return processStartupInformation;
     }
 
     public void setCloudProcess(CloudProcess cloudProcess) {

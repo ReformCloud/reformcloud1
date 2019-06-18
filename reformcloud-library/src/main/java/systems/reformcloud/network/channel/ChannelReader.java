@@ -10,6 +10,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.event.events.IncomingPacketEvent;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.AuthenticationHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
@@ -31,10 +32,10 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
     /**
      * The channel handler instance
      */
-    private ChannelHandler channelHandler;
+    private AbstractChannelHandler channelHandler;
 
     @java.beans.ConstructorProperties({"channelHandler"})
-    public ChannelReader(ChannelHandler channelHandler) {
+    public ChannelReader(AbstractChannelHandler channelHandler) {
         this.channelHandler = channelHandler;
     }
 

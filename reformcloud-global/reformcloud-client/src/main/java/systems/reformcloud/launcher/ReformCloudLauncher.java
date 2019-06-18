@@ -17,6 +17,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.time.DateProvider;
 
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ import java.util.List;
  * @author _Klaro | Pasqual K. / created on 23.10.2018
  */
 
-final class ReformCloudLauncher {
+final class ReformCloudLauncher implements Serializable {
 
     /**
      * Main Method of ReformCloudClient
@@ -37,7 +38,7 @@ final class ReformCloudLauncher {
     public static synchronized void main(String[] args) throws Throwable {
         final List<String> options = Arrays.asList(args);
 
-        if (StringUtil.USER_NAME.equalsIgnoreCase("root")
+        if (StringUtil.USER_NAME.equals("root")
             && StringUtil.OS_NAME.toLowerCase().contains("linux")
             && !options.contains("--ignore-root")) {
             System.out.println("You cannot run ReformCloud as root user");

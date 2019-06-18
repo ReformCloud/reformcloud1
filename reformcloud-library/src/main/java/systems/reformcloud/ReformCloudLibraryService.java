@@ -26,19 +26,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.MultithreadEventExecutorGroup;
-import java.lang.management.ClassLoadingMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.Locale;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 import systems.reformcloud.api.AsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
@@ -46,13 +33,22 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.configurations.ConfigurationAdapter;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.ColouredConsoleProvider;
-import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.handler.Decoder;
 import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
+
+import java.lang.management.ClassLoadingMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -208,7 +204,7 @@ public final class ReformCloudLibraryService {
      *  @param channel        The given channel where all Handlers should be added
      * @param channelHandler The pre-initialized ChannelHandler where all channels are registered and
      */
-    public static void prepareChannel(Channel channel, ChannelHandler channelHandler) {
+    public static void prepareChannel(Channel channel, AbstractChannelHandler channelHandler) {
         channel.pipeline().addLast(
             new LengthDecoder(),
             new Decoder(),

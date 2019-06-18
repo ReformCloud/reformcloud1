@@ -37,6 +37,7 @@ import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.api.event.NetworkEventHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
@@ -74,7 +75,7 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
 
     private final NettySocketClient nettySocketClient;
 
-    private final ChannelHandler channelHandler;
+    private final AbstractChannelHandler channelHandler;
 
     private final ServerStartupInfo serverStartupInfo;
 
@@ -942,7 +943,7 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
         return nettySocketClient;
     }
 
-    public ChannelHandler getChannelHandler() {
+    public AbstractChannelHandler getChannelHandler() {
         return channelHandler;
     }
 

@@ -4,21 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import net.md_5.config.ConfigurationProvider;
 import net.md_5.config.YamlConfiguration;
 import systems.reformcloud.ReformCloudClient;
@@ -31,15 +16,12 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.network.packets.out.PacketOutAddProcess;
-import systems.reformcloud.network.packets.out.PacketOutGetControllerTemplate;
-import systems.reformcloud.network.packets.out.PacketOutRemoveProcess;
-import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
-import systems.reformcloud.network.packets.out.PacketOutUpdateControllerTemplate;
-import systems.reformcloud.properties.PropertiesManager;
+import systems.reformcloud.network.packets.out.*;
+import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
@@ -47,6 +29,18 @@ import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.utility.startup.ServiceAble;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -73,8 +67,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
     private boolean firstGroupStart;
 
     private long startupTime;
-
-    private long finishedTime;
 
     private final Lock runtimeLock = new ReentrantLock();
 
@@ -360,8 +352,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .equals(SpigotVersions.GLOWSTONE_1_11_2)
             || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
-            if (PropertiesManager.available && PropertiesManager.getInstance() != null) {
-                PropertiesManager.getInstance()
+            if (DefaultPropertiesManager.available && DefaultPropertiesManager.getInstance().isPresent()) {
+                DefaultPropertiesManager.getInstance()
                     .fill(this.serverStartupInfo.getServerGroup().getName(), properties);
             }
 
@@ -449,7 +441,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
             final File dir = new File("reformcloud/apis");
             if (dir.listFiles() != null) {
-                Arrays.stream(dir.listFiles()).forEach(file -> {
+                Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
                     if (file.getName().startsWith("ReformAPISpigot")
                         && file.getName().endsWith(".jar")
                         && !file.getName().contains(StringUtil.SPIGOT_API_DOWNLOAD)) {
@@ -469,7 +461,10 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
                 serverStartupInfo.getServerGroup().getName(), serverStartupInfo.getConfiguration(),
                 loaded, serverStartupInfo.getId()),
-            serverStartupInfo.getServerGroup(), ServerState.NOT_READY,
+            serverStartupInfo.getServerGroup(),
+            new ProcessStartupInformation(startupTime,
+                System.currentTimeMillis(), -1),
+            ServerState.NOT_READY,
             ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
             serverStartupInfo.getServerGroup().getMotd(), this.port, 0,
             serverStartupInfo.getServerGroup().getMemory(),
@@ -551,8 +546,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .registerServerProcess(serverStartupInfo.getName(), this);
         ReformCloudClient.getInstance().getClientInfo().getStartedServers()
             .add(serverInfo.getCloudProcess().getName());
-
-        this.finishedTime = System.currentTimeMillis();
 
         this.processStartupStage = ProcessStartupStage.DONE;
     }
@@ -718,7 +711,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
     @Override
     public String uploadLog() throws IOException {
         if (!this.isAlive()) {
-            return null;
+            return "Could not upload log - process is not running anymore";
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -734,39 +727,12 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         shutdown(true);
     }
 
-    public boolean isForge() {
-        return this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_8_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_10_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_11_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_12_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEVANILLA_1_11_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEVANILLA_1_12_2);
-    }
-
-    public Path getPath() {
-        return this.path;
-    }
-
     public ServerStartupInfo getServerStartupInfo() {
         return this.serverStartupInfo;
     }
 
     public Process getProcess() {
         return this.process;
-    }
-
-    public int getPort() {
-        return this.port;
     }
 
     public boolean isToShutdown() {
@@ -785,15 +751,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         return this.processStartupStage;
     }
 
-    public boolean isFirstGroupStart() {
-        return this.firstGroupStart;
-    }
-
     public long getStartupTime() {
         return this.startupTime;
-    }
-
-    public long getFinishedTime() {
-        return this.finishedTime;
     }
 }

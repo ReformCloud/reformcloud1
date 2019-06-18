@@ -58,5 +58,9 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
                         TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
                     )
         );
+
+        ReformCloudAPISpigot.getInstance().getServerInfo().getProcessStartupInformation()
+            .setStartupFinishedTime(System.currentTimeMillis());
+        ReformCloudAPISpigot.getInstance().update();
     }
 }

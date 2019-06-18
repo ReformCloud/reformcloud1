@@ -101,5 +101,9 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
                 ReformCloudAPIVelocity.getInstance().setProxySettings(proxySettings.orElse(null));
             }
         );
+
+        ReformCloudAPIVelocity.getInstance().getProxyInfo().getProcessStartupInformation()
+            .setStartupFinishedTime(System.currentTimeMillis());
+        ReformCloudAPIVelocity.getInstance().updateProxyInfo();
     }
 }

@@ -56,6 +56,7 @@ import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketServer;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -112,7 +113,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private final SavePlayerDatabase playerDatabase = new PlayerDatabase();
 
-    private final ChannelHandler channelHandler;
+    private final AbstractChannelHandler channelHandler;
 
     private final AddonLoader addonParallelLoader = new AddonParallelLoader();
 
@@ -1467,7 +1468,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.playerDatabase;
     }
 
-    public ChannelHandler getChannelHandler() {
+    public AbstractChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 

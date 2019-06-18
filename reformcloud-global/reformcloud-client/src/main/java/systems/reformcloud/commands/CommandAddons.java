@@ -32,7 +32,6 @@ public final class CommandAddons extends Command implements Serializable {
                 ReformCloudClient.getInstance().getColouredConsoleProvider().emptyLine();
                 ReformCloudClient.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
-                    .stream()
                     .forEach(e -> commandSender.sendMessage(
                         "    - " + e.getAddonName() + " | Version: " + e.getAddonClassConfig()
                             .getVersion()));

@@ -9,8 +9,11 @@ import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.events.OutgoingPacketEvent;
+import systems.reformcloud.meta.cluster.NetworkGlobalCluster;
+import systems.reformcloud.meta.cluster.channel.ClusterChannelInformation;
 import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
@@ -26,7 +29,7 @@ import java.util.stream.Collectors;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public final class ChannelHandler implements Serializable {
+public final class ChannelHandler extends AbstractChannelHandler implements Serializable {
 
     /**
      * All registered channels of the cloud system
@@ -51,12 +54,24 @@ public final class ChannelHandler implements Serializable {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
     }
 
+    @Override
+    public NetworkGlobalCluster shiftClusterNetworkInformation() {
+        List<ClusterChannelInformation> information = new ArrayList<>();
+        return new NetworkGlobalCluster(
+            this.channelHandlerContextMap.keySet(),
+            information,
+            this,
+            ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork()
+        );
+    }
+
     /**
      * Gets a specific channel handler context by the name of the network participant
      *
      * @param name The name of the network participant
      * @return The channel handler context or {@code null} if the channel can't be found
      */
+    @Override
     public ChannelHandlerContext getChannel(String name) {
         return this.channelHandlerContextMap.getOrDefault(name, null);
     }
@@ -67,6 +82,7 @@ public final class ChannelHandler implements Serializable {
      * @param name The name of the network participant
      * @return If the channel is registered in the cloud system
      */
+    @Override
     public boolean isChannelRegistered(final String name) {
         return this.channelHandlerContextMap.containsKey(name);
     }
@@ -77,7 +93,8 @@ public final class ChannelHandler implements Serializable {
      * @param channelHandlerContext The channel handler context of the network participant
      * @return If the channel is registered in the cloud system
      */
-    public boolean isChannelRegistered(final ChannelHandlerContext channelHandlerContext) {
+    @Override
+    public boolean isChannelRegistered(ChannelHandlerContext channelHandlerContext) {
         for (Map.Entry<String, ChannelHandlerContext> map : this.channelHandlerContextMap
             .entrySet()) {
             if (map.getValue().equals(channelHandlerContext)) {
@@ -93,6 +110,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @return A set containing all registered channels
      */
+    @Override
     public Set<String> getChannels() {
         return this.channelHandlerContextMap.keySet();
     }
@@ -102,6 +120,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @return A list containing all registered channels handler contexts
      */
+    @Override
     public List<ChannelHandlerContext> getChannelList() {
         return new ArrayList<>(this.channelHandlerContextMap.values());
     }
@@ -112,6 +131,7 @@ public final class ChannelHandler implements Serializable {
      * @param name The name of the network participant
      * @param channelHandlerContext The channel handler context of the network participant
      */
+    @Override
     public void registerChannel(final String name, ChannelHandlerContext channelHandlerContext) {
         this.channelHandlerContextMap.put(name, channelHandlerContext);
     }
@@ -121,6 +141,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @param name The name of the network participant
      */
+    @Override
     public void unregisterChannel(String name) {
         this.channelHandlerContextMap.remove(name);
     }
@@ -128,6 +149,7 @@ public final class ChannelHandler implements Serializable {
     /**
      * Unregisters all registered channels
      */
+    @Override
     public void clearChannels() {
         this.channelHandlerContextMap.clear();
     }
@@ -138,6 +160,7 @@ public final class ChannelHandler implements Serializable {
      * @param channelHandlerContext The channel handler context of the network participant
      * @return The specific network participant name
      */
+    @Override
     public String getChannelNameByValue(final ChannelHandlerContext channelHandlerContext) {
         for (Map.Entry<String, ChannelHandlerContext> entry : this.channelHandlerContextMap
             .entrySet()) {
@@ -179,6 +202,7 @@ public final class ChannelHandler implements Serializable {
      * @param packet The packet which should be sent
      * @return If the cloud could send the packet into the channel
      */
+    @Override
     public boolean sendPacketSynchronized(final String channel, final Packet packet) {
         if (this.channelHandlerContextMap.containsKey(channel)) {
             this.sendPacket0(packet, this.channelHandlerContextMap.get(channel));
@@ -193,6 +217,7 @@ public final class ChannelHandler implements Serializable {
      * @param to The name of the network participant
      * @param packet The packet which should be sent
      */
+    @Override
     public void sendDirectPacket(String to, Packet packet) {
         if (!this.channelHandlerContextMap.containsKey(to)) {
             return;
@@ -208,6 +233,7 @@ public final class ChannelHandler implements Serializable {
      * @param packets The packets which should be sent
      * @return If the cloud could send the packet into the channel
      */
+    @Override
     public boolean sendPacketSynchronized(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel)) {
             for (Packet packet : packets) {
@@ -225,6 +251,7 @@ public final class ChannelHandler implements Serializable {
      * @param packet The packet which should be sent
      * @return If the cloud could send the packet into the channel
      */
+    @Override
     public boolean sendPacketAsynchronous(final String channel, final Packet packet) {
         CompletableFuture.runAsync(() -> {
             if (this.channelHandlerContextMap.containsKey(channel)) {
@@ -242,6 +269,7 @@ public final class ChannelHandler implements Serializable {
      * @param packets The packets which should be sent
      * @return If the cloud could send the packet into the channel
      */
+    @Override
     public boolean sendPacketAsynchronous(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel)) {
             for (Packet packet : packets) {
@@ -262,9 +290,10 @@ public final class ChannelHandler implements Serializable {
      * @param onFailure The handler which should be called if the query fails
      * @return If the creation of the future was successful
      */
+    @Override
     public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
-        final NetworkQueryInboundHandler handler,
-        final NetworkQueryInboundHandler onFailure) {
+                                       final NetworkQueryInboundHandler handler,
+                                       final NetworkQueryInboundHandler onFailure) {
         if (!this.channelHandlerContextMap.containsKey(channel)) {
             return false;
         }
@@ -290,8 +319,9 @@ public final class ChannelHandler implements Serializable {
      * @param handler The handler which should be called if the query succeeds
      * @return If the creation of the future was successful
      */
+    @Override
     public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
-        final NetworkQueryInboundHandler handler) {
+                                       final NetworkQueryInboundHandler handler) {
         if (!this.channelHandlerContextMap.containsKey(channel)) {
             return false;
         }
@@ -316,8 +346,9 @@ public final class ChannelHandler implements Serializable {
      * @param packet The packet which should be sent
      * @return The created packet future
      */
+    @Override
     public PacketFuture sendPacketQuerySync(final String channel, final String from,
-        final Packet packet) {
+                                            final Packet packet) {
         if (!this.channelHandlerContextMap.containsKey(channel)) {
             return null;
         }
@@ -336,6 +367,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @param packet The packet which should be sent
      */
+    @Override
     public void sendToAllSynchronized(Packet packet) {
         this.channelHandlerContextMap.values()
             .forEach(consumer -> this.sendPacket0(packet, consumer));
@@ -346,6 +378,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @param packet The packet which should be sent
      */
+    @Override
     public void sendToAllAsynchronous(Packet packet) {
         CompletableFuture.runAsync(() -> this.channelHandlerContextMap.values()
             .forEach(consumer -> this.sendPacket0(packet, consumer)));
@@ -356,6 +389,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @param packet The packet which should be sent
      */
+    @Override
     public void sendToAllDirect(Packet packet) {
         this.channelHandlerContextMap.forEach((key, value) -> this.sendDirectPacket(key, packet));
     }
@@ -365,6 +399,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @param packets The packets which should be sent
      */
+    @Override
     public void sendToAllSynchronized(Packet... packets) {
         for (Packet packet : packets) {
             this.sendToAllSynchronized(packet);
@@ -376,6 +411,7 @@ public final class ChannelHandler implements Serializable {
      *
      * @param packets The packets which should be sent
      */
+    @Override
     public void sendToAllAsynchronous(Packet... packets) {
         for (Packet packet : packets) {
             this.sendToAllAsynchronous(packet);
@@ -388,6 +424,7 @@ public final class ChannelHandler implements Serializable {
      * @param provider The server process manager which should be used to identify the lobbies
      * @param packets The packets which should be send
      */
+    @Override
     public void sendToAllLobbies(ServerProcessManager provider, Packet... packets) {
         List<ServerInfo> lobbies = provider
             .getAllRegisteredServerProcesses()
@@ -407,6 +444,7 @@ public final class ChannelHandler implements Serializable {
      * @param provider The server process manager which should be used to identify the lobbies
      * @param packets The packets which should be send
      */
+    @Override
     public void sendToAllLobbiesDirect(ServerProcessManager provider, Packet... packets) {
         List<ServerInfo> lobbies = provider
             .getAllRegisteredServerProcesses()
@@ -427,15 +465,18 @@ public final class ChannelHandler implements Serializable {
      * @param resultID The result id which should be set
      * @param component The current component name
      */
+    @Override
     public void toQueryPacket(Packet packet, UUID resultID, String component) {
         packet.setResult(resultID);
         packet.getConfiguration().addStringValue("from", component);
     }
 
+    @Override
     public Map<UUID, PacketFuture> getResults() {
         return this.results;
     }
 
+    @Override
     public ExecutorService getExecutorService() {
         return this.executorService;
     }

@@ -86,7 +86,7 @@ public final class SaveAPIImpl implements Serializable, SaveAPIService {
 
     @Override
     public Optional<List<Client>> getAllClients() {
-        return Optional.ofNullable(ReformCloudClient.getInstance().getAllClients());
+        return Optional.of(ReformCloudClient.getInstance().getAllClients());
     }
 
     @Override
@@ -96,28 +96,28 @@ public final class SaveAPIImpl implements Serializable, SaveAPIService {
 
     @Override
     public Optional<List<ServerGroup>> getAllServerGroups() {
-        return Optional.ofNullable(ReformCloudClient.getInstance().getAllServerGroups());
+        return Optional.of(ReformCloudClient.getInstance().getAllServerGroups());
     }
 
     @Override
     public Optional<List<ProxyGroup>> getAllProxyGroups() {
-        return Optional.ofNullable(ReformCloudClient.getInstance().getAllProxyGroups());
+        return Optional.of(ReformCloudClient.getInstance().getAllProxyGroups());
     }
 
     @Override
     public Optional<List<ServerInfo>> getAllRegisteredServers() {
-        return Optional.ofNullable(ReformCloudClient.getInstance().getAllRegisteredServers());
+        return Optional.of(ReformCloudClient.getInstance().getAllRegisteredServers());
     }
 
     @Override
     public Optional<List<ProxyInfo>> getAllRegisteredProxies() {
-        return Optional.ofNullable(ReformCloudClient.getInstance().getAllRegisteredProxies());
+        return Optional.of(ReformCloudClient.getInstance().getAllRegisteredProxies());
     }
 
     @Override
     public Optional<List<ServerInfo>> getAllRegisteredServers(String groupName) {
         return Optional
-            .ofNullable(ReformCloudClient.getInstance().getAllRegisteredServers(groupName));
+            .of(ReformCloudClient.getInstance().getAllRegisteredServers(groupName));
     }
 
     @Override

@@ -71,14 +71,11 @@ public final class Require implements Serializable {
      * @param check The argument which should be checked
      * @param message The message which should be display in the exception when the argument is non
      * null
-     * @return If the argument is true
      */
-    public static boolean isTrue(boolean check, String message) {
+    public static void isTrue(boolean check, String message) {
         if (!check) {
             throw new IllegalStateException(message);
         }
-
-        return true;
     }
 
     /**
@@ -87,13 +84,10 @@ public final class Require implements Serializable {
      * @param check The argument which should be checked
      * @param message The message which should be display in the exception when the argument is non
      * null
-     * @return If the argument is false
      */
-    public static boolean isFalse(boolean check, String message) {
+    public static void isFalse(boolean check, String message) {
         if (check) {
             throw new IllegalStateException(message);
         }
-
-        return true;
     }
 }

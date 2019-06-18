@@ -5,8 +5,10 @@
 package systems.reformcloud.meta.info;
 
 import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,8 @@ public final class ProxyInfo implements Serializable {
 
     private ProxyGroup proxyGroup;
 
+    private ProcessStartupInformation processStartupInformation;
+
     private String host;
 
     private int port;
@@ -35,12 +39,20 @@ public final class ProxyInfo implements Serializable {
 
     private List<UUID> onlinePlayers;
 
-    @java.beans.ConstructorProperties({"cloudProcess", "proxyGroup", "host", "port", "online",
-        "maxMemory", "full", "onlinePlayers"})
-    public ProxyInfo(CloudProcess cloudProcess, ProxyGroup proxyGroup, String host, int port,
-        int online, int maxMemory, boolean full, List<UUID> onlinePlayers) {
+    @ConstructorProperties({"cloudProcess", "proxyGroup", "processStartupInformation",
+        "host", "port", "online", "maxMemory", "full", "onlinePlayers"})
+    public ProxyInfo(CloudProcess cloudProcess,
+                     ProxyGroup proxyGroup,
+                     ProcessStartupInformation processStartupInformation,
+                     String host,
+                     int port,
+                     int online,
+                     int maxMemory,
+                     boolean full,
+                     List<UUID> onlinePlayers) {
         this.cloudProcess = cloudProcess;
         this.proxyGroup = proxyGroup;
+        this.processStartupInformation = processStartupInformation;
         this.host = host;
         this.port = port;
         this.online = online;
@@ -71,6 +83,10 @@ public final class ProxyInfo implements Serializable {
 
     public int getMaxMemory() {
         return this.maxMemory;
+    }
+
+    public ProcessStartupInformation getProcessStartupInformation() {
+        return processStartupInformation;
     }
 
     public boolean isFull() {

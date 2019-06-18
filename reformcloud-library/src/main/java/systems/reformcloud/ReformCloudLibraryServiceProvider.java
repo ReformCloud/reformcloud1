@@ -9,7 +9,9 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.meta.cluster.NetworkGlobalCluster;
 import systems.reformcloud.network.NettyHandler;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.threading.TaskScheduler;
@@ -45,7 +47,7 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * The channel handler of the cloud system
      */
-    private ChannelHandler channelHandler;
+    private AbstractChannelHandler channelHandler;
 
     /**
      * The logger provider of the cloud system
@@ -110,7 +112,7 @@ public final class ReformCloudLibraryServiceProvider {
         return this.eventManager;
     }
 
-    private ChannelHandler getChannelHandler() {
+    private AbstractChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 
@@ -148,6 +150,10 @@ public final class ReformCloudLibraryServiceProvider {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public NetworkGlobalCluster shiftClusterNetworkInformation() {
+        return this.channelHandler.shiftClusterNetworkInformation();
     }
 
     public boolean equals(final Object o) {

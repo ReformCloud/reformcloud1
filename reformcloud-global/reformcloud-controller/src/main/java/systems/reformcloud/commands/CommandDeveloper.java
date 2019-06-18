@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.out.PacketOutEnableDebug;
@@ -176,12 +177,15 @@ public final class CommandDeveloper extends Command implements Serializable {
                 return;
             }
 
-            if (client.getClientInfo().isReady() && args[1].equalsIgnoreCase("disable")) {
+            ClientInfo clientInfo =
+                ReformCloudController.getInstance().getClientInfos().get(client.getName());
+
+            if (clientInfo.isReady() && args[1].equalsIgnoreCase("disable")) {
                 commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
                     .getCommand_error_occurred()
                     .replace("%message%", "Client isn't in standby mode"));
                 return;
-            } else if (!client.getClientInfo().isReady() && args[1].equalsIgnoreCase("enable")) {
+            } else if (!clientInfo.isReady() && args[1].equalsIgnoreCase("enable")) {
                 commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
                     .getCommand_error_occurred()
                     .replace("%message%", "Client is already in standby mode"));
@@ -191,7 +195,7 @@ public final class CommandDeveloper extends Command implements Serializable {
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                 client.getName(), new PacketOutSyncStandby(args[1].equalsIgnoreCase("enable"))
             );
-            client.getClientInfo().setReady(args[1].equalsIgnoreCase("enable"));
+            clientInfo.setReady(args[1].equalsIgnoreCase("enable"));
             if (args[1].equalsIgnoreCase("enable")) {
                 commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
                     .getCommand_developer_standby_enable()
