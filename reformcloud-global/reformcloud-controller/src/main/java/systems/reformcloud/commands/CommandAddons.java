@@ -19,7 +19,7 @@ import systems.reformcloud.commands.utility.CommandSender;
 public final class CommandAddons extends Command implements Serializable {
 
     public CommandAddons() {
-        super("addons", "List, enable and disable addons", "reformcloud.command.addons",
+        super("addons", "List addons", "reformcloud.command.addons",
             new String[0]);
     }
 

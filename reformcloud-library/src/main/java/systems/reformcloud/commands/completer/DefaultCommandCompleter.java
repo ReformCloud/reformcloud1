@@ -6,12 +6,12 @@ package systems.reformcloud.commands.completer;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
 import systems.reformcloud.commands.abstracts.CommandMap;
 import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.utility.map.MapUtility;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.06.2019
@@ -43,13 +43,21 @@ public final class DefaultCommandCompleter extends AbstractCommandCompleter impl
         } else {
             Command command = commandMap.fromFirstArgument(buffer);
             if (command != null) {
-                String[] args = buffer.replaceFirst(buffer.split(" ")[0], "").split(" ");
-                out.addAll(((TabCompleter) command).complete(buffer, args));
+                String[] args = replace(buffer);
+                Collection<String> completed = MapUtility.filterAll(((TabCompleter) command)
+                    .complete(buffer, args), e -> e.toLowerCase().startsWith(buffer.toLowerCase()));
+                out.addAll(completed);
             }
         }
 
         Collections.sort(out);
         candidates.addAll(out);
         return calculateCursorPosition(buffer, cursor);
+    }
+
+    private String[] replace(String buffer) {
+        List<String> args = new LinkedList<>(Arrays.asList(buffer.split(" ")));
+        args.remove(buffer.split(" ")[0]);
+        return args.toArray(new String[0]);
     }
 }
