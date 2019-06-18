@@ -103,6 +103,8 @@ public enum SpigotVersions implements Serializable {
     /**
      * SpongeVanilla Versions
      */
+    SPONGEVANILLA_1_8_9("SpongeVanilla 1.8.9", "1.8.9",
+        "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.8.9-4.2.0-BETA-352.jar"),    
     SPONGEVANILLA_1_10_2("SpongeVanilla 1.10.2", "1.10.2",
         "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.10.2-5.2.0-BETA-403.jar"),
     SPONGEVANILLA_1_11_2("SpongeVanilla 1.11.2", "1.11.2",
@@ -115,7 +117,7 @@ public enum SpigotVersions implements Serializable {
     SPONGEFORGE_1_8_9("SpongeForge 1.8.9", "1.8.9",
         "https://dl.reformcloud.systems/forge/sponge-1.8.9.zip"),
     SPONGEFORGE_1_10_2("SpongeForge 1.10.2", "1.10.2",
-        "https://dl.reformcloud.systems/forge/sponge-1.10.2.zip"),
+        "https://dl.reformcloud.systems/forge/sponge-1.10.2.zip"),    
     SPONGEFORGE_1_11_2("SpongeForge 1.11.2", "1.11.2",
         "https://dl.reformcloud.systems/forge/sponge-1.11.2.zip"),
     SPONGEFORGE_1_12_2("SpongeForge 1.12.2", "1.12.2",
@@ -155,8 +157,18 @@ public enum SpigotVersions implements Serializable {
     /**
      * GlowStone Versions
      */
+    GLOWSTONE_1_7_9("Glowstone 1.7.9", "1.7.9",
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.7.9-SNAPSHOT.jar"),
+    GLOWSTONE_1_8_9("Glowstone 1.8.9", "1.8.9",
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.8.9-SNAPSHOT.jar"),
+    GLOWSTONE_1_9_4("Glowstone 1.9.4", "1.9.4",
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.9.4-SNAPSHOT.jar"),    
+    GLOWSTONE_1_10_2("Glowstone 1.10.2", "1.10.2",
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar"), 
+    GLOWSTONE_1_11_2("Glowstone 1.11.2", "1.11.2",
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.11.2-SNAPSHOT.jar"),       
     GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar");
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.12.2-RELEASE.jar");
 
     private static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();

@@ -82,7 +82,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
      * Creates a instance of a CloudServerStartupHandler
      */
     public CloudServerStartupHandler(final ServerStartupInfo serverStartupInfo,
-        final boolean firstGroupStart) {
+                                     final boolean firstGroupStart) {
         this.startupTime = System.currentTimeMillis();
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.serverStartupInfo = serverStartupInfo;
@@ -191,6 +191,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         }
 
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()            
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_11_2)
@@ -251,8 +253,20 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
-        if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_12_2))
+        {
+
             if (!Files.exists(Paths.get(path + "/config"))) {
                 FileUtils.createDirectory(Paths.get(path + "/config"));
             }
@@ -281,7 +295,17 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         }
 
         Properties properties = new Properties();
-        if (serverStartupInfo.getServerGroup().getSpigotVersions()
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             try (InputStreamReader inputStreamReader = new InputStreamReader(
                 Files.newInputStream(Paths.get(path + "/config/glowstone.yml")),
@@ -325,6 +349,16 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         }
 
         if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             if (PropertiesManager.available && PropertiesManager.getInstance() != null) {
                 PropertiesManager.getInstance()
@@ -709,6 +743,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .equals(SpigotVersions.SPONGEFORGE_1_11_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEFORGE_1_12_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
