@@ -191,6 +191,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         }
 
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()            
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_11_2)
@@ -741,6 +743,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .equals(SpigotVersions.SPONGEFORGE_1_11_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEFORGE_1_12_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
