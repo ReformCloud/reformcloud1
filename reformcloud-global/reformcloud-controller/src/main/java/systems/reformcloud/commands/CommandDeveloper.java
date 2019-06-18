@@ -52,12 +52,12 @@ public final class CommandDeveloper extends Command implements Serializable {
                             commandSender.sendMessage(
                                 ReformCloudController.getInstance().getLoadedLanguage()
                                     .getCommand_developer_debug_enable()
-                                    .replace("%name%", serverInfo.getCloudProcess().getName()));
+                                    .replace("%name%", "§e" + serverInfo.getCloudProcess().getName() + "§r"));
                         } else {
                             commandSender.sendMessage(
                                 ReformCloudController.getInstance().getLoadedLanguage()
                                     .getCommand_developer_debug_disable()
-                                    .replace("%name%", serverInfo.getCloudProcess().getName()));
+                                    .replace("%name%", "§e" + serverInfo.getCloudProcess().getName() + "§r"));
                         }
                         break;
                     }
@@ -82,12 +82,12 @@ public final class CommandDeveloper extends Command implements Serializable {
                             commandSender.sendMessage(
                                 ReformCloudController.getInstance().getLoadedLanguage()
                                     .getCommand_developer_debug_enable()
-                                    .replace("%name%", proxyInfo.getCloudProcess().getName()));
+                                    .replace("%name%", "§e" + proxyInfo.getCloudProcess().getName() + "§r"));
                         } else {
                             commandSender.sendMessage(
                                 ReformCloudController.getInstance().getLoadedLanguage()
                                     .getCommand_developer_debug_disable()
-                                    .replace("%name%", proxyInfo.getCloudProcess().getName()));
+                                    .replace("%name%", "§e" + proxyInfo.getCloudProcess().getName() + "§r"));
                         }
                         break;
                     }
@@ -111,12 +111,12 @@ public final class CommandDeveloper extends Command implements Serializable {
                             commandSender.sendMessage(
                                 ReformCloudController.getInstance().getLoadedLanguage()
                                     .getCommand_developer_debug_enable()
-                                    .replace("%name%", client.getName()));
+                                    .replace("%name%", "§e" + client.getName() + "§r"));
                         } else {
                             commandSender.sendMessage(
                                 ReformCloudController.getInstance().getLoadedLanguage()
                                     .getCommand_developer_debug_disable()
-                                    .replace("%name%", client.getName()));
+                                    .replace("%name%", "§e" + client.getName() + "§r"));
                         }
                         break;
                     }
@@ -142,12 +142,12 @@ public final class CommandDeveloper extends Command implements Serializable {
                     commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage()
                             .getCommand_developer_debug_enable()
-                            .replace("%name%", "everywhere"));
+                            .replace("%name%", "§eeverywhere§r"));
                 } else {
                     commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage()
                             .getCommand_developer_debug_disable()
-                            .replace("%name%", "everywhere"));
+                            .replace("%name%", "§eeverywhere§r"));
                 }
                 return;
             }
@@ -159,12 +159,12 @@ public final class CommandDeveloper extends Command implements Serializable {
                     commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage()
                             .getCommand_developer_debug_enable()
-                            .replace("%name%", "controller"));
+                            .replace("%name%", "§econtroller§r"));
                 } else {
                     commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage()
                             .getCommand_developer_debug_disable()
-                            .replace("%name%", "controller"));
+                            .replace("%name%", "§econtroller§r"));
                 }
                 return;
             }
@@ -196,14 +196,15 @@ public final class CommandDeveloper extends Command implements Serializable {
                 client.getName(), new PacketOutSyncStandby(args[1].equalsIgnoreCase("enable"))
             );
             clientInfo.setReady(args[1].equalsIgnoreCase("enable"));
+
             if (args[1].equalsIgnoreCase("enable")) {
                 commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
                     .getCommand_developer_standby_enable()
-                    .replace("%name%", client.getName()));
+                    .replace("%name%", "§e" + client.getName() + "§r"));
             } else {
                 commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
                     .getCommand_developer_standby_disable()
-                    .replace("%name%", client.getName()));
+                    .replace("%name%", "§e" + client.getName() + "§r"));
             }
             return;
         }

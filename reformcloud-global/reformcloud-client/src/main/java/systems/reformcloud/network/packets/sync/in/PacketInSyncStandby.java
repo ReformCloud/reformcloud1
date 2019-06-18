@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.packets.out.PacketOutUpdateInternalCloudNetwork;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncUpdateClientInfo;
 
 import java.io.Serializable;
@@ -31,6 +32,10 @@ public final class PacketInSyncStandby implements Serializable, NetworkInboundHa
                 new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo())
             );
 
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket(
+                "ReformCloudController",
+                new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
+
             ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
 
             ReformCloudClient.getInstance().getCloudProcessScreenService()
@@ -45,6 +50,11 @@ public final class PacketInSyncStandby implements Serializable, NetworkInboundHa
                 "ReformCloudController",
                 new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo())
             );
+
+            ReformCloudClient.getInstance().getChannelHandler().sendDirectPacket(
+                "ReformCloudController",
+                new PacketOutUpdateInternalCloudNetwork(ReformCloudClient.getInstance().getInternalCloudNetwork()));
+
         }
     }
 }
