@@ -159,12 +159,12 @@ public final class CommandDeveloper extends Command implements Serializable {
                     commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage()
                             .getCommand_developer_debug_enable()
-                            .replace("%name%", "§econtroller§r"));
+                            .replace("%name%", "§eController§r"));
                 } else {
                     commandSender.sendMessage(
                         ReformCloudController.getInstance().getLoadedLanguage()
                             .getCommand_developer_debug_disable()
-                            .replace("%name%", "§econtroller§r"));
+                            .replace("%name%", "§eController§r"));
                 }
                 return;
             }
