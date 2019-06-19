@@ -10,6 +10,7 @@ import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author _Klaro | Pasqual K. / created on 15.04.2019
@@ -84,6 +85,14 @@ public abstract class AbstractCommandManager implements Serializable {
      * @return If the execution was successful
      */
     public abstract boolean dispatchCommand(String arg1);
+
+    /**
+     * Creates a new command sender with specific permissions
+     *
+     * @param arg1 The permissions of the new command sender
+     * @return A default command sender
+     */
+    public abstract CommandSender newCommandSender(Map<String, Boolean> arg1);
 
     /**
      * Creates a new command manger

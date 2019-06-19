@@ -4,15 +4,18 @@
 
 package systems.reformcloud.meta.info;
 
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.enums.ServerState;
+import systems.reformcloud.meta.environment.RuntimeEnvironment;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
+import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.utility.cloudsystem.EthernetAddress;
+
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
-import systems.reformcloud.meta.CloudProcess;
-import systems.reformcloud.meta.enums.ServerState;
-import systems.reformcloud.meta.process.ProcessStartupInformation;
-import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
@@ -41,6 +44,12 @@ public final class ServerInfo implements Serializable {
      * The server state of the process
      */
     private ServerState serverState;
+
+    /**
+     * The current runtime operating system (set by the client)
+     */
+    private final RuntimeEnvironment runtimeEnvironment =
+        ReformCloudLibraryService.runtimeEnvironment();
 
     /**
      * The host of the current server
@@ -113,6 +122,10 @@ public final class ServerInfo implements Serializable {
 
     public ServerState getServerState() {
         return this.serverState;
+    }
+
+    public RuntimeEnvironment getRuntimeEnvironment() {
+        return runtimeEnvironment;
     }
 
     public String getHost() {

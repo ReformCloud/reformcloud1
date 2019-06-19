@@ -18,16 +18,34 @@ public class ServerStartupInfo implements Serializable {
 
     private static final long serialVersionUID = 3276684735275715610L;
 
+    /**
+     * The uid of the server
+     */
     private UUID uid;
 
+    /**
+     * The name of the server
+     */
     private String name;
 
+    /**
+     * The template of the server which should be loaded
+     */
     private String template;
 
+    /**
+     * The server group of the server
+     */
     private ServerGroup serverGroup;
 
+    /**
+     * The pre config given by the user
+     */
     private Configuration configuration;
 
+    /**
+     * The id of the server
+     */
     private int id;
 
     @java.beans.ConstructorProperties({"uid", "name", "template", "serverGroup", "configuration",

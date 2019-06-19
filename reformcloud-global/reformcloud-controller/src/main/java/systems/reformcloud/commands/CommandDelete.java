@@ -176,7 +176,7 @@ public final class CommandDelete extends Command implements Serializable {
                     .getCloudConfiguration()
                     .getWebUsers()
                     .stream()
-                    .filter(e -> e.getUser().equals(args[1]))
+                    .filter(e -> e.getUserName().equals(args[1]))
                     .findFirst()
                     .orElse(null);
                 if (webUser == null) {

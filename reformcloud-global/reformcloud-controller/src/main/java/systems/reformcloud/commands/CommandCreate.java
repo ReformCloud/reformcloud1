@@ -146,7 +146,7 @@ public final class CommandCreate extends Command implements Serializable {
                     .getCloudConfiguration()
                     .getWebUsers()
                     .stream()
-                    .filter(e -> e.getUser().equals(args[1]))
+                    .filter(e -> e.getUserName().equals(args[1]))
                     .findFirst()
                     .orElse(null) != null) {
                     commandSender.sendMessage(language.getCommand_error_occurred()
@@ -159,7 +159,7 @@ public final class CommandCreate extends Command implements Serializable {
                 ReformCloudController.getInstance().getCloudConfiguration().createWebUser(webUser);
                 commandSender.sendMessage(
                     language.getCommand_create_webuser_created()
-                        .replace("%name%", webUser.getUser())
+                        .replace("%name%", webUser.getUserName())
                         .replace("%password%", args[2])
                 );
                 break;

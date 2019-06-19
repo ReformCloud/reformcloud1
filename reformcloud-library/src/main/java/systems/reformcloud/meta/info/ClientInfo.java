@@ -15,22 +15,50 @@ public final class ClientInfo implements Serializable {
 
     private static final long serialVersionUID = 588638903114905632L;
 
+    /**
+     * The max memory of the client
+     */
     private int maxMemory;
 
+    /**
+     * The system cpu cores
+     */
     private int cpuCoresSystem;
 
+    /**
+     * The current process startup state
+     */
     private boolean ready;
 
+    /**
+     * The started servers on the client
+     */
     private List<String> startedServers;
 
+    /**
+     * The started proxies on the client
+     */
     private List<String> startedProxies;
 
+    /**
+     * The current memory usage of all processes (all started services the
+     * max memory added)
+     */
     private int usedMemory;
 
+    /**
+     * The current cpu usage of the system
+     */
     private double cpuUsage;
 
+    /**
+     * The memory usage of the system
+     */
     private long systemMemoryUsage;
 
+    /**
+     * The max memory of the system
+     */
     private long systemMemoryMax;
 
     @java.beans.ConstructorProperties({"maxMemory", "cpuCoresSystem", "ready", "startedServers",

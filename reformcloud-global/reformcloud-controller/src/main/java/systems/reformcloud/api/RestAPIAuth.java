@@ -45,7 +45,7 @@ public final class RestAPIAuth implements Serializable, WebHandler {
             .getCloudConfiguration()
             .getWebUsers()
             .stream()
-            .filter(e -> e.getUser().equals(httpHeaders.get("-XUser")))
+            .filter(e -> e.getUserName().equals(httpHeaders.get("-XUser")))
             .findFirst()
             .orElse(null);
         if (webUser == null) {

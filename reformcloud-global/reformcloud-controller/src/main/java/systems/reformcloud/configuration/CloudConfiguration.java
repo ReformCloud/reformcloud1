@@ -498,7 +498,7 @@ public final class CloudConfiguration implements Serializable {
 
     public void updateWebUser(final WebUser webUser) {
         List<WebUser> users = new ArrayList<>(this.webUsers);
-        users.parallelStream().filter(e -> webUser.getUser().equals(e.getUser()))
+        users.parallelStream().filter(e -> webUser.getUserName().equals(e.getUserName()))
             .forEach(e -> this.webUsers.remove(e));
         this.webUsers.add(webUser);
         Configuration.parse(Paths.get("reformcloud/users.json"))
@@ -661,7 +661,7 @@ public final class CloudConfiguration implements Serializable {
             .write(Paths.get("reformcloud/users.json"));
 
         ReformCloudController.getInstance().getColouredConsoleProvider()
-            .info("Deleting WebUser [Name=" + webUser.getUser() + "]...");
+            .info("Deleting WebUser [Name=" + webUser.getUserName() + "]...");
         ReformCloudController.getInstance().getChannelHandler().sendToAllSynchronized(
             new PacketOutUpdateAll(ReformCloudController.getInstance().getInternalCloudNetwork()));
     }

@@ -34,7 +34,7 @@ public final class CommandWebPermissions extends Command implements Serializable
                 return;
             }
 
-            commandSender.sendMessage("Permissions of user " + webUser.getUser());
+            commandSender.sendMessage("Permissions of user " + webUser.getUserName());
             for (Map.Entry<String, Boolean> perms : webUser.getPermissions().entrySet()) {
                 commandSender.sendMessage(
                     "   - §e" + perms.getKey() + "§r | Activated: " + (perms.getValue() ? "§atrue"
@@ -109,7 +109,7 @@ public final class CommandWebPermissions extends Command implements Serializable
             .getCloudConfiguration()
             .getWebUsers()
             .stream()
-            .filter(e -> e.getUser().equals(name))
+            .filter(e -> e.getUserName().equals(name))
             .findFirst()
             .orElse(null);
     }

@@ -12,6 +12,7 @@ import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
 
     private static final long serialVersionUID = -1867335836689571544L;
 
+    @ConstructorProperties({"memory", "client", "proxyVersions"})
     public DefaultProxyGroup(int memory, final String client, ProxyVersions proxyVersions) {
         super(
             "Proxy",
@@ -52,6 +54,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
         );
     }
 
+    @ConstructorProperties({"name", "client", "proxyVersions"})
     public DefaultProxyGroup(final String name, final String client, ProxyVersions proxyVersions) {
         super(
             name,
@@ -78,8 +81,9 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
         );
     }
 
+    @ConstructorProperties({"name", "client", "proxyVersions", "proxyModeType"})
     public DefaultProxyGroup(final String name, final String client, ProxyVersions proxyVersions,
-        ProxyModeType proxyModeType) {
+                             ProxyModeType proxyModeType) {
         super(
             name,
             Collections.singletonList(client),

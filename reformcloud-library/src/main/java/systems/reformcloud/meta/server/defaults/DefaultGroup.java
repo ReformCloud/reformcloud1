@@ -12,6 +12,7 @@ import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,8 +26,9 @@ public class DefaultGroup extends ServerGroup implements Serializable {
 
     private static final long serialVersionUID = -1234409573533112793L;
 
+    @ConstructorProperties({"name", "client", "spigotVersions", "serverModeType"})
     public DefaultGroup(final String name, final String client, SpigotVersions spigotVersions,
-        ServerModeType serverModeType) {
+                        ServerModeType serverModeType) {
         super(
             name,
             "ReformCloud",

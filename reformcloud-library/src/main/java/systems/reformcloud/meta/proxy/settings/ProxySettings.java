@@ -16,30 +16,80 @@ import java.util.Objects;
 
 public final class ProxySettings implements Serializable {
 
+    /**
+     * The target proxy group of the settings
+     */
     private String targetProxyGroup;
 
+    /**
+     * The tab header of the settings
+     */
     private String tabHeader;
 
+    /**
+     * The tab footer of the settings
+     */
     private String tabFooter;
 
+    /**
+     * The maintenance protocol of the proxy
+     */
     private String maintenanceProtocol;
 
+    /**
+     * The default protocol of the group
+     */
     private String protocol;
 
+    /**
+     * The player info
+     */
     private String[] playerInfo;
 
+    /**
+     * The protocol state
+     */
     private boolean protocolEnabled;
 
+    /**
+     * The state of the tab list
+     */
     private boolean tabEnabled;
 
+    /**
+     * The state of the motd
+     */
     private boolean motdEnabled;
 
+    /**
+     * The state of the slot counter
+     */
     private boolean slotCounter;
 
+    /**
+     * The slots shown more than online
+     * <p>
+     * For example:
+     * <pre>
+     *     <p>50 players are online</p>
+     *     <p>51 players are max</p>
+     *     <p>Setting: 1</p>
+     *     <br>
+     *     <p>50 players are online</p>
+     *     <p>55 players are max</p>
+     *     <p>Setting: 5</p>
+     * </pre>
+     */
     private int moreSlots;
 
+    /**
+     * The normal motd the first line and second line
+     */
     private List<Double<String, String>> normalMotd;
 
+    /**
+     * The maintenance motd the first line and second line
+     */
     private List<Double<String, String>> maintenanceMotd;
 
     @java.beans.ConstructorProperties({"targetProxyGroup", "tabHeader", "tabFooter",

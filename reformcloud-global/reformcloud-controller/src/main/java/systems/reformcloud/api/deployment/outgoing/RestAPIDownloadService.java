@@ -33,7 +33,7 @@ public final class RestAPIDownloadService implements Serializable, WebHandler {
 
         InternalWebUser internalWebUser = ReformCloudController.getInstance()
             .getInternalCloudNetwork().getInternalWebUser();
-        if (internalWebUser == null || !internalWebUser.getName()
+        if (internalWebUser == null || !internalWebUser.getUserName()
             .equals(httpHeaders.get("-XUser"))) {
             answer
                 .addValue("response", Collections.singletonList("User by given -XUser not found"));

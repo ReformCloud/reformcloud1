@@ -33,6 +33,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.configurations.ConfigurationAdapter;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.meta.environment.RuntimeEnvironment;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.handler.Decoder;
@@ -436,6 +437,29 @@ public final class ReformCloudLibraryService {
         return new Cache<>(maxSize);
     }
 
+    /**
+     * Checks the current runtime environment
+     *
+     * @return The current runtime environment for the running process
+     */
+    public static RuntimeEnvironment runtimeEnvironment() {
+        if (StringUtil.OS_NAME.toLowerCase().contains("windows")) {
+            return RuntimeEnvironment.WINDOWS;
+        }
+
+        return StringUtil.OS_NAME.toLowerCase().contains("linux") ?
+            RuntimeEnvironment.LINUX : RuntimeEnvironment.OS_X;
+    }
+
+    /**
+     * Creates a new ThreadFactory
+     *
+     * @param uncaughtExceptionHandler The uncaught exception handler of the
+     *                                 new threads created in the thread
+     *                                 factory
+     * @return A new thread factory for the executor service of the cloud
+     * @see ThreadFactory
+     */
     private static ThreadFactory createThreadFactory(
         Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
@@ -450,6 +474,12 @@ public final class ReformCloudLibraryService {
         };
     }
 
+    /**
+     * Creates a new thread factory for the network channels
+     *
+     * @return A new thread factory for all network channels
+     * @see DefaultThreadFactory
+     */
     private static ThreadFactory createThreadFactory() {
         return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true,
             Thread.MIN_PRIORITY);

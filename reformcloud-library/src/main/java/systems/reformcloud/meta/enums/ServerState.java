@@ -11,8 +11,20 @@ import java.io.Serializable;
  */
 
 public enum ServerState implements Serializable {
+
+    /**
+     * The server is ready and users can join
+     */
     READY,
+
+    /**
+     * The server is not ready (not connected to the controller)
+     */
     NOT_READY,
+
+    /**
+     * The server is hidden and will not be shown on any sign
+     */
     HIDDEN;
 
     /**

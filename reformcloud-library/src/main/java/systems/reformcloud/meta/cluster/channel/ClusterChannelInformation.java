@@ -16,10 +16,19 @@ import java.net.InetSocketAddress;
 
 public final class ClusterChannelInformation implements Serializable {
 
+    /**
+     * The channel name to send a packet over
+     */
     private String globalChannelName;
 
+    /**
+     * The {@link ChannelHandlerContext} of the channel
+     */
     private ChannelHandlerContext channelHandlerContext;
 
+    /**
+     * The address of the channel
+     */
     private InetSocketAddress inetSocketAddress;
 
     @ConstructorProperties({"globalChannelName", "channelHandlerContext", "inetSocketAddress"})

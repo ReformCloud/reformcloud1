@@ -20,12 +20,25 @@ import java.util.Set;
 
 public final class NetworkGlobalCluster implements Serializable {
 
+    /**
+     * A set containing all names of all connected channels
+     */
     private Set<String> connectedChannels;
 
+    /**
+     * A list containing all {@link ClusterChannelInformation} of the
+     * connected channels
+     */
     private List<ClusterChannelInformation> clusterChannelInformation;
 
+    /**
+     * The current channel handler of the cloud system
+     */
     private AbstractChannelHandler channelHandler;
 
+    /**
+     * The current internal cloud network
+     */
     private InternalCloudNetwork currentCloudInformation;
 
     @ConstructorProperties({"connectedChannels", "clusterChannelInformation", "channelHandler", "currentCloudInformation"})

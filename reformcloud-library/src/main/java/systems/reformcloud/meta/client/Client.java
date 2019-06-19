@@ -78,8 +78,21 @@ public class Client implements Serializable {
     }
 
     public enum ClientState {
+
+        /**
+         * The client is not connected to the controller
+         */
         DISCONNECTED,
+
+        /**
+         * The client is connected to the controller but not ready
+         */
         CONNECTED,
+
+        /**
+         * The client is connected to the controller and ready to startup
+         * processes
+         */
         READY
     }
 }

@@ -166,6 +166,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      * @param permissions The permissions of the command sender
      * @return a new command sender
      */
+    @Override
     public systems.reformcloud.commands.utility.CommandSender newCommandSender(
         final Map<String, Boolean> permissions) {
         return new DefaultUserCommandSender(permissions);
