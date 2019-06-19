@@ -119,7 +119,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      */
     @Override
     public void unregisterCommand(final String name) {
-        this.commands.remove(name);
+        this.commands.remove(findCommand(name));
     }
 
     /**
