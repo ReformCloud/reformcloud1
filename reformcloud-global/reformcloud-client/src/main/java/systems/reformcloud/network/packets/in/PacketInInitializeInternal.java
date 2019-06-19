@@ -5,6 +5,10 @@
 package systems.reformcloud.network.packets.in;
 
 import com.google.gson.reflect.TypeToken;
+import java.beans.ConstructorProperties;
+import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.backup.StartSearch;
@@ -19,13 +23,20 @@ import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.properties.PropertiesConfig;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
-import java.util.List;
-
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
  */
 
 public final class PacketInInitializeInternal implements NetworkInboundHandler {
+
+    private Lock lock;
+    private Condition condition;
+
+    @ConstructorProperties({"lock", "condition"})
+    public PacketInInitializeInternal(Lock lock, Condition condition) {
+        this.lock = lock;
+        this.condition = condition;
+    }
 
     @Override
     public void handle(Configuration configuration) {
@@ -74,5 +85,12 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
         );
 
         new StartSearch();
+
+        try {
+            lock.lock();
+            condition.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 }

@@ -4,13 +4,12 @@
 
 package systems.reformcloud.properties;
 
-import systems.reformcloud.utility.Require;
-import systems.reformcloud.utility.annotiations.MayNotBePresent;
-import systems.reformcloud.utility.annotiations.ShouldNotBeNull;
-
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Properties;
+import systems.reformcloud.utility.Require;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
+import systems.reformcloud.utility.annotiations.ShouldNotBeNull;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.04.2019
@@ -27,10 +26,6 @@ public final class DefaultPropertiesManager extends PropertiesManager implements
     private static DefaultPropertiesManager instance;
 
     public DefaultPropertiesManager(@ShouldNotBeNull PropertiesConfig propertiesConfig) {
-        Require.requireNotNull(propertiesConfig);
-        Require.isTrue(instance != null, "Instance already present");
-        Require.isFalse(available, "Already available");
-
         available = true;
         instance = this;
         this.propertiesConfig = propertiesConfig;

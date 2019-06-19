@@ -23,7 +23,7 @@ public final class AutoStart implements Serializable {
     private int playerMax;
 
     /**
-     * The allowed
+     * The allowed auto start interval
      */
     private long allowAutoStartEverySeconds;
 

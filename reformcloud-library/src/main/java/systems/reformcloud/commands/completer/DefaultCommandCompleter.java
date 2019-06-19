@@ -4,15 +4,16 @@
 
 package systems.reformcloud.commands.completer;
 
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import java.beans.ConstructorProperties;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
 import systems.reformcloud.commands.abstracts.CommandMap;
 import systems.reformcloud.commands.utility.Command;
-import systems.reformcloud.utility.map.MapUtility;
-
-import java.beans.ConstructorProperties;
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.06.2019
@@ -47,19 +48,7 @@ public final class DefaultCommandCompleter extends AbstractCommandCompleter impl
                 String[] args = replace(buffer);
                 List<String> returned = ((TabCompleter) command)
                     .complete(buffer, args);
-                Collection<String> completed = MapUtility.filterAll(returned,
-                    e -> e.toLowerCase().startsWith(buffer.toLowerCase()));
-
-                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
-                    .serve().accept(returned.toString());
-
-                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
-                    .serve().accept("----");
-
-                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
-                    .serve().accept(completed.toString());
-
-                out.addAll(completed);
+                out.addAll(returned);
             }
         }
 
