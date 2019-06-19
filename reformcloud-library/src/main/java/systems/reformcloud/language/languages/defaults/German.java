@@ -99,7 +99,7 @@ public final class German extends Language implements Serializable {
             "Deaktiviere den Standby Modus auf %name%...",
             "Der Befehl wurde ausgeführt",
             "Der Controller stoppt...",
-            "Die folgenden %type% Gruppen sind registeriert: ",
+            "Die folgenden %type% Gruppen sind registriert: ",
             "Der Log für %type% wurde hochgeladen auf %url%",
             "Die Warteschlange wurde angefordert",
             "Versuche den Warteschlangen Eintrag %name% zu entfernen...",

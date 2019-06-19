@@ -99,7 +99,7 @@ public final class English extends Language implements Serializable {
             "Disabling the standby mode on %name%...",
             "The command has been executed",
             "The controller will stop",
-            "The following %type% groups are registered",
+            "The following %type% groups are registered: ",
             "The log for %type% was uploaded to %url%",
             "The queue was requested",
             "Trying to remove the queue entry %name%",
