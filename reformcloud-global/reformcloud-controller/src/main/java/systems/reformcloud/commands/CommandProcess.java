@@ -45,10 +45,10 @@ public final class CommandProcess extends Command implements Serializable {
         if (args.length < 1) {
             commandSender.sendMessage("process stop <name/--all/--empty>");
             commandSender.sendMessage("process restart <name>");
-            commandSender.sendMessage("process stopGroup <group>");
+            commandSender.sendMessage("process stopGroup <group-name>");
             commandSender.sendMessage("process start <group-name> <number>");
             commandSender.sendMessage("process list");
-            commandSender.sendMessage("process list <server/proxy> <name>");
+            commandSender.sendMessage("process list <server/proxy> <group-name>");
             commandSender.sendMessage("");
             commandSender.sendMessage("process queue <client> list");
             commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
@@ -106,14 +106,13 @@ public final class CommandProcess extends Command implements Serializable {
                 default: {
                     commandSender.sendMessage("process stop <name/--all/--empty>");
                     commandSender.sendMessage("process restart <name>");
-                    commandSender.sendMessage("process stopGroup <group>");
+                    commandSender.sendMessage("process stopGroup <group-name>");
                     commandSender.sendMessage("process start <group-name> <number>");
                     commandSender.sendMessage("process list");
-                    commandSender.sendMessage("process list <server/proxy> <name>");
+                    commandSender.sendMessage("process list <server/proxy> <group-name> <number>");
                     commandSender.sendMessage("");
                     commandSender.sendMessage("process queue <client> list");
-                    commandSender
-                        .sendMessage("process queue <client> remove <proxy/server> <name>");
+                    commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
                 }
             }
 
@@ -339,7 +338,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     "This Server or Proxy is not connected to controller"));
                     }
                 } else {
-                    commandSender.sendMessage("process stopGroup <group>");
+                    commandSender.sendMessage("process stopGroup <group-name>");
                 }
 
                 break;
@@ -425,7 +424,7 @@ public final class CommandProcess extends Command implements Serializable {
                             break;
                         }
                         default: {
-                            commandSender.sendMessage("process list <server/proxy> <name>");
+                            commandSender.sendMessage("process list <server/proxy> <group-name>");
                             break;
                         }
                     }
@@ -498,7 +497,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     "This Server or Proxy is not connected to controller"));
                     }
                 } else {
-                    commandSender.sendMessage("process start <groupName>");
+                    commandSender.sendMessage("process start <group-name> <number>");
                 }
                 break;
             }
@@ -587,10 +586,10 @@ public final class CommandProcess extends Command implements Serializable {
             default: {
                 commandSender.sendMessage("process stop <name/--all/--empty>");
                 commandSender.sendMessage("process restart <name>");
-                commandSender.sendMessage("process stopGroup <group>");
+                commandSender.sendMessage("process stopGroup <group-name>");
                 commandSender.sendMessage("process start <group-name> <number>");
                 commandSender.sendMessage("process list");
-                commandSender.sendMessage("process list <server/proxy> <name>");
+                commandSender.sendMessage("process list <server/proxy> <group-name>");
                 commandSender.sendMessage("");
                 commandSender.sendMessage("process queue <client> list");
                 commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
