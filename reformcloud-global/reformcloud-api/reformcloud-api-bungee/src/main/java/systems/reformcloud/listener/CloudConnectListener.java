@@ -199,10 +199,26 @@ public final class CloudConnectListener implements Listener {
             ReformCloudLibraryService.sleep(TimeUnit.MILLISECONDS, 500);
             OnlinePlayer onlinePlayer = ReformCloudAPIBungee.getInstance()
                 .getOnlinePlayer(event.getPlayer().getUniqueId());
+
+            final String oldServer = onlinePlayer.getCurrentServer();
+
             onlinePlayer.setCurrentServer(event.getPlayer().getServer().getInfo().getName());
             ReformCloudAPIBungee.getInstance().updateOnlinePlayer(onlinePlayer);
 
             initTab(event.getPlayer());
+
+            if (oldServer == null || oldServer.equals(onlinePlayer.getCurrentServer())) {
+                return;
+            }
+
+            ReformCloudAPIBungee.getInstance().getChannelHandler()
+                .sendPacketSynchronized("ReformCloudController",
+                    new PacketOutSendControllerConsoleMessage(
+                        "Player §e[Name=" + event.getPlayer().getName() + "/UUID="
+                            + event.getPlayer().getUniqueId().toString() + "/IP="
+                            + event.getPlayer().getAddress().getAddress().getHostAddress()
+                            + "/Proxy=" + onlinePlayer.getCurrentProxy() + "]§r went from §e" + oldServer + "§r to §e" + onlinePlayer.getCurrentServer()
+                    ));
         });
     }
 
@@ -214,6 +230,8 @@ public final class CloudConnectListener implements Listener {
 
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
             ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
+
+            final String currentServer = ReformCloudAPIBungee.getInstance().getOnlinePlayer(event.getPlayer().getUniqueId()).getCurrentServer();
 
             ReformCloudAPIBungee.getInstance().getOnlinePlayers()
                 .remove(event.getPlayer().getUniqueId());
@@ -242,7 +260,7 @@ public final class CloudConnectListener implements Listener {
                             event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer()
                             .getAddress()
                             .getAddress().getHostAddress() +
-                            "]§r is now §cdisconnected§r from §e" + proxyInfo.getCloudProcess().getName()));
+                            "]§r is now §cdisconnected§r from §e[Proxy=" + proxyInfo.getCloudProcess().getName() + "/Server=" + currentServer + "§e]"));
             BungeecordBootstrap.getInstance().getProxy().getPlayers()
                 .forEach(CloudConnectListener::initTab);
             ReformCloudAPIBungee.getInstance().getCachedPermissionHolders()
