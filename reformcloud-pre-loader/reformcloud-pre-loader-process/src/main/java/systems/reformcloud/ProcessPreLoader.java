@@ -122,7 +122,9 @@ final class ProcessPreLoader implements Serializable {
             System.exit(1);
         } finally {
             try {
-                jarFile.close();
+                if (jarFile != null) {
+                    jarFile.close();
+                }
             } catch (final IOException ex) {
                 ex.printStackTrace();
                 System.exit(1);
