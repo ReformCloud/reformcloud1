@@ -154,8 +154,9 @@ public final class CloudConnectListener {
 
                 initTab(event.getPlayer());
 
-                if (oldServer == null || oldServer.equals(onlinePlayer.getCurrentServer()))
+                if (oldServer == null || oldServer.equals(onlinePlayer.getCurrentServer())) {
                     return;
+                }
 
                 ReformCloudAPIVelocity.getInstance().getChannelHandler()
                     .sendPacketSynchronized("ReformCloudController",
