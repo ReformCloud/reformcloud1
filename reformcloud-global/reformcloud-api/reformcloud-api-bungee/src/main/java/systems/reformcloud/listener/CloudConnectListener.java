@@ -215,8 +215,9 @@ public final class CloudConnectListener implements Listener {
 
             initTab(event.getPlayer());
 
-            if (oldServer == null || oldServer.equals(onlinePlayer.getCurrentServer()))
+            if (oldServer == null || oldServer.equals(onlinePlayer.getCurrentServer())) {
                 return;
+            }
 
             ReformCloudAPIBungee.getInstance().getChannelHandler()
                 .sendPacketSynchronized("ReformCloudController",
