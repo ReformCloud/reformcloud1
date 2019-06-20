@@ -9,8 +9,9 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.CommandManager;
 import systems.reformcloud.logging.ColouredConsoleProvider;
-import systems.reformcloud.logging.console.InfinitySleeper;
 import systems.reformcloud.logging.console.ReformAsyncConsole;
+import systems.reformcloud.logging.console.thread.DefaultInfinitySleeper;
+import systems.reformcloud.logging.console.thread.InfinitySleeper;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncExceptionThrown;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.StringUtil;
@@ -52,7 +53,7 @@ final class ReformCloudLauncher implements Serializable {
 
         final long current = System.currentTimeMillis();
 
-        final InfinitySleeper infinitySleeper = new InfinitySleeper();
+        final InfinitySleeper infinitySleeper = new DefaultInfinitySleeper();
 
         Thread.setDefaultUncaughtExceptionHandler((thread, t) -> {
             if (t instanceof ThreadDeath) {
