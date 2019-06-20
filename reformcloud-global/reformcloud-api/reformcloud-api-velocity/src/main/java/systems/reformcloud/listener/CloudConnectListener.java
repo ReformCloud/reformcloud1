@@ -146,10 +146,26 @@ public final class CloudConnectListener {
             .buildTask(VelocityBootstrap.getInstance(), () -> {
                 OnlinePlayer onlinePlayer = ReformCloudAPIVelocity.getInstance()
                     .getOnlinePlayer(event.getPlayer().getUniqueId());
+
+                final String oldServer = onlinePlayer.getCurrentServer();
+
                 onlinePlayer.setCurrentServer(event.getServer().getServerInfo().getName());
                 ReformCloudAPIVelocity.getInstance().updateOnlinePlayer(onlinePlayer);
 
                 initTab(event.getPlayer());
+
+                if (oldServer == null || oldServer.equals(onlinePlayer.getCurrentServer()))
+                    return;
+
+                ReformCloudAPIVelocity.getInstance().getChannelHandler()
+                    .sendPacketSynchronized("ReformCloudController",
+                        new PacketOutSendControllerConsoleMessage(
+                            "Player §e[Name=" + event.getPlayer().getUsername() + "/UUID="
+                                + event.getPlayer().getUniqueId().toString() + "/IP="
+                                + event.getPlayer().getRemoteAddress().getAddress().getHostAddress()
+                                + "/Proxy=" + onlinePlayer.getCurrentProxy() + "]§r went from §e" + oldServer + "§r to §e" + onlinePlayer.getCurrentServer()
+                        ));
+
             }).delay(500, TimeUnit.MILLISECONDS).schedule();
     }
 
@@ -157,6 +173,9 @@ public final class CloudConnectListener {
     public void handle(final DisconnectEvent event) {
         VelocityBootstrap.getInstance().getProxy().getScheduler()
             .buildTask(VelocityBootstrap.getInstance(), () -> {
+
+                final String currentServer = ReformCloudAPIVelocity.getInstance().getOnlinePlayer(event.getPlayer().getUniqueId()).getCurrentServer();
+
                 ReformCloudAPIVelocity.getInstance().getCachedPermissionHolders()
                     .remove(event.getPlayer().getUniqueId());
                 ProxyInfo proxyInfo = ReformCloudAPIVelocity.getInstance().getProxyInfo();
@@ -183,10 +202,11 @@ public final class CloudConnectListener {
                     .sendPacketAsynchronous("ReformCloudController",
                         new PacketOutProxyInfoUpdate(proxyInfo),
                         new PacketOutSendControllerConsoleMessage(
-                            "Player [Name=" + event.getPlayer().getUsername() + "/UUID=" +
+                            "Player §e[Name=" + event.getPlayer().getUsername() + "/UUID=" +
                                 event.getPlayer().getUniqueId() + "/IP=" + event.getPlayer()
-                                .getRemoteAddress().getAddress().getHostAddress() +
-                                "] is now disconnected"));
+                                .getRemoteAddress()
+                                .getAddress().getHostAddress() +
+                                "]§r is now §cdisconnected§r from §e[Proxy=" + proxyInfo.getCloudProcess().getName() + "/Server=" + currentServer + "§e]"));
                 VelocityBootstrap.getInstance().getProxy().getAllPlayers()
                     .forEach(CloudConnectListener::initTab);
             }).delay(1, TimeUnit.SECONDS).schedule();
