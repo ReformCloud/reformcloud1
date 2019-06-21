@@ -109,7 +109,7 @@ public final class CommandProcess extends Command implements Serializable {
                     commandSender.sendMessage("process stopGroup <group-name>");
                     commandSender.sendMessage("process start <group-name> <number>");
                     commandSender.sendMessage("process list");
-                    commandSender.sendMessage("process list <server/proxy> <group-name> <number>");
+                    commandSender.sendMessage("process list <server/proxy> <group-name>");
                     commandSender.sendMessage("");
                     commandSender.sendMessage("process queue <client> list");
                     commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
