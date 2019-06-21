@@ -6,6 +6,7 @@ package systems.reformcloud.network.api.event;
 
 import io.netty.channel.ChannelHandlerContext;
 import net.kyori.text.TextComponent;
+import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.configurations.Configuration;
@@ -34,7 +35,9 @@ public final class NetworkEventAdapter implements Serializable, EventHandler {
     public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
         VelocityBootstrap.getInstance().getProxyServer().getAllPlayers().forEach(proxiedPlayer ->
             proxiedPlayer.sendMessage(TextComponent.of(
-                "Your current proxy lost the connection to the cloud"
+                (ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix().endsWith(" ") ?
+                    ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix() :
+                    ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix() + " ") + "§cYour current proxy lost the connection to the cloud"
             )));
     }
 

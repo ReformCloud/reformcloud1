@@ -353,74 +353,112 @@ public final class CommandProcess extends Command implements Serializable {
                         .filter(client -> client.getClientInfo() != null)
                         .forEach(connectedClients::add);
 
-                    commandSender.sendMessage("The following §eClients§r are connected: ");
-                    connectedClients.forEach(client -> {
-                        ClientInfo clientInfo = ReformCloudController.getInstance().getConnectedClient(client.getName());
-                        commandSender.sendMessage(
-                            "    - §e" + client.getName() + "§r | Host: §e" + client.getIp() + "§r | Memory-Usage: §e"
-                                + clientInfo.getUsedMemory() + "MB§r/§e" + clientInfo.getMaxMemory()
-                                + "MB§r | Processors: §e" + clientInfo.getCpuCoresSystem()
-                                + "§r | CPU-Usage: §e" + decimalFormat.format(clientInfo.getCpuUsage())
-                                + "%§r | Started-Processes: §e" + (clientInfo.getStartedProxies().size()
-                                + clientInfo.getStartedServers().size()));
-                    });
-                    ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
+                    if (connectedClients.size() > 0) {
+                        commandSender.sendMessage("The following §eClients§r are connected: ");
+                        connectedClients.forEach(e -> {
+                            final ClientInfo clientInfo = ReformCloudController.getInstance().getClientInfos().get(e.getName());
+                            commandSender.sendMessage(
+                                "    - §e" + e.getName() + "§r | Host: §e" + e.getIp() + "§r | Memory-Usage: §e"
+                                    + clientInfo.getUsedMemory() + "MB§r/§e" + clientInfo.getMaxMemory()
+                                    + "MB§r | Processors: §e" + clientInfo.getCpuCoresSystem()
+                                    + "§r | CPU-Usage: §e" + decimalFormat.format(clientInfo.getCpuUsage())
+                                    + "%§r | Started-Processes: §e" + (clientInfo.getStartedProxies().size()
+                                    + clientInfo.getStartedServers().size()));
+                        });
 
-                    connectedClients.forEach(client -> {
-                        commandSender.sendMessage(
-                            "The following §eproxies§r are started on \"§e" + client.getName() + "§r\": ");
-                        ReformCloudController.getInstance().getInternalCloudNetwork()
-                            .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
-                            .filter(proxyInfo -> proxyInfo.getCloudProcess().getClient()
-                                .equals(client.getName())).forEach(info -> commandSender.sendMessage(
-                            "    - §e" + info.getCloudProcess().getName() + "§r | Player: §e" + info
-                                .getOnline() + "§r/§e" + info.getProxyGroup().getMaxPlayers()));
                         ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
-                        commandSender.sendMessage(
-                            "The following §ecloud-servers§r are started on \"§e" + client.getName() + "§r\": ");
-                        ReformCloudController.getInstance().getInternalCloudNetwork()
-                            .getServerProcessManager().getAllRegisteredServerProcesses().stream()
-                            .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
-                                .equals(client.getName())).forEach(info -> commandSender.sendMessage(
-                            "    - §e" + info.getCloudProcess().getName() + "§r | State: §e" + info
-                                .getServerState() + "§r | Player: §e" + info.getOnline() + "§r/§e" + info
-                                .getServerGroup().getMaxPlayers()));
-                        ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
-                    });
+
+                        connectedClients.forEach(e -> {
+                            if (ReformCloudController.getInstance().getInternalCloudNetwork()
+                                .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
+                                .anyMatch(proxies -> proxies.getCloudProcess().getClient()
+                                    .equals(e.getName()))) {
+                                commandSender.sendMessage(
+                                    "The following §eproxies§r are started on \"§e" + e.getName() + "§r\": ");
+                                ReformCloudController.getInstance().getInternalCloudNetwork()
+                                    .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
+                                    .filter(proxyInfo -> proxyInfo.getCloudProcess().getClient()
+                                        .equals(e.getName())).forEach(info -> commandSender.sendMessage(
+                                    "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§r | Player: §e" + info
+                                        .getOnline() + "§r/§e" + info.getProxyGroup().getMaxPlayers()));
+                                ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
+                            } else {
+                                commandSender.sendMessage("There are no started §eproxies§r on \"§e" + e.getName() + "§r\"");
+                                ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
+                            }
+
+                            if (ReformCloudController.getInstance().getInternalCloudNetwork()
+                                .getServerProcessManager().getAllRegisteredServerProcesses().stream()
+                                .anyMatch(servers -> servers.getCloudProcess().getClient()
+                                    .equals(e.getName()))) {
+                                commandSender.sendMessage(
+                                    "The following §eservers§r are started on \"§e" + e.getName() + "§r\": ");
+                                ReformCloudController.getInstance().getInternalCloudNetwork()
+                                    .getServerProcessManager().getAllRegisteredServerProcesses().stream()
+                                    .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
+                                        .equals(e.getName())).forEach(info -> commandSender.sendMessage(
+                                    "    - §e" + info.getCloudProcess().getName() + "§r | State: §e" + info
+                                        .getServerState() + "§r | Player: §e" + info.getOnline() + "§r/§e" + info
+                                        .getServerGroup().getMaxPlayers()));
+                                ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
+                            } else {
+                                commandSender.sendMessage("There are no started §eservers§r on \"§e" + e.getName() + "§r\"");
+                                ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
+                            }
+                        });
+                    } else
+                        commandSender.sendMessage("There are no §eClients§r connected to the §eController§r");
                 } else {
                     switch (args[1].toLowerCase()) {
                         case "server": {
-                            List<ServerInfo> connected = new ArrayList<>();
-                            ReformCloudController.getInstance()
-                                .getInternalCloudNetwork()
-                                .getServerProcessManager()
-                                .getAllRegisteredServerProcesses()
-                                .stream()
-                                .filter(e -> e.getServerGroup().getName().equalsIgnoreCase(args[2]))
-                                .forEach(connected::add);
-                            commandSender.sendMessage(
-                                "The following §eservers§r of the group \"§e" + args[2]
-                                    + "§r\" are connected: ");
-                            connected.forEach(info -> commandSender.sendMessage(
-                                "    - §e" + info.getCloudProcess().getName() + "§r | Player: §e" + info
-                                    .getOnline() + "§r/§e" + info.getServerGroup().getMaxPlayers()));
+                            if (ReformCloudController.getInstance().getServerGroup(args[2]) != null) {
+                                List<ServerInfo> connected = new ArrayList<>();
+                                ReformCloudController.getInstance()
+                                    .getInternalCloudNetwork()
+                                    .getServerProcessManager()
+                                    .getAllRegisteredServerProcesses()
+                                    .stream()
+                                    .filter(e -> e.getServerGroup().getName().equalsIgnoreCase(args[2]))
+                                    .forEach(connected::add);
+
+                                if (connected.size() > 0) {
+                                    commandSender.sendMessage(
+                                        "The following §eservers§r of the group \"§e" + args[2]
+                                            + "§r\" are connected: ");
+                                    connected.forEach(info -> commandSender.sendMessage(
+                                        "    - §e" + info.getCloudProcess().getName() + "§r | State: §e" + info
+                                            .getServerState() + "§r | Player: §e" + info.getOnline() + "§r/§e" + info
+                                            .getServerGroup().getMaxPlayers()));
+                                } else
+                                    commandSender.sendMessage("There are no started §eservers§r of the group \"§e" + args[2] + "§r\"");
+                            } else
+                                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getServergroup_not_found());
+
                             break;
                         }
                         case "proxy": {
-                            List<ProxyInfo> connected = new ArrayList<>();
-                            ReformCloudController.getInstance()
-                                .getInternalCloudNetwork()
-                                .getServerProcessManager()
-                                .getAllRegisteredProxyProcesses()
-                                .stream()
-                                .filter(e -> e.getProxyGroup().getName().equalsIgnoreCase(args[2]))
-                                .forEach(connected::add);
-                            commandSender.sendMessage(
-                                "The following §eproxies§r of the group \"§e" + args[2]
-                                    + "§r\" are connected: ");
-                            connected.forEach(info -> commandSender.sendMessage(
-                                "    - §e" + info.getCloudProcess().getName() + "§r | Player: §e" + info
-                                    .getOnline() + "§r/§e" + info.getProxyGroup().getMaxPlayers()));
+                            if (ReformCloudController.getInstance().getProxyGroup(args[2]) != null) {
+                                List<ProxyInfo> connected = new ArrayList<>();
+                                ReformCloudController.getInstance()
+                                    .getInternalCloudNetwork()
+                                    .getServerProcessManager()
+                                    .getAllRegisteredProxyProcesses()
+                                    .stream()
+                                    .filter(e -> e.getProxyGroup().getName().equalsIgnoreCase(args[2]))
+                                    .forEach(connected::add);
+
+                                if (connected.size() > 0) {
+                                    commandSender.sendMessage(
+                                        "The following §eproxies§r of the group \"§e" + args[2]
+                                            + "§r\" are connected: ");
+                                    connected.forEach(info -> commandSender.sendMessage(
+                                        "    - §e" + info.getCloudProcess().getName() + "§r | Player: §e" + info
+                                            .getOnline() + "§r/§e" + info.getProxyGroup().getMaxPlayers()));
+                                } else
+                                    commandSender.sendMessage("There are no started §eproxies§r of the group \"§e" + args[2] + "§r\"");
+                            } else
+                                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getProxygroup_not_found());
+
                             break;
                         }
                         default: {
