@@ -5,7 +5,8 @@
 package systems.reformcloud.test;
 
 import org.junit.Test;
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.DefaultEventManager;
+import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.event.annotation.Handler;
 import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.event.utility.Listener;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 public final class ListenerTest implements Serializable {
     @Test
     public void listenerTest() {
-        EventManager eventManager = new EventManager();
+        EventManager eventManager = new DefaultEventManager();
         eventManager.registerListener(new ListenerTest0());
         eventManager.fire(new TestEvent(false));
     }

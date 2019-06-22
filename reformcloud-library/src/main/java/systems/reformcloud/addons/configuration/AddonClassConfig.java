@@ -5,24 +5,32 @@
 package systems.reformcloud.addons.configuration;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.12.2018
  */
 
-public class AddonClassConfig {
+public class AddonClassConfig implements Serializable {
 
     /**
      * The file of the config
      */
     private File file;
+
     /**
      * The name, version and main class of the addon
      */
     private String name;
 
+    /**
+     * The version of the addon
+     */
     private String version;
 
+    /**
+     * The main class of the addon
+     */
     private String main;
 
     @java.beans.ConstructorProperties({"file", "name", "version", "main"})

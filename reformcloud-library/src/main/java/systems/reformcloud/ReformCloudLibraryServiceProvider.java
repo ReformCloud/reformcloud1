@@ -4,7 +4,7 @@
 
 package systems.reformcloud;
 
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;

@@ -6,7 +6,7 @@ package systems.reformcloud.addons.loader;
 
 import systems.reformcloud.addons.JavaAddon;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
-import systems.reformcloud.addons.extendable.ModulePreLoader;
+import systems.reformcloud.addons.extendable.AddonPreLoader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,7 +16,7 @@ import java.net.URLClassLoader;
  * @author _Klaro | Pasqual K. / created on 10.12.2018
  */
 
-public class AddonMainClassLoader extends URLClassLoader implements ModulePreLoader {
+public class AddonMainClassLoader extends URLClassLoader implements AddonPreLoader {
 
     /**
      * The class config of the addon
@@ -35,12 +35,6 @@ public class AddonMainClassLoader extends URLClassLoader implements ModulePreLoa
         this.addonClassConfig = addonClassConfig;
     }
 
-    /**
-     * Loads the Addon main class and creates a new instance
-     *
-     * @return The loaded java addon
-     * @throws Throwable The exception will be thrown if any error occurs while loading the addon
-     */
     @Override
     public JavaAddon loadAddon() throws Throwable {
         JavaAddon javaAddon = (JavaAddon) loadClass(addonClassConfig.getMain())

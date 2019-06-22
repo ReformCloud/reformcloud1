@@ -8,6 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.runtime.Reload;
 
 import java.io.Serializable;
 
@@ -25,7 +26,8 @@ public final class CommandReload extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         try {
-            ReformCloudController.getInstance().reloadAll();
+            Reload reload = ReformCloudController.getInstance();
+            reload.reloadAll();
         } catch (final Throwable throwable) {
             StringUtil.printError(ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "An error occurred while reloading CloudSystem", throwable);

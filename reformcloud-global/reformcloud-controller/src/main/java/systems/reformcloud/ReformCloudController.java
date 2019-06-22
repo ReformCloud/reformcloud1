@@ -28,7 +28,8 @@ import systems.reformcloud.database.player.PlayerDatabase;
 import systems.reformcloud.database.player.SavePlayerDatabase;
 import systems.reformcloud.database.statistics.SaveStatisticsProvider;
 import systems.reformcloud.database.statistics.StatisticsProvider;
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.DefaultEventManager;
+import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.event.events.ProxyInfoUpdateEvent;
 import systems.reformcloud.event.events.ReloadDoneEvent;
 import systems.reformcloud.event.events.ServerInfoUpdateEvent;
@@ -74,9 +75,11 @@ import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.startup.CloudProcessOfferService;
 import systems.reformcloud.utility.ExitUtil;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.defaults.DefaultCloudService;
+import systems.reformcloud.utility.player.PlayerLogoutHandler;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
@@ -119,7 +122,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private final CloudProcessOfferService cloudProcessOfferService = new CloudProcessOfferService();
 
-    private final EventManager eventManager = new EventManager();
+    private final EventManager eventManager = new DefaultEventManager();
 
     private final ScreenSessionProvider screenSessionProvider = new ScreenSessionProvider();
 
@@ -136,8 +139,6 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     private ReformWebServer reformWebServer;
 
     private final NettySocketServer nettySocketServer;
-
-    private ReformCloudLibraryServiceProvider reformCloudLibraryServiceProvider;
 
     private CloudConfiguration cloudConfiguration;
 
@@ -165,7 +166,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.commandManager = commandManager;
 
         cloudConfiguration = new CloudConfiguration();
-        this.reformCloudLibraryServiceProvider = new ReformCloudLibraryServiceProvider(
+        ReformCloudLibraryServiceProvider reformCloudLibraryServiceProvider = new ReformCloudLibraryServiceProvider(
             colouredConsoleProvider,
             this.cloudConfiguration.getControllerKey(), null, eventManager,
             cloudConfiguration.getLoadedLang());
@@ -226,7 +227,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.preparePacketHandlers();
         this.prepareCommands();
 
-        this.reformCloudLibraryServiceProvider.setInternalCloudNetwork(internalCloudNetwork);
+        reformCloudLibraryServiceProvider.setInternalCloudNetwork(internalCloudNetwork);
 
         this.addonParallelLoader.loadAddons();
 
@@ -253,6 +254,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         APIService.instance.set(this);
         new DefaultCloudService(this);
         DefaultPlayerProvider.instance.set(new PlayerProvider());
+
+        new PlayerLogoutHandler();
 
         colouredConsoleProvider.info(this.getLoadedLanguage().getLoading_done()
             .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
@@ -299,6 +302,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
             .registerHandler("CreateServerGroup", new PacketInCreateServerGroup())
             .registerHandler("CreateWebUser", new PacketInCreateWebUser())
             .registerHandler("StopProcess", new PacketInStopProcess())
+            .registerHandler("ExecuteCommand", new PacketInExecuteCommand())
 
             //Client communication
             .registerHandler("UpdateClientInfo", new PacketInSyncUpdateClientInfo())
@@ -1094,6 +1098,54 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     @Override
     public String dispatchConsoleCommandAndGetResult(CharSequence commandLine) {
         return dispatchConsoleCommandAndGetResult(String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, String commandLine) {
+        Require.requiresNotNull(serverName);
+        Require.requiresNotNull(commandLine);
+        ServerInfo serverInfo = getServerInfo(serverName);
+        if (serverInfo == null) {
+            return;
+        }
+
+        this.channelHandler.sendPacketAsynchronous(
+            serverInfo.getCloudProcess().getClient(),
+            new PacketOutExecuteCommand(
+                commandLine,
+                "server",
+                serverInfo.getCloudProcess().getName()
+            )
+        );
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, CharSequence commandLine) {
+        this.executeCommandOnServer(serverName, String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, String commandLine) {
+        Require.requiresNotNull(proxyName);
+        Require.requiresNotNull(commandLine);
+        ProxyInfo proxyInfo = getProxyInfo(proxyName);
+        if (proxyInfo == null) {
+            return;
+        }
+
+        this.channelHandler.sendPacketAsynchronous(
+            proxyInfo.getCloudProcess().getClient(),
+            new PacketOutExecuteCommand(
+                commandLine,
+                "proxy",
+                proxyInfo.getCloudProcess().getName()
+            )
+        );
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, CharSequence commandLine) {
+        this.executeCommandOnProxy(proxyName, String.valueOf(commandLine));
     }
 
     @Override
