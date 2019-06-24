@@ -5,6 +5,7 @@
 package systems.reformcloud.event;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.event.annotation.Handler;
 import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.logging.AbstractLoggerProvider;
@@ -20,7 +21,7 @@ import java.util.function.Consumer;
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public final class EventManager implements Serializable {
+public final class DefaultEventManager extends EventManager implements Serializable {
 
     /**
      * The map contains all registered listeners and their handlers
@@ -115,32 +116,22 @@ public final class EventManager implements Serializable {
         }
     }
 
-    /**
-     * Calls an event
-     *
-     * @param event The event which should be
-     * @param <T> The event which should be called, extending the event class
-     */
+    @Override
     public <T extends Event> void fire(T event) {
         this.fireAndForget.accept(event);
     }
 
-    /**
-     * Registers a listener
-     *
-     * @param listener The listener which should be registered
-     */
+    @Override
     public void registerListener(Object listener) {
         this.registerListener0(listener);
     }
 
-    /**
-     * Unregisters all registered listeners
-     */
+    @Override
     public void unregisterAll() {
         this.handlers.clear();
     }
 
+    @Override
     public void unregisterListenerByClassLoader(ClassLoader classLoader) {
         Class<?> clazz = this.registeredListenersByClassLoader.get(classLoader);
         if (clazz == null) {

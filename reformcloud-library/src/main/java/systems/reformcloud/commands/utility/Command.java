@@ -17,12 +17,18 @@ import java.util.List;
 public abstract class Command implements TabCompleter, Serializable {
 
     /**
-     * Some general information about the command
+     * The name of the command
      */
     private String name;
 
+    /**
+     * The description of the command
+     */
     private String description;
 
+    /**
+     * The needed permission to execute the command
+     */
     private String permission;
 
     /**

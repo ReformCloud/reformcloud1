@@ -16,7 +16,7 @@ import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.DefaultEventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
@@ -124,7 +124,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
             .getValue("address", TypeTokenAdaptor.getETHERNET_ADDRESS_TYPE());
         new ReformCloudLibraryServiceProvider(new ColouredConsoleProvider(),
             configuration.getStringValue("controllerKey"), ethernetAddress.getHost(),
-            new EventManager(), null);
+            new DefaultEventManager(), null);
         ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .setDebug(configuration.getBooleanValue("debug"));
 
@@ -566,6 +566,32 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
     @Override
     public String dispatchConsoleCommandAndGetResult(CharSequence commandLine) {
         return this.dispatchConsoleCommandAndGetResult(String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, String commandLine) {
+        this.channelHandler.sendPacketAsynchronous(
+            "ReformCloudController",
+            new PacketOutExecuteCommand("server", serverName, commandLine)
+        );
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, CharSequence commandLine) {
+        this.executeCommandOnServer(serverName, String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, String commandLine) {
+        this.channelHandler.sendPacketAsynchronous(
+            "ReformCloudController",
+            new PacketOutExecuteCommand("proxy", proxyName, commandLine)
+        );
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, CharSequence commandLine) {
+        this.executeCommandOnProxy(proxyName, String.valueOf(commandLine));
     }
 
     @Override

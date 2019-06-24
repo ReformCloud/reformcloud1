@@ -4,11 +4,13 @@
 
 package systems.reformcloud.utility.runtime;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-public interface Reload {
+public interface Reload extends Serializable {
 
     /**
      * This method get called to reload something

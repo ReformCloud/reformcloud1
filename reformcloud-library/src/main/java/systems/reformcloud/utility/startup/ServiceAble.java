@@ -5,12 +5,13 @@
 package systems.reformcloud.utility.startup;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.05.2019
  */
 
-public interface ServiceAble {
+public interface ServiceAble extends Serializable {
 
     boolean bootstrap();
 

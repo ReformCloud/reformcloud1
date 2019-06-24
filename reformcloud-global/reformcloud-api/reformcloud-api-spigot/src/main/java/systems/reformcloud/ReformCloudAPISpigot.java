@@ -13,7 +13,7 @@ import systems.reformcloud.api.*;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.DefaultEventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.logging.ColouredConsoleProvider;
@@ -117,7 +117,7 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
             .getValue("address", TypeTokenAdaptor.getETHERNET_ADDRESS_TYPE());
         new ReformCloudLibraryServiceProvider(new ColouredConsoleProvider(),
             configuration.getStringValue("controllerKey"), ethernetAddress.getHost(),
-            new EventManager(), null);
+            new DefaultEventManager(), null);
         ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .setDebug(configuration.getBooleanValue("debug"));
 
@@ -567,6 +567,32 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
     @Override
     public String dispatchConsoleCommandAndGetResult(CharSequence commandLine) {
         return this.dispatchConsoleCommandAndGetResult(String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, String commandLine) {
+        this.channelHandler.sendPacketAsynchronous(
+            "ReformCloudController",
+            new PacketOutExecuteCommand("server", serverName, commandLine)
+        );
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, CharSequence commandLine) {
+        this.executeCommandOnServer(serverName, String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, String commandLine) {
+        this.channelHandler.sendPacketAsynchronous(
+            "ReformCloudController",
+            new PacketOutExecuteCommand("proxy", proxyName, commandLine)
+        );
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, CharSequence commandLine) {
+        this.executeCommandOnProxy(proxyName, String.valueOf(commandLine));
     }
 
     @Override

@@ -6,44 +6,15 @@ package systems.reformcloud;
 
 import com.google.gson.reflect.TypeToken;
 import io.netty.channel.ChannelFutureListener;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
 import systems.reformcloud.addons.AddonParallelLoader;
-import systems.reformcloud.api.APIService;
-import systems.reformcloud.api.DefaultPlayerProvider;
-import systems.reformcloud.api.EventAdapter;
-import systems.reformcloud.api.PlayerProvider;
-import systems.reformcloud.api.SaveAPIImpl;
+import systems.reformcloud.api.*;
 import systems.reformcloud.api.save.SaveAPIService;
-import systems.reformcloud.commands.CommandAddons;
-import systems.reformcloud.commands.CommandClear;
-import systems.reformcloud.commands.CommandExit;
-import systems.reformcloud.commands.CommandHelp;
-import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.commands.CommandReload;
-import systems.reformcloud.commands.CommandUpdate;
-import systems.reformcloud.commands.CommandVersion;
+import systems.reformcloud.commands.*;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.DefaultEventManager;
+import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.event.events.ReloadDoneEvent;
 import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
@@ -72,59 +43,12 @@ import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
-import systems.reformcloud.network.packets.in.PacketInCopyServerIntoTemplate;
-import systems.reformcloud.network.packets.in.PacketInDeleteTemplate;
-import systems.reformcloud.network.packets.in.PacketInDeployServer;
-import systems.reformcloud.network.packets.in.PacketInDisableBackup;
-import systems.reformcloud.network.packets.in.PacketInDisableProperties;
-import systems.reformcloud.network.packets.in.PacketInEnableBackup;
-import systems.reformcloud.network.packets.in.PacketInEnableDebug;
-import systems.reformcloud.network.packets.in.PacketInEnableProperties;
-import systems.reformcloud.network.packets.in.PacketInExecuteClientCommand;
-import systems.reformcloud.network.packets.in.PacketInExecuteCommand;
-import systems.reformcloud.network.packets.in.PacketInGetClientProcessQueue;
-import systems.reformcloud.network.packets.in.PacketInGetControllerTemplateResult;
-import systems.reformcloud.network.packets.in.PacketInInitializeInternal;
-import systems.reformcloud.network.packets.in.PacketInParameterUpdate;
-import systems.reformcloud.network.packets.in.PacketInRemoveProxyProcessQueue;
-import systems.reformcloud.network.packets.in.PacketInRemoveServerQueueProcess;
-import systems.reformcloud.network.packets.in.PacketInServerInfoUpdate;
-import systems.reformcloud.network.packets.in.PacketInStartGameServer;
-import systems.reformcloud.network.packets.in.PacketInStartProxy;
-import systems.reformcloud.network.packets.in.PacketInStopProcess;
-import systems.reformcloud.network.packets.in.PacketInTemplateDeployReady;
-import systems.reformcloud.network.packets.in.PacketInUpdateAll;
-import systems.reformcloud.network.packets.in.PacketInUpdateClientAddon;
-import systems.reformcloud.network.packets.in.PacketInUpdateClientFromURL;
-import systems.reformcloud.network.packets.in.PacketInUpdateClientSetting;
-import systems.reformcloud.network.packets.in.PacketInUpdateProxyGroupPlugin;
-import systems.reformcloud.network.packets.in.PacketInUpdateProxyGroupPluginTemplate;
-import systems.reformcloud.network.packets.in.PacketInUpdateServerGroupPluginTemplate;
-import systems.reformcloud.network.packets.in.PacketInUpdateSeverGroupPlugin;
-import systems.reformcloud.network.packets.in.PacketInUploadLog;
-import systems.reformcloud.network.packets.out.PacketOutCreateClient;
-import systems.reformcloud.network.packets.out.PacketOutCreateProxyGroup;
-import systems.reformcloud.network.packets.out.PacketOutCreateServerGroup;
-import systems.reformcloud.network.packets.out.PacketOutCreateWebUser;
-import systems.reformcloud.network.packets.out.PacketOutDispatchConsoleCommand;
-import systems.reformcloud.network.packets.out.PacketOutExecuteCommandSilent;
-import systems.reformcloud.network.packets.out.PacketOutStartGameServer;
-import systems.reformcloud.network.packets.out.PacketOutStartProxy;
-import systems.reformcloud.network.packets.out.PacketOutStopProcess;
-import systems.reformcloud.network.packets.out.PacketOutUpdateOfflinePlayer;
-import systems.reformcloud.network.packets.out.PacketOutUpdateOnlinePlayer;
-import systems.reformcloud.network.packets.out.PacketOutUpdateProxyGroup;
-import systems.reformcloud.network.packets.out.PacketOutUpdateProxyInfo;
-import systems.reformcloud.network.packets.out.PacketOutUpdateServerGroup;
-import systems.reformcloud.network.packets.out.PacketOutUpdateServerInfo;
+import systems.reformcloud.network.packets.in.*;
+import systems.reformcloud.network.packets.out.*;
 import systems.reformcloud.network.packets.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.packets.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.network.packets.query.out.PacketOutQueryStartQueuedProcess;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncControllerTime;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncScreenDisable;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncScreenJoin;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncStandby;
-import systems.reformcloud.network.packets.sync.in.PacketInSyncUpdateClient;
+import systems.reformcloud.network.packets.sync.in.*;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncClientDisconnects;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncClientUpdateSuccess;
 import systems.reformcloud.player.implementations.OfflinePlayer;
@@ -133,8 +57,11 @@ import systems.reformcloud.serverprocess.CloudProcessStartupHandler;
 import systems.reformcloud.serverprocess.screen.CloudProcessScreenService;
 import systems.reformcloud.serverprocess.screen.internal.ClientScreenHandler;
 import systems.reformcloud.serverprocess.shutdown.ShutdownWorker;
+import systems.reformcloud.serverprocess.startup.CloudServerStartupHandler;
+import systems.reformcloud.serverprocess.startup.ProxyStartupHandler;
 import systems.reformcloud.synchronization.SynchronizationHandler;
 import systems.reformcloud.utility.ExitUtil;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
@@ -145,6 +72,19 @@ import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.threading.TaskScheduler;
 import systems.reformcloud.versioneering.VersionController;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 23.10.2018
@@ -164,7 +104,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     private ClientInfo clientInfo;
 
-    private final EventManager eventManager = new EventManager();
+    private final EventManager eventManager = new DefaultEventManager();
 
     private final AddonParallelLoader addonParallelLoader = new AddonParallelLoader();
 
@@ -884,6 +824,42 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public String dispatchConsoleCommandAndGetResult(CharSequence commandLine) {
         return this.dispatchConsoleCommandAndGetResult(String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, String commandLine) {
+        Require.requiresNotNull(serverName);
+        Require.requiresNotNull(commandLine);
+        CloudServerStartupHandler cloudServerStartupHandler = this.cloudProcessScreenService
+            .getRegisteredServerHandler(serverName);
+        if (cloudServerStartupHandler == null) {
+            return;
+        }
+
+        cloudServerStartupHandler.executeCommand(commandLine);
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, CharSequence commandLine) {
+        this.executeCommandOnServer(serverName, String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, String commandLine) {
+        Require.requiresNotNull(proxyName);
+        Require.requiresNotNull(commandLine);
+        ProxyStartupHandler proxyStartupHandler = this.cloudProcessScreenService
+            .getRegisteredProxyHandler(proxyName);
+        if (proxyStartupHandler == null) {
+            return;
+        }
+
+        proxyStartupHandler.executeCommand(commandLine);
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, CharSequence commandLine) {
+        this.executeCommandOnProxy(proxyName, String.valueOf(commandLine));
     }
 
     @Override

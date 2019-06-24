@@ -4,15 +4,18 @@
 
 package systems.reformcloud.logging.handlers;
 
-import systems.reformcloud.logging.ColouredConsoleProvider;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
- *
- * Register a Handler in {@link ColouredConsoleProvider} to get the console input
  */
 
-public interface IConsoleInputHandler {
+public interface IConsoleInputHandler extends Serializable {
 
-    void handle(String message);
+    /**
+     * Get called when a line is printed into the console
+     *
+     * @param arg1 The string which is printed into the console
+     */
+    void handle(String arg1);
 }

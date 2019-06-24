@@ -14,6 +14,7 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.runtime.Reload;
@@ -218,57 +219,19 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
 
     @Override
     public void exception(Throwable cause) {
+        Require.requireNotNull(cause);
         out.add(() -> {
             StringBuilder stringBuilder = new StringBuilder();
+            StringWriter stringWriter = new StringWriter();
 
-            stringBuilder.append(cause).append("\n");
-            for (StackTraceElement stackTraceElement : cause.getStackTrace()) {
-                stringBuilder.append("    at ").append(stackTraceElement).append("\n");
-            }
+            cause.printStackTrace(new PrintWriter(stringWriter));
+            stringBuilder.append(stringWriter);
 
-            for (Throwable suppressed : cause.getSuppressed()) {
-                this.suppressedException(suppressed, cause.getStackTrace(), "Suppressed: ", "\t",
-                    stringBuilder);
-            }
+            String caused = stringBuilder.toString();
 
-            String exception = stringBuilder.substring(0, stringBuilder.length() - 2);
-
-            this.serve(exception);
-            this.handleAll(exception);
+            this.serve(caused);
+            this.handleAll(caused);
         });
-    }
-
-    private void suppressedException(Throwable cause,
-        StackTraceElement[] enclosing,
-        String caption,
-        String prefix,
-        StringBuilder stringBuilder) {
-        StackTraceElement[] trace = cause.getStackTrace();
-        int m = trace.length - 1;
-        int n = enclosing.length - 1;
-        while (m >= 0 && n >= 0 && trace[m].equals(enclosing[n])) {
-            m--;
-        }
-        n--;
-
-        int framesInCommon = trace.length - 1 - m;
-
-        stringBuilder.append(prefix).append(caption).append(cause);
-        for (int i = 0; i <= m; i++) {
-            stringBuilder.append(prefix).append("\tat ").append(trace[i]);
-        }
-        if (framesInCommon != 0) {
-            stringBuilder.append(prefix).append("\t... ").append(framesInCommon).append(" more");
-        }
-
-        for (Throwable se : cause.getSuppressed()) {
-            suppressedException(se, cause.getStackTrace(), "", "\t", stringBuilder);
-        }
-
-        Throwable ourCause = cause.getCause();
-        if (ourCause != null) {
-            suppressedException(ourCause, trace, "Caused by: ", "", stringBuilder);
-        }
     }
 
     @Override

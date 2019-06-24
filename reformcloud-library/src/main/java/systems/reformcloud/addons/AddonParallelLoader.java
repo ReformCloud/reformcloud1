@@ -27,9 +27,6 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
 
     private Queue<JavaAddon> javaAddons = new ConcurrentLinkedDeque<>();
 
-    /**
-     * Loads all addons
-     */
     @Override
     public void loadAddons() {
         Collection<AddonClassConfig> addonClassConfigs = this.checkForAddons();
@@ -55,9 +52,6 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
         });
     }
 
-    /**
-     * Enables the Addons
-     */
     @Override
     public void enableAddons() {
         this.javaAddons.forEach(consumer -> {
@@ -69,9 +63,6 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
         });
     }
 
-    /**
-     * Disables all addons
-     */
     @Override
     public void disableAddons() {
         if (javaAddons.isEmpty()) {
@@ -109,12 +100,6 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
         return true;
     }
 
-    /**
-     * This methods searches for a specific addon and enables it
-     *
-     * @param name The name of the addon that should be found
-     * @return If the addon file exists and if the addon could be loaded
-     */
     @Override
     public boolean enableAddon(final String name) {
         Set<AddonClassConfig> moduleConfigs = new HashSet<>();
@@ -186,12 +171,6 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
         return true;
     }
 
-    /**
-     * Checks if a specific addon is enabled or not
-     *
-     * @param name The name of the addon
-     * @return If the addon is enabled or not
-     */
     @Override
     public boolean isAddonEnabled(final String name) {
         return this.javaAddons
@@ -199,11 +178,6 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
             .anyMatch(addon -> addon.getAddonName().equalsIgnoreCase(name));
     }
 
-    /**
-     * Returns all Addon Class Configs of all jar files
-     *
-     * @return a set of all Addons
-     */
     private Set<AddonClassConfig> checkForAddons() {
         Set<AddonClassConfig> moduleConfigs = new HashSet<>();
 

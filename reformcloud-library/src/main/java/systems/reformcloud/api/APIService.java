@@ -355,6 +355,42 @@ public interface APIService {
     String dispatchConsoleCommandAndGetResult(CharSequence commandLine);
 
     /**
+     * Executes a command on a started server
+     *
+     * @param serverName  The name of the server where the command should be
+     *                    executed
+     * @param commandLine The command which should be executed
+     */
+    void executeCommandOnServer(String serverName, String commandLine);
+
+    /**
+     * Executes a command on a started server
+     *
+     * @param serverName  The name of the server where the command should be
+     *                    executed
+     * @param commandLine The command which should be executed
+     */
+    void executeCommandOnServer(String serverName, CharSequence commandLine);
+
+    /**
+     * Executes a command on a started server
+     *
+     * @param proxyName   The name of the proxy where the command should be
+     *                    executed
+     * @param commandLine The command which should be executed
+     */
+    void executeCommandOnProxy(String proxyName, String commandLine);
+
+    /**
+     * Executes a command on a started server
+     *
+     * @param proxyName   The name of the proxy where the command should be
+     *                    executed
+     * @param commandLine The command which should be executed
+     */
+    void executeCommandOnProxy(String proxyName, CharSequence commandLine);
+
+    /**
      * Starts a new queued process
      *
      * @param serverGroup The server group of which the process should be started
