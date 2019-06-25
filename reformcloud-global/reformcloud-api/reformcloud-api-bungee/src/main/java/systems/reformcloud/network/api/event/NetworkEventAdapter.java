@@ -7,6 +7,7 @@ package systems.reformcloud.network.api.event;
 import io.netty.channel.ChannelHandlerContext;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.launcher.BungeecordBootstrap;
@@ -35,7 +36,9 @@ public final class NetworkEventAdapter implements Serializable, EventHandler {
     public void channelDisconnected(ChannelHandlerContext channelHandlerContext) {
         BungeecordBootstrap.getInstance().getProxy().getPlayers().forEach(proxiedPlayer ->
             proxiedPlayer.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(
-                "Your current proxy lost the connection to the cloud"
+                (ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix().endsWith(" ") ?
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() :
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " ") + "§cYour current proxy lost the connection to the cloud"
             )));
     }
 
