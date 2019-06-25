@@ -69,6 +69,8 @@ public enum SpigotVersions implements Serializable {
         "https://mcmirror.io/grab/Spigot/Spigot-1.14.1-03bd4b0-20190520-1053.jar"),
     SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2", 
         "https://mcmirror.io/grab/Spigot/Spigot-1.14.2-baafee9-20190602-0956.jar"),
+    SPIGOT_1_14_3("Spigot 1.14.3", "1.14.3", 
+        "https://mcmirror.io/grab/Spigot/Spigot-1.14.3-595711b-20190625-1057.jar"),    
 
     /**
      * Paper Versions
@@ -98,7 +100,9 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_14_1("Paper 1.14.1", "1.14.1", 
         "https://yivesmirror.com/files/paper/Paper-1.14.1-b42.jar"),
     PAPER_1_14_2("Paper 1.14.2", "1.14.2", 
-        "https://yivesmirror.com/files/paper/Paper-1.14.2-b58.jar"),
+        "https://mcmirror.io/grab/Paper/Paper-1.14.2-bf1d217-20190624-0232.jar"),
+    PAPER_1_14_3("Paper 1.14.3", "1.14.3", 
+        "https://mcmirror.io/grab/Paper/Paper-1.14.3-3042442-20190625-1355.jar"),    
 
     /**
      * SpongeVanilla Versions
@@ -168,7 +172,7 @@ public enum SpigotVersions implements Serializable {
     GLOWSTONE_1_11_2("Glowstone 1.11.2", "1.11.2",
         "https://archive.mcmirror.io/GlowStone/glowstone-1.11.2-SNAPSHOT.jar"),       
     GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.12.2-RELEASE.jar");
+        "https://github.com/GlowstoneMC/Glowstone/releases/download/2018.0.1/glowstone.jar");
 
     private static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();
@@ -205,7 +209,8 @@ public enum SpigotVersions implements Serializable {
                     "1.13.2",
                     "1.14",
                     "1.14.1",
-                    "1.14.2"
+                    "1.14.2",
+                    "1.14.3"
                 ));
             }
         }
