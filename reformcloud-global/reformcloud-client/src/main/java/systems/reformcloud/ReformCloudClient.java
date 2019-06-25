@@ -40,6 +40,7 @@ import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
@@ -130,6 +131,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     private long internalTime = System.currentTimeMillis();
 
+    private final NetworkInboundHandler internalConnectionHandler;
+
     /**
      * Creates a new Instance of the ReformCloudClient
      *
@@ -205,7 +208,11 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
             connectionLock.lock();
             Condition condition = connectionLock.newCondition();
 
-            this.registerNetworkHandlers(connectionLock, condition);
+            this.internalConnectionHandler = new PacketInInitializeInternal(
+                connectionLock, condition
+            );
+
+            this.registerNetworkHandlers();
             this.connect(ssl);
 
             condition.await();
@@ -227,7 +234,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         return ReformCloudClient.instance;
     }
 
-    private void registerNetworkHandlers(Lock lock, Condition condition) {
+    private void registerNetworkHandlers() {
         getNettyHandler()
             .registerHandler("StartCloudServer", new PacketInStartGameServer())
             .registerHandler("StartProxy", new PacketInStartProxy())
@@ -265,12 +272,8 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
                 new PacketInGetControllerTemplateResult())
             .registerHandler("DisableBackup", new PacketInDisableBackup())
             .registerHandler("EnableBackup", new PacketInEnableBackup())
-            .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess());
-
-        if (lock != null && condition != null) {
-            getNettyHandler().registerHandler("InitializeCloudNetwork",
-                new PacketInInitializeInternal(lock, condition));
-        }
+            .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess())
+            .registerHandler("InitializeCloudNetwork", internalConnectionHandler);
     }
 
     private void registerCommands() {
@@ -300,7 +303,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         this.addonParallelLoader.loadAddons();
 
-        this.registerNetworkHandlers(null, null);
+        this.registerNetworkHandlers();
         this.registerCommands();
 
         this.addonParallelLoader.enableAddons();

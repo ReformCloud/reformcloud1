@@ -27,7 +27,7 @@ import java.util.Set;
  * @author _Klaro | Pasqual K. / created on 18.10.2018
  */
 
-public final class Configuration {
+public final class Configuration implements Serializable {
 
     /**
      * The json object of the configuration
@@ -386,9 +386,5 @@ public final class Configuration {
 
     public JsonObject getJsonObject() {
         return this.jsonObject;
-    }
-
-    public void setJsonObject(JsonObject jsonObject) {
-        this.jsonObject = jsonObject;
     }
 }
