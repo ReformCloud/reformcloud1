@@ -5,11 +5,28 @@
 package systems.reformcloud;
 
 import com.google.gson.reflect.TypeToken;
+import java.io.Serializable;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-import systems.reformcloud.api.*;
+import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.DefaultPlayerProvider;
+import systems.reformcloud.api.EventHandler;
+import systems.reformcloud.api.PlayerProvider;
+import systems.reformcloud.api.SaveAPImpl;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
@@ -34,36 +51,64 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.stats.TempServerStats;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
+import systems.reformcloud.meta.system.RuntimeSnapshot;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.api.event.NetworkEventHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
-import systems.reformcloud.network.in.*;
+import systems.reformcloud.network.in.PacketInCreateSign;
+import systems.reformcloud.network.in.PacketInEnableDebug;
+import systems.reformcloud.network.in.PacketInEnableMobs;
+import systems.reformcloud.network.in.PacketInInitializeInternal;
+import systems.reformcloud.network.in.PacketInProcessAdd;
+import systems.reformcloud.network.in.PacketInProcessRemove;
+import systems.reformcloud.network.in.PacketInProxyInfoUpdate;
+import systems.reformcloud.network.in.PacketInRemoveSign;
+import systems.reformcloud.network.in.PacketInServerInfoUpdate;
+import systems.reformcloud.network.in.PacketInSignUpdate;
+import systems.reformcloud.network.in.PacketInSyncControllerTime;
+import systems.reformcloud.network.in.PacketInUpdateAll;
+import systems.reformcloud.network.in.PacketInUpdatePermissionCache;
+import systems.reformcloud.network.in.PacketInUpdatePermissionGroup;
+import systems.reformcloud.network.in.PacketInUpdatePermissionHolder;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
-import systems.reformcloud.network.packets.*;
+import systems.reformcloud.network.packets.PacketOutCreateClient;
+import systems.reformcloud.network.packets.PacketOutCreateProxyGroup;
+import systems.reformcloud.network.packets.PacketOutCreateServerGroup;
+import systems.reformcloud.network.packets.PacketOutCreateWebUser;
+import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
+import systems.reformcloud.network.packets.PacketOutExecuteCommand;
+import systems.reformcloud.network.packets.PacketOutExecuteCommandSilent;
+import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
+import systems.reformcloud.network.packets.PacketOutStartGameServer;
+import systems.reformcloud.network.packets.PacketOutStartProxy;
+import systems.reformcloud.network.packets.PacketOutStopProcess;
+import systems.reformcloud.network.packets.PacketOutUpdateOfflinePlayer;
+import systems.reformcloud.network.packets.PacketOutUpdateOnlinePlayer;
+import systems.reformcloud.network.packets.PacketOutUpdateProxyGroup;
+import systems.reformcloud.network.packets.PacketOutUpdateProxyInfo;
+import systems.reformcloud.network.packets.PacketOutUpdateServerGroup;
+import systems.reformcloud.network.packets.PacketOutUpdateServerInfo;
+import systems.reformcloud.network.packets.PacketOutUpdateServerTempStats;
+import systems.reformcloud.network.query.in.PacketInQueryGetRuntimeInformation;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
+import systems.reformcloud.network.query.out.PacketOutQueryGetRuntimeInformation;
 import systems.reformcloud.network.query.out.PacketOutQueryStartQueuedProcess;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.defaults.DefaultCloudService;
-
-import java.io.Serializable;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -144,6 +189,7 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
             .registerHandler("SyncControllerTime", new PacketInSyncControllerTime())
             .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
             .registerHandler("UpdatePermissionGroup", new PacketInUpdatePermissionGroup())
+            .registerQueryHandler("GetRuntimeInformation", new PacketInQueryGetRuntimeInformation())
             .registerHandler("UpdatePermissionCache", new PacketInUpdatePermissionCache());
 
         this.nettySocketClient = new NettySocketClient();
@@ -921,6 +967,88 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
     @Override
     public ProxyGroup getProxyGroup(String name) {
         return this.internalCloudNetwork.getProxyGroups().getOrDefault(name, null);
+    }
+
+    @Override
+    public RuntimeSnapshot shiftControllerRuntimeSnapshot() {
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation("Controller", "controller")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftClientRuntimeSnapshot(String clientName) {
+        Require.requireNotNull(clientName);
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation(clientName, "client")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftClientRuntimeSnapshot(Client client) {
+        Require.requireNotNull(client);
+        return shiftClientRuntimeSnapshot(client.getName());
+    }
+
+    @Override
+    public RuntimeSnapshot shiftProxyRuntimeSnapshot(String proxyName) {
+        Require.requireNotNull(proxyName);
+
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation(proxyName, "proxy")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftProxyRuntimeSnapshot(ProxyInfo proxyInfo) {
+        Require.requireNotNull(proxyInfo);
+        return shiftProxyRuntimeSnapshot(proxyInfo.getCloudProcess().getName());
+    }
+
+    @Override
+    public RuntimeSnapshot shiftServerRuntimeSnapshot(String serverName) {
+        Require.requireNotNull(serverName);
+        if (serverName.equals(this.serverInfo.getCloudProcess().getName())) {
+            return current();
+        }
+
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation(serverName, "server")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftServerRuntimeSnapshot(ServerInfo serverInfo) {
+        Require.requireNotNull(serverInfo);
+        return shiftServerRuntimeSnapshot(serverInfo.getCloudProcess().getName());
     }
 
     /**

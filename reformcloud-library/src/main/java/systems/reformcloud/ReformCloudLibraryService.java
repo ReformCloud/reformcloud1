@@ -26,6 +26,21 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.MultithreadEventExecutorGroup;
+import java.lang.management.ClassLoadingMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadMXBean;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 import systems.reformcloud.api.AsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
@@ -41,15 +56,6 @@ import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
-
-import java.lang.management.ClassLoadingMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.Locale;
-import java.util.UUID;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -355,7 +361,7 @@ public final class ReformCloudLibraryService {
      *
      * @return The runtime mx bean of the current jvm
      */
-    private static RuntimeMXBean getRuntimeMXBean() {
+    public static RuntimeMXBean getRuntimeMXBean() {
         return ManagementFactory.getRuntimeMXBean();
     }
 
@@ -364,8 +370,26 @@ public final class ReformCloudLibraryService {
      *
      * @return the current class loading mx bean of the current jvm
      */
-    private static ClassLoadingMXBean getClassLoadingMXBean() {
+    public static ClassLoadingMXBean getClassLoadingMXBean() {
         return ManagementFactory.getClassLoadingMXBean();
+    }
+
+    /**
+     * Get the current MemoryMXBean of the current java runtime
+     *
+     * @return The memory mx bean of the runtime
+     */
+    public static MemoryMXBean getMemoryMXBean() {
+        return ManagementFactory.getMemoryMXBean();
+    }
+
+    /**
+     * Get the current thread mx bean of the java runtime
+     *
+     * @return The current thread mx bean of the runtime
+     */
+    public static ThreadMXBean getThreadMXBean() {
+        return ManagementFactory.getThreadMXBean();
     }
 
     /**

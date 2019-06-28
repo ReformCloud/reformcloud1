@@ -4,17 +4,16 @@
 
 package systems.reformcloud.utility.player;
 
-import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.event.events.PlayerDisconnectsEvent;
-import systems.reformcloud.meta.info.ProxyInfo;
-import systems.reformcloud.utility.annotiations.InternalClass;
-
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.event.events.PlayerDisconnectsEvent;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.utility.annotiations.InternalClass;
 
 /**
  * This class should fix the problem that when the player logout event is not
@@ -63,9 +62,9 @@ public final class PlayerLogoutHandler extends Thread implements Serializable {
                     ReformCloudController.getInstance().updateProxyInfo(proxyInfo);
                     ReformCloudLibraryService.sleep(50);
                 });
+                proxyInfos.clear();
             }
 
-            proxyInfos.clear();
             ReformCloudLibraryService.sleep(900);
         }
     }

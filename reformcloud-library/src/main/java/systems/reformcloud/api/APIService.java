@@ -4,6 +4,13 @@
 
 package systems.reformcloud.api;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.Template;
@@ -18,6 +25,7 @@ import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
+import systems.reformcloud.meta.system.RuntimeSnapshot;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
@@ -25,15 +33,13 @@ import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 /**
  * @author _Klaro | Pasqual K. / created on 17.02.2019
  */
 
-public interface APIService {
+public interface APIService extends Serializable, SnapshotAble {
 
     /**
      * The atomic reference to get the default instance of the api service
@@ -710,6 +716,75 @@ public interface APIService {
      * @return The serverGroup or {@code null} if the proxyGroup doesn't exists
      */
     ProxyGroup getProxyGroup(String name);
+
+    /**
+     * Tries to get the controller runtime information
+     *
+     * @return The controller runtime information or {@code null} if the controller does not respond
+     */
+    @MayNotBePresent
+    RuntimeSnapshot shiftControllerRuntimeSnapshot();
+
+    /**
+     * Tries to get a runtime information of a specific client
+     *
+     * @param clientName The name of the client
+     * @return The client runtime information or {@code null} if the client is not connected or does
+     * not respond
+     */
+    @MayNotBePresent
+    RuntimeSnapshot shiftClientRuntimeSnapshot(String clientName);
+
+
+    /**
+     * Tries to get a runtime information of a specific client
+     *
+     * @param client The client object of the client
+     * @return The client runtime information or {@code null} if the client is not connected or does
+     * not respond
+     */
+    @MayNotBePresent
+    RuntimeSnapshot shiftClientRuntimeSnapshot(Client client);
+
+    /**
+     * Tries to get a runtime information of a specific proxy
+     *
+     * @param proxyName The name of the proxy
+     * @return The proxy runtime information or {@code null} if the proxy is not connected or does not
+     * respond
+     */
+    @MayNotBePresent
+    RuntimeSnapshot shiftProxyRuntimeSnapshot(String proxyName);
+
+    /**
+     * Tries to get a runtime information of a specific proxy
+     *
+     * @param proxyInfo The proxy info of the proxy
+     * @return The proxy runtime information or {@code null} if the proxy is not connected or does not
+     * respond
+     */
+    @MayNotBePresent
+    RuntimeSnapshot shiftProxyRuntimeSnapshot(ProxyInfo proxyInfo);
+
+    /**
+     * Tries to get a runtime information of a specific server
+     *
+     * @param serverName The name of the server
+     * @return The server runtime information or {@code null} if the server is not connected or does
+     * not respond
+     */
+    @MayNotBePresent
+    RuntimeSnapshot shiftServerRuntimeSnapshot(String serverName);
+
+    /**
+     * Tries to get a runtime information of a specific server
+     *
+     * @param serverInfo The server info of the server
+     * @return The server runtime information or {@code null} if the server is not connected or does
+     * not respond
+     */
+    @MayNotBePresent
+    RuntimeSnapshot shiftServerRuntimeSnapshot(ServerInfo serverInfo);
 
     /**
      * Gets the global netty handler
