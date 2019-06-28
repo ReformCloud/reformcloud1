@@ -23,10 +23,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.DefaultPermissionHelper;
 import systems.reformcloud.api.DefaultPlayerProvider;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.api.PlayerProvider;
 import systems.reformcloud.api.SaveAPImpl;
+import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
@@ -152,6 +154,7 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
         APIService.instance.set(this);
         new DefaultCloudService(this);
         DefaultPlayerProvider.instance.set(new PlayerProvider());
+        PermissionHelper.instance.set(new DefaultPermissionHelper());
 
         SpigotBootstrap.getInstance().getServer().getPluginManager()
             .registerEvents(this, SpigotBootstrap.getInstance());
@@ -1068,6 +1071,13 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
     @Override
     public Optional<SaveAPIService> getAPISave() {
         return Optional.ofNullable(SaveAPIService.instance.get());
+    }
+
+    @Override
+    public Optional<PermissionHelper> getPermissionHelper() {
+        return permissionCache == null ? Optional.empty() : Optional.ofNullable(
+            PermissionHelper.instance.get()
+        );
     }
 
     @org.bukkit.event.EventHandler

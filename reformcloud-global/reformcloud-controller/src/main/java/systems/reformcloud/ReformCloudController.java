@@ -43,6 +43,7 @@ import systems.reformcloud.api.deployment.outgoing.RestAPIDownloadService;
 import systems.reformcloud.api.documentation.RestAPIDocumentation;
 import systems.reformcloud.api.ingame.command.IngameCommandMangerImpl;
 import systems.reformcloud.api.network.event.EventAdapter;
+import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.player.PlayerProvider;
 import systems.reformcloud.api.save.SaveAPIImpl;
 import systems.reformcloud.api.save.SaveAPIService;
@@ -233,6 +234,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     private CloudConfiguration cloudConfiguration;
 
     private Thread shutdownHook;
+
+    private PermissionHelper permissionHelper;
 
     /**
      * Creates a new instance of the ReformCloudController and prepares all needed handlers
@@ -1655,6 +1658,11 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     }
 
     @Override
+    public Optional<PermissionHelper> getPermissionHelper() {
+        return Optional.ofNullable(permissionHelper);
+    }
+
+    @Override
     public void removeInternalProcess() {
         System.exit(ExitUtil.STOPPED_SUCESS);
     }
@@ -1741,6 +1749,11 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     public void setInternalCloudNetwork(InternalCloudNetwork internalCloudNetwork) {
         this.internalCloudNetwork = internalCloudNetwork;
+    }
+
+    public void setPermissionHelper(PermissionHelper permissionHelper) {
+        this.permissionHelper = permissionHelper;
+        PermissionHelper.instance.set(permissionHelper);
     }
 
     public void setUuid(List<UUID> uuid) {

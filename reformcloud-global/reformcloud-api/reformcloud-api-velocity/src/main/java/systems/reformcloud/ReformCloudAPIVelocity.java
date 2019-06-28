@@ -25,10 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import net.kyori.text.TextComponent;
 import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.DefaultPermissionHelper;
 import systems.reformcloud.api.DefaultPlayerProvider;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.api.PlayerProvider;
 import systems.reformcloud.api.SaveAPIImpl;
+import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
@@ -165,6 +167,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
         APIService.instance.set(this);
         new DefaultCloudService(this);
         DefaultPlayerProvider.instance.set(new PlayerProvider());
+        PermissionHelper.instance.set(new DefaultPermissionHelper());
 
         Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
 
@@ -1137,6 +1140,13 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
     @Override
     public Optional<SaveAPIService> getAPISave() {
         return Optional.ofNullable(SaveAPIService.instance.get());
+    }
+
+    @Override
+    public Optional<PermissionHelper> getPermissionHelper() {
+        return permissionCache == null ? Optional.empty() : Optional.ofNullable(
+            PermissionHelper.instance.get()
+        );
     }
 
     public void updateIngameCommands(List<IngameCommand> newIngameCommands) {

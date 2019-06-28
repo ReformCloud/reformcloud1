@@ -5,6 +5,7 @@
 package systems.reformcloud;
 
 import java.io.Serializable;
+import systems.reformcloud.api.DefaultPermissionHelper;
 import systems.reformcloud.commands.CommandPermissions;
 import systems.reformcloud.database.PermissionDatabase;
 import systems.reformcloud.listener.PlayerDisconnectedListener;
@@ -38,6 +39,8 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
         this.registerCommand(new CommandPermissions());
         ReformCloudController.getInstance().getEventManager()
             .registerListener(new PlayerDisconnectedListener());
+
+        ReformCloudController.getInstance().setPermissionHelper(new DefaultPermissionHelper());
     }
 
     @Override
@@ -50,6 +53,8 @@ public final class PermissionsAddon extends ControllerAddonImpl implements Seria
             .unregisterQueryHandler("QueryGetPermissionHolder")
 
             .unregisterHandler("UpdatePermissionHolder");
+
+        ReformCloudController.getInstance().setPermissionHelper(null);
     }
 
     public PermissionDatabase getPermissionDatabase() {

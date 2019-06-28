@@ -24,9 +24,11 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.DefaultPermissionHelper;
 import systems.reformcloud.api.DefaultPlayerProvider;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.api.SaveAPIImpl;
+import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
@@ -161,6 +163,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
         APIService.instance.set(this);
         new DefaultCloudService(this);
         DefaultPlayerProvider.instance.set(new PlayerProvider());
+        PermissionHelper.instance.set(new DefaultPermissionHelper());
 
         Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
 
@@ -1131,6 +1134,12 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
     @Override
     public Optional<SaveAPIService> getAPISave() {
         return Optional.ofNullable(SaveAPIService.instance.get());
+    }
+
+    @Override
+    public Optional<PermissionHelper> getPermissionHelper() {
+        return permissionCache == null ? Optional.empty() :
+            Optional.ofNullable(PermissionHelper.instance.get());
     }
 
     public void updateIngameCommands(List<IngameCommand> newIngameCommands) {

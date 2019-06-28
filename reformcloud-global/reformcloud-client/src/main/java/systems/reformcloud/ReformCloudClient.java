@@ -31,6 +31,7 @@ import systems.reformcloud.api.DefaultPlayerProvider;
 import systems.reformcloud.api.EventAdapter;
 import systems.reformcloud.api.PlayerProvider;
 import systems.reformcloud.api.SaveAPIImpl;
+import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.commands.CommandAddons;
 import systems.reformcloud.commands.CommandClear;
@@ -1361,6 +1362,11 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     @Override
     public Optional<SaveAPIService> getAPISave() {
         return Optional.ofNullable(SaveAPIService.instance.get());
+    }
+
+    @Override
+    public Optional<PermissionHelper> getPermissionHelper() {
+        throw new UnsupportedOperationException("Not supported yet");
     }
 
     @Override

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.Template;
@@ -799,6 +800,13 @@ public interface APIService extends Serializable, SnapshotAble {
      * @return the save instance of the api
      */
     Optional<SaveAPIService> getAPISave();
+
+    /**
+     * Get the permission helper
+     *
+     * @return The permission helper instance or {@code null} if permissions are not enabled
+     */
+    Optional<PermissionHelper> getPermissionHelper();
 
     /**
      * Closes the current process

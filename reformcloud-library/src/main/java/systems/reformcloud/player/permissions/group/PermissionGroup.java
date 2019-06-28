@@ -4,10 +4,10 @@
 
 package systems.reformcloud.player.permissions.group;
 
-import systems.reformcloud.utility.StringUtil;
-
 import java.io.Serializable;
 import java.util.Map;
+import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
@@ -16,16 +16,29 @@ import java.util.Map;
 public final class PermissionGroup implements Serializable {
 
     /**
-     * General info about the group
+     * The name of the permission group
      */
     private String name;
 
+    /**
+     * The group prefix
+     */
     private String prefix;
 
+    /**
+     * The group suffix
+     */
     private String suffix;
 
+    /**
+     * The group display name
+     */
     private String display;
 
+    /**
+     * The tab colour code of the group
+     */
+    @MayNotBePresent
     private String tabColorCode;
 
     /**
