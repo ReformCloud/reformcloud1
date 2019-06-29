@@ -45,4 +45,9 @@ public final class DefaultPermissionHelper implements Serializable, PermissionHe
     public PermissionCache getPermissionCache() {
         return PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache();
     }
+
+    @Override
+    public void executeCommand(String commandLine) {
+        ReformCloudController.getInstance().dispatchConsoleCommandAndGetResult(commandLine);
+    }
 }

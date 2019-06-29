@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
@@ -68,5 +69,11 @@ public final class DefaultPermissionHelper implements Serializable, PermissionHe
     @Override
     public PermissionCache getPermissionCache() {
         return ReformCloudAPISpigot.getInstance().getPermissionCache();
+    }
+
+    @Override
+    public void executeCommand(String commandLine) {
+        CompletableFuture.runAsync(() -> ReformCloudAPISpigot.getInstance()
+            .dispatchConsoleCommandAndGetResult(commandLine));
     }
 }
