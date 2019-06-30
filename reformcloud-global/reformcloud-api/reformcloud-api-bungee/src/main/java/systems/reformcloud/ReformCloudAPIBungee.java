@@ -1404,7 +1404,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
 
     public int getGlobalMaxOnlineCount() {
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        this.getAllProxyGroups().forEach(e -> atomicInteger.addAndGet(e.getMaxPlayers()));
+        this.getAllRegisteredProxies()
+            .forEach(e -> atomicInteger.addAndGet(e.getProxyGroup().getMaxPlayers()));
         return atomicInteger.get();
     }
 

@@ -1385,7 +1385,8 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
 
     public int getGlobalMaxOnlineCount() {
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        this.getAllProxyGroups().forEach(e -> atomicInteger.addAndGet(e.getMaxPlayers()));
+        this.getAllRegisteredProxies()
+            .forEach(e -> atomicInteger.addAndGet(e.getProxyGroup().getMaxPlayers()));
         return atomicInteger.get();
     }
 
