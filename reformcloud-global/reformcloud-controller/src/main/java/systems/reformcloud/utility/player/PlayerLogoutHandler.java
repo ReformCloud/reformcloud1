@@ -5,6 +5,7 @@
 package systems.reformcloud.utility.player;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -40,10 +41,11 @@ public final class PlayerLogoutHandler extends Thread implements Serializable {
     @Override
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
-            ReformCloudController.getInstance().getAllRegisteredProxies().forEach(proxyInfo ->
+            ReformCloudController.getInstance().getAllRegisteredProxies().forEach(proxyInfo -> {
+                List<UUID> forRemoval = new ArrayList<>();
                 proxyInfo.getOnlinePlayers().forEach(uuid -> {
                     if (!findPlayerOnServer(uuid)) {
-                        proxyInfo.getOnlinePlayers().remove(uuid);
+                        forRemoval.add(uuid);
                         proxyInfo.setOnline(proxyInfo.getOnline() - 1);
                         proxyInfos.add(proxyInfo);
                         Runnable patch = () -> {
@@ -53,8 +55,10 @@ public final class PlayerLogoutHandler extends Thread implements Serializable {
                         };
                         patchAsync(patch);
                     }
-                })
-            );
+                });
+
+                forRemoval.forEach(e -> proxyInfo.getOnlinePlayers().remove(e));
+            });
 
             if (!proxyInfos.isEmpty()) {
                 proxyInfos.forEach(proxyInfo -> {

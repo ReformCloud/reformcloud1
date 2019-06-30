@@ -971,7 +971,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
             new PacketOutQueryGetOnlinePlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -986,7 +986,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
             new PacketOutQueryGetOnlinePlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -1001,7 +1001,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
             new PacketOutQueryGetPlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -1016,7 +1016,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
             new PacketOutQueryGetPlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }

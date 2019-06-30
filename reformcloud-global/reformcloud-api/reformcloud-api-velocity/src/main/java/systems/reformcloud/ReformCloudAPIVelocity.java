@@ -687,7 +687,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
             new PacketOutQueryGetOnlinePlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -702,7 +702,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
             new PacketOutQueryGetOnlinePlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -717,7 +717,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
             new PacketOutQueryGetPlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -732,7 +732,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
             new PacketOutQueryGetPlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }

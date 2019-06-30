@@ -698,7 +698,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new PacketOutQueryGetOnlinePlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -713,7 +713,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new PacketOutQueryGetPlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2,
+            TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -728,7 +729,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new PacketOutQueryGetPlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2,
+            TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }

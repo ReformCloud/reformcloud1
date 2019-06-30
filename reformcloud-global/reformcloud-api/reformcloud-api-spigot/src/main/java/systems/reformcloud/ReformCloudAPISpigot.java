@@ -681,7 +681,8 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
             new PacketOutQueryGetOnlinePlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2,
+            TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -696,7 +697,7 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
             new PacketOutQueryGetOnlinePlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -711,7 +712,8 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
             new PacketOutQueryGetPlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2,
+            TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -726,7 +728,8 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
             new PacketOutQueryGetPlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2,
+            TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
