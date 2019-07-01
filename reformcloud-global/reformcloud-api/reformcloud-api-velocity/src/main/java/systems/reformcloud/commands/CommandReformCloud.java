@@ -6,6 +6,9 @@ package systems.reformcloud.commands;
 
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +17,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.bootstrap.VelocityBootstrap;
+import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ClientInfo;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
@@ -33,8 +41,9 @@ public final class CommandReformCloud implements Command {
             return;
         }
 
-        final String prefix =
-            ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix() + "§7";
+        final String prefix = (ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix().endsWith(" ") ?
+            ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix() :
+            ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix() + " ") + "§7";
 
         if (strings.length == 0) {
             commandSource.sendMessage(TextComponent
@@ -54,6 +63,21 @@ public final class CommandReformCloud implements Command {
         if (strings[0].equalsIgnoreCase("version")) {
             commandSource.sendMessage(
                 TextComponent.of("You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("maintenance")) {
+            ProxyGroup proxyGroup =
+                ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup();
+            ReformCloudAPIVelocity.getInstance().dispatchConsoleCommand(
+                "asg proxygroup " + proxyGroup.getName() +
+                    " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
+                    "true --update")
+            );
+            commandSource.sendMessage(TextComponent.of(
+                ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                    .getMessage("internal-api-bungee-command-send-controller")
+            ));
             return;
         }
 
@@ -160,6 +184,131 @@ public final class CommandReformCloud implements Command {
             return;
         }
 
+        if (strings[0].equalsIgnoreCase("list")) {
+            if (strings.length != 3) {
+                List<Client> connectedClients = new ArrayList<>();
+                ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                    .getClients()
+                    .values()
+                    .stream()
+                    .filter(client -> client.getClientInfo() != null)
+                    .forEach(connectedClients::add);
+
+                if (connectedClients.size() > 0) {
+                    commandSource.sendMessage(TextComponent.of(prefix + "The following §eClients§7 are connected: "));
+                    connectedClients.forEach(e -> {
+                        final ClientInfo clientInfo = ReformCloudAPIVelocity.getInstance().getConnectedClient(e.getName());
+                        commandSource.sendMessage(TextComponent.of(
+                            "    - §e" + e.getName() + "§7 | Host: §e" + e.getIp() + "§7 | Memory-Usage: §e"
+                                + clientInfo.getUsedMemory() + "MB§7/§e" + clientInfo.getMaxMemory()
+                                + "MB§7 | Processors: §e" + clientInfo.getCpuCoresSystem()
+                                + "§7 | CPU-Usage: §e" + new DecimalFormat("##.###").format(clientInfo.getCpuUsage())
+                                + "%§7 | Started-Processes: §e" + (clientInfo.getStartedProxies().size()
+                                + clientInfo.getStartedServers().size())));
+                        commandSource.sendMessage(TextComponent.of(""));
+                    });
+
+                    connectedClients.forEach(e -> {
+                        if (ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                            .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
+                            .anyMatch(proxies -> proxies.getCloudProcess().getClient()
+                                .equals(e.getName()))) {
+                            commandSource.sendMessage(TextComponent.of(
+                                prefix + "§7The following §eproxies§7 are started on \"§e" + e.getName() + "§7\": "));
+                            ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                                .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
+                                .filter(proxyInfo -> proxyInfo.getCloudProcess().getClient()
+                                    .equals(e.getName())).forEach(info -> commandSource.sendMessage(TextComponent.of(
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§7 | Player: §e" + info
+                                    .getOnline() + "§7/§e" + info.getProxyGroup().getMaxPlayers())));
+                            commandSource.sendMessage(TextComponent.of(""));
+                        } else {
+                            commandSource.sendMessage(TextComponent.of(prefix + "There are no started §eproxies§7 on \"§e" + e.getName() + "§7\""));
+                            commandSource.sendMessage(TextComponent.of(""));
+                        }
+
+                        if (ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                            .getServerProcessManager().getAllRegisteredServerProcesses().stream()
+                            .anyMatch(servers -> servers.getCloudProcess().getClient()
+                                .equals(e.getName()))) {
+                            commandSource.sendMessage(TextComponent.of(
+                                prefix + "The following §eservers§7 are started on \"§e" + e.getName() + "§7\": "));
+                            ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                                .getServerProcessManager().getAllRegisteredServerProcesses().stream()
+                                .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
+                                    .equals(e.getName())).forEach(info -> commandSource.sendMessage(TextComponent.of(
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | State: §e" + info
+                                    .getServerState() + "§7 | Player: §e" + info.getOnline() + "§7/§e" + info
+                                    .getServerGroup().getMaxPlayers())));
+                            commandSource.sendMessage(TextComponent.of(""));
+                        } else {
+                            commandSource.sendMessage(TextComponent.of(prefix + "There are no started §eservers§7 on \"§e" + e.getName() + "$7\""));
+                            commandSource.sendMessage(TextComponent.of(""));
+                        }
+                    });
+                } else
+                    commandSource.sendMessage(TextComponent.of(prefix + "There are no §eClients§7 connected to the §eController"));
+            } else {
+                switch (strings[1].toLowerCase()) {
+                    case "server": {
+                        if (ReformCloudAPIVelocity.getInstance().getServerGroup(strings[2]) != null) {
+                            List<ServerInfo> connected = new ArrayList<>();
+                            ReformCloudAPIVelocity.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredServerProcesses()
+                                .stream()
+                                .filter(e -> e.getServerGroup().getName().equalsIgnoreCase(strings[2]))
+                                .forEach(connected::add);
+
+                            if (connected.size() > 0) {
+                                commandSource.sendMessage(TextComponent.of(
+                                    prefix + "The following §eservers§7 of the group \"§e" + strings[2]
+                                        + "§7\" are connected: "));
+                                connected.forEach(info -> commandSource.sendMessage(TextComponent.of(
+                                    "    - §e" + info.getCloudProcess().getName() + "§7 | Player: §e" + info
+                                        .getOnline() + "§7/§e" + info.getServerGroup().getMaxPlayers())));
+                            } else
+                                commandSource.sendMessage(TextComponent.of(prefix + "There are no started §eservers§7 of the group \"§e" + strings[2] + "§7\""));
+                        } else
+                            commandSource.sendMessage(TextComponent.of(prefix + "§cThe servergroup doesn't exists"));
+
+                        break;
+                    }
+                    case "proxy": {
+                        if (ReformCloudAPIVelocity.getInstance().getProxyGroup(strings[2]) != null) {
+                            List<ProxyInfo> connected = new ArrayList<>();
+                            ReformCloudAPIVelocity.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredProxyProcesses()
+                                .stream()
+                                .filter(e -> e.getProxyGroup().getName().equalsIgnoreCase(strings[2]))
+                                .forEach(connected::add);
+
+                            if (connected.size() > 0) {
+                                commandSource.sendMessage(TextComponent.of(
+                                    prefix + "The following §eproxies§7 of the group \"§e" + strings[2]
+                                        + "§7\" are connected: "));
+                                connected.forEach(info -> commandSource.sendMessage(TextComponent.of(
+                                    "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§7 | Player: §e" + info
+                                        .getOnline() + "§7/§e" + info.getProxyGroup().getMaxPlayers())));
+                            } else
+                                commandSource.sendMessage(TextComponent.of(prefix + "There are no started §eproxies§7 of the group \"§e" + strings[2] + "§7\""));
+                        } else
+                            commandSource.sendMessage(TextComponent.of(prefix + "§cThe proxygroup doesn't exists"));
+
+                        break;
+                    }
+                    default: {
+                        commandSource.sendMessage(TextComponent.of(prefix + "process list <server/proxy> <group-name>"));
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+
         commandSource.sendMessage(TextComponent
             .of(ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
                 .getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
@@ -187,7 +336,7 @@ public final class CommandReformCloud implements Command {
         }
 
         if (strings.length == 3 && strings[0].equalsIgnoreCase("whitelist")) {
-            List<String> out = proxies();
+            List<String> out = registeredProxyGroups();
             out.add("--all");
             return out;
         }
@@ -202,7 +351,7 @@ public final class CommandReformCloud implements Command {
 
         if (strings.length == 3 && strings[0].equalsIgnoreCase("execute")) {
             if (strings[1].equalsIgnoreCase("server")) {
-                return registeredSevers();
+                return registeredServers();
             }
 
             if (strings[1].equalsIgnoreCase("proxy")) {
@@ -224,7 +373,24 @@ public final class CommandReformCloud implements Command {
             return registeredGroups();
         }
 
-        return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("list")) {
+            return Arrays.asList("server", "proxy");
+        }
+
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("list")) {
+            if (strings[1].equalsIgnoreCase("server")) {
+                return registeredServerGroups();
+            }
+
+            if (strings[1].equalsIgnoreCase("proxy")) {
+                return registeredProxyGroups();
+            }
+
+            return registeredGroups();
+        }
+
+        return Arrays.asList("copy", "maintenance", "whitelist", "execute",
+            "process", "list", "reload", "version");
     }
 
     private List<String> registered() {
@@ -236,13 +402,7 @@ public final class CommandReformCloud implements Command {
         return out;
     }
 
-    private List<String> proxies() {
-        List<String> out = new LinkedList<>();
-        ReformCloudAPIVelocity.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
-        return out;
-    }
-
-    private List<String> registeredSevers() {
+    private List<String> registeredServers() {
         List<String> out = new LinkedList<>();
         ReformCloudAPIVelocity.getInstance().getAllRegisteredServers()
             .forEach(e -> out.add(e.getCloudProcess().getName()));
@@ -264,6 +424,18 @@ public final class CommandReformCloud implements Command {
         return out;
     }
 
+    private List<String> registeredServerGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudAPIVelocity.getInstance().getAllServerGroups().forEach(e -> out.add(e.getName()));
+        return out;
+    }
+
+    private List<String> registeredProxyGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudAPIVelocity.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
+        return out;
+    }
+
     private List<String> players() {
         List<String> out = new LinkedList<>();
         VelocityBootstrap.getInstance().getProxy().getAllPlayers()
@@ -272,19 +444,13 @@ public final class CommandReformCloud implements Command {
     }
 
     private void sendHelp(CommandSource commandSource, String prefix) {
-        commandSource.sendMessage(TextComponent
-            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7/reformcloud copy <name> <file/dir> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7/reformcloud process <start/stop> <group/name> \n"));
-        commandSource.sendMessage(TextComponent
-            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n"));
-        commandSource.sendMessage(TextComponent
-            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud copy <name> <file/dir> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud maintenance \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud process <start/stop> <group/name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud list <server/proxy> <group-name> \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud reload \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud version"));
     }
 }

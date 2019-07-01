@@ -14,9 +14,10 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
-import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 import java.io.Serializable;
@@ -36,8 +37,9 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
      *
      * @see io.netty.bootstrap.ServerBootstrap
      */
-    public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler, boolean ssl,
-        String key, String name) {
+    public void connect(EthernetAddress ethernetAddress, AbstractChannelHandler channelHandler,
+                        boolean ssl,
+                        String key, String name) {
         try {
             if (ssl) {
                 sslContext = SslContextBuilder.forClient()
@@ -72,7 +74,9 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
                     new Configuration()
                         .addStringValue("key", key)
                         .addStringValue("name", name)
-                        .addValue("AuthenticationType", AuthenticationType.PROXY)
+                        .addValue("AuthenticationType",
+                            AuthenticationType.PROXY),
+                    ChannelConstants.REFORMCLOUD_AUTHENTICATION_CHANNEL
                 ));
         } catch (final Throwable ignored) {
         }

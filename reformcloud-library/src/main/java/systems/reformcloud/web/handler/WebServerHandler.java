@@ -59,7 +59,7 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         InetSocketAddress inetSocketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .debug("Receiving message in channel " +
                 inetSocketAddress.getAddress().getHostAddress());
 
@@ -68,7 +68,7 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
         }
         HttpRequest httpRequest = (HttpRequest) msg;
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .debug(httpRequest.headers().entries() + "");
 
         String requestUri;
@@ -91,7 +91,7 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
 
         final WebHandler webHandler = this.webHandlerAdapter.getHandler(requestUri);
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .debug(webHandler == null ?
                 "No web handler found, sending default response" : "Handler found, handling");
 
@@ -111,7 +111,7 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
         }
 
         if (webHandler != null && fullHttpResponse == null) {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .debug("Web handler got request, " +
                     "but returned nothing (sending default response)");
         }
@@ -150,12 +150,12 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
         }
 
         if (cause instanceof IOException) {
-            if (ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().isDebug()) {
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().exception()
+            if (ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().isDebug()) {
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().exception()
                     .accept(cause);
             }
         } else {
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().exception()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().exception()
                 .accept(cause);
         }
     }

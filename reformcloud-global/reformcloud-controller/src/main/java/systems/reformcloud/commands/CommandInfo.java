@@ -4,14 +4,15 @@
 
 package systems.reformcloud.commands;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
-import systems.reformcloud.database.statistics.StatisticsProvider;
+import systems.reformcloud.database.statistics.Stats;
 import systems.reformcloud.utility.StringUtil;
+
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -28,7 +29,7 @@ public final class CommandInfo extends Command implements Serializable {
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        final StatisticsProvider.Stats stats = ReformCloudController.getInstance()
+        final Stats stats = ReformCloudController.getInstance()
             .getStatisticsProvider().getStats();
 
         commandSender.sendMessage("ReformCloud version " + StringUtil.REFORM_VERSION);
@@ -43,7 +44,7 @@ public final class CommandInfo extends Command implements Serializable {
         commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
         commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
         commandSender.sendMessage("JVM start time: " +
-            ReformCloudController.getInstance().getLoggerProvider().getDateFormat()
+            ReformCloudController.getInstance().getColouredConsoleProvider().getDateFormat()
                 .format(ReformCloudLibraryService.systemStartTime()));
         commandSender.sendMessage("JVM uptime: " +
             dataFormat.format(ReformCloudLibraryService.systemUpTime()));

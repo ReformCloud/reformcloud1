@@ -19,16 +19,34 @@ public class ProxyStartupInfo implements Serializable {
 
     private static final long serialVersionUID = -295123813122792999L;
 
+    /**
+     * The uid of the proxy
+     */
     private UUID uid;
 
+    /**
+     * The name of the proxy
+     */
     private String name;
 
+    /**
+     * The template of the proxy which should be loaded
+     */
     private String template;
 
+    /**
+     * The group of the new proxy
+     */
     private ProxyGroup proxyGroup;
 
+    /**
+     * The pre config given by the user
+     */
     private Configuration configuration;
 
+    /**
+     * The proxy id
+     */
     private int id;
 
     @java.beans.ConstructorProperties({"uid", "name", "template", "proxyGroup", "configuration",

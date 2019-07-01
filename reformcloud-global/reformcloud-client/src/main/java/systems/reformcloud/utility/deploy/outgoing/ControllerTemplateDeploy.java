@@ -46,7 +46,7 @@ public final class ControllerTemplateDeploy implements Serializable {
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setRequestProperty("-XUser",
                 ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser()
-                    .getName());
+                    .getUserName());
             httpURLConnection.setRequestProperty("-XPassword",
                 ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser()
                     .getPassword());
@@ -69,14 +69,14 @@ public final class ControllerTemplateDeploy implements Serializable {
                 ;
             }
 
-            ReformCloudClient.getInstance().getLoggerProvider()
+            ReformCloudClient.getInstance().getColouredConsoleProvider()
                 .info("Successfully send template " + template +
                     " of group " + group + " to controller");
             httpURLConnection.disconnect();
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/files/" + group + "/" + template));
         } catch (final IOException ex) {
             StringUtil.printError(
-                ReformCloudClient.getInstance().getLoggerProvider(),
+                ReformCloudClient.getInstance().getColouredConsoleProvider(),
                 "Error while deploying controller template",
                 ex
             );

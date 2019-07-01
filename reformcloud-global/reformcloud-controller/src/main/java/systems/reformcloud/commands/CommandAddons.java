@@ -4,11 +4,13 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -17,7 +19,7 @@ import java.io.Serializable;
 public final class CommandAddons extends Command implements Serializable {
 
     public CommandAddons() {
-        super("addons", "List, enable and disable addons", "reformcloud.command.addons",
+        super("addons", "List addons", "reformcloud.command.addons",
             new String[0]);
     }
 
@@ -31,7 +33,7 @@ public final class CommandAddons extends Command implements Serializable {
             } else {
                 commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage()
                     .getCommand_addons_following_loaded());
-                ReformCloudController.getInstance().getLoggerProvider().emptyLine();
+                ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
                 ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .forEach(e -> commandSender.sendMessage(
@@ -45,5 +47,14 @@ public final class CommandAddons extends Command implements Serializable {
         } else {
             commandSender.sendMessage("addons list");
         }
+    }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        if (args.length == 0) {
+            return Collections.singletonList("list");
+        }
+
+        return new ArrayList<>();
     }
 }

@@ -40,7 +40,7 @@ public final class EventAdapter implements Serializable, EventHandler {
         try {
             ReformCloudController.getInstance().reloadAll();
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Error while handling network reload", throwable);
         }
     }

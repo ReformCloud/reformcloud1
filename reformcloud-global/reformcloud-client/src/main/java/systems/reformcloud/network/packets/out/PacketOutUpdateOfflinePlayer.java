@@ -4,11 +4,10 @@
 
 package systems.reformcloud.network.packets.out;
 
+import java.io.Serializable;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.player.implementations.OfflinePlayer;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 08.03.2019
@@ -17,6 +16,6 @@ import java.io.Serializable;
 public final class PacketOutUpdateOfflinePlayer extends Packet implements Serializable {
 
     public PacketOutUpdateOfflinePlayer(OfflinePlayer offlinePlayer) {
-        super("UpdateOnlinePlayer", new Configuration().addValue("player", offlinePlayer));
+        super("UpdateOfflinePlayer", new Configuration().addValue("player", offlinePlayer));
     }
 }

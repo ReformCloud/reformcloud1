@@ -29,23 +29,23 @@ public final class CommandListGroups extends Command implements Serializable {
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups().values()
             .forEach(e ->
                 commandSender.sendMessage(
-                    "    - " + e.getName() + " | Ram: " + e.getMemory() + " | ProxyModeType: " + e
-                        .getProxyModeType() + " | MinOnline: " + e.getMinOnline() + " | MaxOnline: "
-                        + e.getMaxOnline() + " | MaxPlayers: " + e.getMaxPlayers() + " | Version: "
-                        + e.getProxyVersions().getName() + " | Clients: " + e.getClients())
+                    "    - §e" + e.getName() + "§r | Ram: §e" + e.getMemory() + "§r | ProxyModeType: §e" +
+                        e.getProxyModeType() + "§r | MinOnline: §e" + e.getMinOnline() + "§r | MaxOnline: §e"
+                        + e.getMaxOnline() + "§r | MaxPlayers: §e" + e.getMaxPlayers() + "§r | Version: §e"
+                        + e.getProxyVersions().getName() + "§r | Clients: §e" + e.getClients())
             );
-        ReformCloudController.getInstance().getLoggerProvider().emptyLine();
+        ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
         commandSender.sendMessage(
             ReformCloudController.getInstance().getLoadedLanguage().getCommand_listgroup_list()
                 .replace("%type%", "server"));
         ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups().values()
             .forEach(e ->
                 commandSender.sendMessage(
-                    "    - " + e.getName() + " | Ram: " + e.getMemory() + " | ServerModeType: " + e
-                        .getServerModeType() + " | MinOnline: " + e.getMinOnline()
-                        + " | MaxOnline: " + e.getMaxOnline() + " | MaxPlayers: " + e
-                        .getMaxPlayers() + " | Version: " + e.getSpigotVersions().getName()
-                        + " | Clients: " + e.getClients())
+                    "    - §e" + e.getName() + "§r | Ram: §e" + e.getMemory() + "§r | ServerModeType: §e" +
+                        e.getServerModeType() + "§r | MinOnline: §e" + e.getMinOnline()
+                        + "§r | MaxOnline: §e" + e.getMaxOnline() + "§r | MaxPlayers: §e" +
+                        e.getMaxPlayers() + "§r | Version: §e" + e.getSpigotVersions().getName()
+                        + "§r | Clients: §e" + e.getClients())
             );
     }
 }

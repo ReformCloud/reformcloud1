@@ -11,7 +11,16 @@ import java.io.Serializable;
  */
 
 public enum ProxyModeType implements Serializable {
+
+    /**
+     * The proxy is dynamic and will be deleted after the process shutdown
+     */
     DYNAMIC,
+
+    /**
+     * The process is static and started in another directory (will not be
+     * deleted after shutdown)
+     */
     STATIC;
 
     /**

@@ -4,18 +4,15 @@
 
 package systems.reformcloud.meta.proxy;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
 import systems.reformcloud.meta.enums.ProxyModeType;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.versions.ProxyVersions;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
@@ -25,39 +22,90 @@ public class ProxyGroup implements Serializable {
 
     private static final long serialVersionUID = 4196459006374952552L;
 
+    /**
+     * The name of the proxy group
+     */
     private String name;
 
+    /**
+     * The list of the client names where the group is allowed to start
+     */
     private List<String> clients;
 
+    /**
+     * The list of all disabled server groups
+     */
     private List<String> disabledServerGroups;
 
+    /**
+     * A list of all templates
+     */
     private List<Template> templates;
 
+    /**
+     * The whitelist of the proxy
+     */
     private Collection<UUID> whitelist;
 
+    /**
+     * The auto start settings of the proxy group
+     */
     private AutoStart autoStart;
 
+    /**
+     * The auto stop settings of the proxy group
+     */
     private AutoStop autoStop;
 
+    /**
+     * The type of the proxy
+     */
     private ProxyModeType proxyModeType;
 
+    /**
+     * The command logging state
+     */
     private boolean controllerCommandLogging;
 
+    /**
+     * The maintenance state of the group
+     */
     private boolean maintenance;
 
+    /**
+     * The log save state of the group
+     */
     private boolean saveLogs;
 
+    /**
+     * The start port for the group
+     */
     private int startPort;
 
+    /**
+     * The min online proxies of the group
+     */
     private int minOnline;
 
+    /**
+     * The max online proxies of the group
+     */
     private int maxOnline;
 
+    /**
+     * The max players of the group
+     */
     private int maxPlayers;
 
+    /**
+     * The memory of the group which should be used by any process
+     */
     private int memory;
 
-    protected ProxyVersions proxyVersions;
+    /**
+     * The version of the proxy group
+     */
+    private ProxyVersions proxyVersions;
 
     @java.beans.ConstructorProperties({"name", "clients", "disabledServerGroups", "templates",
         "whitelist", "proxyModeType", "autoStart", "autoStop", "controllerCommandLogging",

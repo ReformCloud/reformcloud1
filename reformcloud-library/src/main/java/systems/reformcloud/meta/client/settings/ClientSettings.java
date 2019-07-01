@@ -11,9 +11,24 @@ import java.io.Serializable;
  */
 
 public enum ClientSettings implements Serializable {
+    /**
+     * The start host setting
+     */
     START_HOST("general.start-host"),
+
+    /**
+     * The max memory of the client setting
+     */
     MEMORY("general.memory"),
+
+    /**
+     * The max cpu usage while starting up processes
+     */
     MAX_CPU_USAGE("general.maxcpuusage"),
+
+    /**
+     * The max log size of the client
+     */
     MAX_LOG_SIZE("general.max-log-size");
 
     /**
@@ -47,6 +62,9 @@ public enum ClientSettings implements Serializable {
         return clientSettings;
     }
 
+    /**
+     * @return the config string of the client setting
+     */
     public String getConfigString() {
         return this.configString;
     }

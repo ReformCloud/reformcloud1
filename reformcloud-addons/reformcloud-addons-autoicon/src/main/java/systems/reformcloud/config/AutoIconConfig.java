@@ -5,6 +5,15 @@
 package systems.reformcloud.config;
 
 import com.google.gson.reflect.TypeToken;
+import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.autoicon.IconData;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
+import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.FileUtils;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,19 +22,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.imageio.ImageIO;
-import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.autoicon.IconData;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
-import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.files.FileUtils;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 23.04.2019
@@ -63,7 +60,7 @@ public final class AutoIconConfig implements Serializable {
             try {
                 BufferedImage bufferedImage = ImageIO.read(new File(path));
                 if (bufferedImage.getWidth() != 64 || bufferedImage.getHeight() != 64) {
-                    ReformCloudController.getInstance().getLoggerProvider().serve()
+                    ReformCloudController.getInstance().getColouredConsoleProvider().serve()
                         .accept("The icon size of icon \"" + path + "\" is incorrect");
                 } else {
                     byte[] file = Files.readAllBytes(Paths.get(path));
@@ -76,7 +73,7 @@ public final class AutoIconConfig implements Serializable {
                 }
             } catch (final IOException ex) {
                 StringUtil.printError(
-                    ReformCloudController.getInstance().getLoggerProvider(),
+                    ReformCloudController.getInstance().getColouredConsoleProvider(),
                     "Can't read the input file (Are you sure, the file exists)",
                     ex
                 );
@@ -96,7 +93,7 @@ public final class AutoIconConfig implements Serializable {
                 StandardCopyOption.REPLACE_EXISTING);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not copy local file", ex);
         }
     }

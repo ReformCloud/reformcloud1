@@ -107,7 +107,7 @@ public final class ReformWebServer implements Serializable {
         serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel()
             .closeFuture();
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getWebserver_bound()
                 .replace("%ip%", ethernetAddress.getHost())
                 .replace("%port%", Integer.toString(ethernetAddress.getPort())));

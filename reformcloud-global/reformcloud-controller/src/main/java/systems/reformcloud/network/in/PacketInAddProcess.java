@@ -34,7 +34,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
             ReformCloudController.getInstance().getEventManager()
                 .fire(new ServerStartedEvent(serverInfo));
 
-            ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getColouredConsoleProvider().info(
                 ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
                     .replace("%name%", serverInfo.getCloudProcess().getName())
                     .replace("%uid%", serverInfo.getCloudProcess().getProcessUID() + "")
@@ -66,7 +66,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
 
             ReformCloudController.getInstance().getEventManager()
                 .fire(new ProxyStartedEvent(proxyInfo));
-            ReformCloudController.getInstance().getLoggerProvider().info(
+            ReformCloudController.getInstance().getColouredConsoleProvider().info(
                 ReformCloudController.getInstance().getLoadedLanguage().getController_process_add()
                     .replace("%name%", proxyInfo.getCloudProcess().getName())
                     .replace("%uid%", proxyInfo.getCloudProcess().getProcessUID() + "")

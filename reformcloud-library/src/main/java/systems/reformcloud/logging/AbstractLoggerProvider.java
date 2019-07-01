@@ -175,7 +175,8 @@ public abstract class AbstractLoggerProvider implements Serializable {
      * @return Creates a new logger or returns the current logger instance
      */
     public static AbstractLoggerProvider defaultLogger() {
-        return LoggerProvider.instance.isPresent() ? LoggerProvider.instance.get()
-            : LoggerProvider.newSaveLogger();
+        return ColouredConsoleProvider.instance != null
+            ? ColouredConsoleProvider.instance
+            : ColouredConsoleProvider.newSaveLogger();
     }
 }

@@ -4,6 +4,10 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
@@ -20,8 +24,6 @@ import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.network.out.PacketOutUpdateClientSetting;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 26.03.2019
@@ -884,5 +886,67 @@ public final class CommandAssignment extends Command implements Serializable {
                 "savelogs, memory, maxonline, minonline, proxymodetype, maxplayers, commandlogging, version> <value> <--update>");
         commandSender.sendMessage(
             "assignment CLIENT <name> <starthost, memory, maxcpu, maxlogsize> <value>");
+    }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if (args.length == 0) {
+            out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("servergroup")) {
+                out.addAll(serverGroups());
+            } else if (args[0].equalsIgnoreCase("proxygroup")) {
+                out.addAll(proxyGroups());
+            } else if (args[0].equalsIgnoreCase("client")) {
+                out.addAll(clients());
+            }
+        }
+
+        if (args.length == 2) {
+            if(args[0].equalsIgnoreCase("servergroup")) {
+                out.addAll(asList("permission", "clients", "templates",
+                    "memory", "maxonline", "minonline", "maxplayers", "startport",
+                    "maintenance", "savelogs", "servermodetype", "version"));
+            } else if (args[0].equalsIgnoreCase("proxygroup")) {
+                out.addAll(asList("clients", "templates", "disabledgroups",
+                    "maintenance", "savelogs", "memory", "maxonline", "minonline",
+                    "proxymodetype", "maxplayers", "commandlogging", "version"));
+            } else if (args[0].equalsIgnoreCase("client")) {
+                out.addAll(asList("starthost", "memory", "maxcpu", "maxlogsize"));
+            }
+        }
+
+        if (args.length == 4) {
+            out.add("--update");
+        }
+        return out;
+    }
+
+    private List<String> serverGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllServerGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxyGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllProxyGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clients() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllConnectedClients()
+            .forEach(client -> out.add(client.getName()));
+        Collections.sort(out);
+        return out;
     }
 }

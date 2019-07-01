@@ -9,8 +9,8 @@ import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.packets.out.PacketOutRequestProperties;
+import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.properties.PropertiesConfig;
-import systems.reformcloud.properties.PropertiesManager;
 
 import java.io.Serializable;
 
@@ -27,7 +27,7 @@ public final class PacketInEnableProperties implements Serializable, NetworkInbo
             ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
             new PacketOutRequestProperties(),
             (configuration1, resultID) ->
-                new PropertiesManager(
+                new DefaultPropertiesManager(
                     configuration1.getValue("config", new TypeToken<PropertiesConfig>() {
                     })),
             (configuration2, resultId) -> {

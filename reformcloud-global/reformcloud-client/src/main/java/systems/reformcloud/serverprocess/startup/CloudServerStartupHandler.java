@@ -4,19 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
 import net.md_5.config.ConfigurationProvider;
 import net.md_5.config.YamlConfiguration;
 import systems.reformcloud.ReformCloudClient;
@@ -29,15 +16,12 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
-import systems.reformcloud.network.packets.out.PacketOutAddProcess;
-import systems.reformcloud.network.packets.out.PacketOutGetControllerTemplate;
-import systems.reformcloud.network.packets.out.PacketOutRemoveProcess;
-import systems.reformcloud.network.packets.out.PacketOutSendControllerConsoleMessage;
-import systems.reformcloud.network.packets.out.PacketOutUpdateControllerTemplate;
-import systems.reformcloud.properties.PropertiesManager;
+import systems.reformcloud.network.packets.out.*;
+import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
 import systems.reformcloud.utility.StringUtil;
@@ -45,6 +29,18 @@ import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 import systems.reformcloud.utility.startup.ServiceAble;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -72,13 +68,13 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
     private long startupTime;
 
-    private long finishedTime;
+    private final Lock runtimeLock = new ReentrantLock();
 
     /**
      * Creates a instance of a CloudServerStartupHandler
      */
     public CloudServerStartupHandler(final ServerStartupInfo serverStartupInfo,
-        final boolean firstGroupStart) {
+                                     final boolean firstGroupStart) {
         this.startupTime = System.currentTimeMillis();
         this.processStartupStage = ProcessStartupStage.WAITING;
         this.serverStartupInfo = serverStartupInfo;
@@ -87,14 +83,14 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         if (this.serverStartupInfo.getServerGroup().getServerModeType()
             .equals(ServerModeType.STATIC)) {
             this.path =
-                Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName() + "/plugins");
-            FileUtils.createDirectory(path);
+                Paths.get("reformcloud/static/servers/" + serverStartupInfo.getName());
+            FileUtils.createDirectory(Paths.get(path + "/plugins"));
         } else {
             this.path = Paths.get(
                 "reformcloud/temp/servers/" + serverStartupInfo.getName() + "-" + serverStartupInfo
-                    .getUid() + "/plugins");
+                    .getUid());
             FileUtils.deleteFullDirectory(path);
-            FileUtils.createDirectory(path);
+            FileUtils.createDirectory(Paths.get(path + "/plugins"));
         }
     }
 
@@ -106,10 +102,10 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
     @Override
     public boolean bootstrap() {
         try {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            runtimeLock.lock();
             this.bootstrap0();
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+            runtimeLock.unlock();
         }
 
         return true;
@@ -186,12 +182,9 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             FileUtils.createDirectory(Paths.get(path + "/plugins"));
         }
 
-        if (!Files.exists(Paths.get(path + "/configs")) && this.serverStartupInfo
-            .getServerGroup().getSpigotVersions().equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            FileUtils.createDirectory(Paths.get(path + "/configs"));
-        }
-
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()            
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_11_2)
@@ -252,37 +245,36 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
-        if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            if (!Files.exists(Paths.get(path + "/configs/spigot.yml"))) {
-                FileUtils.copyCompiledFile("reformcloud/spigot/spigot.yml",
-                    path + "/configs/spigot.yml");
-            }
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_12_2))
+        {
 
-            if (!Files.exists(Paths.get(path + "/configs/server.properties"))) {
-                FileUtils.copyCompiledFile("reformcloud/default/server.properties",
-                    path + "/configs/server.properties");
+            if (!Files.exists(Paths.get(path + "/config"))) {
+                FileUtils.createDirectory(Paths.get(path + "/config"));
+            }
+            if (!Files.exists(Paths.get(path + "/config/glowstone.yml"))) {
+                FileUtils.copyCompiledFile("reformcloud/glowstone/glowstone.yml",
+                    path + "/config/glowstone.yml");
             }
         } else {
-            if (serverStartupInfo.getServerGroup().getSpigotVersions()
-                .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
-                if (!Files.exists(Paths.get(path + "/config"))) {
-                    FileUtils.createDirectory(Paths.get(path + "/config"));
-                }
-                if (!Files.exists(Paths.get(path + "/config/glowstone.yml"))) {
-                    FileUtils.copyCompiledFile("reformcloud/glowstone/glowstone.yml",
-                        path + "/config/glowstone.yml");
-                }
-            } else {
-                if (!Files.exists(Paths.get(path + "/spigot.yml"))) {
-                    FileUtils
-                        .copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
-                }
+            if (!Files.exists(Paths.get(path + "/spigot.yml"))) {
+                FileUtils
+                    .copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
+            }
 
-                if (!Files.exists(Paths.get(path + "/server.properties"))) {
-                    FileUtils.copyCompiledFile("reformcloud/default/server.properties",
-                        path + "/server.properties");
-                }
+            if (!Files.exists(Paths.get(path + "/server.properties"))) {
+                FileUtils.copyCompiledFile("reformcloud/default/server.properties",
+                    path + "/server.properties");
             }
         }
 
@@ -295,18 +287,17 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         }
 
         Properties properties = new Properties();
-        if (serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(
-                Files.newInputStream(Paths.get(path + "/configs/server.properties")))) {
-                properties.load(inputStreamReader);
-            } catch (final IOException ex) {
-                StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
-                        "Could not load server.properties", ex);
-                return;
-            }
-        } else if (serverStartupInfo.getServerGroup().getSpigotVersions()
+        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
             try (InputStreamReader inputStreamReader = new InputStreamReader(
                 Files.newInputStream(Paths.get(path + "/config/glowstone.yml")),
@@ -333,7 +324,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                         .save(configuration, outputStreamWriter);
                 }
             } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+                StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                     "Error while reading glowstone config", ex);
                 return;
             }
@@ -343,16 +334,26 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 properties.load(inputStreamReader);
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Could not load server.properties", ex);
                 return;
             }
         }
 
         if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_7_9)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_8_9)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_9_4)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_10_2)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.GLOWSTONE_1_11_2)
+            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
-            if (PropertiesManager.available && PropertiesManager.getInstance() != null) {
-                PropertiesManager.getInstance()
+            if (DefaultPropertiesManager.available && DefaultPropertiesManager.getInstance().isPresent()) {
+                DefaultPropertiesManager.getInstance()
                     .fill(this.serverStartupInfo.getServerGroup().getName(), properties);
             }
 
@@ -362,25 +363,13 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             properties.setProperty("server-name", serverStartupInfo.getName());
             properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
-            if (serverStartupInfo.getServerGroup().getSpigotVersions()
-                .equals(SpigotVersions.SHORTSPIGOT_1_12_2)) {
-                try (OutputStream outputStream = Files
-                    .newOutputStream(Paths.get(path + "/configs/server.properties"))) {
-                    properties.store(outputStream, "");
-                } catch (final IOException ex) {
-                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
-                        "Cannot store server.properties", ex);
-                    return;
-                }
-            } else {
-                try (OutputStream outputStream = Files
-                    .newOutputStream(Paths.get(path + "/server.properties"))) {
-                    properties.store(outputStream, "");
-                } catch (final IOException ex) {
-                    StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
-                        "Cannot store server.properties", ex);
-                    return;
-                }
+            try (OutputStream outputStream = Files
+                .newOutputStream(Paths.get(path + "/server.properties"))) {
+                properties.store(outputStream, "");
+            } catch (final IOException ex) {
+                StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
+                    "Cannot store server.properties", ex);
+                return;
             }
         }
 
@@ -452,7 +441,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
             final File dir = new File("reformcloud/apis");
             if (dir.listFiles() != null) {
-                Arrays.stream(dir.listFiles()).forEach(file -> {
+                Arrays.stream(Objects.requireNonNull(dir.listFiles())).forEach(file -> {
                     if (file.getName().startsWith("ReformAPISpigot")
                         && file.getName().endsWith(".jar")
                         && !file.getName().contains(StringUtil.SPIGOT_API_DOWNLOAD)) {
@@ -472,7 +461,10 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
                 serverStartupInfo.getServerGroup().getName(), serverStartupInfo.getConfiguration(),
                 loaded, serverStartupInfo.getId()),
-            serverStartupInfo.getServerGroup(), ServerState.NOT_READY,
+            serverStartupInfo.getServerGroup(),
+            new ProcessStartupInformation(startupTime,
+                System.currentTimeMillis(), -1),
+            ServerState.NOT_READY,
             ReformCloudClient.getInstance().getCloudConfiguration().getStartIP(),
             serverStartupInfo.getServerGroup().getMotd(), this.port, 0,
             serverStartupInfo.getServerGroup().getMemory(),
@@ -486,7 +478,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .addStringValue("controllerKey",
                 ReformCloudClient.getInstance().getCloudConfiguration().getControllerKey())
             .addBooleanValue("ssl", ReformCloudClient.getInstance().isSsl())
-            .addBooleanValue("debug", ReformCloudClient.getInstance().getLoggerProvider().isDebug())
+            .addBooleanValue("debug", ReformCloudClient.getInstance().getColouredConsoleProvider().isDebug())
             .addValue("startupInfo", serverStartupInfo)
 
             .write(Paths.get(path + "/reformcloud/config.json"));
@@ -528,7 +520,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         try {
             this.process = Runtime.getRuntime().exec(command, null, new File(path + ""));
         } catch (final IOException ex) {
-            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                 "Could not launch ServerStartup", ex);
             return;
         }
@@ -555,8 +547,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         ReformCloudClient.getInstance().getClientInfo().getStartedServers()
             .add(serverInfo.getCloudProcess().getName());
 
-        this.finishedTime = System.currentTimeMillis();
-
         this.processStartupStage = ProcessStartupStage.DONE;
     }
 
@@ -581,10 +571,10 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
     @Override
     public void shutdown(boolean update) {
         try {
-            ReformCloudClient.getInstance().getRuntimeLock().lock();
+            runtimeLock.lock();
             shutdown0(update);
         } finally {
-            ReformCloudClient.getInstance().getRuntimeLock().unlock();
+            runtimeLock.unlock();
         }
     }
 
@@ -628,11 +618,9 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         ReformCloudLibraryService.sleep(500);
 
         try {
-            if (this.isAlive()) {
-                this.process.destroy();
-            }
+            this.process.destroyForcibly();
         } catch (final Throwable throwable) {
-            StringUtil.printError(ReformCloudClient.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
                 "Error on CloudServer shutdown", throwable);
             return;
         }
@@ -661,6 +649,20 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         if (!this.serverStartupInfo.getServerGroup().getServerModeType()
             .equals(ServerModeType.STATIC)) {
             FileUtils.deleteFullDirectory(path);
+        }
+
+        try {
+            this.process.exitValue();
+        } catch (final Throwable ignored) {
+            this.process.destroy();
+            ReformCloudLibraryService.sleep(100);
+        }
+
+        try {
+            this.process.exitValue();
+        } catch (final Throwable ignored) {
+            this.process.destroy();
+            ReformCloudLibraryService.sleep(100);
         }
 
         try {
@@ -700,7 +702,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
      * @see PacketOutSendControllerConsoleMessage
      */
     private void sendMessage(final String message) {
-        ReformCloudClient.getInstance().getLoggerProvider().info(message);
+        ReformCloudClient.getInstance().getColouredConsoleProvider().info(message);
         ReformCloudClient.getInstance().getChannelHandler()
             .sendPacketSynchronized("ReformCloudController",
                 new PacketOutSendControllerConsoleMessage(message));
@@ -709,14 +711,14 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
     @Override
     public String uploadLog() throws IOException {
         if (!this.isAlive()) {
-            return null;
+            return "Could not upload log - process is not running anymore";
         }
 
         StringBuilder stringBuilder = new StringBuilder();
         Files.readAllLines(Paths.get(this.path + "/logs/latest.log"), StandardCharsets.UTF_8)
             .forEach(e -> stringBuilder.append(e).append("\n"));
 
-        return ReformCloudClient.getInstance().getLoggerProvider()
+        return ReformCloudClient.getInstance().getColouredConsoleProvider()
             .uploadLog(stringBuilder.substring(0));
     }
 
@@ -725,37 +727,12 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         shutdown(true);
     }
 
-    public boolean isForge() {
-        return this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_8_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_10_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_11_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEFORGE_1_12_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEVANILLA_1_11_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.SPONGEVANILLA_1_12_2);
-    }
-
-    public Path getPath() {
-        return this.path;
-    }
-
     public ServerStartupInfo getServerStartupInfo() {
         return this.serverStartupInfo;
     }
 
     public Process getProcess() {
         return this.process;
-    }
-
-    public int getPort() {
-        return this.port;
     }
 
     public boolean isToShutdown() {
@@ -774,15 +751,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         return this.processStartupStage;
     }
 
-    public boolean isFirstGroupStart() {
-        return this.firstGroupStart;
-    }
-
     public long getStartupTime() {
         return this.startupTime;
-    }
-
-    public long getFinishedTime() {
-        return this.finishedTime;
     }
 }

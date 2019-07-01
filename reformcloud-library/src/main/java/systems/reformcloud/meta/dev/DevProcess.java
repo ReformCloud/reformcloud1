@@ -6,6 +6,8 @@ package systems.reformcloud.meta.dev;
 
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
+import systems.reformcloud.utility.annotiations.ShouldNotBeNull;
 
 import java.io.Serializable;
 
@@ -15,12 +17,28 @@ import java.io.Serializable;
 
 public final class DevProcess implements Serializable {
 
+    /**
+     * The server group of the process
+     */
+    @ShouldNotBeNull
     private ServerGroup serverGroup;
 
+    /**
+     * The given pre config of the process
+     */
+    @ShouldNotBeNull
     private Configuration preConfig;
 
+    /**
+     * The template which should be started
+     */
+    @MayNotBePresent
     private String template;
 
+    /**
+     * The time since the process is in the queue
+     */
+    @ShouldNotBeNull
     private long waitingSince;
 
     @java.beans.ConstructorProperties({"serverGroup", "preConfig", "template", "waitingSince"})

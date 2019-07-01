@@ -131,12 +131,10 @@ public final class CloudProcessStartupHandler implements Runnable, Serializable 
     }
 
     /**
-     * Sends a message to ReformCloudController and to Client Console
-     *
-     * @see PacketOutSendControllerConsoleMessage
+     * Sends a message to client console as {@code info}
      */
     private void send(String message) {
-        ReformCloudClient.getInstance().getLoggerProvider().info(message);
+        ReformCloudClient.getInstance().getColouredConsoleProvider().info(message);
     }
 
     public void removeServerProcess(final String name) {

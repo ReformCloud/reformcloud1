@@ -4,11 +4,11 @@
 
 package systems.reformcloud.player;
 
-import systems.reformcloud.player.version.SpigotVersion;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.player.version.SpigotVersion;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.02.2019
@@ -69,5 +69,9 @@ public class DefaultPlayer implements Serializable {
 
     public void setSpigotVersion(SpigotVersion spigotVersion) {
         this.spigotVersion = spigotVersion;
+    }
+
+    public Configuration convertMeta() {
+        return Configuration.fromMap(this.playerMeta);
     }
 }

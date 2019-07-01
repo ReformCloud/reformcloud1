@@ -6,19 +6,6 @@ package systems.reformcloud;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 import systems.reformcloud.config.ConfigLoader;
 import systems.reformcloud.config.config.CloudFlareConfig;
 import systems.reformcloud.dns.ADNSDefaultRecord;
@@ -27,6 +14,15 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.result.Result;
 import systems.reformcloud.util.RequestMethod;
 import systems.reformcloud.utility.StringUtil;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.05.2019
@@ -50,7 +46,7 @@ public final class CloudFlareUtil implements Serializable {
             String currentZoneID = getZoneID();
             if (currentZoneID == null) {
                 StringUtil.printError(
-                    ReformCloudController.getInstance().getLoggerProvider(),
+                    ReformCloudController.getInstance().getColouredConsoleProvider(),
                     "An error occurred in cloudflare addon",
                     new IllegalStateException(
                         "Could not find zone id for given domain, please recheck")
@@ -91,7 +87,7 @@ public final class CloudFlareUtil implements Serializable {
                     JsonArray jsonArray = jsonObject.get("result").getAsJsonArray();
                     if (jsonArray.size() == 0) {
                         StringUtil.printError(
-                            ReformCloudController.getInstance().getLoggerProvider(),
+                            ReformCloudController.getInstance().getColouredConsoleProvider(),
                             "An error occurred in cloudflare addon",
                             new IllegalStateException(jsonObject.toString())
                         );
@@ -101,7 +97,7 @@ public final class CloudFlareUtil implements Serializable {
                     return jsonArray.get(0).getAsJsonObject().get("id").getAsString();
                 } else {
                     StringUtil.printError(
-                        ReformCloudController.getInstance().getLoggerProvider(),
+                        ReformCloudController.getInstance().getColouredConsoleProvider(),
                         "An error occurred in cloudflare addon",
                         new IllegalStateException(
                             "Could not find zone id for given domain, please recheck")
@@ -111,7 +107,7 @@ public final class CloudFlareUtil implements Serializable {
             }
         } catch (final IOException ex) {
             StringUtil.printError(
-                ReformCloudController.getInstance().getLoggerProvider(),
+                ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Error while opening connection",
                 ex
             );
@@ -158,9 +154,12 @@ public final class CloudFlareUtil implements Serializable {
                         proxyInfo.getCloudProcess().getName()
                     );
                     results.add(result);
+                } else if (jsonObject.get("errors") != null && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString().contains("The record already exists.")) {
+                    ReformCloudController.getInstance().getColouredConsoleProvider().warn().accept("§cCloudFlare Record for §e" + proxyInfo.getCloudProcess().getName() + "§c could not be created because it already exists.");
+                    return;
                 } else {
                     StringUtil.printError(
-                        ReformCloudController.getInstance().getLoggerProvider(),
+                        ReformCloudController.getInstance().getColouredConsoleProvider(),
                         "An error occurred in cloudflare addon",
                         new IllegalStateException(jsonObject.toString())
                     );
@@ -171,7 +170,7 @@ public final class CloudFlareUtil implements Serializable {
             httpURLConnection.disconnect();
         } catch (IOException ex) {
             StringUtil.printError(
-                ReformCloudController.getInstance().getLoggerProvider(),
+                ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Error while opening connection",
                 ex
             );
@@ -212,9 +211,12 @@ public final class CloudFlareUtil implements Serializable {
                         client.getName()
                     );
                     results.add(result);
+                } else if (jsonObject.get("errors") != null && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString().contains("The record already exists.")) {
+                    ReformCloudController.getInstance().getColouredConsoleProvider().warn().accept("§cCloudFlare Record for §e" + client.getName() + "§c could not be created because it already exists.");
+                    return;
                 } else {
                     StringUtil.printError(
-                        ReformCloudController.getInstance().getLoggerProvider(),
+                        ReformCloudController.getInstance().getColouredConsoleProvider(),
                         "An error occurred in cloudflare addon",
                         new IllegalStateException(jsonObject.toString())
                     );
@@ -225,7 +227,7 @@ public final class CloudFlareUtil implements Serializable {
             httpURLConnection.disconnect();
         } catch (IOException ex) {
             StringUtil.printError(
-                ReformCloudController.getInstance().getLoggerProvider(),
+                ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Error while opening connection",
                 ex
             );
@@ -258,7 +260,7 @@ public final class CloudFlareUtil implements Serializable {
                     results.remove(result);
                 } else {
                     StringUtil.printError(
-                        ReformCloudController.getInstance().getLoggerProvider(),
+                        ReformCloudController.getInstance().getColouredConsoleProvider(),
                         "An error occurred in cloudflare addon",
                         new IllegalStateException(jsonObject.toString())
                     );
@@ -266,7 +268,7 @@ public final class CloudFlareUtil implements Serializable {
             }
         } catch (final IOException ex) {
             StringUtil.printError(
-                ReformCloudController.getInstance().getLoggerProvider(),
+                ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Error while opening connection",
                 ex
             );
@@ -391,7 +393,7 @@ public final class CloudFlareUtil implements Serializable {
 
         } catch (final IOException ex) {
             StringUtil.printError(
-                ReformCloudController.getInstance().getLoggerProvider(),
+                ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Error while reading cloudflare response",
                 ex
             );

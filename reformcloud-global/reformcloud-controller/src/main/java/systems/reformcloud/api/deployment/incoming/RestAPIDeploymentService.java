@@ -40,7 +40,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
 
         InternalWebUser internalWebUser = ReformCloudController.getInstance()
             .getInternalCloudNetwork().getInternalWebUser();
-        if (internalWebUser == null || !internalWebUser.getName()
+        if (internalWebUser == null || !internalWebUser.getUserName()
             .equals(httpHeaders.get("-XUser"))) {
             answer
                 .addValue("response", Collections.singletonList("User by given -XUser not found"));
@@ -69,7 +69,7 @@ public final class RestAPIDeploymentService implements Serializable, WebHandler 
                 file
             );
 
-            ReformCloudController.getInstance().getLoggerProvider().info("Downloaded template " +
+            ReformCloudController.getInstance().getColouredConsoleProvider().info("Downloaded template " +
                 configuration.getStringValue("template") + " of group " + configuration
                 .getStringValue("group"));
 

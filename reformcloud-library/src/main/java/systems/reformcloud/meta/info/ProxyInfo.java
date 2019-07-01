@@ -4,9 +4,14 @@
 
 package systems.reformcloud.meta.info;
 
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.meta.CloudProcess;
+import systems.reformcloud.meta.environment.RuntimeEnvironment;
+import systems.reformcloud.meta.process.ProcessStartupInformation;
 import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -19,28 +24,71 @@ public final class ProxyInfo implements Serializable {
 
     private static final long serialVersionUID = -3889580749596738985L;
 
+    /**
+     * The cloud process information of the process
+     */
     private CloudProcess cloudProcess;
 
+    /**
+     * The proxy group of the process
+     */
     private ProxyGroup proxyGroup;
 
+    /**
+     * The process startup information
+     */
+    private ProcessStartupInformation processStartupInformation;
+
+    /**
+     * The current runtime operating system (set by the client)
+     */
+    private final RuntimeEnvironment runtimeEnvironment =
+        ReformCloudLibraryService.runtimeEnvironment();
+
+    /**
+     * The host of the current proxy
+     */
     private String host;
 
+    /**
+     * The port which is selected
+     */
     private int port;
 
+    /**
+     * The online count of the process
+     */
     private int online;
 
+    /**
+     * The max memory of the process
+     */
     private int maxMemory;
 
+    /**
+     * The status if the server is full this is {@code true}
+     */
     private boolean full;
 
+    /**
+     * A list of uuid's containing all online players uuid's
+     */
     private List<UUID> onlinePlayers;
 
-    @java.beans.ConstructorProperties({"cloudProcess", "proxyGroup", "host", "port", "online",
-        "maxMemory", "full", "onlinePlayers"})
-    public ProxyInfo(CloudProcess cloudProcess, ProxyGroup proxyGroup, String host, int port,
-        int online, int maxMemory, boolean full, List<UUID> onlinePlayers) {
+    @ConstructorProperties({"cloudProcess", "proxyGroup", "processStartupInformation",
+        "host", "port", "online", "maxMemory", "full", "onlinePlayers"})
+    public ProxyInfo(CloudProcess cloudProcess,
+                     ProxyGroup proxyGroup,
+                     ProcessStartupInformation processStartupInformation,
+                     String host,
+                     int port,
+                     int online,
+                     int maxMemory,
+                     boolean full,
+                     List<UUID> onlinePlayers) {
         this.cloudProcess = cloudProcess;
         this.proxyGroup = proxyGroup;
+        this.processStartupInformation = processStartupInformation;
         this.host = host;
         this.port = port;
         this.online = online;
@@ -57,6 +105,10 @@ public final class ProxyInfo implements Serializable {
         return this.proxyGroup;
     }
 
+    public RuntimeEnvironment getRuntimeEnvironment() {
+        return runtimeEnvironment;
+    }
+
     public String getHost() {
         return this.host;
     }
@@ -71,6 +123,14 @@ public final class ProxyInfo implements Serializable {
 
     public int getMaxMemory() {
         return this.maxMemory;
+    }
+
+    public ProcessStartupInformation getProcessStartupInformation() {
+        return processStartupInformation;
+    }
+
+    public EthernetAddress toEtherNetAddress() {
+        return new EthernetAddress(host, port);
     }
 
     public boolean isFull() {

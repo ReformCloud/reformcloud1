@@ -39,7 +39,9 @@ public enum AnsiColourHandler {
     CYAN("cyan", '3', Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).boldOff().toString());
 
     private String ansiCode;
+
     private final String name;
+
     private final char index;
 
     AnsiColourHandler(String name, char index, String ansiCode) {
@@ -62,6 +64,13 @@ public enum AnsiColourHandler {
         }
 
         return input;
+    }
+
+    public static String stripAll(String text) {
+        text = stripColor(text);
+        text = stripColourCodes(text);
+
+        return text;
     }
 
     public static String toColouredString(String text) {

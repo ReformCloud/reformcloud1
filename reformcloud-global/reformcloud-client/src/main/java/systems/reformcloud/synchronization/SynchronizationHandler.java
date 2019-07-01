@@ -43,6 +43,8 @@ public final class SynchronizationHandler implements Serializable, Runnable {
                 lastInfo.setCpuUsage(cpuUsage);
                 lastInfo.setSystemMemoryUsage(memory);
                 lastInfo.setUsedMemory(internalMemory);
+                lastInfo.setStartedProxies(current.getStartedProxies());
+                lastInfo.setStartedServers(current.getStartedServers());
 
                 ReformCloudClient.getInstance().setClientInfo(lastInfo);
                 lastInfo = current;

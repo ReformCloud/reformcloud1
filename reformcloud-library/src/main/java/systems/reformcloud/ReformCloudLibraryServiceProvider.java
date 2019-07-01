@@ -4,12 +4,14 @@
 
 package systems.reformcloud;
 
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.meta.cluster.NetworkGlobalCluster;
 import systems.reformcloud.network.NettyHandler;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.threading.TaskScheduler;
@@ -45,12 +47,12 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * The channel handler of the cloud system
      */
-    private ChannelHandler channelHandler;
+    private AbstractChannelHandler channelHandler;
 
     /**
      * The logger provider of the cloud system
      */
-    private LoggerProvider loggerProvider;
+    private ColouredConsoleProvider colouredConsoleProvider;
 
     /**
      * Some internal information about the controller
@@ -70,14 +72,13 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * Creates a new Instance of the {ReformCloudLibraryServiceProvider}
      *
-     * @param loggerProvider The internal LoggerProvider created by the instances
+     * @param colouredConsoleProvider The internal ColouredConsoleProvider created by the instances
      * @param key The controller key
      * @param controllerIP The controller ip address
      * @param eventManager The event manager of the cloud
-     * @throws Throwable Will be thrown if any exception occurs
      */
-    public ReformCloudLibraryServiceProvider(LoggerProvider loggerProvider, String key,
-        String controllerIP, EventManager eventManager, String lang) throws Throwable {
+    public ReformCloudLibraryServiceProvider(ColouredConsoleProvider colouredConsoleProvider, String key,
+                                             String controllerIP, EventManager eventManager, String lang) {
         if (instance == null) {
             instance = this;
         } else {
@@ -90,7 +91,7 @@ public final class ReformCloudLibraryServiceProvider {
 
         this.key = key;
         this.controllerIP = controllerIP;
-        this.loggerProvider = loggerProvider;
+        this.colouredConsoleProvider = colouredConsoleProvider;
         this.eventManager = eventManager;
         this.loaded = new LanguageManager(lang).getLoaded();
     }
@@ -111,12 +112,12 @@ public final class ReformCloudLibraryServiceProvider {
         return this.eventManager;
     }
 
-    private ChannelHandler getChannelHandler() {
+    private AbstractChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 
-    public LoggerProvider getLoggerProvider() {
-        return this.loggerProvider;
+    public ColouredConsoleProvider getColouredConsoleProvider() {
+        return this.colouredConsoleProvider;
     }
 
     public String getKey() {
@@ -143,28 +144,16 @@ public final class ReformCloudLibraryServiceProvider {
         this.loaded = loaded;
     }
 
-    public void setEventManager(EventManager eventManager) {
-        this.eventManager = eventManager;
-    }
-
     public void setChannelHandler(ChannelHandler channelHandler) {
         this.channelHandler = channelHandler;
-    }
-
-    public void setLoggerProvider(LoggerProvider loggerProvider) {
-        this.loggerProvider = loggerProvider;
     }
 
     public void setKey(String key) {
         this.key = key;
     }
 
-    public void setControllerIP(String controllerIP) {
-        this.controllerIP = controllerIP;
-    }
-
-    public void setTaskScheduler(TaskScheduler taskScheduler) {
-        this.taskScheduler = taskScheduler;
+    public NetworkGlobalCluster shiftClusterNetworkInformation() {
+        return this.channelHandler.shiftClusterNetworkInformation();
     }
 
     public boolean equals(final Object o) {
@@ -195,8 +184,8 @@ public final class ReformCloudLibraryServiceProvider {
         if (!Objects.equals(this$channelHandler, other$channelHandler)) {
             return false;
         }
-        final Object this$loggerProvider = this.getLoggerProvider();
-        final Object other$loggerProvider = other.getLoggerProvider();
+        final Object this$loggerProvider = this.getColouredConsoleProvider();
+        final Object other$loggerProvider = other.getColouredConsoleProvider();
         if (!Objects.equals(this$loggerProvider, other$loggerProvider)) {
             return false;
         }
@@ -217,10 +206,7 @@ public final class ReformCloudLibraryServiceProvider {
         }
         final Object this$taskScheduler = this.getTaskScheduler();
         final Object other$taskScheduler = other.getTaskScheduler();
-        if (!Objects.equals(this$taskScheduler, other$taskScheduler)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this$taskScheduler, other$taskScheduler);
     }
 
     public int hashCode() {
@@ -235,14 +221,14 @@ public final class ReformCloudLibraryServiceProvider {
         result = result * PRIME + ($eventManager == null ? 43 : $eventManager.hashCode());
         final Object $channelHandler = this.getChannelHandler();
         result = result * PRIME + ($channelHandler == null ? 43 : $channelHandler.hashCode());
-        final Object $loggerProvider = this.getLoggerProvider();
+        final Object $loggerProvider = this.getColouredConsoleProvider();
         result = result * PRIME + ($loggerProvider == null ? 43 : $loggerProvider.hashCode());
         final Object $key = this.getKey();
         result = result * PRIME + ($key == null ? 43 : $key.hashCode());
         final Object $controllerIP = this.getControllerIP();
         result = result * PRIME + ($controllerIP == null ? 43 : $controllerIP.hashCode());
         final Object $nettyHandler = this.getNettyHandler();
-        result = result * PRIME + ($nettyHandler == null ? 43 : $nettyHandler.hashCode());
+        result = result * PRIME + $nettyHandler.hashCode();
         final Object $taskScheduler = this.getTaskScheduler();
         result = result * PRIME + ($taskScheduler == null ? 43 : $taskScheduler.hashCode());
         return result;
@@ -252,7 +238,7 @@ public final class ReformCloudLibraryServiceProvider {
         return "ReformCloudLibraryServiceProvider(internalCloudNetwork=" + this
             .getInternalCloudNetwork() + ", loaded=" + this.getLoaded() + ", eventManager=" + this
             .getEventManager() + ", channelHandler=" + this.getChannelHandler()
-            + ", loggerProvider=" + this.getLoggerProvider() + ", key=" + this.getKey()
+            + ", colouredConsoleProvider=" + this.getColouredConsoleProvider() + ", key=" + this.getKey()
             + ", controllerIP=" + this.getControllerIP() + ", nettyHandler=" + this
             .getNettyHandler() + ", taskScheduler=" + this.getTaskScheduler() + ")";
     }

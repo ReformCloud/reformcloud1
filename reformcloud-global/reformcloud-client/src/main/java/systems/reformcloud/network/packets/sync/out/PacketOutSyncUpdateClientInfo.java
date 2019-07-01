@@ -4,12 +4,12 @@
 
 package systems.reformcloud.network.packets.sync.out;
 
+import java.io.Serializable;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.network.packet.Packet;
-
-import java.io.Serializable;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 
 /**
  * @author _Klaro | Pasqual K. / created on 02.02.2019
@@ -25,7 +25,8 @@ public final class PacketOutSyncUpdateClientInfo extends Packet implements Seria
             new Configuration()
                 .addStringValue("from",
                     ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                .addValue("info", clientInfo)
+                .addValue("info", clientInfo),
+            ChannelConstants.REFORMCLOUD_SYNC_CLIENT_COMMUNICATION_CHANNEL
         );
     }
 }

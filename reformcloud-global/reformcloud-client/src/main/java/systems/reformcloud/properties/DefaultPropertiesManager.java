@@ -7,30 +7,40 @@ package systems.reformcloud.properties;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Properties;
+import systems.reformcloud.utility.Require;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
+import systems.reformcloud.utility.annotiations.ShouldNotBeNull;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.04.2019
  */
 
-public final class PropertiesManager implements Serializable {
+public final class DefaultPropertiesManager extends PropertiesManager implements Serializable {
 
+    @MayNotBePresent
     private PropertiesConfig propertiesConfig;
 
     public static boolean available = false;
 
-    private static PropertiesManager instance;
+    @MayNotBePresent
+    private static DefaultPropertiesManager instance;
 
-    public PropertiesManager(PropertiesConfig propertiesConfig) {
+    public DefaultPropertiesManager(@ShouldNotBeNull PropertiesConfig propertiesConfig) {
         available = true;
         instance = this;
         this.propertiesConfig = propertiesConfig;
     }
 
-    public static PropertiesManager getInstance() {
-        return PropertiesManager.instance;
+    @MayNotBePresent
+    public static DefaultPropertiesManager getInstance() {
+        return DefaultPropertiesManager.instance;
     }
 
-    public void fill(String group, Properties properties) {
+    @Override
+    public void fill(@ShouldNotBeNull String group, @ShouldNotBeNull Properties properties) {
+        Require.requireNotNull(group);
+        Require.requireNotNull(properties);
+
         if (this.propertiesConfig.forGroup(group) == null) {
             return;
         }
@@ -47,11 +57,22 @@ public final class PropertiesManager implements Serializable {
         }
     }
 
+    @Override
     public void delete() {
+        Require.isTrue(available, "Already closed");
+        Require.isTrue(instance != null, "Instance already null");
+
         available = false;
         instance = null;
     }
 
+    @Override
+    public boolean isPresent() {
+        return available && instance != null && propertiesConfig != null;
+    }
+
+    @Override
+    @MayNotBePresent
     public PropertiesConfig getPropertiesConfig() {
         return this.propertiesConfig;
     }

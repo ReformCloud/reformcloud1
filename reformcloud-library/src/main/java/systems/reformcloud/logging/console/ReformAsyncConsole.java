@@ -4,12 +4,16 @@
 
 package systems.reformcloud.logging.console;
 
-import java.beans.ConstructorProperties;
-import java.io.Serializable;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.AbstractCommandManager;
+import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
+import systems.reformcloud.commands.completer.DefaultCommandCompleter;
+import systems.reformcloud.commands.defaults.DefaultCommandMap;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.utility.StringUtil;
+
+import java.beans.ConstructorProperties;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 27.05.2019
@@ -24,6 +28,11 @@ public final class ReformAsyncConsole extends Thread implements Serializable {
         this.buffer = buffer;
         this.commandManager = commandManager;
 
+        this.commandCompleter =
+            new DefaultCommandCompleter(new DefaultCommandMap(commandManager));
+
+        prepare();
+
         setDaemon(true);
         setPriority(Thread.MIN_PRIORITY);
         start();
@@ -36,6 +45,8 @@ public final class ReformAsyncConsole extends Thread implements Serializable {
     private final AbstractCommandManager commandManager;
 
     private final String buffer;
+
+    private final AbstractCommandCompleter commandCompleter;
 
     @Override
     public void run() {
@@ -61,6 +72,10 @@ public final class ReformAsyncConsole extends Thread implements Serializable {
                 abstractLoggerProvider.exception().accept(throwable);
             }
         }
+    }
+
+    private void prepare() {
+        this.abstractLoggerProvider.consoleReader().addCompleter(this.commandCompleter);
     }
 
     @Override

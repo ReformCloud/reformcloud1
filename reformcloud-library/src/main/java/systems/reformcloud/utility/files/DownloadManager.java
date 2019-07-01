@@ -45,7 +45,7 @@ public final class DownloadManager implements Serializable {
             return;
         }
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
             ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_trying()
                 .replace("%name%", input)
         );
@@ -61,12 +61,12 @@ public final class DownloadManager implements Serializable {
                 Files.copy(inputStream, Paths.get(to), StandardCopyOption.REPLACE_EXISTING);
             }
 
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                 ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_success()
             );
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not download", ex);
         }
     }
@@ -92,7 +92,7 @@ public final class DownloadManager implements Serializable {
             }
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not download file", ex);
         }
     }
@@ -113,7 +113,7 @@ public final class DownloadManager implements Serializable {
             return;
         }
 
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
             ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_trying()
                 .replace("%name%", input)
         );
@@ -131,12 +131,12 @@ public final class DownloadManager implements Serializable {
 
             ((HttpURLConnection) urlConnection).disconnect();
 
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                 ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_success()
             );
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Download failed", ex);
         }
     }
@@ -165,7 +165,7 @@ public final class DownloadManager implements Serializable {
             ((HttpURLConnection) urlConnection).disconnect();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error in download", ex);
         }
     }

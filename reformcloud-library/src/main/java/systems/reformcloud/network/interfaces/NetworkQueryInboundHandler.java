@@ -4,9 +4,9 @@
 
 package systems.reformcloud.network.interfaces;
 
-import systems.reformcloud.configurations.Configuration;
-
 import java.util.UUID;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.02.2019
@@ -21,4 +21,8 @@ public interface NetworkQueryInboundHandler {
      * @param resultID The result uid of the query packet
      */
     void handle(Configuration configuration, UUID resultID);
+
+    default long handlingChannel() {
+        return ChannelConstants.REFORMCLOUD_INTERNAL_QUERY_INFORMATION_DEFAULT_CHANNEL;
+    }
 }

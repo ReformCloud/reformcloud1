@@ -4,11 +4,13 @@
 
 package systems.reformcloud.event.utility;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 27.12.2018
  */
 
-public interface Cancellable {
+public interface Cancellable extends Serializable {
 
     /**
      * Set if the event is cancelled or not

@@ -4,17 +4,15 @@
 
 package systems.reformcloud.commands;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.defaults.DefaultConsoleCommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -72,7 +70,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
                 }
             } catch (final Throwable throwable) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while dispatching command", throwable);
             }
             return true;
@@ -94,12 +92,24 @@ public final class CommandManager extends AbstractCommandManager implements Seri
         return this;
     }
 
+    @Override
+    public List<Command> commands() {
+        return commands;
+    }
+
     /**
      * Unregisters all commands
      */
     @Override
     public void clearCommands() {
         this.commands.clear();
+    }
+
+    @Override
+    @MayNotBePresent
+    public Command findCommand(String commandLine) {
+        return this.commands.stream().filter(e -> e.getName().equalsIgnoreCase(commandLine) || Arrays.asList(e.getAliases())
+            .contains(commandLine)).findFirst().orElse(null);
     }
 
     /**
@@ -109,7 +119,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      */
     @Override
     public void unregisterCommand(final String name) {
-        this.commands.remove(name);
+        this.commands.remove(findCommand(name));
     }
 
     /**
@@ -156,6 +166,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      * @param permissions The permissions of the command sender
      * @return a new command sender
      */
+    @Override
     public systems.reformcloud.commands.utility.CommandSender newCommandSender(
         final Map<String, Boolean> permissions) {
         return new DefaultUserCommandSender(permissions);

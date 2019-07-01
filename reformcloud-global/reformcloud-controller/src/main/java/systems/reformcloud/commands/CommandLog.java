@@ -42,11 +42,11 @@ public final class CommandLog extends Command implements Serializable {
                     .forEach(s -> stringBuilder.append(s).append("\n"));
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Could not read log", ex);
             }
 
-            final String url = ReformCloudController.getInstance().getLoggerProvider()
+            final String url = ReformCloudController.getInstance().getColouredConsoleProvider()
                 .uploadLog(stringBuilder.substring(0));
             commandSender.sendMessage(
                 ReformCloudController.getInstance().getLoadedLanguage().getCommand_log_success()

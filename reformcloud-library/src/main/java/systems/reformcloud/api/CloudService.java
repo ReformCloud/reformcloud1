@@ -21,32 +21,33 @@ public interface CloudService {
     /**
      * Get a cached online player
      *
-     * @param name The name of the player
+     * @param arg1 The name of the player
      * @return The cloud player which will be searched for
      */
-    OnlinePlayer getCachedPlayer(String name);
+    OnlinePlayer getCachedPlayer(String arg1);
 
     /**
      * Get a cached online player
      *
-     * @param uniqueId The uuid of the player
+     * @param arg1 The uuid of the player
      * @return The cloud player which will be searched for
      */
-    OnlinePlayer getCachedPlayer(UUID uniqueId);
+    OnlinePlayer getCachedPlayer(UUID arg1);
 
     /**
      * Schedules a specific task
      *
-     * @param runnable The runnable which should be run
-     * @param timeInMillis The delay in milliseconds
+     * @param arg1 The runnable which should be run
+     * @param arg2 The delay in milliseconds
      */
-    void schedule(Runnable runnable, int timeInMillis);
+    void schedule(Runnable arg1, int arg2);
 
     /**
      * Patches an action async and runs the when completed stage after
      *
-     * @param runnable The runnable which should be executed
-     * @param andThen Will be called after completing the action
+     * @param arg1 The runnable which should be executed
+     * @param arg2 Will be called after completing the action
      */
-    void patchAsync(Runnable runnable, BiConsumer<? super Void, ? super Throwable> andThen);
+    void patchAsync(Runnable arg1,
+                    BiConsumer<? super Void, ? super Throwable> arg2);
 }

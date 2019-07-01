@@ -41,9 +41,14 @@ public final class NettyHandler implements Serializable {
      * @param configuration The configuration of the incoming packet
      * @return If a handler for the packet could be found
      */
-    public boolean handle(String type, Configuration configuration) {
+    public boolean handle(long channel, String type,
+        Configuration configuration) {
         if (this.networkInboundHandlerMap.containsKey(type)) {
-            this.networkInboundHandlerMap.get(type).handle(configuration);
+            NetworkInboundHandler networkInboundHandler =
+                this.networkInboundHandlerMap.get(type);
+            if (networkInboundHandler.handlingChannel() == channel) {
+                networkInboundHandler.handle(configuration);
+            }
             return true;
         } else {
             return false;
@@ -57,7 +62,8 @@ public final class NettyHandler implements Serializable {
      * @return If a handler for the packet could be found
      */
     public boolean handle(Packet packet) {
-        return this.handle(packet.getType(), packet.getConfiguration());
+        return this.handle(packet.getChannel(), packet.getType(),
+            packet.getConfiguration());
     }
 
     /**
@@ -114,7 +120,7 @@ public final class NettyHandler implements Serializable {
             this.networkInboundHandlerMap.put(type, clazz.newInstance());
         } catch (final InstantiationException | IllegalAccessException ex) {
             StringUtil.printError(
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                 "Error while registering network handler", ex
             );
         }
@@ -135,7 +141,7 @@ public final class NettyHandler implements Serializable {
             this.networkQueryInboundHandlerMap.put(type, clazz.newInstance());
         } catch (final InstantiationException | IllegalAccessException ex) {
             StringUtil.printError(
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                 "Error while registering query network handler", ex
             );
         }

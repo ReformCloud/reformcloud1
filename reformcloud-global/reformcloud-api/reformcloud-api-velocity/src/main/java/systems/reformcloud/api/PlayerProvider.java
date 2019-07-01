@@ -25,8 +25,7 @@ public final class PlayerProvider implements Serializable, DefaultPlayerProvider
 
     @Override
     public void sendPlayer(UUID uniqueID, String name) {
-        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).orElse(null)
-            != null) {
+        if (VelocityBootstrap.getInstance().getProxyServer().getPlayer(uniqueID).isPresent()) {
             Player proxiedPlayer = VelocityBootstrap.getInstance().getProxyServer()
                 .getPlayer(uniqueID).get();
             proxiedPlayer.createConnectionRequest(

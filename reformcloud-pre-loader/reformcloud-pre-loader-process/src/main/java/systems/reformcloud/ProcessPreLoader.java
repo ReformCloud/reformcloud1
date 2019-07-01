@@ -34,9 +34,11 @@ final class ProcessPreLoader implements Serializable {
             return;
         }
 
-        String version = Arrays.stream(args)
+        String versionPart = Arrays.stream(args)
             .filter(e -> e.startsWith("--version="))
             .findFirst().orElse(null);
+
+        String version = versionPart;
         if (version == null) {
             version = CommonLoader.getCurrentFallbackVersion();
         } else {
@@ -54,7 +56,7 @@ final class ProcessPreLoader implements Serializable {
 
         List<String> argsList = asList(args);
         argsList.remove(preFileToLoad);
-        argsList.remove(version);
+        argsList.remove(versionPart);
         args = argsList.toArray(new String[0]);
 
         File target = new File(file);
@@ -120,7 +122,9 @@ final class ProcessPreLoader implements Serializable {
             System.exit(1);
         } finally {
             try {
-                jarFile.close();
+                if (jarFile != null) {
+                    jarFile.close();
+                }
             } catch (final IOException ex) {
                 ex.printStackTrace();
                 System.exit(1);

@@ -4,8 +4,6 @@
 
 package systems.reformcloud;
 
-import java.io.Serializable;
-import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -16,6 +14,9 @@ import systems.reformcloud.utility.ConsoleInputHandler;
 import systems.reformcloud.utility.ConsoleWriter;
 import systems.reformcloud.utility.ControllerAddonImpl;
 import systems.reformcloud.utility.StringUtil;
+
+import javax.security.auth.login.LoginException;
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.02.2019
@@ -61,7 +62,7 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
             this.textChannel = jda
                 .getTextChannelById(this.discordConfig.getDiscordInformation().getChannelID());
         } catch (final InterruptedException | LoginException ex) {
-            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Error while startup of addon DiscordBot", ex);
         }
     }

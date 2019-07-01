@@ -34,7 +34,7 @@ public final class DefaultScreenHandler extends ScreenHandler implements Seriali
 
     @Override
     public void sendLine(String in) {
-        ReformCloudController.getInstance().getLoggerProvider()
+        ReformCloudController.getInstance().getColouredConsoleProvider()
             .coloured("[§eSCREEN §3" + name + "§r/§3" + type.toUpperCase() + "§r] " + in);
     }
 

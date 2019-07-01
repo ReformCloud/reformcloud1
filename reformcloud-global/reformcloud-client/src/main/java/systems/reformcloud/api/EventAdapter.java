@@ -46,7 +46,9 @@ public final class EventAdapter implements Serializable, EventHandler {
                     .getRegisteredProxyProcesses()
                     .forEach(proxyStartupHandler -> {
                         proxyStartupHandler.executeCommand(
-                            "alert Your current client lost the connection to the controller");
+                            "alert " + (ReformCloudClient.getInstance().getInternalCloudNetwork().getPrefix().endsWith(" ") ?
+                                ReformCloudClient.getInstance().getInternalCloudNetwork().getPrefix() :
+                                ReformCloudClient.getInstance().getInternalCloudNetwork().getPrefix() + " ") + "§cYour current client lost the connection to the controller");
                         ReformCloudLibraryService.sleep(5000);
                         proxyStartupHandler.shutdown(null, false);
                     });

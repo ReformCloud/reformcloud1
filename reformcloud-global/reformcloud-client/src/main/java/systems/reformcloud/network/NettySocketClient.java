@@ -15,9 +15,10 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
-import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
 import java.io.Serializable;
@@ -37,14 +38,15 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
     /**
      * Connects to the ReformCloudController
      */
-    public void connect(EthernetAddress ethernetAddress, ChannelHandler channelHandler,
-        boolean ssl) {
+    public void connect(EthernetAddress ethernetAddress,
+                        AbstractChannelHandler channelHandler,
+                        boolean ssl) {
         if (eventLoopGroup == null) {
             eventLoopGroup = ReformCloudLibraryService.eventLoopGroup(4);
         }
 
         try {
-            ReformCloudClient.getInstance().getLoggerProvider()
+            ReformCloudClient.getInstance().getColouredConsoleProvider()
                 .info("Trying to connect to §3ReformCloudController §e@" +
                     ethernetAddress.getHost() + ":" + ethernetAddress.getPort() + "§r ["
                     + connections + "/7]");
@@ -90,21 +92,23 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
                                 .getControllerKey())
                         .addStringValue("name",
                             ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
-                        .addValue("AuthenticationType", AuthenticationType.INTERNAL)
+                        .addValue("AuthenticationType",
+                            AuthenticationType.INTERNAL),
+                    ChannelConstants.REFORMCLOUD_AUTHENTICATION_CHANNEL
                 ));
 
-            ReformCloudClient.getInstance().getLoggerProvider()
+            ReformCloudClient.getInstance().getColouredConsoleProvider()
                 .info("ReformCloud is now §aready§r and §aconnected§r to §e" + ethernetAddress
                     .getHost() + ":" + ethernetAddress.getPort());
 
             connections = -1;
         } catch (final Throwable throwable) {
             connections++;
-            ReformCloudClient.getInstance().getLoggerProvider().serve(
+            ReformCloudClient.getInstance().getColouredConsoleProvider().serve(
                 "ReformCloud could not connect to " + ethernetAddress.getHost() + ":"
                     + ethernetAddress.getPort());
             if (throwable.getCause() != null) {
-                ReformCloudClient.getInstance().getLoggerProvider()
+                ReformCloudClient.getInstance().getColouredConsoleProvider()
                     .serve("The following error occurred: " + throwable.getCause().toString());
             }
         }
@@ -122,14 +126,6 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
 
     public int getConnections() {
         return this.connections;
-    }
-
-    public SslContext getSslContext() {
-        return this.sslContext;
-    }
-
-    public EventLoopGroup getEventLoopGroup() {
-        return this.eventLoopGroup;
     }
 
     public void setConnections(int connections) {

@@ -37,7 +37,7 @@ public final class PacketInUpdateClientSetting implements Serializable, NetworkI
             properties.load(inputStreamReader);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not load configuration.properties", ex);
         }
 
@@ -49,7 +49,7 @@ public final class PacketInUpdateClientSetting implements Serializable, NetworkI
             properties.store(outputStream, "ReformCloud default Configuration");
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not store configuration.properties", ex);
         }
 

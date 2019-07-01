@@ -20,7 +20,7 @@ public final class PacketInGetLog implements Serializable, NetworkInboundHandler
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider()
+        ReformCloudController.getInstance().getColouredConsoleProvider()
             .info(ReformCloudController.getInstance().getLoadedLanguage().getController_get_log_in()
                 .replace("%name%", configuration.getStringValue("process"))
                 .replace("%url%", configuration.getStringValue("url")));

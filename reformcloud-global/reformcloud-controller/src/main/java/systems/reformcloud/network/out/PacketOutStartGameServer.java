@@ -25,7 +25,7 @@ public final class PacketOutStartGameServer extends Packet {
                 .addConfigurationValue("preConfig", configuration)
                 .addIntegerValue("id", Integer.valueOf(id))
         );
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_server_added_to_queue()
                 .replace("%uid%", String.valueOf(serverProcess))
@@ -41,7 +41,7 @@ public final class PacketOutStartGameServer extends Packet {
                 .addConfigurationValue("preConfig", configuration)
                 .addIntegerValue("id", Integer.valueOf(id))
         );
-        ReformCloudController.getInstance().getLoggerProvider().info(
+        ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_server_added_to_queue()
                 .replace("%uid%", String.valueOf(serverProcess))

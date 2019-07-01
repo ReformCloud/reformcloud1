@@ -91,9 +91,8 @@ public class YamlConfiguration extends ConfigurationProvider {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Configuration load(String string, Configuration defaults) {
-        Map<String, Object> map = yaml.get().loadAs(string, LinkedHashMap.class);
+        LinkedHashMap map = yaml.get().loadAs(string, LinkedHashMap.class);
         if (map == null) {
             map = new LinkedHashMap<>();
         }

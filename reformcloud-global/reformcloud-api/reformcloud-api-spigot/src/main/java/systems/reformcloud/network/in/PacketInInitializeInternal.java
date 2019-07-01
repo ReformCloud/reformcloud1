@@ -14,6 +14,7 @@ import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.signaddon.SignSelector;
+import systems.reformcloud.updater.ServerListUpdater;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 
 import java.io.Serializable;
@@ -58,5 +59,11 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
                         TypeTokenAdaptor.getPERMISSION_CACHE_TYPE())
                     )
         );
+
+        ReformCloudAPISpigot.getInstance().getServerInfo().getProcessStartupInformation()
+            .setStartupFinishedTime(System.currentTimeMillis());
+        ReformCloudAPISpigot.getInstance().update();
+
+        new ServerListUpdater();
     }
 }

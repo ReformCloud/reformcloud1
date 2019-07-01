@@ -4,17 +4,18 @@
 
 package systems.reformcloud.network.in;
 
+import java.io.Serializable;
+import org.bukkit.Bukkit;
 import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.internal.events.CloudServerInfoUpdateEvent;
+import systems.reformcloud.internal.events.ServerInfoPreUpdateEvent;
 import systems.reformcloud.launcher.SpigotBootstrap;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 12.12.2018
@@ -24,8 +25,16 @@ public final class PacketInServerInfoUpdate implements NetworkInboundHandler, Se
 
     @Override
     public void handle(Configuration configuration) {
+
         final ServerInfo serverInfo = configuration
             .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
+
+        final ServerInfo oldInfo =
+            ReformCloudAPISpigot.getInstance()
+                .getServerInfo(serverInfo.getCloudProcess().getName());
+        Bukkit.getPluginManager().callEvent(new ServerInfoPreUpdateEvent(oldInfo, serverInfo));
+
+
         final InternalCloudNetwork internalCloudNetwork = configuration
             .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE());
 

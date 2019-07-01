@@ -7,8 +7,6 @@ package systems.reformcloud.launcher;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.ResourceLeakDetector;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +20,9 @@ import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 import systems.reformcloud.permissions.ReflectionUtil;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -81,6 +82,9 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
     @Override
     public void onDisable() {
+        getServer().getScheduler().cancelTasks(this);
+        getServer().getMessenger().unregisterOutgoingPluginChannel(this);
+
         ReformCloudAPISpigot.getInstance().getTempServerStats().addOnlineTime(this.start);
         ReformCloudAPISpigot.getInstance().updateTempStats();
 
@@ -90,6 +94,7 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
         this.getServer().getOnlinePlayers()
             .forEach(player -> player.kickPlayer(this.getServer().getShutdownMessage()));
+        Bukkit.shutdown();
         ReformCloudLibraryService.sleep(1000000000);
     }
 
@@ -102,7 +107,9 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
         }
 
         channelHandlerContext.channel().writeAndFlush(packet)
-            .addListener(ChannelFutureListener.CLOSE);
+            .addListener(ChannelFutureListener.CLOSE).addListener((ChannelFutureListener) channelFuture ->
+            ReformCloudAPISpigot.getInstance().getNettyHandler().clearHandlers()
+        );
     }
 
     public CommandMap getCommandMap() {

@@ -1,4 +1,4 @@
-# ReformCloud 1.11
+# ReformCloud 1.12
 
 Official Cloud System
 
@@ -22,7 +22,7 @@ releases are only pre-stable releases.
 To run ReformCloud you need 
  * at least 2GB Memory
  * at least 2vCores
- * Java 8
+ * Java 8 or higher
 
 ## Built With
 

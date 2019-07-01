@@ -4,6 +4,7 @@
 
 package systems.reformcloud.listener;
 
+import java.net.InetSocketAddress;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -14,8 +15,6 @@ import systems.reformcloud.internal.events.CloudProxyRemoveEvent;
 import systems.reformcloud.internal.events.CloudServerAddEvent;
 import systems.reformcloud.internal.events.CloudServerRemoveEvent;
 import systems.reformcloud.meta.enums.ServerModeType;
-
-import java.net.InetSocketAddress;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018

@@ -5,6 +5,10 @@
 package systems.reformcloud.network.packets.in;
 
 import com.google.gson.reflect.TypeToken;
+import java.beans.ConstructorProperties;
+import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.backup.StartSearch;
@@ -15,11 +19,9 @@ import systems.reformcloud.network.packets.out.PacketOutRequestParameters;
 import systems.reformcloud.network.packets.out.PacketOutRequestProperties;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncUpdateClientInfo;
 import systems.reformcloud.parameters.ParameterGroup;
+import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.properties.PropertiesConfig;
-import systems.reformcloud.properties.PropertiesManager;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
@@ -27,11 +29,20 @@ import java.util.List;
 
 public final class PacketInInitializeInternal implements NetworkInboundHandler {
 
+    private Lock lock;
+    private Condition condition;
+
+    @ConstructorProperties({"lock", "condition"})
+    public PacketInInitializeInternal(Lock lock, Condition condition) {
+        this.lock = lock;
+        this.condition = condition;
+    }
+
     @Override
     public void handle(Configuration configuration) {
         ReformCloudClient.getInstance().setInternalCloudNetwork(configuration
             .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
-        ReformCloudClient.getInstance().getLoggerProvider()
+        ReformCloudClient.getInstance().getColouredConsoleProvider()
             .info("NetworkProperties are now set and ReformCloudClient is now ready");
 
         ReformCloudClient.getInstance().getChannelHandler()
@@ -66,7 +77,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
             ReformCloudClient.getInstance().getCloudConfiguration().getClientName(),
             new PacketOutRequestProperties(),
             (configuration1, resultID) ->
-                new PropertiesManager(
+                new DefaultPropertiesManager(
                     configuration1.getValue("config", new TypeToken<PropertiesConfig>() {
                     })),
             (configuration2, resultId) -> {
@@ -74,5 +85,12 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
         );
 
         new StartSearch();
+
+        try {
+            lock.lock();
+            condition.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 }

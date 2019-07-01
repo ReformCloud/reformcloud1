@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.10.2018
@@ -94,6 +93,7 @@ public class CloudProcessScreenService implements Runnable {
     }
 
     private final StringBuffer stringBuffer = new StringBuffer();
+
     private final byte[] buffer = new byte[1024];
 
     @Override
@@ -108,7 +108,7 @@ public class CloudProcessScreenService implements Runnable {
                 this.readLog(proxyStartupHandler);
             }
 
-            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 3);
+            ReformCloudLibraryService.sleep(500);
         }
     }
 
@@ -129,12 +129,15 @@ public class CloudProcessScreenService implements Runnable {
 
             String stringText = stringBuffer.toString();
             if (!stringText.contains("\n") && !stringText.contains("\r")) {
+                stringBuffer.setLength(0);
                 return;
             }
 
             for (String input : stringText.split("\r")) {
                 for (String text : input.split("\n")) {
-                    cloudServerStartupHandler.getScreenHandler().addScreenLine(text);
+                    if (!text.trim().isEmpty()) {
+                        cloudServerStartupHandler.getScreenHandler().addScreenLine(text);
+                    }
                 }
             }
 

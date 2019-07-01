@@ -5,15 +5,15 @@
 package systems.reformcloud.network.packet;
 
 import io.netty.buffer.ByteBuf;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.TypeTokenAdaptor;
-
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
+import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.TypeTokenAdaptor;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -39,6 +39,11 @@ public class Packet implements Serializable {
     private String type;
 
     /**
+     * The internal communication channel
+     */
+    private long channel;
+
+    /**
      * The result uid of the packet
      */
     private UUID result;
@@ -46,26 +51,40 @@ public class Packet implements Serializable {
     public Packet() {
     }
 
-    public Packet(final String type, Configuration configuration) {
+    public Packet(String type, Configuration configuration) {
+        this(type, configuration, null);
+    }
+
+    public Packet(final String type, Configuration configuration,
+        UUID resultID, long channel) {
         this.type = type;
         this.configuration = configuration;
+        this.result = resultID;
+
+        if (this.result != null
+            && channel == ChannelConstants.REFORMCLOUD_INTERNAL_INFORMATION_DEFAULT_CHANNEL) {
+            this.channel = ChannelConstants.REFORMCLOUD_INTERNAL_QUERY_INFORMATION_DEFAULT_CHANNEL;
+        } else {
+            this.channel = channel;
+        }
+    }
+
+    public Packet(final String type, Configuration configuration,
+        long channel) {
+        this(type, configuration, null, channel);
     }
 
     public Packet(final String type, Configuration configuration, UUID resultID) {
-        this.type = type;
-        this.configuration = configuration;
-        this.result = resultID;
+        this(type, configuration, resultID,
+            ChannelConstants.REFORMCLOUD_INTERNAL_INFORMATION_DEFAULT_CHANNEL);
     }
 
     public Packet(final String type, Map<? extends String, ?> configuration) {
-        this.type = type;
-        this.configuration = Configuration.fromMap(configuration);
+        this(type, Configuration.fromMap(configuration));
     }
 
     public Packet(final String type, Map<? extends String, ?> configuration, UUID resultID) {
-        this.type = type;
-        this.configuration = Configuration.fromMap(configuration);
-        this.result = resultID;
+        this(type, Configuration.fromMap(configuration), resultID);
     }
 
     /**
@@ -81,6 +100,7 @@ public class Packet implements Serializable {
             this.configuration = packet.configuration;
             this.type = packet.type;
             this.result = packet.result;
+            this.channel = packet.channel;
         }
     }
 
@@ -135,6 +155,10 @@ public class Packet implements Serializable {
         return this.result;
     }
 
+    public long getChannel() {
+        return channel;
+    }
+
     public void setConfiguration(Configuration configuration) {
         this.configuration = configuration;
     }
@@ -145,5 +169,9 @@ public class Packet implements Serializable {
 
     public void setResult(UUID result) {
         this.result = result;
+    }
+
+    public void setChannel(long channel) {
+        this.channel = channel;
     }
 }

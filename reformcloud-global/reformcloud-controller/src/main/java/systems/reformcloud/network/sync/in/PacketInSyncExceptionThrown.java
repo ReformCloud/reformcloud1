@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -23,8 +24,13 @@ public final class PacketInSyncExceptionThrown implements Serializable, NetworkI
         final Throwable cause = configuration.getValue("cause", new TypeToken<Throwable>() {
         }.getType());
         if (cause != null) {
-            StringUtil.printError(ReformCloudController.getInstance().getLoggerProvider(),
+            StringUtil.printError(ReformCloudController.getInstance().getColouredConsoleProvider(),
                 "Exception caught on Client " + configuration.getStringValue("name"), cause);
         }
+    }
+
+    @Override
+    public long handlingChannel() {
+        return ChannelConstants.REFORMCLOUD_SYNC_CLIENT_COMMUNICATION_CHANNEL;
     }
 }

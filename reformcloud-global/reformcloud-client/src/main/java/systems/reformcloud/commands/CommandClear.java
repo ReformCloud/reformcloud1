@@ -26,10 +26,10 @@ public final class CommandClear extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         try {
-            ReformCloudClient.getInstance().getLoggerProvider().getConsoleReader().clearScreen();
+            ReformCloudClient.getInstance().getColouredConsoleProvider().getConsoleReader().clearScreen();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error in clear command", ex);
         }
     }

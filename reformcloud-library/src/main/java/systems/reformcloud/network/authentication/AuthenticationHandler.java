@@ -8,9 +8,9 @@ import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.authentication.interfaces.AuthenticationManager;
-import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.packet.Packet;
 
 /**
@@ -30,7 +30,7 @@ public final class AuthenticationHandler implements AuthenticationManager {
      */
     @Override
     public void handleAuth(AuthenticationType authenticationType, Packet packet,
-        ChannelHandlerContext channelHandlerContext, ChannelHandler channelHandler) {
+                           ChannelHandlerContext channelHandlerContext, AbstractChannelHandler channelHandler) {
         String name = packet.getConfiguration().getStringValue("name");
         switch (authenticationType) {
             case SERVER:

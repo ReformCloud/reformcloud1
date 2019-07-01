@@ -16,7 +16,7 @@ public final class PacketInDispatchConsoleCommand implements NetworkInboundHandl
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().warn(
+        ReformCloudController.getInstance().getColouredConsoleProvider().warn(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_command_executed_packet());
         ReformCloudController.getInstance().getCommandManager()

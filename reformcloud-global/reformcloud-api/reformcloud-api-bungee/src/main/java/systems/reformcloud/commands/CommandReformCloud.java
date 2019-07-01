@@ -5,15 +5,20 @@
 package systems.reformcloud.commands;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.text.DecimalFormat;
+import java.util.*;
+
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.launcher.BungeecordBootstrap;
+import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.info.ClientInfo;
+import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.meta.info.ServerInfo;
+import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
@@ -46,8 +51,9 @@ public final class CommandReformCloud extends Command implements Serializable, T
             return;
         }
 
-        final String prefix = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
-            .getPrefix();
+        final String prefix = (ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix().endsWith(" ") ?
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() :
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix() + " ") + "§7";
 
         if (strings.length == 0) {
             commandSender.sendMessage(TextComponent.fromLegacyText(
@@ -66,7 +72,22 @@ public final class CommandReformCloud extends Command implements Serializable, T
 
         if (strings[0].equalsIgnoreCase("version")) {
             commandSender.sendMessage(TextComponent
-                .fromLegacyText("§7You are using the ReformCloud V" + StringUtil.REFORM_VERSION));
+                .fromLegacyText(prefix + "§7You are using the §eReformCloud V" + StringUtil.REFORM_VERSION));
+            return;
+        }
+
+        if (strings[0].equalsIgnoreCase("maintenance")) {
+            ProxyGroup proxyGroup =
+                ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup();
+            ReformCloudAPIBungee.getInstance().dispatchConsoleCommand(
+                "asg proxygroup " + proxyGroup.getName() +
+                    " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
+                    "true --update")
+            );
+            commandSender.sendMessage(TextComponent.fromLegacyText(
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                    .getMessage("internal-api-bungee-command-send-controller")
+            ));
             return;
         }
 
@@ -174,6 +195,132 @@ public final class CommandReformCloud extends Command implements Serializable, T
             return;
         }
 
+        if (strings[0].equalsIgnoreCase("list")) {
+            if (strings.length != 3) {
+                List<Client> connectedClients = new ArrayList<>();
+                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                    .getClients()
+                    .values()
+                    .stream()
+                    .filter(client -> client.getClientInfo() != null)
+                    .forEach(connectedClients::add);
+
+                if (connectedClients.size() > 0) {
+                    commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "The following §eClients§7 are connected: "));
+                    connectedClients.forEach(e -> {
+                        final ClientInfo clientInfo = ReformCloudAPIBungee.getInstance().getConnectedClient(e.getName());
+                        commandSender.sendMessage(TextComponent.fromLegacyText(
+                            "    - §e" + e.getName() + "§7 | Host: §e" + e.getIp() + "§7 | Memory-Usage: §e"
+                                + clientInfo.getUsedMemory() + "MB§7/§e" + clientInfo.getMaxMemory()
+                                + "MB§7 | Processors: §e" + clientInfo.getCpuCoresSystem()
+                                + "§7 | CPU-Usage: §e" + new DecimalFormat("##.###").format(clientInfo.getCpuUsage())
+                                + "%§7 | Started-Processes: §e" + (clientInfo.getStartedProxies().size()
+                                + clientInfo.getStartedServers().size())));
+                        commandSender.sendMessage(TextComponent.fromLegacyText(""));
+                    });
+
+                    connectedClients.forEach(e -> {
+                        if (ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                            .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
+                            .anyMatch(proxies -> proxies.getCloudProcess().getClient()
+                                .equals(e.getName()))) {
+                            commandSender.sendMessage(TextComponent.fromLegacyText(
+                                prefix + "§7The following §eproxies§7 are started on \"§e" + e.getName() + "§7\": "));
+                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                                .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
+                                .filter(proxyInfo -> proxyInfo.getCloudProcess().getClient()
+                                    .equals(e.getName())).forEach(info -> commandSender.sendMessage(TextComponent.fromLegacyText(
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§7 | Player: §e" + info
+                                    .getOnline() + "§7/§e" + info.getProxyGroup().getMaxPlayers())));
+                            commandSender.sendMessage(TextComponent.fromLegacyText(""));
+                        } else {
+                            commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "There are no started §eproxies§7 on \"§e" + e.getName() + "§7\""));
+                            commandSender.sendMessage(TextComponent.fromLegacyText(""));
+                        }
+
+                        if (ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                            .getServerProcessManager().getAllRegisteredServerProcesses().stream()
+                            .anyMatch(servers -> servers.getCloudProcess().getClient()
+                                .equals(e.getName()))) {
+                            commandSender.sendMessage(TextComponent.fromLegacyText(
+                                prefix + "The following §eservers§7 are started on \"§e" + e.getName() + "§7\": "));
+                            ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                                .getServerProcessManager().getAllRegisteredServerProcesses().stream()
+                                .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
+                                    .equals(e.getName())).forEach(info -> commandSender.sendMessage(TextComponent.fromLegacyText(
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | State: §e" + info
+                                    .getServerState() + "§7 | Player: §e" + info.getOnline() + "§7/§e" + info
+                                    .getServerGroup().getMaxPlayers())));
+                            commandSender.sendMessage(TextComponent.fromLegacyText(""));
+                        } else {
+                            commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "There are no started §eservers§7 on \"§e" + e.getName() + "7r\""));
+                            commandSender.sendMessage(TextComponent.fromLegacyText(""));
+                        }
+                    });
+                } else
+                    commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "There are no §eClients§7 connected to the §eController"));
+            } else {
+                switch (strings[1].toLowerCase()) {
+                    case "server": {
+                        if (ReformCloudAPIBungee.getInstance().getServerGroup(strings[2]) != null) {
+                            List<ServerInfo> connected = new ArrayList<>();
+                            ReformCloudAPIBungee.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredServerProcesses()
+                                .stream()
+                                .filter(e -> e.getServerGroup().getName().equalsIgnoreCase(strings[2]))
+                                .forEach(connected::add);
+
+                            if (connected.size() > 0) {
+                                commandSender.sendMessage(TextComponent.fromLegacyText(
+                                    prefix + "The following §eservers§7 of the group \"§e" + strings[2]
+                                        + "§7\" are connected: "));
+                                connected.forEach(info -> commandSender.sendMessage(TextComponent.fromLegacyText(
+                                    "    - §e" + info.getCloudProcess().getName() + "§7 | State: §e" + info
+                                        .getServerState() + "§7 | Player: §e" + info.getOnline() + "§7/§e" + info
+                                        .getServerGroup().getMaxPlayers())));
+                            } else
+                                commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "There are no started §eservers§7 of the group \"§e" + strings[2] + "§7\""));
+                        } else
+                            commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "§cThe servergroup doesn't exists"));
+
+                        break;
+                    }
+                    case "proxy": {
+                        if (ReformCloudAPIBungee.getInstance().getProxyGroup(strings[2]) != null) {
+                            List<ProxyInfo> connected = new ArrayList<>();
+                            ReformCloudAPIBungee.getInstance()
+                                .getInternalCloudNetwork()
+                                .getServerProcessManager()
+                                .getAllRegisteredProxyProcesses()
+                                .stream()
+                                .filter(e -> e.getProxyGroup().getName().equalsIgnoreCase(strings[2]))
+                                .forEach(connected::add);
+
+                            if (connected.size() > 0) {
+                                commandSender.sendMessage(TextComponent.fromLegacyText(
+                                    prefix + "The following §eproxies§7 of the group \"§e" + strings[2]
+                                        + "§7\" are connected: "));
+                                connected.forEach(info -> commandSender.sendMessage(TextComponent.fromLegacyText(
+                                    "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§7 | Player: §e" + info
+                                        .getOnline() + "§7/§e" + info.getProxyGroup().getMaxPlayers())));
+                            } else
+                                commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "There are no started §eproxies§7 of the group \"§e" + strings[2] + "§7\""));
+                        } else
+                            commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "§cThe proxygroup doesn't exists"));
+
+                        break;
+                    }
+                    default: {
+                        commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "process list <server/proxy> <group-name>"));
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+
         commandSender.sendMessage(TextComponent.fromLegacyText(
             ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
                 .getMessage("internal-api-bungee-command-reformcloud-invalid-syntax")));
@@ -195,7 +342,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
         }
 
         if (strings.length == 3 && strings[0].equalsIgnoreCase("whitelist")) {
-            Collection<String> out = proxies();
+            Collection<String> out = registeredProxyGroups();
             out.add("--all");
             return out;
         }
@@ -210,7 +357,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
 
         if (strings.length == 3 && strings[0].equalsIgnoreCase("execute")) {
             if (strings[1].equalsIgnoreCase("server")) {
-                return registeredSevers();
+                return registeredServers();
             }
 
             if (strings[1].equalsIgnoreCase("proxy")) {
@@ -232,7 +379,24 @@ public final class CommandReformCloud extends Command implements Serializable, T
             return registeredGroups();
         }
 
-        return Arrays.asList("copy", "whitelist", "execute", "process", "reload", "version");
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("list")) {
+            return Arrays.asList("server", "proxy");
+        }
+
+        if (strings.length == 3 && strings[0].equalsIgnoreCase("list")) {
+            if (strings[1].equalsIgnoreCase("server")) {
+                return registeredServerGroups();
+            }
+
+            if (strings[1].equalsIgnoreCase("proxy")) {
+                return registeredProxyGroups();
+            }
+
+            return registeredGroups();
+        }
+
+        return Arrays.asList("copy", "maintenance", "whitelist", "execute",
+            "process", "list", "reload", "version");
     }
 
     private Collection<String> registered() {
@@ -244,7 +408,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
         return out;
     }
 
-    private Collection<String> registeredSevers() {
+    private Collection<String> registeredServers() {
         Collection<String> out = new LinkedList<>();
         ReformCloudAPIBungee.getInstance().getAllRegisteredServers()
             .forEach(e -> out.add(e.getCloudProcess().getName()));
@@ -258,16 +422,22 @@ public final class CommandReformCloud extends Command implements Serializable, T
         return out;
     }
 
-    private Collection<String> proxies() {
-        Collection<String> out = new LinkedList<>();
-        ReformCloudAPIBungee.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
-        return out;
-    }
-
     private Collection<String> registeredGroups() {
         Collection<String> out = new LinkedList<>();
         ReformCloudAPIBungee.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
         ReformCloudAPIBungee.getInstance().getAllServerGroups().forEach(e -> out.add(e.getName()));
+        return out;
+    }
+
+    private Collection<String> registeredServerGroups() {
+        Collection<String> out = new LinkedList<>();
+        ReformCloudAPIBungee.getInstance().getAllServerGroups().forEach(e -> out.add(e.getName()));
+        return out;
+    }
+
+    private Collection<String> registeredProxyGroups() {
+        Collection<String> out = new LinkedList<>();
+        ReformCloudAPIBungee.getInstance().getAllProxyGroups().forEach(e -> out.add(e.getName()));
         return out;
     }
 
@@ -281,23 +451,21 @@ public final class CommandReformCloud extends Command implements Serializable, T
     private void sendHelp(CommandSender commandSender, String prefix) {
         commandSender.sendMessage(
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud copy <name> \n")),
+                prefix + "§7/reformcloud copy <name> <file/dir> \n")),
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + (prefix.endsWith(" ") ? "" : " ")
-                    + "§7/reformcloud copy <name> <file/dir> \n")),
+                prefix + "§7/reformcloud maintenance\n")),
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + (prefix.endsWith(" ") ? "" : " ")
-                    + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
+                prefix + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + (prefix.endsWith(" ") ? "" : " ")
-                    + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
+                prefix + "§7/reformcloud execute <server/proxy> <name> <command> \n")),
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + (prefix.endsWith(" ") ? "" : " ")
-                    + "§7/reformcloud process <start/stop> <name> \n")),
+                prefix + "§7/reformcloud process <start/stop> <group-name> \n")),
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud reload \n")),
+                prefix + "§7/reformcloud list <server/proxy> <group-name> \n")),
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/reformcloud version"))
+                prefix + "§7/reformcloud reload \n")),
+            new TextComponent(TextComponent.fromLegacyText(
+                prefix + "§7/reformcloud version"))
         );
     }
 }

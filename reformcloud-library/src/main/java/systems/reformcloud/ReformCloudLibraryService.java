@@ -7,6 +7,7 @@ package systems.reformcloud;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
+import com.google.gson.internal.bind.TypeAdapters;
 import com.sun.management.OperatingSystemMXBean;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -25,27 +26,36 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.MultithreadEventExecutorGroup;
+import java.lang.management.ClassLoadingMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadMXBean;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 import systems.reformcloud.api.AsyncAPI;
 import systems.reformcloud.cache.Cache;
 import systems.reformcloud.cache.CacheClearer;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.configurations.ConfigurationAdapter;
 import systems.reformcloud.logging.AbstractLoggerProvider;
-import systems.reformcloud.logging.LoggerProvider;
-import systems.reformcloud.network.channel.ChannelHandler;
+import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.meta.environment.RuntimeEnvironment;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
 import systems.reformcloud.network.handler.Decoder;
 import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
-
-import java.lang.management.ClassLoadingMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.util.Locale;
-import java.util.UUID;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.10.2018
@@ -80,7 +90,10 @@ public final class ReformCloudLibraryService {
     /**
      * The cloud created gson instance
      */
-    public static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting()
+    public static final Gson GSON = new GsonBuilder()
+        .serializeNulls()
+        .setPrettyPrinting()
+        .registerTypeAdapterFactory(TypeAdapters.newTypeHierarchyFactory(Configuration.class, new ConfigurationAdapter()))
         .disableHtmlEscaping().create();
 
     /**
@@ -106,7 +119,7 @@ public final class ReformCloudLibraryService {
             (t, e) -> {
                 if (ReformCloudLibraryServiceProvider.getInstance() != null) {
                     StringUtil.printError(
-                        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error in thread group", e);
                 } else {
                     e.printStackTrace(System.err);
@@ -151,16 +164,16 @@ public final class ReformCloudLibraryService {
     /**
      * Sends the cloud header colored
      *
-     * @param loggerProvider The logger provider which should be used to print the header coloured
+     * @param colouredConsoleProvider The logger provider which should be used to print the header coloured
      */
-    public static void sendHeader(final LoggerProvider loggerProvider) {
-        if (loggerProvider == null) {
+    public static void sendHeader(final ColouredConsoleProvider colouredConsoleProvider) {
+        if (colouredConsoleProvider == null) {
             sendHeader();
             return;
         }
 
         System.out.println(" ");
-        loggerProvider.coloured(
+        colouredConsoleProvider.coloured(
             "§3" +
                 "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n"
                 +
@@ -195,12 +208,10 @@ public final class ReformCloudLibraryService {
 
     /**
      * Prepares the given Channel with all utilities
-     *
-     * @param channel The given channel where all Handlers should be added
+     *  @param channel        The given channel where all Handlers should be added
      * @param channelHandler The pre-initialized ChannelHandler where all channels are registered and
-     * handled
      */
-    public static Channel prepareChannel(Channel channel, ChannelHandler channelHandler) {
+    public static void prepareChannel(Channel channel, AbstractChannelHandler channelHandler) {
         channel.pipeline().addLast(
             new LengthDecoder(),
             new Decoder(),
@@ -208,7 +219,6 @@ public final class ReformCloudLibraryService {
             new Encoder(),
             new ChannelReader(channelHandler));
 
-        return channel;
     }
 
     /**
@@ -221,9 +231,9 @@ public final class ReformCloudLibraryService {
         return EPOLL ? new EpollEventLoopGroup(Runtime.getRuntime().availableProcessors(),
             createThreadFactory())
             : KQUEUE ? new KQueueEventLoopGroup(Runtime.getRuntime().availableProcessors(),
-                createThreadFactory())
-                : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(),
-                    createThreadFactory());
+            createThreadFactory())
+            : new NioEventLoopGroup(Runtime.getRuntime().availableProcessors(),
+            createThreadFactory());
     }
 
     /**
@@ -235,7 +245,7 @@ public final class ReformCloudLibraryService {
     public static EventLoopGroup eventLoopGroup(int threads) {
         return EPOLL ? new EpollEventLoopGroup(threads, createThreadFactory())
             : KQUEUE ? new KQueueEventLoopGroup(threads, createThreadFactory())
-                : new NioEventLoopGroup(threads, createThreadFactory());
+            : new NioEventLoopGroup(threads, createThreadFactory());
     }
 
     /**
@@ -269,23 +279,10 @@ public final class ReformCloudLibraryService {
     }
 
     /**
-     * Let the given thread sleep the given time
-     *
-     * @param thread The thread on which the cloud should sleep
-     * @param time The time which should be sleep
-     */
-    public static void sleep(Thread thread, long time) {
-        try {
-            Thread.sleep(time);
-        } catch (final InterruptedException ignored) {
-        }
-    }
-
-    /**
      * Let the main-thread sleep the given time
      *
      * @param timeUnit The TimeUnit in which the thread should sleep
-     * @param time The time which should be sleep
+     * @param time     The time which should be sleep
      */
     public static void sleep(TimeUnit timeUnit, long time) {
         try {
@@ -364,7 +361,7 @@ public final class ReformCloudLibraryService {
      *
      * @return The runtime mx bean of the current jvm
      */
-    private static RuntimeMXBean getRuntimeMXBean() {
+    public static RuntimeMXBean getRuntimeMXBean() {
         return ManagementFactory.getRuntimeMXBean();
     }
 
@@ -373,8 +370,26 @@ public final class ReformCloudLibraryService {
      *
      * @return the current class loading mx bean of the current jvm
      */
-    private static ClassLoadingMXBean getClassLoadingMXBean() {
+    public static ClassLoadingMXBean getClassLoadingMXBean() {
         return ManagementFactory.getClassLoadingMXBean();
+    }
+
+    /**
+     * Get the current MemoryMXBean of the current java runtime
+     *
+     * @return The memory mx bean of the runtime
+     */
+    public static MemoryMXBean getMemoryMXBean() {
+        return ManagementFactory.getMemoryMXBean();
+    }
+
+    /**
+     * Get the current thread mx bean of the java runtime
+     *
+     * @return The current thread mx bean of the runtime
+     */
+    public static ThreadMXBean getThreadMXBean() {
+        return ManagementFactory.getThreadMXBean();
     }
 
     /**
@@ -427,7 +442,7 @@ public final class ReformCloudLibraryService {
      * Checks if the object equals the parameters of the checkable
      *
      * @param checkable The checkable with the check parameters
-     * @param toCheck The object which should be checked
+     * @param toCheck   The object which should be checked
      * @return If the parameters of the checkable are true or not
      */
     public static boolean check(Predicate<Object> checkable, final Object toCheck) {
@@ -438,14 +453,37 @@ public final class ReformCloudLibraryService {
      * Creates a new cache
      *
      * @param maxSize The maximum size of the cache
-     * @param <K> The key value of the cache
-     * @param <V> The values of the cache
+     * @param <K>     The key value of the cache
+     * @param <V>     The values of the cache
      * @return The created cache using the given parameters
      */
     public static <K, V> Cache<K, V> newCache(long maxSize) {
         return new Cache<>(maxSize);
     }
 
+    /**
+     * Checks the current runtime environment
+     *
+     * @return The current runtime environment for the running process
+     */
+    public static RuntimeEnvironment runtimeEnvironment() {
+        if (StringUtil.OS_NAME.toLowerCase().contains("windows")) {
+            return RuntimeEnvironment.WINDOWS;
+        }
+
+        return StringUtil.OS_NAME.toLowerCase().contains("linux") ?
+            RuntimeEnvironment.LINUX : RuntimeEnvironment.OS_X;
+    }
+
+    /**
+     * Creates a new ThreadFactory
+     *
+     * @param uncaughtExceptionHandler The uncaught exception handler of the
+     *                                 new threads created in the thread
+     *                                 factory
+     * @return A new thread factory for the executor service of the cloud
+     * @see ThreadFactory
+     */
     private static ThreadFactory createThreadFactory(
         Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
@@ -460,6 +498,12 @@ public final class ReformCloudLibraryService {
         };
     }
 
+    /**
+     * Creates a new thread factory for the network channels
+     *
+     * @return A new thread factory for all network channels
+     * @see DefaultThreadFactory
+     */
     private static ThreadFactory createThreadFactory() {
         return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true,
             Thread.MIN_PRIORITY);

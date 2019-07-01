@@ -16,7 +16,7 @@ public final class PacketInSendControllerConsoleMessage implements NetworkInboun
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider()
+        ReformCloudController.getInstance().getColouredConsoleProvider()
             .info(configuration.getStringValue("message"));
     }
 }

@@ -122,7 +122,7 @@ public final class CommandDelete extends Command implements Serializable {
                                     .getServerGroups().get(args[1]));
                     } catch (final IOException ex) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not delete servergroup", ex);
                     }
                 } else {
@@ -144,7 +144,7 @@ public final class CommandDelete extends Command implements Serializable {
                                     .getProxyGroups().get(args[1]));
                     } catch (final IOException ex) {
                         StringUtil.printError(
-                            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                             "Could not delete proxygroup", ex);
                     }
                 } else {
@@ -176,7 +176,7 @@ public final class CommandDelete extends Command implements Serializable {
                     .getCloudConfiguration()
                     .getWebUsers()
                     .stream()
-                    .filter(e -> e.getUser().equals(args[1]))
+                    .filter(e -> e.getUserName().equals(args[1]))
                     .findFirst()
                     .orElse(null);
                 if (webUser == null) {

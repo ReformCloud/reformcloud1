@@ -24,18 +24,20 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import systems.reformcloud.api.APIService;
+import systems.reformcloud.api.DefaultPermissionHelper;
 import systems.reformcloud.api.DefaultPlayerProvider;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.api.SaveAPIImpl;
+import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.commands.ingame.command.IngameCommand;
 import systems.reformcloud.commands.ingame.sender.IngameCommandSender;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
-import systems.reformcloud.event.EventManager;
+import systems.reformcloud.event.DefaultEventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.BungeecordBootstrap;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
@@ -54,9 +56,11 @@ import systems.reformcloud.meta.proxy.versions.ProxyVersions;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
+import systems.reformcloud.meta.system.RuntimeSnapshot;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.NettySocketClient;
+import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.api.event.NetworkEventAdapter;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.PacketInConnectPlayer;
@@ -85,6 +89,7 @@ import systems.reformcloud.network.packets.PacketOutCreateProxyGroup;
 import systems.reformcloud.network.packets.PacketOutCreateServerGroup;
 import systems.reformcloud.network.packets.PacketOutCreateWebUser;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
+import systems.reformcloud.network.packets.PacketOutExecuteCommand;
 import systems.reformcloud.network.packets.PacketOutExecuteCommandSilent;
 import systems.reformcloud.network.packets.PacketOutStartGameServer;
 import systems.reformcloud.network.packets.PacketOutStartProxy;
@@ -95,14 +100,17 @@ import systems.reformcloud.network.packets.PacketOutUpdateProxyGroup;
 import systems.reformcloud.network.packets.PacketOutUpdateProxyInfo;
 import systems.reformcloud.network.packets.PacketOutUpdateServerGroup;
 import systems.reformcloud.network.packets.PacketOutUpdateServerInfo;
+import systems.reformcloud.network.query.in.PacketInQueryGetRuntimeInformation;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
+import systems.reformcloud.network.query.out.PacketOutQueryGetRuntimeInformation;
 import systems.reformcloud.network.query.out.PacketOutQueryStartQueuedProcess;
 import systems.reformcloud.player.api.PlayerProvider;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.TypeTokenAdaptor;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
@@ -119,7 +127,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
 
     private final NettySocketClient nettySocketClient;
 
-    private final ChannelHandler channelHandler;
+    private final AbstractChannelHandler channelHandler;
 
     private ProxySettings proxySettings;
 
@@ -155,15 +163,16 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
         APIService.instance.set(this);
         new DefaultCloudService(this);
         DefaultPlayerProvider.instance.set(new PlayerProvider());
+        PermissionHelper.instance.set(new DefaultPermissionHelper());
 
         Configuration configuration = Configuration.parse(Paths.get("reformcloud/config.json"));
 
         final EthernetAddress ethernetAddress = configuration
             .getValue("address", TypeTokenAdaptor.getETHERNET_ADDRESS_TYPE());
-        new ReformCloudLibraryServiceProvider(new LoggerProvider(),
+        new ReformCloudLibraryServiceProvider(new ColouredConsoleProvider(),
             configuration.getStringValue("controllerKey"), ethernetAddress.getHost(),
-            new EventManager(), null);
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            new DefaultEventManager(), null);
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .setDebug(configuration.getBooleanValue("debug"));
 
         this.channelHandler = new ChannelHandler();
@@ -192,6 +201,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
             .registerHandler("UpdatePermissionGroup", new PacketInUpdatePermissionGroup())
             .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
+            .registerQueryHandler("GetRuntimeInformation", new PacketInQueryGetRuntimeInformation())
             .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();
@@ -216,6 +226,10 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
 
     public static ReformCloudAPIBungee getInstance() {
         return ReformCloudAPIBungee.instance;
+    }
+
+    public void updateProxyInfo() {
+        this.updateProxyInfo(this.proxyInfo);
     }
 
     @Override
@@ -603,6 +617,32 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
     }
 
     @Override
+    public void executeCommandOnServer(String serverName, String commandLine) {
+        this.channelHandler.sendPacketAsynchronous(
+            "ReformCloudController",
+            new PacketOutExecuteCommand("server", serverName, commandLine)
+        );
+    }
+
+    @Override
+    public void executeCommandOnServer(String serverName, CharSequence commandLine) {
+        this.executeCommandOnServer(serverName, String.valueOf(commandLine));
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, String commandLine) {
+        this.channelHandler.sendPacketAsynchronous(
+            "ReformCloudController",
+            new PacketOutExecuteCommand("proxy", proxyName, commandLine)
+        );
+    }
+
+    @Override
+    public void executeCommandOnProxy(String proxyName, CharSequence commandLine) {
+        this.executeCommandOnProxy(proxyName, String.valueOf(commandLine));
+    }
+
+    @Override
     public DevProcess startQueuedProcess(ServerGroup serverGroup) {
         return this.createPacketFuture(
             new PacketOutQueryStartQueuedProcess(serverGroup, "default", new Configuration()),
@@ -658,7 +698,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new PacketOutQueryGetOnlinePlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2, TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -673,7 +713,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new PacketOutQueryGetPlayer(uniqueId),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2,
+            TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -688,7 +729,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new PacketOutQueryGetPlayer(name),
             "ReformCloudController"
         );
-        Packet result = packetFuture.syncUninterruptedly(2, TimeUnit.SECONDS);
+        Packet result = packetFuture.sendOnCurrentThread().syncUninterruptedly(2,
+            TimeUnit.SECONDS);
         if (result.getResult() == null) {
             return null;
         }
@@ -934,6 +976,87 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
         return this.internalCloudNetwork.getProxyGroups().getOrDefault(name, null);
     }
 
+    @Override
+    public RuntimeSnapshot shiftControllerRuntimeSnapshot() {
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation("Controller", "controller")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftClientRuntimeSnapshot(String clientName) {
+        Require.requireNotNull(clientName);
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation(clientName, "client")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftClientRuntimeSnapshot(Client client) {
+        Require.requireNotNull(client);
+        return shiftClientRuntimeSnapshot(client.getName());
+    }
+
+    @Override
+    public RuntimeSnapshot shiftProxyRuntimeSnapshot(String proxyName) {
+        Require.requireNotNull(proxyName);
+        if (proxyName.equals(this.proxyInfo.getCloudProcess().getName())) {
+            return current();
+        }
+
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation(proxyName, "proxy")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftProxyRuntimeSnapshot(ProxyInfo proxyInfo) {
+        Require.requireNotNull(proxyInfo);
+        return shiftProxyRuntimeSnapshot(proxyInfo.getCloudProcess().getName());
+    }
+
+    @Override
+    public RuntimeSnapshot shiftServerRuntimeSnapshot(String serverName) {
+        Require.requireNotNull(serverName);
+        return this.channelHandler.sendPacketQuerySync(
+            "ReformCloudController",
+            "ReformCloudClient",
+            new PacketOutQueryGetRuntimeInformation(serverName, "server")
+        )
+            .sendOnCurrentThread()
+            .syncUninterruptedly()
+            .getConfiguration()
+            .getValue("info", new TypeToken<RuntimeSnapshot>() {
+            });
+    }
+
+    @Override
+    public RuntimeSnapshot shiftServerRuntimeSnapshot(ServerInfo serverInfo) {
+        Require.requireNotNull(serverInfo);
+        return shiftServerRuntimeSnapshot(serverInfo.getCloudProcess().getName());
+    }
+
     public ServerInfo nextFreeLobby(final ProxyGroup proxyGroup, ProxiedPlayer proxiedPlayer) {
         for (ServerInfo serverInfo : this.internalCloudNetwork.getServerProcessManager()
             .getAllRegisteredServerProcesses()) {
@@ -1013,6 +1136,12 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
     @Override
     public Optional<SaveAPIService> getAPISave() {
         return Optional.ofNullable(SaveAPIService.instance.get());
+    }
+
+    @Override
+    public Optional<PermissionHelper> getPermissionHelper() {
+        return permissionCache == null ? Optional.empty() :
+            Optional.ofNullable(PermissionHelper.instance.get());
     }
 
     public void updateIngameCommands(List<IngameCommand> newIngameCommands) {
@@ -1275,7 +1404,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
 
     public int getGlobalMaxOnlineCount() {
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        this.getAllProxyGroups().forEach(e -> atomicInteger.addAndGet(e.getMaxPlayers()));
+        this.getAllRegisteredProxies()
+            .forEach(e -> atomicInteger.addAndGet(e.getProxyGroup().getMaxPlayers()));
         return atomicInteger.get();
     }
 
@@ -1283,7 +1413,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
         return this.nettySocketClient;
     }
 
-    public ChannelHandler getChannelHandler() {
+    public AbstractChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 

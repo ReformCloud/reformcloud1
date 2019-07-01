@@ -6,13 +6,13 @@ package systems.reformcloud.addons;
 
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
-import systems.reformcloud.addons.extendable.AddonExtendable;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -23,13 +23,10 @@ import java.util.jar.JarFile;
  * @author _Klaro | Pasqual K. / created on 10.12.2018
  */
 
-public class AddonParallelLoader extends AddonExtendable {
+public class AddonParallelLoader extends AddonLoader implements Serializable {
 
     private Queue<JavaAddon> javaAddons = new ConcurrentLinkedDeque<>();
 
-    /**
-     * Loads all addons
-     */
     @Override
     public void loadAddons() {
         Collection<AddonClassConfig> addonClassConfigs = this.checkForAddons();
@@ -43,35 +40,29 @@ public class AddonParallelLoader extends AddonExtendable {
 
                 javaAddons.add(javaAddon);
 
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                     ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_prepared()
                         .replace("%name%", addonClassConfig.getName())
                         .replace("%version%", addonClassConfig.getVersion()));
             } catch (final Throwable throwable) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while loading addon", throwable);
             }
         });
     }
 
-    /**
-     * Enables the Addons
-     */
     @Override
     public void enableAddons() {
         this.javaAddons.forEach(consumer -> {
             consumer.onAddonLoading();
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_enabled()
                     .replace("%name%", consumer.getAddonName())
                     .replace("%version%", consumer.getAddonClassConfig().getVersion()));
         });
     }
 
-    /**
-     * Disables all addons
-     */
     @Override
     public void disableAddons() {
         if (javaAddons.isEmpty()) {
@@ -81,13 +72,14 @@ public class AddonParallelLoader extends AddonExtendable {
         do {
             JavaAddon consumer = javaAddons.poll();
             consumer.onAddonReadyToClose();
-            ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+            ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_closed()
                     .replace("%name%", consumer.getAddonName())
                     .replace("%version%", consumer.getAddonClassConfig().getVersion()));
         } while (!javaAddons.isEmpty());
     }
 
+    @Override
     public boolean disableAddon(final String name) {
         JavaAddon javaAddon = this.javaAddons
             .stream()
@@ -99,7 +91,7 @@ public class AddonParallelLoader extends AddonExtendable {
         }
 
         javaAddon.onAddonReadyToClose();
-        ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider()
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_closed()
                 .replace("%name%", javaAddon.getAddonName())
                 .replace("%version%", javaAddon.getAddonClassConfig().getVersion()));
@@ -108,12 +100,7 @@ public class AddonParallelLoader extends AddonExtendable {
         return true;
     }
 
-    /**
-     * This methods searches for a specific addon and enables it
-     *
-     * @param name The name of the addon that should be found
-     * @return If the addon file exists and if the addon could be loaded
-     */
+    @Override
     public boolean enableAddon(final String name) {
         Set<AddonClassConfig> moduleConfigs = new HashSet<>();
 
@@ -150,7 +137,7 @@ public class AddonParallelLoader extends AddonExtendable {
                 }
             } catch (final Throwable throwable) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Could not load addon configuration", throwable);
             }
         }
@@ -164,19 +151,19 @@ public class AddonParallelLoader extends AddonExtendable {
 
                 javaAddons.add(javaAddon);
 
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                     ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_prepared()
                         .replace("%name%", addonClassConfig.getName())
                         .replace("%version%", addonClassConfig.getVersion()));
 
                 javaAddon.onAddonLoading();
-                ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider().info(
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                     ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_enabled()
                         .replace("%name%", javaAddon.getAddonName())
                         .replace("%version%", javaAddon.getAddonClassConfig().getVersion()));
             } catch (final Throwable throwable) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while loading addon", throwable);
             }
         });
@@ -184,23 +171,13 @@ public class AddonParallelLoader extends AddonExtendable {
         return true;
     }
 
-    /**
-     * Checks if a specific addon is enabled or not
-     *
-     * @param name The name of the addon
-     * @return If the addon is enabled or not
-     */
+    @Override
     public boolean isAddonEnabled(final String name) {
         return this.javaAddons
             .stream()
             .anyMatch(addon -> addon.getAddonName().equalsIgnoreCase(name));
     }
 
-    /**
-     * Returns all Addon Class Configs of all jar files
-     *
-     * @return a set of all Addons
-     */
     private Set<AddonClassConfig> checkForAddons() {
         Set<AddonClassConfig> moduleConfigs = new HashSet<>();
 
@@ -232,7 +209,7 @@ public class AddonParallelLoader extends AddonExtendable {
                 }
             } catch (final Throwable throwable) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Could not load addon configuration", throwable);
             }
         }
@@ -240,6 +217,7 @@ public class AddonParallelLoader extends AddonExtendable {
         return moduleConfigs;
     }
 
+    @Override
     public Queue<JavaAddon> getJavaAddons() {
         return this.javaAddons;
     }

@@ -5,52 +5,40 @@
 package systems.reformcloud.logging;
 
 import com.google.gson.JsonObject;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.StringWriter;
+import com.google.gson.stream.JsonReader;
+import jline.console.ConsoleReader;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
+import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.logging.enums.AnsiColourHandler;
+import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.utility.Require;
+import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.DownloadManager;
+import systems.reformcloud.utility.runtime.Reload;
+import systems.reformcloud.utility.runtime.Shutdown;
+import systems.reformcloud.utility.time.DateProvider;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import jline.console.ConsoleReader;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiConsole;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.logging.enums.AnsiColourHandler;
-import systems.reformcloud.logging.handlers.IConsoleInputHandler;
-import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.runtime.Reload;
-import systems.reformcloud.utility.runtime.Shutdown;
-import systems.reformcloud.utility.time.DateProvider;
+import java.util.logging.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 19.10.2018
  */
 
-public class LoggerProvider extends AbstractLoggerProvider implements Serializable, AutoCloseable,
+public class ColouredConsoleProvider extends AbstractLoggerProvider implements Serializable, AutoCloseable,
     Reload, Shutdown {
 
     private static final long serialVersionUID = 3076534030843453815L;
@@ -58,7 +46,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     /**
      * The current instance of the logger provider
      */
-    public static Optional<LoggerProvider> instance;
+    public static ColouredConsoleProvider instance;
 
     /**
      * The current console reader
@@ -101,8 +89,8 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
      *
      * @throws IOException If an exception occurs while creating the console reader
      */
-    public LoggerProvider() throws IOException {
-        instance = Optional.of(this);
+    public ColouredConsoleProvider() throws IOException {
+        instance = this;
         AbstractLoggerProvider.globalInstance.set(this);
 
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "ERROR");
@@ -141,7 +129,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
     public static AbstractLoggerProvider newSaveLogger() {
         try {
-            return new LoggerProvider();
+            return new ColouredConsoleProvider();
         } catch (final IOException ex) {
             return null;
         }
@@ -162,7 +150,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                 this.handleAll(AnsiColourHandler.stripColor(message));
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while printing logging line", ex);
             }
         });
@@ -183,7 +171,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                 this.handleAll(AnsiColourHandler.stripColor(message));
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while printing logging line", ex);
             }
         });
@@ -204,7 +192,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                 this.handleAll(AnsiColourHandler.stripColor(message));
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while printing logging line", ex);
             }
         });
@@ -223,7 +211,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                 this.handleAll(AnsiColourHandler.stripColor(message));
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while printing logging line", ex);
             }
         });
@@ -231,57 +219,19 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
     @Override
     public void exception(Throwable cause) {
+        Require.requireNotNull(cause);
         out.add(() -> {
             StringBuilder stringBuilder = new StringBuilder();
+            StringWriter stringWriter = new StringWriter();
 
-            stringBuilder.append(cause).append("\n");
-            for (StackTraceElement stackTraceElement : cause.getStackTrace()) {
-                stringBuilder.append("    at ").append(stackTraceElement).append("\n");
-            }
+            cause.printStackTrace(new PrintWriter(stringWriter));
+            stringBuilder.append(stringWriter);
 
-            for (Throwable suppressed : cause.getSuppressed()) {
-                this.suppressedException(suppressed, cause.getStackTrace(), "Suppressed: ", "\t",
-                    stringBuilder);
-            }
+            String caused = stringBuilder.toString();
 
-            String exception = stringBuilder.substring(0, stringBuilder.length() - 2);
-
-            this.serve(exception);
-            this.handleAll(exception);
+            this.serve(caused);
+            this.handleAll(caused);
         });
-    }
-
-    private void suppressedException(Throwable cause,
-        StackTraceElement[] enclosing,
-        String caption,
-        String prefix,
-        StringBuilder stringBuilder) {
-        StackTraceElement[] trace = cause.getStackTrace();
-        int m = trace.length - 1;
-        int n = enclosing.length - 1;
-        while (m >= 0 && n >= 0 && trace[m].equals(enclosing[n])) {
-            m--;
-        }
-        n--;
-
-        int framesInCommon = trace.length - 1 - m;
-
-        stringBuilder.append(prefix).append(caption).append(cause);
-        for (int i = 0; i <= m; i++) {
-            stringBuilder.append(prefix).append("\tat ").append(trace[i]);
-        }
-        if (framesInCommon != 0) {
-            stringBuilder.append(prefix).append("\t... ").append(framesInCommon).append(" more");
-        }
-
-        for (Throwable se : cause.getSuppressed()) {
-            suppressedException(se, cause.getStackTrace(), "", "\t", stringBuilder);
-        }
-
-        Throwable ourCause = cause.getCause();
-        if (ourCause != null) {
-            suppressedException(ourCause, trace, "Caused by: ", "", stringBuilder);
-        }
     }
 
     @Override
@@ -308,13 +258,13 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
             ReformCloudLibraryService.sendHeader(this);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not clear screen", ex);
         }
     }
 
     @Override
-    public LoggerProvider emptyLine() {
+    public ColouredConsoleProvider emptyLine() {
         out.add(() -> {
             try {
                 this.consoleReader.println(String.valueOf(ConsoleReader.RESET_LINE));
@@ -323,7 +273,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                 this.handleAll("\n");
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while printing logging line", ex);
             }
         });
@@ -342,7 +292,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
                 this.complete();
             } catch (final IOException ex) {
                 StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                         "Error while printing logging line", ex);
             }
         });
@@ -384,7 +334,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
             this.consoleReader.flush();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while flushing logger", ex);
         }
     }
@@ -396,7 +346,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
             this.consoleReader.flush();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while printing logging line", ex);
         }
     }
@@ -404,7 +354,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
     @Override
     public void finish() {
         try {
-            instance = Optional.empty();
+            instance = null;
             this.finalize();
         } catch (final Throwable ignored) {
         }
@@ -423,7 +373,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
     @Override
     public void close() {
-        instance = Optional.empty();
+        instance = null;
         AbstractLoggerProvider.globalInstance.set(null);
 
         try {
@@ -439,7 +389,7 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
             this.iConsoleInputHandlers.clear();
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while closing logger", ex);
         }
     }
@@ -451,26 +401,43 @@ public class LoggerProvider extends AbstractLoggerProvider implements Serializab
 
     @Override
     public String uploadLog(String input) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost httpPost = new HttpPost("https://paste.reformcloud.systems/documents");
-
         try {
-            httpPost.setEntity(new StringEntity(AnsiColourHandler.stripColourCodes(input),
-                ContentType.TEXT_PLAIN));
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL("https://paste" +
+                ".reformcloud.systems/documents").openConnection();
 
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-            final String result = EntityUtils.toString(httpResponse.getEntity());
-            JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(result)
-                .getAsJsonObject();
-            if (httpResponse.getStatusLine().getStatusCode() != 201 || jsonObject.has("message")) {
-                return "The following error occurred: " + jsonObject.get("message").getAsString();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond());
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.connect();
+
+            try (DataOutputStream dataOutputStream =
+                     new DataOutputStream(httpURLConnection.getOutputStream())) {
+                dataOutputStream.writeBytes(input);
+                dataOutputStream.flush();
             }
 
-            return "https://paste.reformcloud.systems/" + jsonObject.get("key").getAsString();
+            JsonObject jsonObject;
+            try (JsonReader jsonReader =
+                     new JsonReader(new InputStreamReader(httpURLConnection.getInputStream()))) {
+                jsonObject = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject();
+            }
+
+            if (jsonObject == null) {
+                return "Could not post log on \"paste.reformcloud.systems\"!";
+            }
+
+            if (jsonObject.has("message")) {
+                return "An error occurred: " + jsonObject.get("message").getAsString();
+            }
+
+            Configuration configuration = new Configuration(jsonObject);
+            return "https://paste.reformcloud.systems/" + configuration.getStringValue("key");
         } catch (final IOException ex) {
-            StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
-                    "Error while uploading log", ex);
+            StringUtil.printError(
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
+                "Could not post log on \"paste.reformcloud.systems\"!",
+                ex
+            );
         }
 
         return "Could not post log on \"paste.reformcloud.systems\"!";

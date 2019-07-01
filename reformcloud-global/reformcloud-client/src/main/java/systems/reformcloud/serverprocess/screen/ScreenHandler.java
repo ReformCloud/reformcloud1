@@ -27,7 +27,7 @@ public class ScreenHandler implements Serializable {
         this.name = name;
     }
 
-    public void addScreenLine(final String line) {
+    protected void addScreenLine(final String line) {
         if (line == null) {
             return;
         }

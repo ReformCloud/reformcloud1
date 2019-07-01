@@ -12,6 +12,7 @@ import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 
+import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +26,7 @@ public class LobbyGroup extends ServerGroup implements Serializable {
 
     private static final long serialVersionUID = -6740582229649845556L;
 
+    @ConstructorProperties({"spigotVersions", "memory", "client"})
     public LobbyGroup(SpigotVersions spigotVersions, int memory, final String client) {
         super(
             "Lobby",

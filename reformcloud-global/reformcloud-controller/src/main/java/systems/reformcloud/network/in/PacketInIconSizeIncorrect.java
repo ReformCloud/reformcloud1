@@ -18,7 +18,7 @@ public final class PacketInIconSizeIncorrect implements Serializable, NetworkInb
 
     @Override
     public void handle(Configuration configuration) {
-        ReformCloudController.getInstance().getLoggerProvider().serve(
+        ReformCloudController.getInstance().getColouredConsoleProvider().serve(
             ReformCloudController.getInstance().getLoadedLanguage()
                 .getController_icon_size_invalid()
                 .replace("%group%", configuration.getStringValue("proxy")));

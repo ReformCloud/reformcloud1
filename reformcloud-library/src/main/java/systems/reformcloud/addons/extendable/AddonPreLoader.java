@@ -10,7 +10,7 @@ import systems.reformcloud.addons.JavaAddon;
  * @author _Klaro | Pasqual K. / created on 10.12.2018
  */
 
-public interface ModulePreLoader {
+public interface AddonPreLoader {
 
     /**
      * Loads the Addon main class and creates a new instance

@@ -4,11 +4,11 @@
 
 package systems.reformcloud.network.packets.sync.out;
 
+import java.io.Serializable;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.packet.Packet;
-
-import java.io.Serializable;
+import systems.reformcloud.network.packet.constants.ChannelConstants;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -22,7 +22,8 @@ public final class PacketOutSyncClientDisconnects extends Packet implements Seri
         super(
             "ClientDisconnects",
             new Configuration().addStringValue("name",
-                ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
+                ReformCloudClient.getInstance().getCloudConfiguration().getClientName()),
+            ChannelConstants.REFORMCLOUD_SYNC_CLIENT_COMMUNICATION_CHANNEL
         );
     }
 }

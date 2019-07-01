@@ -7,11 +7,10 @@ package systems.reformcloud.configuration;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.logging.LoggerProvider;
+import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.utility.ExitUtil;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
-import systems.reformcloud.utility.annotiations.ForRemoval;
-import systems.reformcloud.utility.annotiations.ReplacedBy;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.utility.files.FileUtils;
 
@@ -54,7 +53,7 @@ public final class CloudConfiguration implements Serializable {
     public CloudConfiguration(final boolean reload) {
         if (!Files.exists(Paths.get("configuration.properties")) && !Files
             .exists(Paths.get("ControllerKEY"))) {
-            ReformCloudClient.getInstance().getLoggerProvider().serve(
+            ReformCloudClient.getInstance().getColouredConsoleProvider().serve(
                 "Please copy the \"ControllerKEY\" file in the root directory of the client");
             ReformCloudLibraryService.sleep(2000);
             System.exit(ExitUtil.CONTROLLERKEY_MISSING);
@@ -90,28 +89,28 @@ public final class CloudConfiguration implements Serializable {
             new File("reformcloud/saves/servers/logs"),
             new File("reformcloud/saves/proxies/logs")
         }) {
-            dir.mkdirs();
+            Require.isTrue(dir.mkdirs(), "Could not create directory " + dir.getName());
         }
     }
 
     /**
      * Creates default Configuration or returns if the Configuration already exists
      */
-    private boolean defaultInit() {
+    private void defaultInit() {
         if (Files.exists(Paths.get("configuration.properties"))) {
-            return false;
+            return;
         }
 
-        LoggerProvider loggerProvider = ReformCloudClient.getInstance().getLoggerProvider();
+        ColouredConsoleProvider colouredConsoleProvider = ReformCloudClient.getInstance().getColouredConsoleProvider();
 
-        loggerProvider.info("Please provide the internal ReformCloudClient ip");
-        String ip = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
-        loggerProvider.info("Please provide the Controller IP");
-        String controllerIP = this.readString(loggerProvider, s -> s.split("\\.").length == 4);
+        colouredConsoleProvider.info("Please provide the internal ReformCloudClient ip");
+        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        colouredConsoleProvider.info("Please provide the Controller IP");
+        String controllerIP = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
 
-        ReformCloudClient.getInstance().getLoggerProvider()
+        ReformCloudClient.getInstance().getColouredConsoleProvider()
             .info("Please provide the name of this Client. (Recommended: Client-01)");
-        String clientID = this.readString(loggerProvider, s -> true);
+        String clientID = this.readString(colouredConsoleProvider, s -> true);
 
         Properties properties = new Properties();
 
@@ -130,19 +129,17 @@ public final class CloudConfiguration implements Serializable {
             properties.store(outputStream, "ReformCloud default Configuration");
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not store configuration.properties", ex);
-            return false;
         }
 
-        return true;
     }
 
     private void clearServerTemp() {
         final File dir = new File("reformcloud/temp/servers");
 
         if (dir.isDirectory()) {
-            for (File file : dir.listFiles()) {
+            for (File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.isDirectory()) {
                     FileUtils.deleteFullDirectory(file.toPath());
                 }
@@ -154,7 +151,7 @@ public final class CloudConfiguration implements Serializable {
         final File dir = new File("reformcloud/temp/proxies");
 
         if (dir.isDirectory()) {
-            for (File file : dir.listFiles()) {
+            for (File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.isDirectory()) {
                     FileUtils.deleteFullDirectory(file.toPath());
                 }
@@ -172,7 +169,7 @@ public final class CloudConfiguration implements Serializable {
             properties.load(inputStreamReader);
         } catch (final IOException ex) {
             StringUtil
-                .printError(ReformCloudLibraryServiceProvider.getInstance().getLoggerProvider(),
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Could not load configuration.properties", ex);
         }
 
@@ -192,25 +189,14 @@ public final class CloudConfiguration implements Serializable {
             .readFileAsString(new File("reformcloud/files/ControllerKEY"));
     }
 
-    private String readString(final LoggerProvider loggerProvider, Predicate<String> checkable) {
-        String readLine = loggerProvider.readLine();
+    private String readString(final ColouredConsoleProvider colouredConsoleProvider, Predicate<String> checkable) {
+        String readLine = colouredConsoleProvider.readLine();
         while (readLine == null || !checkable.test(readLine) || readLine.trim().isEmpty()) {
-            loggerProvider.info("Input invalid, please try again");
-            readLine = loggerProvider.readLine();
+            colouredConsoleProvider.info("Input invalid, please try again");
+            readLine = colouredConsoleProvider.readLine();
         }
 
         return readLine;
-    }
-
-    private Integer readInt(final LoggerProvider loggerProvider, Predicate<Integer> checkable) {
-        String readLine = loggerProvider.readLine();
-        while (readLine == null || readLine.trim().isEmpty() || !ReformCloudLibraryService
-            .checkIsInteger(readLine) || !checkable.test(Integer.parseInt(readLine))) {
-            loggerProvider.info("Input invalid, please try again");
-            readLine = loggerProvider.readLine();
-        }
-
-        return Integer.parseInt(readLine);
     }
 
     public String getControllerKey() {
@@ -233,17 +219,6 @@ public final class CloudConfiguration implements Serializable {
         return this.memory;
     }
 
-    @Deprecated
-    @ForRemoval
-    @ReplacedBy("controllerPort")
-    private int getControllerPort() {
-        return this.controllerPort;
-    }
-
-    public int controllerPort() {
-        return this.controllerPort;
-    }
-
     public int getControllerWebPort() {
         return this.controllerWebPort;
     }
@@ -260,44 +235,8 @@ public final class CloudConfiguration implements Serializable {
         return this.ethernetAddress;
     }
 
-    public void setControllerKey(String controllerKey) {
-        this.controllerKey = controllerKey;
-    }
-
-    public void setControllerIP(String controllerIP) {
-        this.controllerIP = controllerIP;
-    }
-
     public void setClientName(String clientName) {
         this.clientName = clientName;
-    }
-
-    public void setStartIP(String startIP) {
-        this.startIP = startIP;
-    }
-
-    public void setMemory(int memory) {
-        this.memory = memory;
-    }
-
-    public void setControllerPort(int controllerPort) {
-        this.controllerPort = controllerPort;
-    }
-
-    public void setControllerWebPort(int controllerWebPort) {
-        this.controllerWebPort = controllerWebPort;
-    }
-
-    public void setLogSize(int logSize) {
-        this.logSize = logSize;
-    }
-
-    public void setCpu(double cpu) {
-        this.cpu = cpu;
-    }
-
-    public void setEthernetAddress(EthernetAddress ethernetAddress) {
-        this.ethernetAddress = ethernetAddress;
     }
 
     public boolean equals(final Object o) {
@@ -331,7 +270,7 @@ public final class CloudConfiguration implements Serializable {
         if (this.getMemory() != other.getMemory()) {
             return false;
         }
-        if (this.getControllerPort() != other.getControllerPort()) {
+        if (this.controllerPort != other.controllerPort) {
             return false;
         }
         if (this.getControllerWebPort() != other.getControllerWebPort()) {
@@ -345,10 +284,7 @@ public final class CloudConfiguration implements Serializable {
         }
         final Object this$ethernetAddress = this.getEthernetAddress();
         final Object other$ethernetAddress = other.getEthernetAddress();
-        if (!Objects.equals(this$ethernetAddress, other$ethernetAddress)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this$ethernetAddress, other$ethernetAddress);
     }
 
     public int hashCode() {
@@ -363,7 +299,7 @@ public final class CloudConfiguration implements Serializable {
         final Object $startIP = this.getStartIP();
         result = result * PRIME + ($startIP == null ? 43 : $startIP.hashCode());
         result = result * PRIME + this.getMemory();
-        result = result * PRIME + this.getControllerPort();
+        result = result * PRIME + this.controllerPort;
         result = result * PRIME + this.getControllerWebPort();
         result = result * PRIME + this.getLogSize();
         final long $cpu = Double.doubleToLongBits(this.getCpu());
@@ -377,7 +313,7 @@ public final class CloudConfiguration implements Serializable {
         return "CloudConfiguration(controllerKey=" + this.getControllerKey() + ", controllerIP="
             + this.getControllerIP() + ", clientName=" + this.getClientName() + ", startIP=" + this
             .getStartIP() + ", memory=" + this.getMemory() + ", controllerPort=" + this
-            .getControllerPort() + ", controllerWebPort=" + this.getControllerWebPort()
+            .controllerPort + ", controllerWebPort=" + this.getControllerWebPort()
             + ", logSize=" + this.getLogSize() + ", cpu=" + this.getCpu() + ", ethernetAddress="
             + this.getEthernetAddress() + ")";
     }
