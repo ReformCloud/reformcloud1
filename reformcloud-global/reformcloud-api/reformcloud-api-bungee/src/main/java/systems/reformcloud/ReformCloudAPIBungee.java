@@ -100,6 +100,7 @@ import systems.reformcloud.network.packets.PacketOutUpdateProxyGroup;
 import systems.reformcloud.network.packets.PacketOutUpdateProxyInfo;
 import systems.reformcloud.network.packets.PacketOutUpdateServerGroup;
 import systems.reformcloud.network.packets.PacketOutUpdateServerInfo;
+import systems.reformcloud.network.query.in.PacketInQueryGetOnlinePlayers;
 import systems.reformcloud.network.query.in.PacketInQueryGetRuntimeInformation;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
@@ -202,6 +203,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             .registerHandler("UpdatePermissionGroup", new PacketInUpdatePermissionGroup())
             .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
             .registerQueryHandler("GetRuntimeInformation", new PacketInQueryGetRuntimeInformation())
+            .registerQueryHandler("GetOnlinePlayers", new PacketInQueryGetOnlinePlayers())
             .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
         this.nettySocketClient = new NettySocketClient();

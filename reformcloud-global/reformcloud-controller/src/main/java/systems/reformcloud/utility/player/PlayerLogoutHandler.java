@@ -4,6 +4,7 @@
 
 package systems.reformcloud.utility.player;
 
+import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,7 +15,10 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.event.events.PlayerDisconnectsEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
+import systems.reformcloud.network.packet.PacketFuture;
+import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayers;
 import systems.reformcloud.utility.annotiations.InternalClass;
+import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 /**
  * This class should fix the problem that when the player logout event is not
@@ -43,19 +47,24 @@ public final class PlayerLogoutHandler extends Thread implements Serializable {
         while (!Thread.currentThread().isInterrupted()) {
             ReformCloudController.getInstance().getAllRegisteredProxies().forEach(proxyInfo -> {
                 List<UUID> forRemoval = new ArrayList<>();
-                proxyInfo.getOnlinePlayers().forEach(uuid -> {
-                    if (!findPlayerOnServer(uuid)) {
-                        forRemoval.add(uuid);
-                        proxyInfo.setOnline(proxyInfo.getOnline() - 1);
-                        proxyInfos.add(proxyInfo);
-                        Runnable patch = () -> {
-                            ReformCloudController.getInstance().getPlayerDatabase().logoutPlayer(uuid);
-                            ReformCloudController.getInstance().getUuid().remove(uuid);
-                            ReformCloudController.getInstance().getEventManager().fire(new PlayerDisconnectsEvent(uuid));
-                        };
-                        patchAsync(patch);
-                    }
-                });
+                List<UUID> currentOnline = this.getPlayersOfProxy(proxyInfo);
+                if (currentOnline != null) {
+                    proxyInfo.getOnlinePlayers().forEach(uuid -> {
+                        if (!currentOnline.contains(uuid)) {
+                            forRemoval.add(uuid);
+                            proxyInfo.setOnline(proxyInfo.getOnline() - 1);
+                            proxyInfos.add(proxyInfo);
+                            Runnable patch = () -> {
+                                ReformCloudController.getInstance().getPlayerDatabase()
+                                    .logoutPlayer(uuid);
+                                ReformCloudController.getInstance().getUuid().remove(uuid);
+                                ReformCloudController.getInstance().getEventManager()
+                                    .fire(new PlayerDisconnectsEvent(uuid));
+                            };
+                            patchAsync(patch);
+                        }
+                    });
+                }
 
                 forRemoval.forEach(e -> proxyInfo.getOnlinePlayers().remove(e));
             });
@@ -73,11 +82,15 @@ public final class PlayerLogoutHandler extends Thread implements Serializable {
         }
     }
 
-    private boolean findPlayerOnServer(UUID player) {
-        return ReformCloudController.getInstance()
-            .getAllRegisteredServers()
-            .stream()
-            .anyMatch(serverInfo -> serverInfo.getOnlinePlayers().contains(player));
+    @MayNotBePresent
+    private List<UUID> getPlayersOfProxy(ProxyInfo proxyInfo) {
+        PacketFuture packetFuture = ReformCloudController.getInstance().getChannelHandler()
+            .sendPacketQuerySync(proxyInfo.getCloudProcess().getName(),
+                "ReformCloudController", new PacketOutQueryGetOnlinePlayers());
+        return packetFuture == null ? null : packetFuture.sendOnCurrentThread()
+            .syncUninterruptedly().getConfiguration()
+            .getValue("players", new TypeToken<List<UUID>>() {
+            });
     }
 
     private void patchAsync(Runnable runnable) {

@@ -102,6 +102,7 @@ import systems.reformcloud.network.packets.PacketOutUpdateProxyGroup;
 import systems.reformcloud.network.packets.PacketOutUpdateProxyInfo;
 import systems.reformcloud.network.packets.PacketOutUpdateServerGroup;
 import systems.reformcloud.network.packets.PacketOutUpdateServerInfo;
+import systems.reformcloud.network.query.in.PacketInQueryGetOnlinePlayers;
 import systems.reformcloud.network.query.in.PacketInQueryGetRuntimeInformation;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayer;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
@@ -205,6 +206,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
             .registerHandler("UpdateIngameCommands", new PacketInUpdateIngameCommands())
             .registerHandler("UpdatePermissionHolder", new PacketInUpdatePermissionHolder())
             .registerQueryHandler("GetRuntimeInformation", new PacketInQueryGetRuntimeInformation())
+            .registerQueryHandler("GetOnlinePlayers", new PacketInQueryGetOnlinePlayers())
             .registerHandler("UpdatePermissionGroup", new PacketInUpdatePermissionGroup())
             .registerHandler("ServerInfoUpdate", new PacketInServerInfoUpdate());
 
