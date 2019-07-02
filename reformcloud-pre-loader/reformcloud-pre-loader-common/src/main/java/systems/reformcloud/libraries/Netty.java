@@ -4,9 +4,8 @@
 
 package systems.reformcloud.libraries;
 
-import systems.reformcloud.utility.Dependency;
-
 import java.io.Serializable;
+import systems.reformcloud.utility.Dependency;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.01.2019
@@ -32,6 +31,6 @@ public final class Netty extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "4.1.36.Final";
+        return "4.1.37.Final";
     }
 }
