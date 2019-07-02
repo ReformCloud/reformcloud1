@@ -10,6 +10,9 @@ import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.meta.web.WebUser;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -104,6 +107,33 @@ public final class CommandWebPermissions extends Command implements Serializable
         }
     }
 
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if (args.length == 0) {
+            out.addAll(asList("ADD", "REMOVE", "LIST"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("LIST")) {
+                out.addAll(users());
+            }
+        }
+
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("REMOVE")) {
+                out.addAll(userGetPermissions(args[1]));
+            }
+        }
+
+        if (args.length == 3) {
+            out.addAll(asList("TRUE", "FALSE"));
+        }
+
+        return out;
+    }
+
     private WebUser getUser(final String name) {
         return ReformCloudController.getInstance()
             .getCloudConfiguration()
@@ -113,4 +143,22 @@ public final class CommandWebPermissions extends Command implements Serializable
             .findFirst()
             .orElse(null);
     }
+
+    private List<String> users() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getCloudConfiguration()
+            .getWebUsers()
+            .forEach(user -> out.add(user.getUserName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> userGetPermissions(String name) {
+        List<String> out = new LinkedList<>();
+        this.getUser(name).getPermissions()
+            .forEach((permission, value) -> out.add(permission));
+        Collections.sort(out);
+        return out;
+    }
+
 }

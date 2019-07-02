@@ -16,6 +16,9 @@ import systems.reformcloud.utility.screen.defaults.DefaultScreenHandler;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 05.02.2019
@@ -240,4 +243,63 @@ public final class CommandScreen extends Command implements Serializable {
             }
         }
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if(args.length == 0) {
+            out.addAll(asList("SEVRER", "PROXY", "CLIENT", "EXECUTE",
+                "SWITCH", "LEAVE"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("SERVER")) {
+                out.addAll(servers());
+            } else if (args[0].equalsIgnoreCase("PROXY")) {
+                out.addAll(proxies());
+            } else if (args[0].equalsIgnoreCase("CLIENT")) {
+                out.addAll(clients());
+            } else if (args[0].equalsIgnoreCase("SWITCH")) {
+                out.addAll(asList("SEVRER", "PROXY", "CLIENT"));
+            }
+        }
+
+        if (args.length == 2) {
+            if (args[1].equalsIgnoreCase("SERVER")) {
+                out.addAll(servers());
+            } else if (args[1].equalsIgnoreCase("PROXY")) {
+                out.addAll(proxies());
+            } else if (args[1].equalsIgnoreCase("CLIENT")) {
+                out.addAll(clients());
+            }
+        }
+
+        return out;
+    }
+
+    private List<String> servers() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredServers()
+            .forEach(servers -> out.add(servers.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxies() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(proxies -> out.add(proxies.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clients() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllConnectedClients()
+            .forEach(client -> out.add(client.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
 }

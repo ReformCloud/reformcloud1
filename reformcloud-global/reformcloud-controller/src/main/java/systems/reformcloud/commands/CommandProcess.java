@@ -20,9 +20,7 @@ import systems.reformcloud.network.out.*;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -634,4 +632,112 @@ public final class CommandProcess extends Command implements Serializable {
             }
         }
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if(args.length == 0) {
+            out.addAll(asList("STOP", "RESTART", "STOPGROUP", "START",
+                "LIST", "QUEUE"));
+        }
+
+        if(args.length == 1) {
+            if (args[0].equalsIgnoreCase("START")) {
+                out.addAll(serverGroups());
+                out.addAll(proxyGroups());
+            } else if (args[0].equalsIgnoreCase("STOP")) {
+                out.addAll(servers());
+                out.addAll(proxies());
+                out.addAll(asList("--all", "--empty"));
+            } else if (args[0].equalsIgnoreCase("STOPGROUP")) {
+                out.addAll(serverGroups());
+                out.addAll(proxyGroups());
+            } else if (args[0].equalsIgnoreCase("RESTART")) {
+                out.addAll(servers());
+                out.addAll(proxies());
+            }  else if (args[0].equalsIgnoreCase("LIST")) {
+                out.addAll(asList("SERVER", "PROXY"));
+            } else if (args[0].equalsIgnoreCase("QUEUE")) {
+                out.addAll(clients());
+            }
+        }
+
+        if(args.length == 2) {
+            if (args[0].equalsIgnoreCase("QUEUE")) {
+                out.addAll(asList("list", "remove"));
+            } else if (args[0].equalsIgnoreCase("LIST")) {
+                if (args[1].equalsIgnoreCase("SERVER")) {
+                    out.addAll(serverGroups());
+                } else if (args[1].equalsIgnoreCase("PROXY")) {
+                    out.addAll(proxyGroups());
+                }
+            }
+        }
+
+        if(args.length == 3) {
+            if (args[3].equalsIgnoreCase("remove")) {
+                out.addAll(asList("SERVER", "PROXY"));
+            }
+        }
+
+        if(args.length == 4) {
+            if (args[3].equalsIgnoreCase("SERVER")) {
+                out.addAll(servers());
+            } else if (args[3].equalsIgnoreCase("PROXY")) {
+                out.addAll(proxies());
+            }
+        }
+
+        return out;
+    }
+
+    private List<String> serverGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllServerGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxyGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllProxyGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clients() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllConnectedClients()
+            .forEach(client -> out.add(client.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> servers() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredServers()
+            .forEach(servers -> out.add(servers.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxies() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(proxies -> out.add(proxies.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clientSort(String name) {
+        List<String> out = new LinkedList<>();
+        out.addAll(clients());
+        out.remove(name);
+        Collections.sort(out);
+        return out;
+    }
+
 }

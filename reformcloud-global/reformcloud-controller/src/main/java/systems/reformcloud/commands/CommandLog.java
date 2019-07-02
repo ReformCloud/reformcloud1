@@ -19,6 +19,9 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.01.2019
@@ -124,4 +127,50 @@ public final class CommandLog extends Command implements Serializable {
             }
         }
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if (args.length == 0) {
+            out.addAll(asList("SERVER", "PROXY", "CLIENT", "CONTROLLER"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("server")) {
+                out.addAll(servers());
+            } else if (args[0].equalsIgnoreCase("proxy")) {
+                out.addAll(proxies());
+            } else if (args[0].equalsIgnoreCase("client")) {
+                out.addAll(clients());
+            }
+        }
+
+        return out;
+    }
+
+    private List<String> servers() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredServers()
+            .forEach(servers -> out.add(servers.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxies() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(proxies -> out.add(proxies.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clients() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllConnectedClients()
+            .forEach(client -> out.add(client.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
 }

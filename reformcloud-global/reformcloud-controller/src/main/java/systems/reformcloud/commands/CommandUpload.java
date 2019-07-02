@@ -18,6 +18,9 @@ import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 08.03.2019
@@ -304,6 +307,30 @@ public final class CommandUpload extends Command implements Serializable {
         commandSender.sendMessage("upload <CONTROLLERADDON, CLIENTADDON> NAME URL");
     }
 
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if(args.length == 0) {
+            out.addAll(asList("PLUGIN", "CONTROLLER", "CLIENTS",
+                "CONTROLLERADDON", "CLIENTADDON"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("PLUGIN")) {
+                out.addAll(groups());
+            }
+        }
+
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("PLUGIN")) {
+                out.addAll(templates(args[1]));
+            }
+        }
+
+        return out;
+    }
+
     private boolean isURLValid(String url) {
         try {
             URLConnection urlConnection = new URL(url).openConnection();
@@ -318,4 +345,35 @@ public final class CommandUpload extends Command implements Serializable {
             return false;
         }
     }
+
+    private List<String> groups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllProxyGroups()
+            .forEach(group -> out.add(group.getName()));
+        ReformCloudController.getInstance().getAllServerGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clients() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllConnectedClients()
+            .forEach(client -> out.add(client.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> templates(String name) {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getServerGroup(name)
+            .getTemplates()
+            .forEach(template -> out.add(template.getName()));
+        ReformCloudController.getInstance().getProxyGroup(name)
+            .getTemplates()
+            .forEach(template -> out.add(template.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
 }

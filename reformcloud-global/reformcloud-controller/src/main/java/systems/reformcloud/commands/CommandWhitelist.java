@@ -5,6 +5,7 @@
 package systems.reformcloud.commands;
 
 import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.language.utility.Language;
@@ -12,6 +13,9 @@ import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.utility.uuid.UUIDConverter;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -154,6 +158,36 @@ public final class CommandWhitelist extends Command implements Serializable {
         }
     }
 
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if(args.length == 0) {
+            out.addAll(asList("ADD", "REMOVE", "LIST"));
+        }
+
+        if(args.length == 1) {
+            if (args[0].equalsIgnoreCase("ADD")) {
+                out.addAll(proxyGroups());
+                out.addAll(asList("--all"));
+            } else if (args[0].equalsIgnoreCase("REMOVE")) {
+                out.addAll(proxyGroups());
+                out.addAll(asList("--all"));
+            }
+        }
+
+        if(args.length == 2) {
+            if (args[0].equalsIgnoreCase("ADD")) {
+                out.addAll(proxyGroups());
+            } else if (args[0].equalsIgnoreCase("REMOVE")) {
+                out.addAll(proxyGroups());
+            }
+        }
+
+        return out;
+    }
+
+
     private UUID getUuidFromString(String in) {
         try {
             UUID uuidInput;
@@ -168,4 +202,13 @@ public final class CommandWhitelist extends Command implements Serializable {
             return UUIDConverter.getUUIDFromName(in);
         }
     }
+
+    private List<String> proxyGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllProxyGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
 }

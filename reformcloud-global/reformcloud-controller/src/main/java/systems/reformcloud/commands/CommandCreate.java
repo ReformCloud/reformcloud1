@@ -25,7 +25,10 @@ import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -230,4 +233,33 @@ public final class CommandCreate extends Command implements Serializable {
                 commandSender.sendMessage("create TEMPLATE <group> <name>");
         }
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if (args.length == 0) {
+            out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT", "WEBUSER", "TEMPLATE"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("TEMPLATE")) {
+                out.addAll(groups());
+            }
+        }
+
+        return out;
+    }
+
+    private List<String> groups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllServerGroups()
+            .forEach(group -> out.add(group.getName()));
+        ReformCloudController.getInstance().getAllProxyGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+
 }

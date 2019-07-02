@@ -10,6 +10,8 @@ import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.utility.files.DownloadManager;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 06.04.2019
@@ -116,6 +118,19 @@ public final class CommandInstall extends Command implements Serializable {
         }
 
         commandSender.sendMessage(
-            "install <signs, discord, permissions, proxy, parameters, autoicon, properties, mobs, cloudflare, backup>");
+            "install <autoicon, backup, cloudflare, discord, mobs, parameters, permissions, proxy, properties, signs>");
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if(args.length == 0) {
+            out.addAll(asList("AUTOICON", "BACKUP", "CLOUDFLARE", "DISCORD", "MOBS", "PARAMETERS", "PERMISSIONS",
+                "PROXY", "PROPERTIES", "SIGNS"));
+        }
+
+        return out;
+    }
+
 }

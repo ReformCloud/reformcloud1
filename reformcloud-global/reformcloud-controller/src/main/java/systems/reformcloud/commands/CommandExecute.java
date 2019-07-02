@@ -11,6 +11,9 @@ import systems.reformcloud.network.out.PacketOutExecuteCommand;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 08.12.2018
@@ -120,4 +123,31 @@ public final class CommandExecute extends Command implements Serializable {
             }
         }
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if(args.length == 0) {
+            out.addAll(asList("SERVER", "PROXY"));
+        }
+
+        if(args.length == 1) {
+            out.addAll(servers());
+        }
+
+        return out;
+    }
+
+    private List<String> servers() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredServers()
+            .forEach(servers -> out.add(servers.getCloudProcess().getName()));
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(proxies -> out.add(proxies.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+
 }
