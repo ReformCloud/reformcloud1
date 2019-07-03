@@ -6,12 +6,12 @@ package systems.reformcloud.commands;
 
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import net.kyori.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.optional.qual.MaybePresent;
@@ -200,7 +200,7 @@ public final class CommandReformCloud implements Command {
                         final ClientInfo clientInfo = ReformCloudAPIVelocity.getInstance().getConnectedClient(e.getName());
                         commandSource.sendMessage(TextComponent.of(
                             "    - §e" + e.getName() + "§7 | Host: §e" + e.getIp() + "§7 | Memory-Usage: §e"
-                                + clientInfo.getUsedMemory() + "MB§7/§e" + clientInfo.getMaxMemory()
+                                + getMemoryOf(e.getName()) + "MB§7/§e" + clientInfo.getMaxMemory()
                                 + "MB§7 | Processors: §e" + clientInfo.getCpuCoresSystem()
                                 + "§7 | CPU-Usage: §e" + new DecimalFormat("##.###").format(clientInfo.getCpuUsage())
                                 + "%§7 | Started-Processes: §e" + (clientInfo.getStartedProxies().size()
@@ -452,5 +452,19 @@ public final class CommandReformCloud implements Command {
         commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud list <server/proxy> <group-name> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud reload \n"));
         commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud version"));
+    }
+
+    private long getMemoryOf(String client) {
+        AtomicLong atomicLong = new AtomicLong(0);
+        ReformCloudAPIVelocity.getInstance().getAllRegisteredProxies()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient().equals(client))
+            .forEach(e -> atomicLong.addAndGet(e.getMaxMemory()));
+        ReformCloudAPIVelocity.getInstance().getAllRegisteredServers()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient().equals(client))
+            .forEach(e -> atomicLong.addAndGet(e.getMaxMemory()));
+
+        return atomicLong.get();
     }
 }

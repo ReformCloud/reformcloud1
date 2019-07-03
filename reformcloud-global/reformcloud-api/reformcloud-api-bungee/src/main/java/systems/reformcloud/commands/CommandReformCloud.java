@@ -6,8 +6,12 @@ package systems.reformcloud.commands;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
@@ -211,7 +215,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
                         final ClientInfo clientInfo = ReformCloudAPIBungee.getInstance().getConnectedClient(e.getName());
                         commandSender.sendMessage(TextComponent.fromLegacyText(
                             "    - §e" + e.getName() + "§7 | Host: §e" + e.getIp() + "§7 | Memory-Usage: §e"
-                                + clientInfo.getUsedMemory() + "MB§7/§e" + clientInfo.getMaxMemory()
+                                + getMemoryOf(e.getName()) + "MB§7/§e" + clientInfo.getMaxMemory()
                                 + "MB§7 | Processors: §e" + clientInfo.getCpuCoresSystem()
                                 + "§7 | CPU-Usage: §e" + new DecimalFormat("##.###").format(clientInfo.getCpuUsage())
                                 + "%§7 | Started-Processes: §e" + (clientInfo.getStartedProxies().size()
@@ -467,5 +471,19 @@ public final class CommandReformCloud extends Command implements Serializable, T
             new TextComponent(TextComponent.fromLegacyText(
                 prefix + "§7/reformcloud version"))
         );
+    }
+
+    private long getMemoryOf(String client) {
+        AtomicLong atomicLong = new AtomicLong(0);
+        ReformCloudAPIBungee.getInstance().getAllRegisteredProxies()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient().equals(client))
+            .forEach(e -> atomicLong.addAndGet(e.getMaxMemory()));
+        ReformCloudAPIBungee.getInstance().getAllRegisteredServers()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient().equals(client))
+            .forEach(e -> atomicLong.addAndGet(e.getMaxMemory()));
+
+        return atomicLong.get();
     }
 }
