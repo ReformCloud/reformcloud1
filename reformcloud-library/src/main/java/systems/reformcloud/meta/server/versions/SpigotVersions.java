@@ -70,7 +70,7 @@ public enum SpigotVersions implements Serializable {
     SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2", 
         "https://mcmirror.io/grab/Spigot/Spigot-1.14.2-baafee9-20190602-0956.jar"),
     SPIGOT_1_14_3("Spigot 1.14.3", "1.14.3", 
-        "https://mcmirror.io/grab/Spigot/Spigot-1.14.3-595711b-20190625-1057.jar"),    
+        "https://serverjars.com/spigot/spigot-1.14.3.jar"),    
 
     /**
      * Paper Versions
@@ -102,7 +102,7 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_14_2("Paper 1.14.2", "1.14.2", 
         "https://mcmirror.io/grab/Paper/Paper-1.14.2-bf1d217-20190624-0232.jar"),
     PAPER_1_14_3("Paper 1.14.3", "1.14.3", 
-        "https://mcmirror.io/grab/Paper/Paper-1.14.3-3042442-20190625-1355.jar"),    
+        "https://serverjars.com/paper/paper-1.14.3.jar"),    
 
     /**
      * SpongeVanilla Versions
