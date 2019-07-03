@@ -4,16 +4,15 @@
 
 package systems.reformcloud.commands;
 
-import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.utility.Command;
-import systems.reformcloud.commands.utility.CommandSender;
-import systems.reformcloud.meta.web.WebUser;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
+import systems.reformcloud.meta.web.WebUser;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.02.2019
@@ -115,16 +114,12 @@ public final class CommandWebPermissions extends Command implements Serializable
             out.addAll(asList("ADD", "REMOVE", "LIST"));
         }
 
-        if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("LIST")) {
-                out.addAll(users());
-            }
+        if (args.length == 1 && args[0].equalsIgnoreCase("LIST")) {
+            out.addAll(users());
         }
 
-        if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("REMOVE")) {
-                out.addAll(userGetPermissions(args[1]));
-            }
+        if (args.length == 2 && args[0].equalsIgnoreCase("REMOVE")) {
+            out.addAll(userGetPermissions(args[1]));
         }
 
         if (args.length == 3) {

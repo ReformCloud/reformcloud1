@@ -4,6 +4,11 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
@@ -23,12 +28,6 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.defaults.DefaultGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -242,10 +241,8 @@ public final class CommandCreate extends Command implements Serializable {
             out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT", "WEBUSER", "TEMPLATE"));
         }
 
-        if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("TEMPLATE")) {
-                out.addAll(groups());
-            }
+        if (args.length == 1 && args[0].equalsIgnoreCase("TEMPLATE")) {
+            out.addAll(groups());
         }
 
         return out;

@@ -4,6 +4,11 @@
 
 package systems.reformcloud.commands;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.utility.Command;
@@ -14,12 +19,6 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.out.PacketOutDeleteTemplate;
 import systems.reformcloud.utility.StringUtil;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -209,7 +208,7 @@ public final class CommandDelete extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT", "WEBUSER"));
         }
 
@@ -246,7 +245,7 @@ public final class CommandDelete extends Command implements Serializable {
 
     private List<String> clients() {
         List<String> out = new LinkedList<>();
-        ReformCloudController.getInstance().getAllConnectedClients()
+        ReformCloudController.getInstance().getAllClients()
             .forEach(client -> out.add(client.getName()));
         Collections.sort(out);
         return out;

@@ -4,6 +4,14 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
@@ -16,12 +24,12 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.network.out.*;
-
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import systems.reformcloud.network.out.PacketOutGetClientProcessQueue;
+import systems.reformcloud.network.out.PacketOutRemoveProxyQueueProcess;
+import systems.reformcloud.network.out.PacketOutRemoveServerQueueProcess;
+import systems.reformcloud.network.out.PacketOutStartGameServer;
+import systems.reformcloud.network.out.PacketOutStartProxy;
+import systems.reformcloud.network.out.PacketOutStopProcess;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -637,12 +645,12 @@ public final class CommandProcess extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             out.addAll(asList("STOP", "RESTART", "STOPGROUP", "START",
                 "LIST", "QUEUE"));
         }
 
-        if(args.length == 1) {
+        if (args.length == 1) {
             if (args[0].equalsIgnoreCase("START")) {
                 out.addAll(serverGroups());
                 out.addAll(proxyGroups());
@@ -656,14 +664,14 @@ public final class CommandProcess extends Command implements Serializable {
             } else if (args[0].equalsIgnoreCase("RESTART")) {
                 out.addAll(servers());
                 out.addAll(proxies());
-            }  else if (args[0].equalsIgnoreCase("LIST")) {
+            } else if (args[0].equalsIgnoreCase("LIST")) {
                 out.addAll(asList("SERVER", "PROXY"));
             } else if (args[0].equalsIgnoreCase("QUEUE")) {
                 out.addAll(clients());
             }
         }
 
-        if(args.length == 2) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("QUEUE")) {
                 out.addAll(asList("list", "remove"));
             } else if (args[0].equalsIgnoreCase("LIST")) {
@@ -675,13 +683,13 @@ public final class CommandProcess extends Command implements Serializable {
             }
         }
 
-        if(args.length == 3) {
-            if (args[3].equalsIgnoreCase("remove")) {
+        if (args.length == 3) {
+            if (args[2].equalsIgnoreCase("remove")) {
                 out.addAll(asList("SERVER", "PROXY"));
             }
         }
 
-        if(args.length == 4) {
+        if (args.length == 4) {
             if (args[3].equalsIgnoreCase("SERVER")) {
                 out.addAll(servers());
             } else if (args[3].equalsIgnoreCase("PROXY")) {
@@ -731,13 +739,4 @@ public final class CommandProcess extends Command implements Serializable {
         Collections.sort(out);
         return out;
     }
-
-    private List<String> clientSort(String name) {
-        List<String> out = new LinkedList<>();
-        out.addAll(clients());
-        out.remove(name);
-        Collections.sort(out);
-        return out;
-    }
-
 }

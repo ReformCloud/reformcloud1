@@ -4,16 +4,6 @@
 
 package systems.reformcloud.commands;
 
-import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.commands.utility.Command;
-import systems.reformcloud.commands.utility.CommandSender;
-import systems.reformcloud.meta.client.Client;
-import systems.reformcloud.meta.proxy.ProxyGroup;
-import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.network.out.*;
-import systems.reformcloud.utility.files.DownloadManager;
-import systems.reformcloud.utility.files.FileUtils;
-
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,6 +11,20 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
+import systems.reformcloud.meta.client.Client;
+import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.server.ServerGroup;
+import systems.reformcloud.network.out.PacketOutUpdateClientAddon;
+import systems.reformcloud.network.out.PacketOutUpdateClientFromURL;
+import systems.reformcloud.network.out.PacketOutUpdateProxyGroupPlugin;
+import systems.reformcloud.network.out.PacketOutUpdateProxyGroupPluginTemplate;
+import systems.reformcloud.network.out.PacketOutUpdateServerGroupPlugin;
+import systems.reformcloud.network.out.PacketOutUpdateServerGroupPluginTemplate;
+import systems.reformcloud.utility.files.DownloadManager;
+import systems.reformcloud.utility.files.FileUtils;
 
 /**
  * @author _Klaro | Pasqual K. / created on 08.03.2019
@@ -311,7 +315,7 @@ public final class CommandUpload extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             out.addAll(asList("PLUGIN", "CONTROLLER", "CLIENTS",
                 "CONTROLLERADDON", "CLIENTADDON"));
         }

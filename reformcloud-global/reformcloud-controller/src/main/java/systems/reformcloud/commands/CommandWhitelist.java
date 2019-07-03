@@ -4,19 +4,17 @@
 
 package systems.reformcloud.commands;
 
-import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.utility.Command;
-import systems.reformcloud.commands.utility.CommandSender;
-import systems.reformcloud.language.utility.Language;
-import systems.reformcloud.network.out.PacketOutUpdateAll;
-import systems.reformcloud.utility.uuid.UUIDConverter;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.commands.utility.CommandSender;
+import systems.reformcloud.language.utility.Language;
+import systems.reformcloud.network.out.PacketOutUpdateAll;
+import systems.reformcloud.utility.uuid.UUIDConverter;
 
 /**
  * @author _Klaro | Pasqual K. / created on 17.12.2018
@@ -162,7 +160,7 @@ public final class CommandWhitelist extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if(args.length == 0) {
+        if (args.length == 0) {
             out.addAll(asList("ADD", "REMOVE", "LIST"));
         }
 

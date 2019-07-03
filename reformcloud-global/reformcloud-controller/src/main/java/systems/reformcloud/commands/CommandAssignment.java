@@ -907,7 +907,7 @@ public final class CommandAssignment extends Command implements Serializable {
         }
 
         if (args.length == 2) {
-            if(args[0].equalsIgnoreCase("servergroup")) {
+            if (args[0].equalsIgnoreCase("servergroup")) {
                 out.addAll(asList("permission", "clients", "templates",
                     "memory", "maxonline", "minonline", "maxplayers", "startport",
                     "maintenance", "savelogs", "servermodetype", "version"));
