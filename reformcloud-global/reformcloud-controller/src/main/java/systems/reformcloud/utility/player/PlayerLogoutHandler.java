@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.event.events.PlayerDisconnectsEvent;
@@ -51,6 +52,8 @@ public final class PlayerLogoutHandler extends Thread implements Serializable {
                 if (currentOnline != null) {
                     proxyInfo.getOnlinePlayers().forEach(uuid -> {
                         if (!currentOnline.contains(uuid)) {
+                            ReformCloudController.getInstance().getColouredConsoleProvider()
+                                .serve().accept(uuid.toString());
                             forRemoval.add(uuid);
                             proxyInfo.setOnline(proxyInfo.getOnline() - 1);
                             proxyInfos.add(proxyInfo);
@@ -78,7 +81,7 @@ public final class PlayerLogoutHandler extends Thread implements Serializable {
                 proxyInfos.clear();
             }
 
-            ReformCloudLibraryService.sleep(900);
+            ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 30);
         }
     }
 
