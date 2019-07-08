@@ -22,6 +22,7 @@ import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
@@ -67,17 +68,35 @@ public final class CommandReformCloud implements Command {
         }
 
         if (strings[0].equalsIgnoreCase("maintenance")) {
-            ProxyGroup proxyGroup =
-                ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup();
-            ReformCloudAPIVelocity.getInstance().dispatchConsoleCommand(
-                "asg proxygroup " + proxyGroup.getName() +
-                    " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
-                    "true --update")
-            );
-            commandSource.sendMessage(TextComponent.of(
-                ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
-                    .getMessage("internal-api-bungee-command-send-controller")
-            ));
+            if (strings.length != 2) {
+                ProxyGroup proxyGroup =
+                    ReformCloudAPIVelocity.getInstance().getProxyInfo().getProxyGroup();
+                ReformCloudAPIVelocity.getInstance().dispatchConsoleCommand(
+                    "asg proxygroup " + proxyGroup.getName() +
+                        " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
+                        "true --update")
+                );
+                commandSource.sendMessage(TextComponent.of(
+                    ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                        .getMessage("internal-api-bungee-command-send-controller")
+                ));
+                return;
+            }
+            ServerGroup serverGroup =
+                ReformCloudAPIVelocity.getInstance().getServerGroup(strings[1]);
+            if (serverGroup != null) {
+                ReformCloudAPIVelocity.getInstance().dispatchConsoleCommand(
+                    "asg servergroup " + serverGroup.getName() +
+                        " maintenance " + (serverGroup.isMaintenance() ? "false" : "true") +
+                        " --update"
+                );
+                commandSource.sendMessage(TextComponent.of(
+                    ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork()
+                        .getMessage("internal-api-bungee-command-send-controller")
+                ));
+                return;
+            }
+            commandSource.sendMessage(TextComponent.of(prefix + "§cThe servergroup doesn't exists"));
             return;
         }
 
@@ -327,6 +346,10 @@ public final class CommandReformCloud implements Command {
             return new LinkedList<>();
         }
 
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("maintenance")) {
+            return registeredServerGroups();
+        }
+
         if (strings.length == 2 && strings[0].equalsIgnoreCase("copy")) {
             return registered();
         }
@@ -445,7 +468,7 @@ public final class CommandReformCloud implements Command {
 
     private void sendHelp(CommandSource commandSource, String prefix) {
         commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud copy <name> <file/dir> \n"));
-        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud maintenance \n"));
+        commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud maintenance <serverGroup> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud execute <server/proxy> <name> <command> \n"));
         commandSource.sendMessage(TextComponent.of(prefix + "§7/reformcloud process <start/stop> <group/name> \n"));
