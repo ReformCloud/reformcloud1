@@ -32,28 +32,28 @@ public final class CommandInfo extends Command implements Serializable {
         final Stats stats = ReformCloudController.getInstance()
             .getStatisticsProvider().getStats();
 
-        commandSender.sendMessage("ReformCloud version " + StringUtil.REFORM_VERSION);
-        commandSender.sendMessage("Main developer: _Klaro");
-        commandSender.sendMessage("All startup: " + stats.getStartup());
-        commandSender.sendMessage("Root startup: " + stats.getRootStartup());
-        commandSender.sendMessage("First startup: " + stats.getFirstStartup());
-        commandSender.sendMessage("Last startup: " + stats.getLastStartup());
+        commandSender.sendMessage("ReformCloud version §e" + StringUtil.REFORM_VERSION);
+        commandSender.sendMessage("Main developer: §e_Klaro");
+        commandSender.sendMessage("All startup: §e" + stats.getStartup());
+        commandSender.sendMessage("Root startup: §e" + stats.getRootStartup());
+        commandSender.sendMessage("First startup: §e" + stats.getFirstStartup());
+        commandSender.sendMessage("Last startup: §e" + stats.getLastStartup());
         commandSender.sendMessage(
-            "Last shutdown: " + (stats.hasShutdown() ? stats.getLastShutdown() : "never"));
-        commandSender.sendMessage("Player login: " + stats.getLogin());
-        commandSender.sendMessage("Executed console command: " + stats.getConsoleCommands());
-        commandSender.sendMessage("Executed ingame command: " + stats.getIngameCommands());
-        commandSender.sendMessage("JVM start time: " +
+            "Last shutdown: §e" + (stats.hasShutdown() ? stats.getLastShutdown() : "never"));
+        commandSender.sendMessage("Player login: §e" + stats.getLogin());
+        commandSender.sendMessage("Executed console command: §e" + stats.getConsoleCommands());
+        commandSender.sendMessage("Executed ingame command: §e" + stats.getIngameCommands());
+        commandSender.sendMessage("JVM start time: §e" +
             ReformCloudController.getInstance().getColouredConsoleProvider().getDateFormat()
                 .format(ReformCloudLibraryService.systemStartTime()));
-        commandSender.sendMessage("JVM uptime: " +
+        commandSender.sendMessage("JVM uptime: §e" +
             dataFormat.format(ReformCloudLibraryService.systemUpTime()));
-        commandSender.sendMessage("GameServer online time: " +
+        commandSender.sendMessage("GameServer online time: §e" +
             (stats.getServerOnlineTime() == 0 ? "00:00:00.000"
                 : this.dataFormat.format(stats.getServerOnlineTime())));
-        commandSender.sendMessage("GameServer walked distance: " + stats.getWalkedDistance());
-        commandSender.sendMessage("GameServer placed blocks: " + stats.getBlocksPlaced());
+        commandSender.sendMessage("GameServer walked distance: §e" + stats.getWalkedDistance());
+        commandSender.sendMessage("GameServer placed blocks: §e" + stats.getBlocksPlaced());
         commandSender.sendMessage(
-            "For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
+            "§bFor further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
     }
 }
