@@ -185,6 +185,7 @@ public enum SpigotVersions implements Serializable {
 
             if (!AVAILABLE_VERSIONS.contains(SpigotVersions.version)) {
                 AVAILABLE_VERSIONS.addAll(Arrays.asList(
+                    "1.7.9",
                     "1.7.10",
                     "1.8",
                     "1.8.3",
