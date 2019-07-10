@@ -21,6 +21,7 @@ import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.meta.startup.stages.ProcessStartupStage;
 import systems.reformcloud.network.packets.out.*;
+import systems.reformcloud.player.version.SpigotVersion;
 import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 import systems.reformcloud.template.TemplatePreparer;
@@ -182,8 +183,11 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             FileUtils.createDirectory(Paths.get(path + "/plugins"));
         }
 
+
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
+            || this.getServerStartupInfo().getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.SPONGEVANILLA_1_9_4)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()            
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
