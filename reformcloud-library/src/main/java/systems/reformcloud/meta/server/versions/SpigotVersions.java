@@ -5,11 +5,7 @@
 package systems.reformcloud.meta.server.versions;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -65,9 +61,9 @@ public enum SpigotVersions implements Serializable {
         "https://mcmirror.io/files/Spigot/Spigot-1.13.2-0c02b0c-20190425-0538.jar"),
     SPIGOT_1_14("Spigot 1.14", "1.14",
         "https://mcmirror.io/files/Spigot/Spigot-1.14-8043ebc-20190514-0000.jar"),
-    SPIGOT_1_14_1("Spigot 1.14.1", "1.14.1", 
+    SPIGOT_1_14_1("Spigot 1.14.1", "1.14.1",
         "https://mcmirror.io/grab/Spigot/Spigot-1.14.1-03bd4b0-20190520-1053.jar"),
-    SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2", 
+    SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2",
         "https://mcmirror.io/grab/Spigot/Spigot-1.14.2-baafee9-20190602-0956.jar"),
     SPIGOT_1_14_3("Spigot 1.14.3", "1.14.3",
         "https://mcmirror.io/files/Spigot/Spigot-1.14.3-d05d3c1-20190703-0030.jar"),
@@ -97,9 +93,9 @@ public enum SpigotVersions implements Serializable {
         "https://mcmirror.io/files/Paper/Paper-1.12.2-ac69748-20181207-0309.jar"),
     PAPER_1_13_2("Paper 1.13.2", "1.13.2",
         "https://mcmirror.io/files/Paper/Paper-1.13.2-fb25dc1-20190422-2136.jar"),
-    PAPER_1_14_1("Paper 1.14.1", "1.14.1", 
+    PAPER_1_14_1("Paper 1.14.1", "1.14.1",
         "https://yivesmirror.com/files/paper/Paper-1.14.1-b42.jar"),
-    PAPER_1_14_2("Paper 1.14.2", "1.14.2", 
+    PAPER_1_14_2("Paper 1.14.2", "1.14.2",
         "https://mcmirror.io/grab/Paper/Paper-1.14.2-bf1d217-20190624-0232.jar"),
     PAPER_1_14_3("Paper 1.14.3", "1.14.3",
         "https://mcmirror.io/files/Paper/Paper-1.14.3-1bacdbd-20190702-1850.jar"),
@@ -108,7 +104,9 @@ public enum SpigotVersions implements Serializable {
      * SpongeVanilla Versions
      */
     SPONGEVANILLA_1_8_9("SpongeVanilla 1.8.9", "1.8.9",
-        "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.8.9-4.2.0-BETA-352.jar"),    
+        "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.8.9-4.2.0-BETA-352.jar"),
+    SPONGEVANILLA_1_9_4("SpongeVanilla 1.9.4", "1.9.4",
+        "https://repo.spongepowered.org/maven/org/spongepowered/spongevanilla/1.9.4-5.0.0-BETA-83/spongevanilla-1.9.4-5.0.0-BETA-83.jar"),
     SPONGEVANILLA_1_10_2("SpongeVanilla 1.10.2", "1.10.2",
         "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.10.2-5.2.0-BETA-403.jar"),
     SPONGEVANILLA_1_11_2("SpongeVanilla 1.11.2", "1.11.2",
@@ -121,7 +119,7 @@ public enum SpigotVersions implements Serializable {
     SPONGEFORGE_1_8_9("SpongeForge 1.8.9", "1.8.9",
         "https://dl.reformcloud.systems/forge/sponge-1.8.9.zip"),
     SPONGEFORGE_1_10_2("SpongeForge 1.10.2", "1.10.2",
-        "https://dl.reformcloud.systems/forge/sponge-1.10.2.zip"),    
+        "https://dl.reformcloud.systems/forge/sponge-1.10.2.zip"),
     SPONGEFORGE_1_11_2("SpongeForge 1.11.2", "1.11.2",
         "https://dl.reformcloud.systems/forge/sponge-1.11.2.zip"),
     SPONGEFORGE_1_12_2("SpongeForge 1.12.2", "1.12.2",
@@ -147,11 +145,11 @@ public enum SpigotVersions implements Serializable {
     /**
      * Hose Versions
      */
-    HOSE_1_8_8("Hose 1.8.8", "1.8.8", 
+    HOSE_1_8_8("Hose 1.8.8", "1.8.8",
         "https://archive.mcmirror.io/HOSE/hose-1.8.8.jar"),
-    HOSE_1_9_4("Hose 1.9.4", "1.9.4", 
+    HOSE_1_9_4("Hose 1.9.4", "1.9.4",
         "https://archive.mcmirror.io/HOSE/hose-1.9.4.jar"),
-    HOSE_1_10_2("Hose 1.10.2", "1.10.2", 
+    HOSE_1_10_2("Hose 1.10.2", "1.10.2",
         "https://archive.mcmirror.io/HOSE/hose-1.10.2.jar"),
     /**
      * Akarin Versions
@@ -166,11 +164,11 @@ public enum SpigotVersions implements Serializable {
     GLOWSTONE_1_8_9("Glowstone 1.8.9", "1.8.9",
         "https://archive.mcmirror.io/GlowStone/glowstone-1.8.9-SNAPSHOT.jar"),
     GLOWSTONE_1_9_4("Glowstone 1.9.4", "1.9.4",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.9.4-SNAPSHOT.jar"),    
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.9.4-SNAPSHOT.jar"),
     GLOWSTONE_1_10_2("Glowstone 1.10.2", "1.10.2",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar"), 
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar"),
     GLOWSTONE_1_11_2("Glowstone 1.11.2", "1.11.2",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.11.2-SNAPSHOT.jar"),       
+        "https://archive.mcmirror.io/GlowStone/glowstone-1.11.2-SNAPSHOT.jar"),
     GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2",
         "https://github.com/GlowstoneMC/Glowstone/releases/download/2018.0.1/glowstone.jar");
 
