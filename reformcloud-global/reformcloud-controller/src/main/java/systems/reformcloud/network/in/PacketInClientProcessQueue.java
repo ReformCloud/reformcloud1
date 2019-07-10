@@ -40,7 +40,7 @@ public final class PacketInClientProcessQueue implements Serializable, NetworkIn
             colouredConsoleProvider.info("    There are §c0§r server processes in the §3Client§r queue");
         } else {
             servers.forEach(e -> colouredConsoleProvider.info(
-                "    - " + e.getName() + " | Group: " + e.getServerGroup().getName() + " | UID: "
+                "    - §e" + e.getName() + "§r | Group: §e" + e.getServerGroup().getName() + "§r | UID: §e"
                     + e.getUid()));
         }
 
@@ -51,7 +51,7 @@ public final class PacketInClientProcessQueue implements Serializable, NetworkIn
             colouredConsoleProvider.info("    There are §c0§r proxy processes in the §3Client§r queue");
         } else {
             proxies.forEach(e -> colouredConsoleProvider.info(
-                "    - " + e.getName() + " | Group: " + e.getProxyGroup().getName() + " | UID: " + e
+                "    - §e" + e.getName() + "§r | Group: §e" + e.getProxyGroup().getName() + "§r | UID: §e" + e
                     .getUid()));
         }
     }

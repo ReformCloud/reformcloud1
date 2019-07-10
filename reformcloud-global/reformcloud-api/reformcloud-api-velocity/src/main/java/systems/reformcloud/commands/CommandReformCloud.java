@@ -256,7 +256,7 @@ public final class CommandReformCloud implements Command {
                                 .getServerProcessManager().getAllRegisteredServerProcesses().stream()
                                 .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
                                     .equals(e.getName())).forEach(info -> commandSource.sendMessage(TextComponent.of(
-                                "    - §e" + info.getCloudProcess().getName() + "§7 | State: §e" + info
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getServerGroup().isMaintenance() + "§r | State: §e" + info
                                     .getServerState() + "§7 | Player: §e" + info.getOnline() + "§7/§e" + info
                                     .getServerGroup().getMaxPlayers())));
                             commandSource.sendMessage(TextComponent.of(""));

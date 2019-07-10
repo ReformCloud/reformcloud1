@@ -154,6 +154,7 @@ public final class CommandProcess extends Command implements Serializable {
                         commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
                         commandSender.sendMessage(language.getNo_available_client_for_startup());
+                        break;
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
@@ -183,6 +184,7 @@ public final class CommandProcess extends Command implements Serializable {
                         commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
                         commandSender.sendMessage(language.getNo_available_client_for_startup());
+                        break;
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
@@ -403,7 +405,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     .getServerProcessManager().getAllRegisteredServerProcesses().stream()
                                     .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
                                         .equals(e.getName())).forEach(info -> commandSender.sendMessage(
-                                    "    - §e" + info.getCloudProcess().getName() + "§r | State: §e" + info
+                                    "    - §e" + info.getCloudProcess().getName() + "§r | Maintenance: §e" + info.getServerGroup().isMaintenance() +  "§r | State: §e" + info
                                         .getServerState() + "§r | Player: §e" + info.getOnline() + "§r/§e" + info
                                         .getServerGroup().getMaxPlayers()));
                                 ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();

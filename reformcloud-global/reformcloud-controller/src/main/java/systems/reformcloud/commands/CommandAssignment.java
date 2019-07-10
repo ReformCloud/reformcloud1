@@ -90,6 +90,11 @@ public final class CommandAssignment extends Command implements Serializable {
                         .replace("%value%", args[3])
                         .replace("%group%", serverGroup.getName()));
                 } else {
+                    if (ReformCloudController.getInstance().getClient(args[3]) == null) {
+                        commandSender.sendMessage(language.getClient_not_found());
+                        return;
+                    }
+
                     if (serverGroup.getClients().contains(args[3])) {
                         commandSender
                             .sendMessage(language.getCommand_assignment_value_not_updatable()
@@ -419,6 +424,11 @@ public final class CommandAssignment extends Command implements Serializable {
                         .replace("%value%", args[3])
                         .replace("%group%", proxyGroup.getName()));
                 } else {
+                    if (ReformCloudController.getInstance().getClient(args[3]) == null) {
+                        commandSender.sendMessage(language.getClient_not_found());
+                        return;
+                    }
+
                     if (proxyGroup.getClients().contains(args[3])) {
                         commandSender
                             .sendMessage(language.getCommand_assignment_value_not_updatable()
