@@ -50,8 +50,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudSigns"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudSigns"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudSigns");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudSigns.jar",
@@ -71,8 +70,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudDiscord"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudDiscord"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudDiscord");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudDiscord.jar",
@@ -92,8 +90,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudPermissions"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudPermissions"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudPermissions");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudPermissions.jar",
@@ -113,8 +110,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudProxy"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudProxy"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudProxy");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudProxy.jar",
@@ -134,8 +130,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudParameters"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudParameters"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudParameters");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudParameters.jar",
@@ -155,8 +150,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudAutoIcon"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudAutoIcon"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudAutoIcon");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudAutoIcon.jar",
@@ -176,8 +170,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudProperties"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudProperties"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudProperties");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudProperties.jar",
@@ -197,8 +190,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudMob"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudMob"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudMob");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudMobs.jar",
@@ -218,8 +210,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudCloudFlare"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudCloudFlare"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudCloudFlare");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudCloudFlare.jar",
@@ -239,8 +230,7 @@ public final class CommandAddons extends Command implements Serializable {
                 if (ReformCloudController.getInstance().getAddonParallelLoader()
                     .getJavaAddons()
                     .stream()
-                    .filter(e -> e.getAddonName().equals("ReformCloudBackup"))
-                    .findFirst().orElse(null) != null) {
+                    .anyMatch(e -> e.getAddonName().equals("ReformCloudBackup"))) {
                     ReformCloudController.getInstance().getAddonParallelLoader().disableAddon("ReformCloudBackup");
                     DownloadManager.downloadSilentAndDisconnect(
                         "https://dl.reformcloud.systems/addons/ReformCloudBackup.jar",

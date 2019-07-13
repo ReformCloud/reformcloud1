@@ -253,7 +253,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
                                 .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
                                 .filter(proxyInfo -> proxyInfo.getCloudProcess().getClient()
                                     .equals(e.getName())).forEach(info -> commandSender.sendMessage(TextComponent.fromLegacyText(
-                                "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§7 | Player: §e" + info
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | Player: §e" + info
                                     .getOnline() + "§7/§e" + info.getProxyGroup().getMaxPlayers())));
                             commandSender.sendMessage(TextComponent.fromLegacyText(""));
                         } else {
@@ -271,7 +271,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
                                 .getServerProcessManager().getAllRegisteredServerProcesses().stream()
                                 .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
                                     .equals(e.getName())).forEach(info -> commandSender.sendMessage(TextComponent.fromLegacyText(
-                                "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §e" + info.getServerGroup().isMaintenance() + "§r | State: §e" + info
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | State: §e" + info
                                     .getServerState() + "§7 | Player: §e" + info.getOnline() + "§7/§e" + info
                                     .getServerGroup().getMaxPlayers())));
                             commandSender.sendMessage(TextComponent.fromLegacyText(""));

@@ -405,7 +405,7 @@ public final class CommandProcess extends Command implements Serializable {
                                     .getServerProcessManager().getAllRegisteredServerProcesses().stream()
                                     .filter(serverInfo -> serverInfo.getCloudProcess().getClient()
                                         .equals(e.getName())).forEach(info -> commandSender.sendMessage(
-                                    "    - §e" + info.getCloudProcess().getName() + "§r | Maintenance: §e" + info.getServerGroup().isMaintenance() +  "§r | State: §e" + info
+                                    "    - §e" + info.getCloudProcess().getName() + "§r | State: §e" + info
                                         .getServerState() + "§r | Player: §e" + info.getOnline() + "§r/§e" + info
                                         .getServerGroup().getMaxPlayers()));
                                 ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
