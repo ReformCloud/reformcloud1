@@ -335,7 +335,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
             new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
             serverModeType,
-            spigotVersions
+            spigotVersions,
+            true
         );
         createServerGroup(serverGroup);
     }
@@ -375,7 +376,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
             new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
             serverModeType,
-            SpigotVersions.SPIGOT_1_8_8
+            SpigotVersions.SPIGOT_1_8_8,
+            true
         );
         createServerGroup(serverGroup);
     }
@@ -399,7 +401,8 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
             new AutoStart(true, 45, TimeUnit.MINUTES.toSeconds(20)),
             new AutoStop(true, TimeUnit.MINUTES.toSeconds(5)),
             serverModeType,
-            spigotVersions
+            spigotVersions,
+            true
         );
         createServerGroup(serverGroup);
     }

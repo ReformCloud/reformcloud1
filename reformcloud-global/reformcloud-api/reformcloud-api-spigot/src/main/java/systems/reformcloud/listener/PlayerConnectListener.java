@@ -48,18 +48,20 @@ public final class PlayerConnectListener implements Listener, Serializable {
 
     @EventHandler
     public void handle(final PlayerLoginEvent event) {
-        boolean ok = ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync(
-            "ReformCloudController",
-            ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
-            new PacketOutCheckPlayer(event.getPlayer().getUniqueId())
-        ).sendOnCurrentThread("ReformCloudController")
-            .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration()
-            .getBooleanValue("checked");
-        if (!ok) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
-                    .getMessage("internal-api-spigot-connect-only-proxy"));
-            return;
+        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isOnlyProxyJoin()) {
+            boolean ok = ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync(
+                "ReformCloudController",
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
+                new PacketOutCheckPlayer(event.getPlayer().getUniqueId())
+            ).sendOnCurrentThread("ReformCloudController")
+                .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration()
+                .getBooleanValue("checked");
+            if (!ok) {
+                event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
+                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
+                        .getMessage("internal-api-spigot-connect-only-proxy"));
+                return;
+            }
         }
 
         if (ReformCloudAPISpigot.getInstance().getPermissionCache() != null) {
