@@ -374,7 +374,7 @@ public final class CommandAssignment extends Command implements Serializable {
             if (args[2].equalsIgnoreCase("version")) {
                 if (SpigotVersions.getByName(args[3]) == null) {
                     commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
-                        .replace("%reason%", "Please provide a valid serer version"));
+                        .replace("%reason%", "Please provide a valid server version"));
                     return;
                 }
 
