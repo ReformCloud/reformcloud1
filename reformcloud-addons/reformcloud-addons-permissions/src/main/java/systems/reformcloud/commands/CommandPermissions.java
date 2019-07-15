@@ -34,9 +34,6 @@ public final class CommandPermissions extends Command implements Serializable {
             List<PermissionGroup> registered = PermissionsAddon.getInstance()
                 .getPermissionDatabase()
                 .getAllGroups();
-            registered.add(
-                PermissionsAddon.getInstance().getPermissionDatabase().getPermissionCache()
-                    .getDefaultGroup());
             registered.sort((os, as) -> {
                 int id1 = os.getGroupID();
                 int id2 = as.getGroupID();

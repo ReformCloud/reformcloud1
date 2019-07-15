@@ -154,6 +154,7 @@ public final class CommandProcess extends Command implements Serializable {
                         commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
                         commandSender.sendMessage(language.getNo_available_client_for_startup());
+                        break;
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
@@ -183,6 +184,7 @@ public final class CommandProcess extends Command implements Serializable {
                         commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
                         commandSender.sendMessage(language.getNo_available_client_for_startup());
+                        break;
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
@@ -458,7 +460,7 @@ public final class CommandProcess extends Command implements Serializable {
                                         "The following §eproxies§r of the group \"§e" + args[2]
                                             + "§r\" are connected: ");
                                     connected.forEach(info -> commandSender.sendMessage(
-                                        "    - §e" + info.getCloudProcess().getName() + "§r | Player: §e" + info
+                                        "    - §e" + info.getCloudProcess().getName() + "§r | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§r | Player: §e" + info
                                             .getOnline() + "§r/§e" + info.getProxyGroup().getMaxPlayers()));
                                 } else
                                     commandSender.sendMessage("There are no started §eproxies§r of the group \"§e" + args[2] + "§r\"");

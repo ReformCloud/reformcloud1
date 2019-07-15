@@ -13,6 +13,8 @@ import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -29,8 +31,15 @@ public final class CommandInfo extends Command implements Serializable {
 
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
-        final Stats stats = ReformCloudController.getInstance()
+            final Stats stats = ReformCloudController.getInstance()
             .getStatisticsProvider().getStats();
+
+        final List<Integer> openedPorts = new LinkedList<>();
+
+        ReformCloudController.getInstance().getAllRegisteredServers().
+            forEach(e -> openedPorts.add(e.getPort()));
+        ReformCloudController.getInstance().getAllRegisteredProxies().
+            forEach(e -> openedPorts.add(e.getPort()));
 
         commandSender.sendMessage("ReformCloud version §e" + StringUtil.REFORM_VERSION);
         commandSender.sendMessage("Main developer: §e_Klaro");
@@ -53,6 +62,10 @@ public final class CommandInfo extends Command implements Serializable {
                 : this.dataFormat.format(stats.getServerOnlineTime())));
         commandSender.sendMessage("GameServer walked distance: §e" + stats.getWalkedDistance());
         commandSender.sendMessage("GameServer placed blocks: §e" + stats.getBlocksPlaced());
+        commandSender.sendMessage("Opened Ports: §e" + (openedPorts.size() > 0 ? openedPorts
+            .toString()
+            .replace("[", "")
+            .replace("]", "") : "no opened ports"));
         commandSender.sendMessage(
             "§bFor further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
     }
