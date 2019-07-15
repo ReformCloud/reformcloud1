@@ -238,7 +238,7 @@ public final class CommandReformCloud implements Command {
                                 .getServerProcessManager().getAllRegisteredProxyProcesses().stream()
                                 .filter(proxyInfo -> proxyInfo.getCloudProcess().getClient()
                                     .equals(e.getName())).forEach(info -> commandSource.sendMessage(TextComponent.of(
-                                "    - §e" + info.getCloudProcess().getName() + "§7 | Player: §e" + info
+                                "    - §e" + info.getCloudProcess().getName() + "§7 | Maintenance: §" + info.getProxyGroup().isMaintenance() + "§7 | Player: §e" + info
                                     .getOnline() + "§7/§e" + info.getProxyGroup().getMaxPlayers())));
                             commandSource.sendMessage(TextComponent.of(""));
                         } else {
