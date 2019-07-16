@@ -102,13 +102,18 @@ public class ServerGroup implements Serializable {
      */
     private SpigotVersions spigotVersions;
 
+    /*
+    * The only proxy join state of the group
+     */
+    private boolean onlyProxyJoin;
+
     @java.beans.ConstructorProperties({"name", "motd", "joinPermission", "clients", "templates",
         "memory", "minOnline", "maxOnline", "maxPlayers", "startPort", "maintenance", "saveLogs",
-        "autoStart", "autoStop", "serverModeType", "spigotVersions"})
+        "autoStart", "autoStop", "serverModeType", "spigotVersions", "onlyProxyJoin"})
     public ServerGroup(String name, String motd, String joinPermission, List<String> clients,
         List<Template> templates, int memory, int minOnline, int maxOnline, int maxPlayers,
         int startPort, boolean maintenance, boolean saveLogs, AutoStart autoStart,
-        AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions) {
+        AutoStop autoStop, ServerModeType serverModeType, SpigotVersions spigotVersions, boolean onlyProxyJoin) {
         this.name = name;
         this.motd = motd;
         this.joinPermission = joinPermission;
@@ -125,6 +130,7 @@ public class ServerGroup implements Serializable {
         this.autoStop = autoStop;
         this.serverModeType = serverModeType;
         this.spigotVersions = spigotVersions;
+        this.onlyProxyJoin = onlyProxyJoin;
     }
 
     public Template getTemplate(final String name) {
@@ -207,6 +213,10 @@ public class ServerGroup implements Serializable {
         return this.saveLogs;
     }
 
+    public boolean isOnlyProxyJoin() {
+        return onlyProxyJoin;
+    }
+
     public ServerModeType getServerModeType() {
         return this.serverModeType;
     }
@@ -261,6 +271,10 @@ public class ServerGroup implements Serializable {
 
     public void setSaveLogs(boolean saveLogs) {
         this.saveLogs = saveLogs;
+    }
+
+    public void setOnlyProxyJoin(boolean onlyProxyJoin) {
+        this.onlyProxyJoin = onlyProxyJoin;
     }
 
     public void setServerModeType(ServerModeType serverModeType) {

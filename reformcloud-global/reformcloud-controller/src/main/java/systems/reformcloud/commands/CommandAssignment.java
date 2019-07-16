@@ -392,6 +392,28 @@ public final class CommandAssignment extends Command implements Serializable {
                 return;
             }
 
+            if (args[2].equalsIgnoreCase("onlyproxyjoin")) {
+                if (!ReformCloudLibraryService.checkIsValidBoolean(args[3])) {
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                        .replace("%reason%", "Please provide a boolean as argument"));
+                    return;
+                }
+
+                boolean save = Boolean.parseBoolean(args[3]);
+                serverGroup.setOnlyProxyJoin(save);
+                ReformCloudController.getInstance().getCloudConfiguration()
+                    .updateServerGroup(serverGroup);
+                if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
+                    ReformCloudController.getInstance().reloadAllSave();
+                }
+
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                    .replace("%name%", args[2].toLowerCase())
+                    .replace("%group%", serverGroup.getName())
+                    .replace("%value%", args[3]));
+                return;
+            }
+
             this.sendHelp(commandSender);
         } else if ((args.length == 5 || args.length == 4) && args[0]
             .equalsIgnoreCase("proxygroup")) {
@@ -920,7 +942,7 @@ public final class CommandAssignment extends Command implements Serializable {
             if (args[0].equalsIgnoreCase("servergroup")) {
                 out.addAll(asList("permission", "clients", "templates",
                     "memory", "maxonline", "minonline", "maxplayers", "startport",
-                    "maintenance", "savelogs", "servermodetype", "version"));
+                    "maintenance", "savelogs", "servermodetype", "version", "onlyproxyjoin"));
             } else if (args[0].equalsIgnoreCase("proxygroup")) {
                 out.addAll(asList("clients", "templates", "disabledgroups",
                     "maintenance", "savelogs", "memory", "maxonline", "minonline",
