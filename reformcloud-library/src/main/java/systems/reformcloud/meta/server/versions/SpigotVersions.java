@@ -108,7 +108,9 @@ public enum SpigotVersions implements Serializable {
      * SpongeVanilla Versions
      */
     SPONGEVANILLA_1_8_9("SpongeVanilla 1.8.9", "1.8.9",
-        "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.8.9-4.2.0-BETA-352.jar"),    
+        "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.8.9-4.2.0-BETA-352.jar"),   
+    SPONGEVANILLA_1_9_4("SpongeVanilla 1.9.4", "1.9.4",
+        "https://repo.spongepowered.org/maven/org/spongepowered/spongevanilla/1.9.4-5.0.0-BETA-83/spongevanilla-1.9.4-5.0.0-BETA-83.jar"),    
     SPONGEVANILLA_1_10_2("SpongeVanilla 1.10.2", "1.10.2",
         "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.10.2-5.2.0-BETA-403.jar"),
     SPONGEVANILLA_1_11_2("SpongeVanilla 1.11.2", "1.11.2",

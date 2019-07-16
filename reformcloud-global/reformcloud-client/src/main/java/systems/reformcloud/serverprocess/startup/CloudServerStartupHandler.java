@@ -184,6 +184,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
+            || this.getServerStartupInfo().getServerGroup().getSpigotVersions()
+            .equals(SpigotVersions.SPONGEVANILLA_1_9_4)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()            
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
