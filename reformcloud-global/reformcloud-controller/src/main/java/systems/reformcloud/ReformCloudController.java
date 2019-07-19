@@ -348,8 +348,6 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         new DefaultCloudService(this);
         DefaultPlayerProvider.instance.set(new PlayerProvider());
 
-        new PlayerLogoutHandler();
-
         colouredConsoleProvider.info(this.getLoadedLanguage().getLoading_done()
             .replace("%time%", String.valueOf(System.currentTimeMillis() - time)));
 
