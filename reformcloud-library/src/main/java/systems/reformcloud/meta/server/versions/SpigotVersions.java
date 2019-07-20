@@ -5,11 +5,7 @@
 package systems.reformcloud.meta.server.versions;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -243,7 +239,11 @@ public enum SpigotVersions implements Serializable {
         return SpigotVersions.name.toLowerCase().replace(" ", "-") + ".jar";
     }
 
-    private final String name, version, url;
+    private final String name;
+
+    private final String version;
+
+    private final String url;
 
     SpigotVersions(final String name, final String version, final String url) {
         this.name = name;

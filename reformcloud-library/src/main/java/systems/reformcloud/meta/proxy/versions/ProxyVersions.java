@@ -47,7 +47,9 @@ public enum ProxyVersions implements Serializable {
         return proxyProviders.name().toLowerCase() + ".jar";
     }
 
-    private String name, url;
+    private final String name;
+
+    private final String url;
 
     ProxyVersions(final String name, final String url) {
         this.name = name;
