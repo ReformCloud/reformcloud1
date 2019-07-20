@@ -5,15 +5,16 @@
 package systems.reformcloud.database.statistics;
 
 import com.google.gson.reflect.TypeToken;
+import systems.reformcloud.ReformCloudController;
+import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.meta.server.stats.TempServerStats;
+import systems.reformcloud.utility.files.FileUtils;
+
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import systems.reformcloud.ReformCloudController;
-import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.meta.server.stats.TempServerStats;
-import systems.reformcloud.utility.files.FileUtils;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.02.2019
@@ -48,9 +49,6 @@ public final class StatisticsProvider extends SaveStatisticsProvider implements 
             this.stats = Configuration.parse(Paths.get("reformcloud/database/stats/stats.json"))
                 .getValue("stats", new TypeToken<Stats>() {
                 }.getType());
-            ReformCloudController.getInstance().getColouredConsoleProvider().info()
-                .accept("Stats: " + Files.readAllBytes(Paths.get("reformcloud"
-                    + "/database/stats/stats.json")).length + " bytes OK");
         } catch (final Throwable throwable) {
             ReformCloudController.getInstance().getColouredConsoleProvider().serve()
                 .accept("Stats: 0 bytes OK");
