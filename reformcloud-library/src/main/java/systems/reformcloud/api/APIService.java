@@ -4,13 +4,6 @@
 
 package systems.reformcloud.api;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import systems.reformcloud.api.permissions.PermissionHelper;
 import systems.reformcloud.api.save.SaveAPIService;
 import systems.reformcloud.configurations.Configuration;
@@ -35,6 +28,10 @@ import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.utility.annotiations.MayNotBePresent;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author _Klaro | Pasqual K. / created on 17.02.2019
@@ -292,6 +289,38 @@ public interface APIService extends Serializable, SnapshotAble {
      * @param serverGroup The server group which should be updated
      */
     void updateServerGroup(ServerGroup serverGroup);
+
+    /**
+     * Updates a specific server name
+     *
+     * @param serverInfo The server info of the server which should be updated
+     * @param newName    The new name of the server
+     */
+    void updateServerName(ServerInfo serverInfo, String newName);
+
+    /**
+     * Updates a specific server name
+     *
+     * @param serverName The server name of the server which should be updated
+     * @param newName    The new name of the server
+     */
+    void updateServerName(String serverName, String newName);
+
+    /**
+     * Updates a specific proxy name
+     *
+     * @param proxyInfo The proxy info of the proxy which should be updated
+     * @param newName   The new name of the proxy
+     */
+    void updateProxyName(ProxyInfo proxyInfo, String newName);
+
+    /**
+     * Updates a specific proxy name
+     *
+     * @param proxyName The proxy name of the proxy which should be updated
+     * @param newName   The new name of the proxy
+     */
+    void updateProxyName(String proxyName, String newName);
 
     /**
      * Updates a specific proxy group
