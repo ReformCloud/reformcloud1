@@ -16,6 +16,7 @@ import systems.reformcloud.logging.enums.AnsiColourHandler;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.annotiations.ForRemoval;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
@@ -473,10 +474,13 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
         return this.consoleReader;
     }
 
+    @Deprecated
+    @ForRemoval
     public ConsoleReader getConsoleReader() {
         return this.consoleReader;
     }
 
+    @Override
     public DateFormat getDateFormat() {
         return this.dateFormat;
     }
@@ -493,6 +497,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
         return this.controllerTime;
     }
 
+    @Override
     public boolean isDebug() {
         return this.debug;
     }
@@ -501,10 +506,12 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
         return this.iConsoleInputHandlers;
     }
 
+    @Override
     public void setControllerTime(long controllerTime) {
         this.controllerTime = controllerTime;
     }
 
+    @Override
     public void setDebug(boolean debug) {
         this.debug = debug;
     }

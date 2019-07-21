@@ -7,7 +7,7 @@ package systems.reformcloud.network.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -23,7 +23,7 @@ public final class PacketInClientProcessQueue implements Serializable, NetworkIn
 
     @Override
     public void handle(Configuration configuration) {
-        final ColouredConsoleProvider colouredConsoleProvider = ReformCloudController.getInstance()
+        final AbstractLoggerProvider colouredConsoleProvider = ReformCloudController.getInstance()
             .getColouredConsoleProvider();
         colouredConsoleProvider
             .info("ProcessQueue of Client §3" + configuration.getStringValue("name") + ":");

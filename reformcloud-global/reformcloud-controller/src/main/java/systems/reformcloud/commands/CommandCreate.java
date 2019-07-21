@@ -4,18 +4,13 @@
 
 package systems.reformcloud.commands;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.language.utility.Language;
-import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.enums.ProxyModeType;
@@ -28,6 +23,12 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.defaults.DefaultGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -45,7 +46,8 @@ public final class CommandCreate extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("servergroup")) {
-            ColouredConsoleProvider colouredConsoleProvider = ReformCloudController.getInstance().getColouredConsoleProvider();
+            AbstractLoggerProvider colouredConsoleProvider =
+                ReformCloudController.getInstance().getColouredConsoleProvider();
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance()
                 .getCloudConfiguration();
 
@@ -80,7 +82,8 @@ public final class CommandCreate extends Command implements Serializable {
                     ServerModeType.of(resetType)));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("proxygroup")) {
-            ColouredConsoleProvider colouredConsoleProvider = ReformCloudController.getInstance().getColouredConsoleProvider();
+            AbstractLoggerProvider colouredConsoleProvider =
+                ReformCloudController.getInstance().getColouredConsoleProvider();
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance()
                 .getCloudConfiguration();
 
@@ -109,7 +112,7 @@ public final class CommandCreate extends Command implements Serializable {
                     ProxyModeType.of(resetType)));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("client")) {
-            ColouredConsoleProvider colouredConsoleProvider = ReformCloudController.getInstance().getColouredConsoleProvider();
+            AbstractLoggerProvider colouredConsoleProvider = ReformCloudController.getInstance().getColouredConsoleProvider();
             CloudConfiguration cloudConfiguration = ReformCloudController.getInstance()
                 .getCloudConfiguration();
 

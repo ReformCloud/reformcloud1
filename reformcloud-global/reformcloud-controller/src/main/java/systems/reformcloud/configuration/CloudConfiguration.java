@@ -14,7 +14,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
-import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.defaults.DefaultProxyGroup;
@@ -133,7 +133,7 @@ public final class CloudConfiguration implements Serializable {
             return false;
         }
 
-        final ColouredConsoleProvider colouredConsoleProvider = ReformCloudController.getInstance()
+        final AbstractLoggerProvider colouredConsoleProvider = ReformCloudController.getInstance()
             .getColouredConsoleProvider();
 
         colouredConsoleProvider.info("Please enter a language [\"german\", \"english\"]");
@@ -684,7 +684,8 @@ public final class CloudConfiguration implements Serializable {
             .write(Paths.get("reformcloud/groups/proxies/" + group + ".json"));
     }
 
-    public String readString(final ColouredConsoleProvider colouredConsoleProvider, Predicate<String> checkable) {
+    public String readString(final AbstractLoggerProvider colouredConsoleProvider,
+                             Predicate<String> checkable) {
         String readLine = colouredConsoleProvider.readLine();
         while (readLine == null
             || !checkable.test(readLine)
@@ -696,7 +697,8 @@ public final class CloudConfiguration implements Serializable {
         return readLine;
     }
 
-    private Integer readInt(final ColouredConsoleProvider colouredConsoleProvider, Predicate<Integer> checkable) {
+    private Integer readInt(final AbstractLoggerProvider colouredConsoleProvider,
+                            Predicate<Integer> checkable) {
         String readLine = colouredConsoleProvider.readLine();
         while (readLine == null
             || readLine.trim().isEmpty()

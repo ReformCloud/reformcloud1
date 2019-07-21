@@ -8,6 +8,7 @@ import jline.console.ConsoleReader;
 import systems.reformcloud.logging.handlers.IConsoleInputHandler;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -168,6 +169,34 @@ public abstract class AbstractLoggerProvider implements Serializable {
      * @return the current console reader of the cloud
      */
     public abstract ConsoleReader consoleReader();
+
+    /**
+     * Sets the current controller time
+     *
+     * @param time The current time of the controller
+     */
+    public abstract void setControllerTime(long time);
+
+    /**
+     * Sets the new debug state
+     *
+     * @param enabled If the debug should be enabled or not
+     */
+    public abstract void setDebug(boolean enabled);
+
+    /**
+     * Checks if debug is enabled
+     *
+     * @return if debug is enabled
+     */
+    public abstract boolean isDebug();
+
+    /**
+     * Get the current cloud date format
+     *
+     * @return the current cloud date format
+     */
+    public abstract DateFormat getDateFormat();
 
     /**
      * Creates a new logger

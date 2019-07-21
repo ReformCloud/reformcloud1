@@ -7,7 +7,7 @@ package systems.reformcloud.configuration;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.utility.ExitUtil;
 import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
@@ -101,7 +101,8 @@ public final class CloudConfiguration implements Serializable {
             return;
         }
 
-        ColouredConsoleProvider colouredConsoleProvider = ReformCloudClient.getInstance().getColouredConsoleProvider();
+        AbstractLoggerProvider colouredConsoleProvider =
+            ReformCloudClient.getInstance().getColouredConsoleProvider();
 
         colouredConsoleProvider.info("Please provide the internal ReformCloudClient ip");
         String ip = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
@@ -189,7 +190,7 @@ public final class CloudConfiguration implements Serializable {
             .readFileAsString(new File("reformcloud/files/ControllerKEY"));
     }
 
-    private String readString(final ColouredConsoleProvider colouredConsoleProvider, Predicate<String> checkable) {
+    private String readString(final AbstractLoggerProvider colouredConsoleProvider, Predicate<String> checkable) {
         String readLine = colouredConsoleProvider.readLine();
         while (readLine == null || !checkable.test(readLine) || readLine.trim().isEmpty()) {
             colouredConsoleProvider.info("Input invalid, please try again");

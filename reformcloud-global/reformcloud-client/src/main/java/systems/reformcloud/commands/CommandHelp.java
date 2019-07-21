@@ -28,7 +28,7 @@ public final class CommandHelp extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         commandSender.sendMessage("The following Commands are registered:");
-        ReformCloudClient.getInstance().getCommandManager().getCommands().forEach(
+        ReformCloudClient.getInstance().getCommandManager().commands().forEach(
             command -> commandSender.sendMessage(
                 "   - " + command.getName() + " | Aliases: §e" + Arrays.asList(command.getAliases())
                     + "§r | Description: §3" + command.getDescription() + "§r | Permission: " + (

@@ -116,7 +116,7 @@ public final class DependencyLoader implements Serializable {
     }
 
     private static String format(final DynamicDependency dependency) {
-        return dependency.download_url + dependency.getGroupID().replace(".", "/") + "/" +
+        return dependency.downloadUrl + dependency.getGroupID().replace(".", "/") + "/" +
             dependency.getName() + "/" + dependency.getVersion() + "/" + dependency.getName() + "-"
             + dependency.getVersion() + ".jar";
     }

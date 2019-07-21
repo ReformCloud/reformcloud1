@@ -40,6 +40,7 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
@@ -83,7 +84,7 @@ import systems.reformcloud.utility.defaults.DefaultCloudService;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
-import systems.reformcloud.utility.threading.TaskScheduler;
+import systems.reformcloud.utility.threading.AbstractTaskScheduler;
 import systems.reformcloud.utility.time.TimeSync;
 import systems.reformcloud.versioneering.VersionController;
 import systems.reformcloud.web.ReformWebServer;
@@ -106,9 +107,9 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private static ReformCloudController instance;
 
-    private CommandManager commandManager;
+    private AbstractCommandManager commandManager;
 
-    private ColouredConsoleProvider colouredConsoleProvider;
+    private AbstractLoggerProvider colouredConsoleProvider;
 
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
@@ -128,7 +129,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private final IngameCommandManger ingameCommandManger = new IngameCommandMangerImpl();
 
-    private final TaskScheduler taskScheduler;
+    private final AbstractTaskScheduler taskScheduler;
 
     private List<UUID> uuid = new ArrayList<>();
 
@@ -1619,11 +1620,11 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.internalCloudNetwork.getLoaded();
     }
 
-    public CommandManager getCommandManager() {
+    public AbstractCommandManager getCommandManager() {
         return this.commandManager;
     }
 
-    public ColouredConsoleProvider getColouredConsoleProvider() {
+    public AbstractLoggerProvider getColouredConsoleProvider() {
         return this.colouredConsoleProvider;
     }
 
@@ -1663,7 +1664,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.ingameCommandManger;
     }
 
-    public TaskScheduler getTaskScheduler() {
+    public AbstractTaskScheduler getTaskScheduler() {
         return this.taskScheduler;
     }
 

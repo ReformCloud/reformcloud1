@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * @author _Klaro | Pasqual K. / created on 28.03.2019
  */
 
-public final class TaskScheduler implements Serializable {
+public final class TaskScheduler extends AbstractTaskScheduler implements Serializable {
 
     /**
      * The default scheduler initialized by the cloud system
@@ -28,7 +28,8 @@ public final class TaskScheduler implements Serializable {
             .addShutdownHook(new Thread(() -> TASKS.forEach(TaskQueueEntry::delete)));
     }
 
-    public TaskScheduler schedule(Runnable runnable, long repeats, long timePerRepeat) {
+    @Override
+    public AbstractTaskScheduler schedule(Runnable runnable, long repeats, long timePerRepeat) {
         Runnable prepared = () -> {
             runnable.run();
             ReformCloudLibraryService.sleep(timePerRepeat);
@@ -40,6 +41,7 @@ public final class TaskScheduler implements Serializable {
         return this;
     }
 
+    @Override
     public void close() {
         this.TASKS.forEach(TaskQueueEntry::delete);
     }

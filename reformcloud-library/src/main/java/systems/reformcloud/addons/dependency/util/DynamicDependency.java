@@ -17,7 +17,7 @@ public abstract class DynamicDependency implements Serializable {
     /**
      * The download url of the dependency
      */
-    public String download_url = "http://central.maven.org/maven2/";
+    public String downloadUrl = "http://central.maven.org/maven2/";
 
     /**
      * Creates a new dynamic dependency using the default url
@@ -34,7 +34,7 @@ public abstract class DynamicDependency implements Serializable {
      */
     protected DynamicDependency(final String url) {
         if (url != null) {
-            this.download_url = url.endsWith("/") ? url : url + "/";
+            this.downloadUrl = url.endsWith("/") ? url : url + "/";
         }
     }
 
@@ -59,7 +59,7 @@ public abstract class DynamicDependency implements Serializable {
      */
     public abstract String getVersion();
 
-    public String getDownload_url() {
-        return this.download_url;
+    public String getDownloadUrl() {
+        return this.downloadUrl;
     }
 }

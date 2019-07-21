@@ -20,6 +20,7 @@ import systems.reformcloud.event.events.ReloadDoneEvent;
 import systems.reformcloud.event.events.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
@@ -75,7 +76,7 @@ import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.parameters.ParameterManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
-import systems.reformcloud.utility.threading.TaskScheduler;
+import systems.reformcloud.utility.threading.AbstractTaskScheduler;
 import systems.reformcloud.versioneering.VersionController;
 
 import java.io.IOException;
@@ -101,9 +102,9 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     private static ReformCloudClient instance;
 
-    private ColouredConsoleProvider colouredConsoleProvider;
+    private AbstractLoggerProvider colouredConsoleProvider;
 
-    private CommandManager commandManager;
+    private AbstractCommandManager commandManager;
 
     private boolean ssl;
 
@@ -117,7 +118,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
     private InternalCloudNetwork internalCloudNetwork = new InternalCloudNetwork();
 
-    private final TaskScheduler taskScheduler;
+    private final AbstractTaskScheduler taskScheduler;
 
     private final AbstractChannelHandler channelHandler;
 
@@ -1343,11 +1344,11 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         System.exit(ExitUtil.STOPPED_SUCESS);
     }
 
-    public ColouredConsoleProvider getColouredConsoleProvider() {
+    public AbstractLoggerProvider getColouredConsoleProvider() {
         return this.colouredConsoleProvider;
     }
 
-    public CommandManager getCommandManager() {
+    public AbstractCommandManager getCommandManager() {
         return this.commandManager;
     }
 
@@ -1375,7 +1376,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         return this.internalCloudNetwork;
     }
 
-    public TaskScheduler getTaskScheduler() {
+    public AbstractTaskScheduler getTaskScheduler() {
         return this.taskScheduler;
     }
 
