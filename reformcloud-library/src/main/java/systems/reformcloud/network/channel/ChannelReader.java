@@ -51,7 +51,7 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
         ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .debug("Handling incoming packet " +
                 "[Type=" + packet.getType() + "/Query=" + (packet.getResult() != null) + "/Message="
-                + packet.getConfiguration());
+                + packet.getConfiguration().getJsonString() + "/Size=" + packet.getConfiguration().getJsonString().getBytes().length);
 
         IncomingPacketEvent incomingPacketEvent = new IncomingPacketEvent(packet,
             channelHandlerContext);

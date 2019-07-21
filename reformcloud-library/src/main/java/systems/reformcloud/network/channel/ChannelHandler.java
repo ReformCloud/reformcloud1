@@ -184,6 +184,11 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
             return;
         }
 
+        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
+            .debug("Sending packet [Type=" + packet.getType() + "/Message=" + packet.getConfiguration().getJsonString()
+                + "/Size=" + packet.getConfiguration().getJsonString().getBytes().length
+                + "/To=" + this.getChannelNameByValue(channelHandlerContext) + "]");
+
         if (channelHandlerContext.channel().eventLoop().inEventLoop()) {
             channelHandlerContext.channel()
                 .writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
