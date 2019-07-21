@@ -44,7 +44,7 @@ public final class ServerListUpdater extends Thread implements Serializable {
                     );
                     Bukkit.getServer().getPluginManager().callEvent(serverListPingEvent);
                     if (!serverListPingEvent.getMotd().equals(motd)) {
-                        ReformCloudAPISpigot.getInstance().getServerInfo().setMotd(motd);
+                        ReformCloudAPISpigot.getInstance().getServerInfo().setMotd(serverListPingEvent.getMotd());
 
                         if (serverListPingEvent.getMotd().toLowerCase().contains("reformcloud_hidden")
                             && !ReformCloudAPISpigot.getInstance().getServerInfo().getServerState().equals(ServerState.HIDDEN)) {
