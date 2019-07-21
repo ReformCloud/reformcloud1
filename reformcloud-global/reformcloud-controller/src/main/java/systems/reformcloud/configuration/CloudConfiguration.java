@@ -325,7 +325,7 @@ public final class CloudConfiguration implements Serializable {
                 .addStringValue("internal-api-bungee-command-hub-already",
                     "%prefix% §7You are already connected to a hub server")
                 .addStringValue("internal-api-bungee-command-hub-not-available",
-                    "%prefix% §7There is now hub server available")
+                    "%prefix% §7There is no hub server available")
 
                 .addStringValue("internal-api-bungee-command-jumpto-server-player-not-found",
                     "%prefix% §cCould not find player or server to go to")
