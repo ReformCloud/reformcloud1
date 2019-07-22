@@ -912,7 +912,7 @@ public final class CommandAssignment extends Command implements Serializable {
     private void sendHelp(CommandSender commandSender) {
         commandSender.sendMessage(
             "assignment SERVERGROUP <name> <permission, clients, templates, memory, maxonline, " +
-                "minonline, maxplayers, startport, maintenance, savelogs, servermodetype, version> <value> <--update>");
+                "minonline, maxplayers, startport, maintenance, savelogs, servermodetype, version, onlyproxyjoin> <value> <--update>");
         commandSender.sendMessage(
             "assignment PROXYGROUP <name> <clients, templates, disabledgroups, maintenance, " +
                 "savelogs, memory, maxonline, minonline, proxymodetype, maxplayers, commandlogging, version> <value> <--update>");

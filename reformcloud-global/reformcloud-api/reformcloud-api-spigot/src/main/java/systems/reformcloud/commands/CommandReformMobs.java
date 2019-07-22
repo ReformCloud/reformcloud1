@@ -141,7 +141,7 @@ public final class CommandReformMobs implements Serializable, CommandExecutor, T
         }
 
         if (strings.length == 3 && strings[0].equalsIgnoreCase("create")) {
-            return Arrays.asList("_Klaro", "MrDoubleTime", "ReformCloud", commandSender.getName());
+            return Arrays.asList("_Klaro", "_MrVapor", "ByteException_", "ReformCloud", commandSender.getName());
         }
 
         if (strings.length == 4 && strings[0].equalsIgnoreCase("create")) {
@@ -151,7 +151,7 @@ public final class CommandReformMobs implements Serializable, CommandExecutor, T
         }
 
         if (strings.length == 5 && strings[0].equalsIgnoreCase("create")) {
-            return Arrays.asList("&6&lI'm cool", "&5&lMrDoubleTime is cool", "&7&lLobby");
+            return Arrays.asList("&6&lI'm cool", "&5&l_MrVapor is cool", "&7&lLobby");
         }
 
         if (strings.length == 2 && strings[0].equalsIgnoreCase("delete")) {
