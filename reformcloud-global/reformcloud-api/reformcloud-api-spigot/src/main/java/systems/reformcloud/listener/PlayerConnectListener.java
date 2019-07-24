@@ -153,9 +153,10 @@ public final class PlayerConnectListener implements Listener, Serializable {
         ReformCloudAPISpigot.getInstance().getChannelHandler()
             .sendPacketSynchronized("ReformCloudController",
                 new PacketOutServerInfoUpdate(serverInfo));
-        if (!started && serverInfo.getServerGroup().getAutoStart().isEnabled()
-            && Bukkit.getServer().getOnlinePlayers().size() >= serverInfo.getServerGroup()
-            .getAutoStart().getPlayerMax()) {
+        if (!started && serverInfo.getServerGroup().getAutoStart().isEnabled() &&
+            ReformCloudAPISpigot.getInstance().getAllRegisteredServers(serverInfo.getServerGroup().getName())
+                .stream()
+                .noneMatch(e -> e.getOnline() < serverInfo.getServerGroup().getAutoStart().getPlayerMax())) {
             started = true;
             ReformCloudAPISpigot.getInstance().startQueuedProcess(serverInfo.getServerGroup());
             SpigotBootstrap.getInstance().getServer().getScheduler()

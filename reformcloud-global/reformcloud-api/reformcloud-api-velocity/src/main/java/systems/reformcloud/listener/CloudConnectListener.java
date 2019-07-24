@@ -117,7 +117,10 @@ public final class CloudConnectListener {
 
         if (!started && proxyInfo.getProxyGroup().getAutoStart().isEnabled()
             && VelocityBootstrap.getInstance().getProxy().getPlayerCount() >= proxyInfo
-            .getProxyGroup().getAutoStart().getPlayerMax()) {
+            .getProxyGroup().getAutoStart().getPlayerMax() &&
+            ReformCloudAPIVelocity.getInstance().getAllRegisteredProxies(proxyInfo.getProxyGroup().getName())
+                .stream()
+                .noneMatch(e -> e.getOnline() < proxyInfo.getProxyGroup().getAutoStart().getPlayerMax())) {
             started = true;
             ReformCloudAPIVelocity.getInstance().startProxy(proxyInfo.getProxyGroup());
             ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
