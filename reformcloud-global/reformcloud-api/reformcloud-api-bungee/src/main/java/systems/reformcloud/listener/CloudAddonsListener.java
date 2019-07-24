@@ -186,7 +186,7 @@ public final class CloudAddonsListener implements Listener {
                             BungeecordBootstrap.getInstance().getProxy().getOnlineCount()))
                         .replace("%max_players_global%", Integer.toString(
                             ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))),
-                    event.getConnection().getVersion())
+                    1)
                 );
             }
         }
