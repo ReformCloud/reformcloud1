@@ -32,6 +32,12 @@ public final class JLine extends Dependency implements Serializable {
 
     @Override
     public String getVersion() {
-        return "2.14.6";
+        return version;
+    }
+
+    @Override
+    public Dependency setVersion(String version) {
+        this.version = version;
+        return this;
     }
 }

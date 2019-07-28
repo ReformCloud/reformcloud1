@@ -32,6 +32,12 @@ public final class ApacheHttpComponents extends Dependency implements Serializab
 
     @Override
     public String getVersion() {
-        return "4.5.8";
+        return version;
+    }
+
+    @Override
+    public Dependency setVersion(String version) {
+        this.version = version;
+        return this;
     }
 }

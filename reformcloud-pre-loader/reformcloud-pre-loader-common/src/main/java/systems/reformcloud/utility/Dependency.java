@@ -19,6 +19,8 @@ public abstract class Dependency implements Serializable {
      */
     public String download_url = "http://central.maven.org/maven2/";
 
+    public String version;
+
     /**
      * Initializes the dependency using the default url
      */
@@ -58,6 +60,13 @@ public abstract class Dependency implements Serializable {
      * @return The version id of the dependency
      */
     public abstract String getVersion();
+
+    /**
+     * Sets the version of the current dependency
+     *
+     * @param version The new version of the dependency
+     */
+    public abstract Dependency setVersion(String version);
 
     public String getDownload_url() {
         return this.download_url;

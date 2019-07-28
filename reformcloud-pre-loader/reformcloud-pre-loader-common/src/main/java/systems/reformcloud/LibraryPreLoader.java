@@ -17,10 +17,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 14.05.2019
@@ -33,10 +30,14 @@ final class LibraryPreLoader implements Serializable {
     private LibraryPreLoader() {
     }
 
-    public static void prepareDependencies(boolean installNetty) {
+    public static void prepareDependencies(boolean installNetty, boolean update) {
         prepareFolder();
         if (dependencies == null) {
-            prepareDependencies0(installNetty);
+            try {
+                prepareDependenciesVersions(installNetty, update);
+            } catch (final IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -54,6 +55,53 @@ final class LibraryPreLoader implements Serializable {
         });
 
         return downloaded;
+    }
+
+    public static void prepareDependenciesVersions(boolean update, boolean installNetty) throws IOException {
+        if (update || !Files.exists(Paths.get("libraries/versions.properties"))) {
+            if (Files.exists(Paths.get("libraries/versions.properties"))) {
+                Files.delete(Paths.get("libraries/versions.properties"));
+            }
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
+                "https://internal.reformcloud.systems/dependencies/versions.properties"
+            ).openConnection();
+            httpURLConnection.setRequestProperty("User-Agent",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+            httpURLConnection.setDoOutput(false);
+            httpURLConnection.setUseCaches(false);
+            httpURLConnection.connect();
+
+            try (InputStream inputStream = httpURLConnection.getInputStream()) {
+                Files.copy(inputStream, Paths.get(
+                    "libraries/versions.properties"
+                ));
+            }
+            httpURLConnection.disconnect();
+        }
+
+        Properties properties = new Properties();
+        try (InputStream inputStream = Files.newInputStream(Paths.get("libraries/versions.properties"))) {
+            properties.load(inputStream);
+        }
+
+        dependencies = new LinkedList<>(
+            Arrays.asList(
+                new SnakeYaml().setVersion(properties.getProperty("snakeyaml")),
+                new CommonsIO().setVersion(properties.getProperty("commonsio")),
+                new JLine().setVersion(properties.getProperty("jline")),
+                new ApacheCommonsNet().setVersion(properties.getProperty("commonsnet")),
+                new Gson().setVersion(properties.getProperty("gson")),
+                new CommonsCodec().setVersion(properties.getProperty("commonscodec")),
+                new CommonsLogging().setVersion(properties.getProperty("commonslogging")),
+                new ApacheHttpCore().setVersion(properties.getProperty("apachehttpcore")),
+                new ApacheHttpComponents().setVersion(properties.getProperty("apachehttp"))
+            )
+        );
+
+        if (installNetty) {
+            dependencies.add(new Netty().setVersion(properties.getProperty("netty")));
+        }
     }
 
     private static URL downloadLib(final Dependency dependency) throws MalformedURLException {
@@ -107,26 +155,6 @@ final class LibraryPreLoader implements Serializable {
                     break;
                 }
             }
-        }
-    }
-
-    private static void prepareDependencies0(boolean installNetty) {
-        dependencies = new LinkedList<>(
-            Arrays.asList(
-                new SnakeYaml(),
-                new CommonsIO(),
-                new JLine(),
-                new ApacheCommonsNet(),
-                new Gson(),
-                new CommonsCodec(),
-                new CommonsLogging(),
-                new ApacheHttpCore(),
-                new ApacheHttpComponents()
-            )
-        );
-
-        if (installNetty) {
-            dependencies.add(new Netty());
         }
     }
 

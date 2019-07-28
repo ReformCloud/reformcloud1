@@ -69,7 +69,7 @@ final class ProcessPreLoader implements Serializable {
             return;
         }
 
-        LibraryPreLoader.prepareDependencies(false);
+        LibraryPreLoader.prepareDependencies(false, false);
         List<URL> dependencies = LibraryPreLoader.downloadDependencies();
         System.out.println("\nSuccessfully installed all necessary libraries");
         run0(args, target, dependencies);

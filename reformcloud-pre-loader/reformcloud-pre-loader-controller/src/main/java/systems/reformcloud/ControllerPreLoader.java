@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 final class ControllerPreLoader implements Serializable {
 
     public static synchronized void main(String[] args) throws IOException {
-        LibraryPreLoader.prepareDependencies(true);
+        LibraryPreLoader.prepareDependencies(true, true);
         List<URL> libs = LibraryPreLoader.downloadDependencies();
         System.out.println("\nSuccessfully installed all necessary libraries");
 
