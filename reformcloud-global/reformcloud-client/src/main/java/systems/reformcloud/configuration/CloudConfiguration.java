@@ -113,6 +113,10 @@ public final class CloudConfiguration implements Serializable {
             .info("Please provide the name of this Client. (Recommended: Client-01)");
         String clientID = this.readString(colouredConsoleProvider, s -> true);
 
+        ReformCloudClient.getInstance().getColouredConsoleProvider()
+            .info("Please provide the memory for this Client. (Min 512MB)");
+        Integer memory = this.readInt(colouredConsoleProvider, integer -> integer >= 512);
+
         Properties properties = new Properties();
 
         properties.setProperty("controller.ip", controllerIP);
@@ -121,7 +125,7 @@ public final class CloudConfiguration implements Serializable {
 
         properties.setProperty("general.client-name", clientID);
         properties.setProperty("general.start-host", ip);
-        properties.setProperty("general.memory", 1024 + StringUtil.EMPTY);
+        properties.setProperty("general.memory", memory + StringUtil.EMPTY);
         properties.setProperty("general.maxcpuusage", 90.00 + StringUtil.EMPTY);
         properties.setProperty("general.max-log-size", Integer.toString(46));
 
@@ -199,6 +203,21 @@ public final class CloudConfiguration implements Serializable {
 
         return readLine;
     }
+
+    private Integer readInt(final AbstractLoggerProvider colouredConsoleProvider,
+                            Predicate<Integer> checkable) {
+        String readLine = colouredConsoleProvider.readLine();
+        while (readLine == null
+            || readLine.trim().isEmpty()
+            || !ReformCloudLibraryService.checkIsInteger(readLine)
+            || !checkable.test(Integer.parseInt(readLine))) {
+            colouredConsoleProvider.info("Input invalid, please try again");
+            readLine = colouredConsoleProvider.readLine();
+        }
+
+        return Integer.parseInt(readLine);
+    }
+
 
     public String getControllerKey() {
         return this.controllerKey;
