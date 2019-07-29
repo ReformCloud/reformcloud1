@@ -17,7 +17,7 @@ public final class JLine extends Dependency implements Serializable {
     private static final long serialVersionUID = -5341268101711897840L;
 
     public JLine() {
-        super(null);
+        super(null, "2.14.6");
     }
 
     @Override
@@ -28,16 +28,5 @@ public final class JLine extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "jline";
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public Dependency setVersion(String version) {
-        this.version = version;
-        return this;
     }
 }

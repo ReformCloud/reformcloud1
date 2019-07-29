@@ -17,7 +17,7 @@ public final class CommonsIO extends Dependency implements Serializable {
     private static final long serialVersionUID = 8266556935851895180L;
 
     public CommonsIO() {
-        super(null);
+        super(null, "2.6");
     }
 
     @Override
@@ -28,16 +28,5 @@ public final class CommonsIO extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "commons-io";
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public Dependency setVersion(String version) {
-        this.version = version;
-        return this;
     }
 }

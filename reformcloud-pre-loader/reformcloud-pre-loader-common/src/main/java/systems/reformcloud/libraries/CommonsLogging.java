@@ -15,7 +15,7 @@ import java.io.Serializable;
 public final class CommonsLogging extends Dependency implements Serializable {
 
     public CommonsLogging() {
-        super(null);
+        super(null, "1.2");
     }
 
     @Override
@@ -26,16 +26,5 @@ public final class CommonsLogging extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "commons-logging";
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public Dependency setVersion(String version) {
-        this.version = version;
-        return this;
     }
 }

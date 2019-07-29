@@ -496,7 +496,6 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
      */
     @Override
     public void shutdownAll() {
-
         this.taskScheduler.close();
         this.statisticsProvider.save();
 

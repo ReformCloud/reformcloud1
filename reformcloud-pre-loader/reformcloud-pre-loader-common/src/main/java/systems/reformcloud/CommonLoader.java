@@ -4,6 +4,8 @@
 
 package systems.reformcloud;
 
+import systems.reformcloud.loader.CapableClassLoader;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,7 +16,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import systems.reformcloud.loader.CapableClassLoader;
 
 /**
  * @author _Klaro | Pasqual K. / created on 14.05.2019
@@ -33,12 +34,7 @@ final class CommonLoader implements Serializable {
         return createClassLoader(urls.toArray(new URL[0]));
     }
 
-    public static ClassLoader createClassLoader(URL urls) {
-        checkNonNull(urls);
-        return createClassLoader(new URL[]{urls});
-    }
-
-    public static ClassLoader createClassLoader(URL[] urls) {
+    private static ClassLoader createClassLoader(URL[] urls) {
         checkNonNull(urls);
         return new CapableClassLoader(urls, ClassLoader.getSystemClassLoader());
     }

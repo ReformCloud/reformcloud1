@@ -4,18 +4,19 @@
 
 package systems.reformcloud.api.permissions;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import systems.reformcloud.player.permissions.PermissionCache;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.annotiations.MayNotBePresent;
 import systems.reformcloud.utility.annotiations.ShouldNotBeNull;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author _Klaro | Pasqual K. / created on 28.06.2019
@@ -226,7 +227,7 @@ public interface PermissionHelper extends Serializable {
         executeCommand("perms " + group + " setprefix " + newPrefix);
     }
 
-    default void setGroupDiscplay(String group, String newDisplay) {
+    default void setGroupDisplay(String group, String newDisplay) {
         Require.requireNotNull(group);
         Require.requireNotNull(newDisplay);
 

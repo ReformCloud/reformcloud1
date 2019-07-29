@@ -57,7 +57,8 @@ final class LibraryPreLoader implements Serializable {
         return downloaded;
     }
 
-    public static void prepareDependenciesVersions(boolean update, boolean installNetty) throws IOException {
+    private static void prepareDependenciesVersions(boolean update,
+                                                    boolean installNetty) throws IOException {
         if (update || !Files.exists(Paths.get("libraries/versions.properties"))) {
             if (Files.exists(Paths.get("libraries/versions.properties"))) {
                 Files.delete(Paths.get("libraries/versions.properties"));
@@ -165,8 +166,8 @@ final class LibraryPreLoader implements Serializable {
      * @return A string usable as download url for the lib
      */
     private static String format(final Dependency dependency) {
-        return dependency.download_url + dependency.getGroupID().replace(".", "/") + "/" +
-            dependency.getName() + "/" + dependency.getVersion() + "/" + dependency.getName() + "-"
+        return dependency.downloadUrl() + dependency.getGroupID().replace(".", "/") +
+            "/" + dependency.getName() + "/" + dependency.getVersion() + "/" + dependency.getName() + "-"
             + dependency.getVersion() + ".jar";
     }
 
