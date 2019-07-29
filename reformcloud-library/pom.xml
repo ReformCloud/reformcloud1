@@ -34,7 +34,7 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-yaml</artifactId>
-            <version>1.12.1</version>
+            <version>1.13</version>
             <scope>provided</scope>
         </dependency>
 
@@ -66,7 +66,7 @@
     <parent>
         <artifactId>reformcloud-parent</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.12.1</version>
+        <version>1.13</version>
     </parent>
 
     <build>
