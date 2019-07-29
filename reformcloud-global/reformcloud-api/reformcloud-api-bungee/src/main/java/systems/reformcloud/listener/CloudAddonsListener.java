@@ -172,7 +172,7 @@ public final class CloudAddonsListener implements Listener {
             }
 
             int max = proxySettings.isSlotCounter() ?
-                ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount() + proxySettings
+                ReformCloudAPIBungee.getInstance().getOnlineCount() + proxySettings
                     .getMoreSlots() :
                 ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount();
 
