@@ -5,14 +5,6 @@
 package systems.reformcloud.selector;
 
 import com.google.gson.reflect.TypeToken;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
@@ -25,13 +17,14 @@ import systems.reformcloud.mobs.inventory.item.SelectorsMobServerItem;
 import systems.reformcloud.packets.in.PacketInCreateMob;
 import systems.reformcloud.packets.in.PacketInDeleteMob;
 import systems.reformcloud.packets.in.PacketInQueryGetAll;
-import systems.reformcloud.packets.out.PacketOutCreateMob;
-import systems.reformcloud.packets.out.PacketOutDeleteMob;
-import systems.reformcloud.packets.out.PacketOutDisableMobs;
-import systems.reformcloud.packets.out.PacketOutEnableMobs;
-import systems.reformcloud.packets.out.PacketOutUpdateMobs;
+import systems.reformcloud.packets.out.*;
 import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.files.FileUtils;
+
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.04.2019
@@ -41,8 +34,9 @@ public final class MobSelector implements Serializable {
 
     private static MobSelector instance;
 
-    private final String directory = "reformcloud/addons/mobs",
-        databaseDir = "reformcloud/database/mobs";
+    private final String directory = "reformcloud/addons/mobs";
+
+    private final String databaseDir = "reformcloud/database/mobs";
 
     private Map<UUID, SelectorMob> mobs = new HashMap<>();
 

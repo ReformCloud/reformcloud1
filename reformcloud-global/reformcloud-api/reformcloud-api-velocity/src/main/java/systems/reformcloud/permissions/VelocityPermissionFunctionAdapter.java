@@ -38,7 +38,9 @@ public final class VelocityPermissionFunctionAdapter implements Serializable, Pe
     }
 
     private UUID permissionSubject;
+
     private PermissionHolder permissionHolder;
+
     private List<PermissionGroup> permissionGroups;
 
     @Override

@@ -4,7 +4,6 @@
 
 package systems.reformcloud;
 
-import java.io.Serializable;
 import systems.reformcloud.event.utility.Listener;
 import systems.reformcloud.listeners.client.ClientCreatedListener;
 import systems.reformcloud.listeners.client.ClientDeletedListener;
@@ -12,17 +11,21 @@ import systems.reformcloud.listeners.proxy.ProxyStartedListener;
 import systems.reformcloud.listeners.proxy.ProxyStoppedListener;
 import systems.reformcloud.utility.ControllerAddonImpl;
 
+import java.io.Serializable;
+
 /**
  * @author _Klaro | Pasqual K. / created on 09.05.2019
  */
 
 public final class CloudFlareAddon extends ControllerAddonImpl implements Serializable {
 
-    private Listener
-        proxyStartedListener = new ProxyStartedListener(),
-        proxyStoppedListener = new ProxyStoppedListener(),
-        clientCreatedListener = new ClientCreatedListener(),
-        clientDeletedListener = new ClientDeletedListener();
+    private Listener proxyStartedListener = new ProxyStartedListener();
+
+    private Listener proxyStoppedListener = new ProxyStoppedListener();
+
+    private Listener clientCreatedListener = new ClientCreatedListener();
+
+    private Listener clientDeletedListener = new ClientDeletedListener();
 
     @Override
     public void onAddonLoading() {

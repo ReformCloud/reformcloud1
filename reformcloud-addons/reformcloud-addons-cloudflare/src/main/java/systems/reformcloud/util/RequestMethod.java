@@ -11,8 +11,11 @@ import java.io.Serializable;
  */
 
 public enum RequestMethod implements Serializable {
+
     POST("POST"),
+
     DELETE("DELETE"),
+
     GET("GET");
 
     private String stringValue;
