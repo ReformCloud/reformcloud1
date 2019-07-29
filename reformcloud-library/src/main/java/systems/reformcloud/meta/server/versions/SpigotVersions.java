@@ -5,11 +5,7 @@
 package systems.reformcloud.meta.server.versions;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -66,11 +62,13 @@ public enum SpigotVersions implements Serializable {
     SPIGOT_1_14("Spigot 1.14", "1.14",
         "https://mcmirror.io/files/Spigot/Spigot-1.14-8043ebc-20190514-0000.jar"),
     SPIGOT_1_14_1("Spigot 1.14.1", "1.14.1", 
-        "https://mcmirror.io/grab/Spigot/Spigot-1.14.1-03bd4b0-20190520-1053.jar"),
+        "https://mcmirror.io/files/Spigot/Spigot-1.14.1-03bd4b0-20190520-1053.jar"),
     SPIGOT_1_14_2("Spigot 1.14.2", "1.14.2", 
-        "https://mcmirror.io/grab/Spigot/Spigot-1.14.2-baafee9-20190602-0956.jar"),
-    SPIGOT_1_14_3("Spigot 1.14.3", "1.14.3", 
-        "https://mcmirror.io/grab/Spigot/Spigot-1.14.3-595711b-20190625-1057.jar"),    
+        "https://mcmirror.io/files/Spigot/Spigot-1.14.2-baafee9-20190602-0956.jar"),
+    SPIGOT_1_14_3("Spigot 1.14.3", "1.14.3",
+        "https://mcmirror.io/files/Spigot/Spigot-1.14.3-d05d3c1-20190703-0030.jar"),
+    SPIGOT_1_14_4("Spigot 1.14.4", "1.14.4",
+        "https://mcmirror.io/files/Spigot/Spigot-1.14.4-9de398a-20190719-2300.jar"),    
 
     /**
      * Paper Versions
@@ -100,15 +98,19 @@ public enum SpigotVersions implements Serializable {
     PAPER_1_14_1("Paper 1.14.1", "1.14.1", 
         "https://yivesmirror.com/files/paper/Paper-1.14.1-b42.jar"),
     PAPER_1_14_2("Paper 1.14.2", "1.14.2", 
-        "https://mcmirror.io/grab/Paper/Paper-1.14.2-bf1d217-20190624-0232.jar"),
-    PAPER_1_14_3("Paper 1.14.3", "1.14.3", 
-        "https://mcmirror.io/grab/Paper/Paper-1.14.3-3042442-20190625-1355.jar"),    
+        "https://mcmirror.io/files/Paper/Paper-1.14.2-bf1d217-20190624-0232.jar"),
+    PAPER_1_14_3("Paper 1.14.3", "1.14.3",
+        "https://mcmirror.io/files/Paper/Paper-1.14.3-1bacdbd-20190702-1850.jar"),
+    PAPER_1_14_4("Paper 1.14.4", "1.14.4",
+        "https://mcmirror.io/files/Paper/Paper-1.14.4-9fe63a1-20190720-0401.jar"),    
 
     /**
      * SpongeVanilla Versions
      */
     SPONGEVANILLA_1_8_9("SpongeVanilla 1.8.9", "1.8.9",
-        "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.8.9-4.2.0-BETA-352.jar"),    
+        "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.8.9-4.2.0-BETA-352.jar"),   
+    SPONGEVANILLA_1_9_4("SpongeVanilla 1.9.4", "1.9.4",
+        "https://repo.spongepowered.org/maven/org/spongepowered/spongevanilla/1.9.4-5.0.0-BETA-83/spongevanilla-1.9.4-5.0.0-BETA-83.jar"),    
     SPONGEVANILLA_1_10_2("SpongeVanilla 1.10.2", "1.10.2",
         "https://archive.mcmirror.io/SpongeVanilla/spongevanilla-1.10.2-5.2.0-BETA-403.jar"),
     SPONGEVANILLA_1_11_2("SpongeVanilla 1.11.2", "1.11.2",
@@ -185,6 +187,7 @@ public enum SpigotVersions implements Serializable {
 
             if (!AVAILABLE_VERSIONS.contains(SpigotVersions.version)) {
                 AVAILABLE_VERSIONS.addAll(Arrays.asList(
+                    "1.7.9",
                     "1.7.10",
                     "1.8",
                     "1.8.3",
@@ -210,7 +213,8 @@ public enum SpigotVersions implements Serializable {
                     "1.14",
                     "1.14.1",
                     "1.14.2",
-                    "1.14.3"
+                    "1.14.3",
+                    "1.14.4"                    
                 ));
             }
         }
@@ -235,7 +239,11 @@ public enum SpigotVersions implements Serializable {
         return SpigotVersions.name.toLowerCase().replace(" ", "-") + ".jar";
     }
 
-    private final String name, version, url;
+    private final String name;
+
+    private final String version;
+
+    private final String url;
 
     SpigotVersions(final String name, final String version, final String url) {
         this.name = name;

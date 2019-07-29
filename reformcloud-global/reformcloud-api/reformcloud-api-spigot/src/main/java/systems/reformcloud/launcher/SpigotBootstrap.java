@@ -7,7 +7,10 @@ package systems.reformcloud.launcher;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.ResourceLeakDetector;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
@@ -20,9 +23,6 @@ import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 import systems.reformcloud.permissions.ReflectionUtil;
-
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -54,7 +54,7 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
             @Override
             public String getVersion() {
-                return "4.1.36.Final";
+                return "4.1.37.Final";
             }
         });
         this.start = System.currentTimeMillis();
@@ -82,6 +82,7 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
     @Override
     public void onDisable() {
+        this.getServer().getWorlds().forEach(World::save);
         getServer().getScheduler().cancelTasks(this);
         getServer().getMessenger().unregisterOutgoingPluginChannel(this);
 

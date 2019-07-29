@@ -4,6 +4,10 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
@@ -13,8 +17,6 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.out.PacketOutCopyServerIntoTemplate;
 import systems.reformcloud.network.out.PacketOutExecuteCommand;
-
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -116,4 +118,26 @@ public final class CommandCopy extends Command implements Serializable {
             commandSender.sendMessage("copy <name> <file/directory>");
         }
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if (args.length == 0) {
+            out.addAll(servers());
+        }
+
+        return out;
+    }
+
+    private List<String> servers() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredServers()
+            .forEach(servers -> out.add(servers.getCloudProcess().getName()));
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(proxies -> out.add(proxies.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
 }

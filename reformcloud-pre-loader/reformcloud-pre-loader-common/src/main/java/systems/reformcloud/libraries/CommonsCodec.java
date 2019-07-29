@@ -15,7 +15,7 @@ import java.io.Serializable;
 public final class CommonsCodec extends Dependency implements Serializable {
 
     public CommonsCodec() {
-        super(null);
+        super(null, "1.12");
     }
 
     @Override
@@ -26,10 +26,5 @@ public final class CommonsCodec extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "commons-codec";
-    }
-
-    @Override
-    public String getVersion() {
-        return "1.12";
     }
 }

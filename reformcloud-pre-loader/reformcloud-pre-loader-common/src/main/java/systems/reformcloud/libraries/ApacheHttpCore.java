@@ -17,7 +17,7 @@ public final class ApacheHttpCore extends Dependency implements Serializable {
     private static final long serialVersionUID = 727304906145669453L;
 
     public ApacheHttpCore() {
-        super(null);
+        super(null, "4.4.11");
     }
 
     @Override
@@ -28,10 +28,5 @@ public final class ApacheHttpCore extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "httpcore";
-    }
-
-    @Override
-    public String getVersion() {
-        return "4.4.11";
     }
 }

@@ -102,7 +102,7 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
 
     @Override
     public boolean enableAddon(final String name) {
-        Set<AddonClassConfig> moduleConfigs = new HashSet<>();
+        Set<AddonClassConfig> addonClassConfigs = new HashSet<>();
 
         File[] files = new File("reformcloud/addons").listFiles(pathname ->
             pathname.isFile()
@@ -129,11 +129,11 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
                     jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8)) {
                     Properties properties = new Properties();
                     properties.load(reader);
-                    AddonClassConfig moduleConfig = new AddonClassConfig(file,
+                    AddonClassConfig addonClassConfig = new AddonClassConfig(file,
                         properties.getProperty("name"),
                         properties.getProperty("version"),
                         properties.getProperty("mainClazz"));
-                    moduleConfigs.add(moduleConfig);
+                    addonClassConfigs.add(addonClassConfig);
                 }
             } catch (final Throwable throwable) {
                 StringUtil
@@ -142,7 +142,7 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
             }
         }
 
-        moduleConfigs.forEach(addonClassConfig -> {
+        addonClassConfigs.forEach(addonClassConfig -> {
             try {
                 final AddonMainClassLoader addonMainClassLoader = new AddonMainClassLoader(
                     addonClassConfig);
@@ -179,14 +179,14 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
     }
 
     private Set<AddonClassConfig> checkForAddons() {
-        Set<AddonClassConfig> moduleConfigs = new HashSet<>();
+        Set<AddonClassConfig> addonClassConfigs = new HashSet<>();
 
         File[] files = new File("reformcloud/addons").listFiles(pathname ->
             pathname.isFile()
                 && pathname.exists()
                 && pathname.getName().endsWith(".jar"));
         if (files == null) {
-            return moduleConfigs;
+            return addonClassConfigs;
         }
 
         for (File file : files) {
@@ -201,11 +201,11 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
                     jarFile.getInputStream(jarEntry), StandardCharsets.UTF_8)) {
                     Properties properties = new Properties();
                     properties.load(reader);
-                    AddonClassConfig moduleConfig = new AddonClassConfig(file,
+                    AddonClassConfig addonClassConfig = new AddonClassConfig(file,
                         properties.getProperty("name"),
                         properties.getProperty("version"),
                         properties.getProperty("mainClazz"));
-                    moduleConfigs.add(moduleConfig);
+                    addonClassConfigs.add(addonClassConfig);
                 }
             } catch (final Throwable throwable) {
                 StringUtil
@@ -214,7 +214,7 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
             }
         }
 
-        return moduleConfigs;
+        return addonClassConfigs;
     }
 
     @Override

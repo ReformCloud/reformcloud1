@@ -101,28 +101,4 @@ public class CloudProcess implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public void setProcessUID(UUID processUID) {
-        this.processUID = processUID;
-    }
-
-    public void setClient(String client) {
-        this.client = client;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public void setPreConfig(Configuration preConfig) {
-        this.preConfig = preConfig;
-    }
-
-    public void setLoadedTemplate(Template loadedTemplate) {
-        this.loadedTemplate = loadedTemplate;
-    }
-
-    public void setProcessID(int processID) {
-        this.processID = processID;
-    }
 }

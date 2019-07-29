@@ -8,12 +8,14 @@ import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.cluster.NetworkGlobalCluster;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
+import systems.reformcloud.utility.threading.AbstractTaskScheduler;
 import systems.reformcloud.utility.threading.TaskScheduler;
 
 import java.util.Objects;
@@ -52,12 +54,17 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * The logger provider of the cloud system
      */
-    private ColouredConsoleProvider colouredConsoleProvider;
+    private AbstractLoggerProvider colouredConsoleProvider;
 
     /**
-     * Some internal information about the controller
+     * The controller key
      */
-    private String key, controllerIP;
+    private String key;
+
+    /**
+     * The ip address of the controller
+     */
+    private String controllerIP;
 
     /**
      * The netty handler of the cloud
@@ -67,7 +74,7 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * The TaskScheduler of the cloud
      */
-    private TaskScheduler taskScheduler;
+    private AbstractTaskScheduler taskScheduler;
 
     /**
      * Creates a new Instance of the {ReformCloudLibraryServiceProvider}
@@ -116,7 +123,7 @@ public final class ReformCloudLibraryServiceProvider {
         return this.channelHandler;
     }
 
-    public ColouredConsoleProvider getColouredConsoleProvider() {
+    public AbstractLoggerProvider getColouredConsoleProvider() {
         return this.colouredConsoleProvider;
     }
 
@@ -132,7 +139,7 @@ public final class ReformCloudLibraryServiceProvider {
         return this.nettyHandler;
     }
 
-    public TaskScheduler getTaskScheduler() {
+    public AbstractTaskScheduler getTaskScheduler() {
         return this.taskScheduler;
     }
 

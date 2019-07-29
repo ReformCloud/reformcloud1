@@ -4,6 +4,11 @@
 
 package systems.reformcloud.commands;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.utility.Command;
@@ -14,9 +19,6 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.out.PacketOutDeleteTemplate;
 import systems.reformcloud.utility.StringUtil;
-
-import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 16.12.2018
@@ -201,4 +203,61 @@ public final class CommandDelete extends Command implements Serializable {
             }
         }
     }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if (args.length == 0) {
+            out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT", "WEBUSER"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("servergroup")) {
+                out.addAll(serverGroups());
+            } else if (args[0].equalsIgnoreCase("proxygroup")) {
+                out.addAll(proxyGroups());
+            } else if (args[0].equalsIgnoreCase("client")) {
+                out.addAll(clients());
+            } else if (args[0].equalsIgnoreCase("webuser")) {
+                out.addAll(users());
+            }
+        }
+
+        return out;
+    }
+
+    private List<String> serverGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllServerGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxyGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllProxyGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clients() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllClients()
+            .forEach(client -> out.add(client.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> users() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getCloudConfiguration()
+            .getWebUsers()
+            .forEach(user -> out.add(user.getUserName()));
+        Collections.sort(out);
+        return out;
+    }
+
 }

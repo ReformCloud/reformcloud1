@@ -70,7 +70,7 @@ public final class VelocityBootstrap implements Serializable {
 
             @Override
             public String getVersion() {
-                return "4.1.36.Final";
+                return "4.1.37.Final";
             }
         });
         instance = this;

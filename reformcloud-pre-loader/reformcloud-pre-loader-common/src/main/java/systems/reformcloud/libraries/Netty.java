@@ -17,7 +17,7 @@ public final class Netty extends Dependency implements Serializable {
     private static final long serialVersionUID = 5273979933426169372L;
 
     public Netty() {
-        super(null);
+        super(null, "4.1.38.Final");
     }
 
     @Override
@@ -28,10 +28,5 @@ public final class Netty extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "netty-all";
-    }
-
-    @Override
-    public String getVersion() {
-        return "4.1.36.Final";
     }
 }

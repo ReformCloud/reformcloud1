@@ -15,7 +15,7 @@ import java.io.Serializable;
 public final class SnakeYaml extends Dependency implements Serializable {
 
     public SnakeYaml() {
-        super(null);
+        super(null, "1.24");
     }
 
     @Override
@@ -26,10 +26,5 @@ public final class SnakeYaml extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "snakeyaml";
-    }
-
-    @Override
-    public String getVersion() {
-        return "1.24";
     }
 }

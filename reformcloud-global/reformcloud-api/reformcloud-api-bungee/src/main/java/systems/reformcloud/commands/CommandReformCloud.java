@@ -6,8 +6,12 @@ package systems.reformcloud.commands;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
@@ -19,6 +23,7 @@ import systems.reformcloud.meta.info.ClientInfo;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
+import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.packets.PacketOutDispatchConsoleCommand;
 import systems.reformcloud.utility.StringUtil;
 
@@ -77,17 +82,35 @@ public final class CommandReformCloud extends Command implements Serializable, T
         }
 
         if (strings[0].equalsIgnoreCase("maintenance")) {
-            ProxyGroup proxyGroup =
-                ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup();
-            ReformCloudAPIBungee.getInstance().dispatchConsoleCommand(
-                "asg proxygroup " + proxyGroup.getName() +
-                    " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
-                    "true --update")
-            );
-            commandSender.sendMessage(TextComponent.fromLegacyText(
-                ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
-                    .getMessage("internal-api-bungee-command-send-controller")
-            ));
+            if (strings.length != 2) {
+                ProxyGroup proxyGroup =
+                    ReformCloudAPIBungee.getInstance().getProxyInfo().getProxyGroup();
+                ReformCloudAPIBungee.getInstance().dispatchConsoleCommand(
+                    "asg proxygroup " + proxyGroup.getName() +
+                        " maintenance " + (proxyGroup.isMaintenance() ? "false --update" :
+                        "true --update")
+                );
+                commandSender.sendMessage(TextComponent.fromLegacyText(
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                        .getMessage("internal-api-bungee-command-send-controller")
+                ));
+                return;
+            }
+            ServerGroup serverGroup =
+                ReformCloudAPIBungee.getInstance().getServerGroup(strings[1]);
+            if (serverGroup != null) {
+                ReformCloudAPIBungee.getInstance().dispatchConsoleCommand(
+                    "asg servergroup " + serverGroup.getName() +
+                        " maintenance " + (serverGroup.isMaintenance() ? "false" : "true") +
+                        " --update"
+                );
+                commandSender.sendMessage(TextComponent.fromLegacyText(
+                    ReformCloudAPIBungee.getInstance().getInternalCloudNetwork()
+                        .getMessage("internal-api-bungee-command-send-controller")
+                ));
+                return;
+            }
+            commandSender.sendMessage(TextComponent.fromLegacyText(prefix + "§cThe servergroup doesn't exists"));
             return;
         }
 
@@ -211,7 +234,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
                         final ClientInfo clientInfo = ReformCloudAPIBungee.getInstance().getConnectedClient(e.getName());
                         commandSender.sendMessage(TextComponent.fromLegacyText(
                             "    - §e" + e.getName() + "§7 | Host: §e" + e.getIp() + "§7 | Memory-Usage: §e"
-                                + clientInfo.getUsedMemory() + "MB§7/§e" + clientInfo.getMaxMemory()
+                                + getMemoryOf(e.getName()) + "MB§7/§e" + clientInfo.getMaxMemory()
                                 + "MB§7 | Processors: §e" + clientInfo.getCpuCoresSystem()
                                 + "§7 | CPU-Usage: §e" + new DecimalFormat("##.###").format(clientInfo.getCpuUsage())
                                 + "%§7 | Started-Processes: §e" + (clientInfo.getStartedProxies().size()
@@ -331,6 +354,10 @@ public final class CommandReformCloud extends Command implements Serializable, T
     public Iterable<String> onTabComplete(CommandSender commandSender, String[] strings) {
         if (!commandSender.hasPermission(getPermission())) {
             return new LinkedList<>();
+        }
+
+        if (strings.length == 2 && strings[0].equalsIgnoreCase("maintenance")) {
+            return registeredServerGroups();
         }
 
         if (strings.length == 2 && strings[0].equalsIgnoreCase("copy")) {
@@ -453,7 +480,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
             new TextComponent(TextComponent.fromLegacyText(
                 prefix + "§7/reformcloud copy <name> <file/dir> \n")),
             new TextComponent(TextComponent.fromLegacyText(
-                prefix + "§7/reformcloud maintenance\n")),
+                prefix + "§7/reformcloud maintenance <serverGroup> \n")),
             new TextComponent(TextComponent.fromLegacyText(
                 prefix + "§7/reformcloud whitelist <add/remove> <proxyGroup/--all> <name> \n")),
             new TextComponent(TextComponent.fromLegacyText(
@@ -467,5 +494,19 @@ public final class CommandReformCloud extends Command implements Serializable, T
             new TextComponent(TextComponent.fromLegacyText(
                 prefix + "§7/reformcloud version"))
         );
+    }
+
+    private long getMemoryOf(String client) {
+        AtomicLong atomicLong = new AtomicLong(0);
+        ReformCloudAPIBungee.getInstance().getAllRegisteredProxies()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient().equals(client))
+            .forEach(e -> atomicLong.addAndGet(e.getMaxMemory()));
+        ReformCloudAPIBungee.getInstance().getAllRegisteredServers()
+            .stream()
+            .filter(e -> e.getCloudProcess().getClient().equals(client))
+            .forEach(e -> atomicLong.addAndGet(e.getMaxMemory()));
+
+        return atomicLong.get();
     }
 }

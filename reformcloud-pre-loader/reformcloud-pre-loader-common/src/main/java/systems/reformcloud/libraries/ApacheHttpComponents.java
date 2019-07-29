@@ -17,7 +17,7 @@ public final class ApacheHttpComponents extends Dependency implements Serializab
     private static final long serialVersionUID = -2104235898343838977L;
 
     public ApacheHttpComponents() {
-        super(null);
+        super(null, "4.5.9");
     }
 
     @Override
@@ -28,10 +28,5 @@ public final class ApacheHttpComponents extends Dependency implements Serializab
     @Override
     public String getName() {
         return "httpclient";
-    }
-
-    @Override
-    public String getVersion() {
-        return "4.5.8";
     }
 }

@@ -48,18 +48,20 @@ public final class PlayerConnectListener implements Listener, Serializable {
 
     @EventHandler
     public void handle(final PlayerLoginEvent event) {
-        boolean ok = ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync(
-            "ReformCloudController",
-            ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
-            new PacketOutCheckPlayer(event.getPlayer().getUniqueId())
-        ).sendOnCurrentThread("ReformCloudController")
-            .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration()
-            .getBooleanValue("checked");
-        if (!ok) {
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
-                    .getMessage("internal-api-spigot-connect-only-proxy"));
-            return;
+        if (ReformCloudAPISpigot.getInstance().getServerInfo().getServerGroup().isOnlyProxyJoin()) {
+            boolean ok = ReformCloudAPISpigot.getInstance().getChannelHandler().sendPacketQuerySync(
+                "ReformCloudController",
+                ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName(),
+                new PacketOutCheckPlayer(event.getPlayer().getUniqueId())
+            ).sendOnCurrentThread("ReformCloudController")
+                .syncUninterruptedly(500, TimeUnit.MILLISECONDS).getConfiguration()
+                .getBooleanValue("checked");
+            if (!ok) {
+                event.disallow(PlayerLoginEvent.Result.KICK_BANNED,
+                    ReformCloudAPISpigot.getInstance().getInternalCloudNetwork()
+                        .getMessage("internal-api-spigot-connect-only-proxy"));
+                return;
+            }
         }
 
         if (ReformCloudAPISpigot.getInstance().getPermissionCache() != null) {
@@ -151,9 +153,10 @@ public final class PlayerConnectListener implements Listener, Serializable {
         ReformCloudAPISpigot.getInstance().getChannelHandler()
             .sendPacketSynchronized("ReformCloudController",
                 new PacketOutServerInfoUpdate(serverInfo));
-        if (!started && serverInfo.getServerGroup().getAutoStart().isEnabled()
-            && Bukkit.getServer().getOnlinePlayers().size() >= serverInfo.getServerGroup()
-            .getAutoStart().getPlayerMax()) {
+        if (!started && serverInfo.getServerGroup().getAutoStart().isEnabled() &&
+            ReformCloudAPISpigot.getInstance().getAllRegisteredServers(serverInfo.getServerGroup().getName())
+                .stream()
+                .noneMatch(e -> e.getOnline() < serverInfo.getServerGroup().getAutoStart().getPlayerMax())) {
             started = true;
             ReformCloudAPISpigot.getInstance().startQueuedProcess(serverInfo.getServerGroup());
             SpigotBootstrap.getInstance().getServer().getScheduler()

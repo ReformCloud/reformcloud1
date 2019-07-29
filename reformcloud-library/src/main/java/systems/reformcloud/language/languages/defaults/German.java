@@ -28,7 +28,7 @@ public final class German extends Language implements Serializable {
             "Lösche ServerGruppe §e[Name=%name%/Clients=%clients%]§r...",
             "Lösche ProxyGruppe §e[Name=%name%/Clients=%clients%]§r...",
             "Lösche Client §e[Name=%name%/IP=%ip%]§r...",
-            "Das Icon der ProxyGruppe %group% ist nicht 64x64 Pixel groß. Bitte behebe den Fehler, denn sonst kann dein Icon nicht geladen werden",
+            "Das Icon der ProxyGruppe §e%group%§r ist nicht §e64x64 Pixel§r groß. Bitte behebe den Fehler, denn sonst kann dein Icon nicht geladen werden",
             "§cEine neue Version von §aReformCloud §cist verfügbar",
             "Deine Version ist §aauf dem neustem Stand",
             "ServerProzess §e%name%§r wurde §cgestoppt",

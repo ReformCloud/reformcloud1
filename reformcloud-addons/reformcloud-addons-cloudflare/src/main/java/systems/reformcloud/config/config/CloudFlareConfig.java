@@ -76,7 +76,9 @@ public final class CloudFlareConfig implements Serializable {
 
     public static class CloudFlareGroup implements Serializable {
 
-        private String targetProxyGroup, subDomain;
+        private String targetProxyGroup;
+
+        private String subDomain;
 
         @ConstructorProperties({"targetProxyGroup", "subDomain"})
         public CloudFlareGroup(String targetProxyGroup, String subDomain) {

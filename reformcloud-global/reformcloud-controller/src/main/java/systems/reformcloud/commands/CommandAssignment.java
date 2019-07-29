@@ -90,6 +90,11 @@ public final class CommandAssignment extends Command implements Serializable {
                         .replace("%value%", args[3])
                         .replace("%group%", serverGroup.getName()));
                 } else {
+                    if (ReformCloudController.getInstance().getClient(args[3]) == null) {
+                        commandSender.sendMessage(language.getClient_not_found());
+                        return;
+                    }
+
                     if (serverGroup.getClients().contains(args[3])) {
                         commandSender
                             .sendMessage(language.getCommand_assignment_value_not_updatable()
@@ -369,11 +374,33 @@ public final class CommandAssignment extends Command implements Serializable {
             if (args[2].equalsIgnoreCase("version")) {
                 if (SpigotVersions.getByName(args[3]) == null) {
                     commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
-                        .replace("%reason%", "Please provide a valid serer version"));
+                        .replace("%reason%", "Please provide a valid server version"));
                     return;
                 }
 
                 serverGroup.setSpigotVersions(SpigotVersions.getByName(args[3]));
+                ReformCloudController.getInstance().getCloudConfiguration()
+                    .updateServerGroup(serverGroup);
+                if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
+                    ReformCloudController.getInstance().reloadAllSave();
+                }
+
+                commandSender.sendMessage(language.getCommand_assignment_value_updated()
+                    .replace("%name%", args[2].toLowerCase())
+                    .replace("%group%", serverGroup.getName())
+                    .replace("%value%", args[3]));
+                return;
+            }
+
+            if (args[2].equalsIgnoreCase("onlyproxyjoin")) {
+                if (!ReformCloudLibraryService.checkIsValidBoolean(args[3])) {
+                    commandSender.sendMessage(language.getCommand_assignment_value_not_updatable()
+                        .replace("%reason%", "Please provide a boolean as argument"));
+                    return;
+                }
+
+                boolean save = Boolean.parseBoolean(args[3]);
+                serverGroup.setOnlyProxyJoin(save);
                 ReformCloudController.getInstance().getCloudConfiguration()
                     .updateServerGroup(serverGroup);
                 if (args.length == 5 && args[4].equalsIgnoreCase("--update")) {
@@ -419,6 +446,11 @@ public final class CommandAssignment extends Command implements Serializable {
                         .replace("%value%", args[3])
                         .replace("%group%", proxyGroup.getName()));
                 } else {
+                    if (ReformCloudController.getInstance().getClient(args[3]) == null) {
+                        commandSender.sendMessage(language.getClient_not_found());
+                        return;
+                    }
+
                     if (proxyGroup.getClients().contains(args[3])) {
                         commandSender
                             .sendMessage(language.getCommand_assignment_value_not_updatable()
@@ -880,7 +912,7 @@ public final class CommandAssignment extends Command implements Serializable {
     private void sendHelp(CommandSender commandSender) {
         commandSender.sendMessage(
             "assignment SERVERGROUP <name> <permission, clients, templates, memory, maxonline, " +
-                "minonline, maxplayers, startport, maintenance, savelogs, servermodetype, version> <value> <--update>");
+                "minonline, maxplayers, startport, maintenance, savelogs, servermodetype, version, onlyproxyjoin> <value> <--update>");
         commandSender.sendMessage(
             "assignment PROXYGROUP <name> <clients, templates, disabledgroups, maintenance, " +
                 "savelogs, memory, maxonline, minonline, proxymodetype, maxplayers, commandlogging, version> <value> <--update>");
@@ -907,10 +939,10 @@ public final class CommandAssignment extends Command implements Serializable {
         }
 
         if (args.length == 2) {
-            if(args[0].equalsIgnoreCase("servergroup")) {
+            if (args[0].equalsIgnoreCase("servergroup")) {
                 out.addAll(asList("permission", "clients", "templates",
                     "memory", "maxonline", "minonline", "maxplayers", "startport",
-                    "maintenance", "savelogs", "servermodetype", "version"));
+                    "maintenance", "savelogs", "servermodetype", "version", "onlyproxyjoin"));
             } else if (args[0].equalsIgnoreCase("proxygroup")) {
                 out.addAll(asList("clients", "templates", "disabledgroups",
                     "maintenance", "savelogs", "memory", "maxonline", "minonline",

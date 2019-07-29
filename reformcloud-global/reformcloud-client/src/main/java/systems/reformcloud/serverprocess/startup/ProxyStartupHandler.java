@@ -196,7 +196,7 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
             if (bufferedImage.getWidth() != 64 || bufferedImage.getHeight() != 64) {
                 ReformCloudClient.getInstance().getChannelHandler()
                     .sendPacketAsynchronous("ReformCloudController",
-                        new PacketOutIconSizeIncorrect(this.proxyStartupInfo.getName()));
+                        new PacketOutIconSizeIncorrect(this.proxyStartupInfo.getProxyGroup().getName()));
                 FileUtils.deleteFileIfExists(Paths.get(path + "/server-icon.png"));
                 FileUtils.copyCompiledFile("reformcloud/bungeecord/icon/server-icon.png",
                     path + "/server-icon.png");

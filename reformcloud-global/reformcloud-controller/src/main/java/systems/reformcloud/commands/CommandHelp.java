@@ -28,7 +28,7 @@ public final class CommandHelp extends Command implements Serializable {
     @Override
     public void executeCommand(CommandSender commandSender, String[] args) {
         commandSender.sendMessage("The following Commands are registered:");
-        ReformCloudController.getInstance().getCommandManager().getCommands().forEach(
+        ReformCloudController.getInstance().getCommandManager().commands().forEach(
             command -> commandSender.sendMessage(
                 "   - " + command.getName() + " | Aliases: §e" + Arrays.asList(command.getAliases())
                     + "§r | Description: §3" + command.getDescription() + "§r | Permission: §e" + (
@@ -36,16 +36,16 @@ public final class CommandHelp extends Command implements Serializable {
 
         ReformCloudController.getInstance().getColouredConsoleProvider().emptyLine();
 
-        commandSender.sendMessage("Ram: " + decimalFormat.format(
+        commandSender.sendMessage("Ram: §e" + decimalFormat.format(
             ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.usedMemorySystem()))
             + "MB/" + decimalFormat.format(
             ReformCloudLibraryService.bytesToMB(ReformCloudLibraryService.maxMemorySystem()))
             + "MB");
         commandSender.sendMessage(
-            "CPU (System/Internal): " + decimalFormat.format(ReformCloudLibraryService.cpuUsage())
+            "CPU (System/Internal): §e" + decimalFormat.format(ReformCloudLibraryService.cpuUsage())
                 + "/" + decimalFormat.format(ReformCloudLibraryService.internalCpuUsage()));
-        commandSender.sendMessage("Threads: " + Thread.getAllStackTraces().size());
+        commandSender.sendMessage("Threads: §e" + Thread.getAllStackTraces().size());
         commandSender.sendMessage(
-            "For further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
+            "§bFor further information please contact us on our Discord (\"https://discord.gg/uskXdVZ\")");
     }
 }

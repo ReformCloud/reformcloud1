@@ -4,13 +4,21 @@
 
 package systems.reformcloud.listener;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.*;
+import net.md_5.bungee.api.event.LoginEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerKickEvent;
+import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import systems.reformcloud.ReformCloudAPIBungee;
@@ -19,7 +27,12 @@ import systems.reformcloud.launcher.BungeecordBootstrap;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
-import systems.reformcloud.network.packets.*;
+import systems.reformcloud.network.packets.PacketOutLoginPlayer;
+import systems.reformcloud.network.packets.PacketOutLogoutPlayer;
+import systems.reformcloud.network.packets.PacketOutProxyInfoUpdate;
+import systems.reformcloud.network.packets.PacketOutSendControllerConsoleMessage;
+import systems.reformcloud.network.packets.PacketOutUpdateOnlinePlayer;
+import systems.reformcloud.network.packets.PacketOutUpdatePermissionHolder;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionHolder;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPlayer;
 import systems.reformcloud.player.implementations.OfflinePlayer;
@@ -27,11 +40,6 @@ import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 import systems.reformcloud.player.version.SpigotVersion;
 import systems.reformcloud.utility.TypeTokenAdaptor;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 03.11.2018
@@ -52,6 +60,7 @@ public final class CloudConnectListener implements Listener {
             );
             if (serverInfo == null) {
                 event.setCancelled(true);
+                return;
             }
 
             event.getPlayer().setReconnectServer(BungeecordBootstrap.getInstance().getProxy()
@@ -170,7 +179,10 @@ public final class CloudConnectListener implements Listener {
 
         if (!started && proxyInfo.getProxyGroup().getAutoStart().isEnabled()
             && BungeecordBootstrap.getInstance().getProxy().getOnlineCount() >= proxyInfo
-            .getProxyGroup().getAutoStart().getPlayerMax()) {
+            .getProxyGroup().getAutoStart().getPlayerMax() &&
+            ReformCloudAPIBungee.getInstance().getAllRegisteredProxies(proxyInfo.getProxyGroup().getName())
+                .stream()
+                .noneMatch(e -> e.getOnline() < proxyInfo.getProxyGroup().getAutoStart().getPlayerMax())) {
             started = true;
             ReformCloudAPIBungee.getInstance().startProxy(proxyInfo.getProxyGroup());
             ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {

@@ -4,6 +4,14 @@
 
 package systems.reformcloud.commands;
 
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
@@ -16,14 +24,12 @@ import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.network.out.*;
-
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import systems.reformcloud.network.out.PacketOutGetClientProcessQueue;
+import systems.reformcloud.network.out.PacketOutRemoveProxyQueueProcess;
+import systems.reformcloud.network.out.PacketOutRemoveServerQueueProcess;
+import systems.reformcloud.network.out.PacketOutStartGameServer;
+import systems.reformcloud.network.out.PacketOutStartProxy;
+import systems.reformcloud.network.out.PacketOutStopProcess;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -148,6 +154,7 @@ public final class CommandProcess extends Command implements Serializable {
                         commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
                         commandSender.sendMessage(language.getNo_available_client_for_startup());
+                        break;
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
@@ -177,6 +184,7 @@ public final class CommandProcess extends Command implements Serializable {
                         commandSender.sendMessage(language.getCommand_process_trying_startup());
                     } else {
                         commandSender.sendMessage(language.getNo_available_client_for_startup());
+                        break;
                     }
                     ReformCloudLibraryService.sleep(200);
                 }
@@ -452,7 +460,7 @@ public final class CommandProcess extends Command implements Serializable {
                                         "The following §eproxies§r of the group \"§e" + args[2]
                                             + "§r\" are connected: ");
                                     connected.forEach(info -> commandSender.sendMessage(
-                                        "    - §e" + info.getCloudProcess().getName() + "§r | Player: §e" + info
+                                        "    - §e" + info.getCloudProcess().getName() + "§r | Maintenance: §e" + info.getProxyGroup().isMaintenance() + "§r | Player: §e" + info
                                             .getOnline() + "§r/§e" + info.getProxyGroup().getMaxPlayers()));
                                 } else
                                     commandSender.sendMessage("There are no started §eproxies§r of the group \"§e" + args[2] + "§r\"");
@@ -633,5 +641,104 @@ public final class CommandProcess extends Command implements Serializable {
                 commandSender.sendMessage("process queue <client> remove <proxy/server> <name>");
             }
         }
+    }
+
+    @Override
+    public List<String> complete(String commandLine, String[] args) {
+        List<String> out = new LinkedList<>();
+
+        if (args.length == 0) {
+            out.addAll(asList("STOP", "RESTART", "STOPGROUP", "START",
+                "LIST", "QUEUE"));
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("START")) {
+                out.addAll(serverGroups());
+                out.addAll(proxyGroups());
+            } else if (args[0].equalsIgnoreCase("STOP")) {
+                out.addAll(servers());
+                out.addAll(proxies());
+                out.addAll(asList("--all", "--empty"));
+            } else if (args[0].equalsIgnoreCase("STOPGROUP")) {
+                out.addAll(serverGroups());
+                out.addAll(proxyGroups());
+            } else if (args[0].equalsIgnoreCase("RESTART")) {
+                out.addAll(servers());
+                out.addAll(proxies());
+            } else if (args[0].equalsIgnoreCase("LIST")) {
+                out.addAll(asList("SERVER", "PROXY"));
+            } else if (args[0].equalsIgnoreCase("QUEUE")) {
+                out.addAll(clients());
+            }
+        }
+
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("QUEUE")) {
+                out.addAll(asList("list", "remove"));
+            } else if (args[0].equalsIgnoreCase("LIST")) {
+                if (args[1].equalsIgnoreCase("SERVER")) {
+                    out.addAll(serverGroups());
+                } else if (args[1].equalsIgnoreCase("PROXY")) {
+                    out.addAll(proxyGroups());
+                }
+            }
+        }
+
+        if (args.length == 3) {
+            if (args[2].equalsIgnoreCase("remove")) {
+                out.addAll(asList("SERVER", "PROXY"));
+            }
+        }
+
+        if (args.length == 4) {
+            if (args[3].equalsIgnoreCase("SERVER")) {
+                out.addAll(servers());
+            } else if (args[3].equalsIgnoreCase("PROXY")) {
+                out.addAll(proxies());
+            }
+        }
+
+        return out;
+    }
+
+    private List<String> serverGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllServerGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxyGroups() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllProxyGroups()
+            .forEach(group -> out.add(group.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> clients() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllConnectedClients()
+            .forEach(client -> out.add(client.getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> servers() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredServers()
+            .forEach(servers -> out.add(servers.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxies() {
+        List<String> out = new LinkedList<>();
+        ReformCloudController.getInstance().getAllRegisteredProxies()
+            .forEach(proxies -> out.add(proxies.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
     }
 }

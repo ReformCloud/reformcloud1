@@ -17,25 +17,41 @@ public abstract class Dependency implements Serializable {
     /**
      * The download url of the dependency
      */
-    public String download_url = "http://central.maven.org/maven2/";
+    private String downloadUrl = "http://central.maven.org/maven2/";
+
+    /**
+     * The version of the current dependency
+     */
+    public String version;
 
     /**
      * Initializes the dependency using the default url
+     *
+     * @deprecated Use version initialized constructor
      */
+    @Deprecated
     protected Dependency() {
-        this(null);
+        this(null, "1.0");
     }
 
     /**
      * Creates a new constructor of the dependency
      *
-     * @param url The download url of the dependency or {@code null} if the cloud should use the
-     * default url
+     * @param url The download url of the dependency or {@code null} if the
+     *            cloud should use the default url
+     * @param defaultVersion The default version of the dependency if the
+     *                       current version cannot be loaded
      */
-    protected Dependency(final String url) {
+    protected Dependency(final String url, final String defaultVersion) {
         if (url != null) {
-            this.download_url = url;
+            this.downloadUrl = url;
         }
+
+        if (defaultVersion == null) {
+            throw new IllegalStateException("default version may not be null");
+        }
+
+        this.version = defaultVersion;
     }
 
     /**
@@ -57,9 +73,22 @@ public abstract class Dependency implements Serializable {
      *
      * @return The version id of the dependency
      */
-    public abstract String getVersion();
+    public String getVersion() {
+        return this.version;
+    }
 
-    public String getDownload_url() {
-        return this.download_url;
+    /**
+     * Sets the version of the current dependency
+     *
+     * @param version The new version of the dependency
+     * @return The current dependency instance
+     */
+    public Dependency setVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
+    public String downloadUrl() {
+        return this.downloadUrl;
     }
 }

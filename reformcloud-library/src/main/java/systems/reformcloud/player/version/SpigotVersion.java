@@ -9,6 +9,7 @@ import java.util.Map;
  */
 
 public enum SpigotVersion implements Serializable {
+    V1_14_4(498),    
     V1_14_3(490),
     V1_14_2(485),
     V1_14_1(480),

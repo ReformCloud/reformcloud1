@@ -15,7 +15,7 @@ import java.io.Serializable;
 public final class ApacheCommonsNet extends Dependency implements Serializable {
 
     public ApacheCommonsNet() {
-        super(null);
+        super(null, "3.6");
     }
 
     @Override
@@ -26,10 +26,5 @@ public final class ApacheCommonsNet extends Dependency implements Serializable {
     @Override
     public String getName() {
         return "commons-net";
-    }
-
-    @Override
-    public String getVersion() {
-        return "3.6";
     }
 }

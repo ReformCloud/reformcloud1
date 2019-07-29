@@ -6,7 +6,7 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-pre-loader-common</artifactId>
-            <version>1.12</version>
+            <version>1.13</version>
             <scope>compile</scope>
             <type>jar</type>
         </dependency>
@@ -18,7 +18,7 @@
     <parent>
         <artifactId>reformcloud-pre-loader</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.12</version>
+        <version>1.13</version>
     </parent>
 
     <build>
