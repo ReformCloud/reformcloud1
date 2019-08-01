@@ -247,12 +247,12 @@ public final class CommandScreen extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("SERVER", "PROXY", "CLIENT", "EXECUTE",
                 "SWITCH", "LEAVE"));
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("SERVER")) {
                 out.addAll(servers());
             } else if (args[0].equalsIgnoreCase("PROXY")) {
@@ -264,7 +264,7 @@ public final class CommandScreen extends Command implements Serializable {
             }
         }
 
-        if (args.length == 2) {
+        if (args.length == 3) {
             if (args[1].equalsIgnoreCase("SERVER")) {
                 out.addAll(servers());
             } else if (args[1].equalsIgnoreCase("PROXY")) {

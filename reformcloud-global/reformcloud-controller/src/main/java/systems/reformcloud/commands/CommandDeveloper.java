@@ -219,15 +219,15 @@ public final class CommandDeveloper extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("DEBUG", "STANDBY"));
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             out.addAll(asList("ENABLE", "DISABLE"));
         }
 
-        if (args.length == 2) {
+        if (args.length == 3) {
             if (args[0].equalsIgnoreCase("STANDBY")) {
                 out.addAll(clients());
             } else if (args[0].equalsIgnoreCase("DEBUG")) {
@@ -235,7 +235,7 @@ public final class CommandDeveloper extends Command implements Serializable {
             }
         }
 
-        if (args.length == 3) {
+        if (args.length == 4) {
             if (args[2].equalsIgnoreCase("SERVER")) {
                 out.addAll(servers());
             } else if (args[2].equalsIgnoreCase("PROXY")) {

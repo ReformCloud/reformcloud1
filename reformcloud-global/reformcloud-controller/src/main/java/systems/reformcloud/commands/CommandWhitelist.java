@@ -160,11 +160,11 @@ public final class CommandWhitelist extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("ADD", "REMOVE", "LIST"));
         }
 
-        if(args.length == 1) {
+        if(args.length == 2) {
             if (args[0].equalsIgnoreCase("ADD")) {
                 out.addAll(proxyGroups());
                 out.addAll(asList("--all"));
@@ -174,7 +174,7 @@ public final class CommandWhitelist extends Command implements Serializable {
             }
         }
 
-        if(args.length == 2) {
+        if(args.length == 3) {
             if (args[0].equalsIgnoreCase("ADD")) {
                 out.addAll(proxyGroups());
             } else if (args[0].equalsIgnoreCase("REMOVE")) {

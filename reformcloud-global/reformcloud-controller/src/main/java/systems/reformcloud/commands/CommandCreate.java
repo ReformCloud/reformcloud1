@@ -240,11 +240,11 @@ public final class CommandCreate extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT", "WEBUSER", "TEMPLATE"));
         }
 
-        if (args.length == 1 && args[0].equalsIgnoreCase("TEMPLATE")) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("TEMPLATE")) {
             out.addAll(groups());
         }
 

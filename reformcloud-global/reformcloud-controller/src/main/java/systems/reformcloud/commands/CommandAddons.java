@@ -298,11 +298,11 @@ public final class CommandAddons extends Command implements Serializable {
     @Override
     public List<String> complete(String commandLine, String[] args) {
         final List<String> out = new LinkedList<>();
-        if (args.length == 1) {
+        if (args.length == 2) {
             out.addAll(asList("list", "update"));
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("update")) {
+        if (args.length == 3 && args[0].equalsIgnoreCase("update")) {
             out.addAll(asList("AUTOICON", "BACKUP", "CLOUDFLARE", "DISCORD", "MOBS", "PARAMETERS", "PERMISSIONS",
                 "PROXY", "PROPERTIES", "SIGNS", "--ALL"));
         }

@@ -110,19 +110,19 @@ public final class CommandWebPermissions extends Command implements Serializable
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("ADD", "REMOVE", "LIST"));
         }
 
-        if (args.length == 1 && args[0].equalsIgnoreCase("LIST")) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("LIST")) {
             out.addAll(users());
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("REMOVE")) {
+        if (args.length == 3 && args[0].equalsIgnoreCase("REMOVE")) {
             out.addAll(userGetPermissions(args[1]));
         }
 
-        if (args.length == 3) {
+        if (args.length == 4) {
             out.addAll(asList("TRUE", "FALSE"));
         }
 

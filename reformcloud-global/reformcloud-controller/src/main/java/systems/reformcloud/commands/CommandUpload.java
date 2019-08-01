@@ -315,18 +315,18 @@ public final class CommandUpload extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("PLUGIN", "CONTROLLER", "CLIENTS",
                 "CONTROLLERADDON", "CLIENTADDON"));
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("PLUGIN")) {
                 out.addAll(groups());
             }
         }
 
-        if (args.length == 2) {
+        if (args.length == 3) {
             if (args[0].equalsIgnoreCase("PLUGIN")) {
                 out.addAll(templates(args[1]));
             }

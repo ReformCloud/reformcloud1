@@ -127,12 +127,18 @@ public final class CommandExecute extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("SERVER", "PROXY"));
         }
 
-        if (args.length == 1) {
-            out.addAll(servers());
+        if (args.length == 2) {
+            if (args[1].equalsIgnoreCase("SERVER")){
+                out.addAll(servers());
+            }
+
+            if (args[1].equalsIgnoreCase("PROXY")){
+                out.addAll(proxies());
+            }
         }
 
         return out;
@@ -142,6 +148,12 @@ public final class CommandExecute extends Command implements Serializable {
         List<String> out = new LinkedList<>();
         ReformCloudController.getInstance().getAllRegisteredServers()
             .forEach(servers -> out.add(servers.getCloudProcess().getName()));
+        Collections.sort(out);
+        return out;
+    }
+
+    private List<String> proxies() {
+        List<String> out = new LinkedList<>();
         ReformCloudController.getInstance().getAllRegisteredProxies()
             .forEach(proxies -> out.add(proxies.getCloudProcess().getName()));
         Collections.sort(out);

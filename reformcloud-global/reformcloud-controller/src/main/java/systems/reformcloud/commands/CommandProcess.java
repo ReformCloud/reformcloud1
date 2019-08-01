@@ -647,12 +647,12 @@ public final class CommandProcess extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("STOP", "RESTART", "STOPGROUP", "START",
                 "LIST", "QUEUE"));
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("START")) {
                 out.addAll(serverGroups());
                 out.addAll(proxyGroups());
@@ -673,7 +673,7 @@ public final class CommandProcess extends Command implements Serializable {
             }
         }
 
-        if (args.length == 2) {
+        if (args.length == 3) {
             if (args[0].equalsIgnoreCase("QUEUE")) {
                 out.addAll(asList("list", "remove"));
             } else if (args[0].equalsIgnoreCase("LIST")) {
@@ -685,13 +685,13 @@ public final class CommandProcess extends Command implements Serializable {
             }
         }
 
-        if (args.length == 3) {
+        if (args.length == 4) {
             if (args[2].equalsIgnoreCase("remove")) {
                 out.addAll(asList("SERVER", "PROXY"));
             }
         }
 
-        if (args.length == 4) {
+        if (args.length == 5) {
             if (args[3].equalsIgnoreCase("SERVER")) {
                 out.addAll(servers());
             } else if (args[3].equalsIgnoreCase("PROXY")) {

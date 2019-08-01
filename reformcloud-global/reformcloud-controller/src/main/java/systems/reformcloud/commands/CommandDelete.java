@@ -208,11 +208,11 @@ public final class CommandDelete extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT", "WEBUSER"));
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("servergroup")) {
                 out.addAll(serverGroups());
             } else if (args[0].equalsIgnoreCase("proxygroup")) {
