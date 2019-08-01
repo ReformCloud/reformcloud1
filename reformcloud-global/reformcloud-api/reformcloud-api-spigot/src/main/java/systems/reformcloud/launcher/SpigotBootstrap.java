@@ -10,6 +10,7 @@ import io.netty.util.ResourceLeakDetector;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
@@ -81,6 +82,7 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
     @Override
     public void onDisable() {
+        this.getServer().getWorlds().forEach(World::save);
         getServer().getScheduler().cancelTasks(this);
         getServer().getMessenger().unregisterOutgoingPluginChannel(this);
 
