@@ -108,8 +108,23 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     @Override
     @MayNotBePresent
     public Command findCommand(String commandLine) {
-        return this.commands.stream().filter(e -> e.getName().equalsIgnoreCase(commandLine) || Arrays.asList(e.getAliases())
-            .contains(commandLine)).findFirst().orElse(null);
+        if (commandLine == null || commandLine.isEmpty()) {
+            return null;
+        }
+
+        for (Command command : commands) {
+            if (command.getName().toLowerCase().startsWith(commandLine.toLowerCase())) {
+                return command;
+            }
+
+            for (String alias : command.getAliases()) {
+                if (alias.toLowerCase().startsWith(commandLine.toLowerCase())) {
+                    return command;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

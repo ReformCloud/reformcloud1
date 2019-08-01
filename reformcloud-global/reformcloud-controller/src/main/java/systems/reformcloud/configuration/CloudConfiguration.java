@@ -143,12 +143,14 @@ public final class CloudConfiguration implements Serializable {
         Language language = new LanguageManager(lang).getLoaded();
 
         colouredConsoleProvider.info(language.getSetup_controller_ip());
-        String controllerIP = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        String controllerIP = this.readString(colouredConsoleProvider,
+            s -> s.split("\\.").length == 4).trim();
 
         colouredConsoleProvider.info(language.getSetup_name_of_first_client());
         String clientName = this.readString(colouredConsoleProvider, s -> true);
         colouredConsoleProvider.info(language.getSetup_ip_of_new_client());
-        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\" +
+            ".").length == 4).trim();
 
         new Configuration()
             .addValue("client", Collections.singletonList(new Client(clientName, ip, null)))

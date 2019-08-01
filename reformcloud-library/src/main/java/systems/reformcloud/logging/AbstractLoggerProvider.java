@@ -5,7 +5,7 @@
 package systems.reformcloud.logging;
 
 import jline.console.ConsoleReader;
-import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.logging.handlers.ConsoleInputHandler;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -116,9 +116,9 @@ public abstract class AbstractLoggerProvider implements Serializable {
     /**
      * Registers a logger provider
      *
-     * @param iConsoleInputHandler The logger handler which should be registered
+     * @param consoleInputHandler The logger handler which should be registered
      */
-    public abstract void registerLoggerHandler(IConsoleInputHandler iConsoleInputHandler);
+    public abstract void registerLoggerHandler(ConsoleInputHandler consoleInputHandler);
 
     /**
      * Uploads a log to the reformcloud web server

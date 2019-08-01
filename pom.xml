@@ -9,9 +9,16 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.test.redirectTestOutputToFile>true
+        </maven.test.redirectTestOutputToFile>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
+
+        <maven.build.timestamp.format>yyyyMMddHHmm
+        </maven.build.timestamp.format>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <build.number/>
 
         <api.default.version>113PRESTABLE290719953</api.default.version>
         <service.type>PRE-STABLE</service.type>
@@ -63,6 +70,42 @@
             </roles>
         </developer>
     </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <contributors>
+        <contributor>
+            <name>ByteException</name>
+        </contributor>
+        <contributor>
+            <name>JanDragon</name>
+        </contributor>
+        <contributor>
+            <name>MrDoubleTime</name>
+        </contributor>
+    </contributors>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/reformcloudproject/reformcloud/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <site>
+            <id>github-project-site</id>
+            <url>gitsite:git@github.com/reformcloudproject/reformcloud.git</url>
+        </site>
+    </distributionManagement>
+
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
 
     <version>1.13</version>
 

@@ -13,6 +13,7 @@ import java.lang.annotation.*;
  * @author _Klaro | Pasqual K. / created on 22.06.2019
  */
 
+@Internal
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.TYPE)

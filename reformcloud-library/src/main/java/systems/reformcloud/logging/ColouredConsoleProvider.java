@@ -13,7 +13,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
-import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.logging.handlers.ConsoleInputHandler;
 import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.annotiations.ForRemoval;
@@ -83,7 +83,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
     /**
      * The registered logger handlers
      */
-    private List<IConsoleInputHandler> iConsoleInputHandlers = new ArrayList<>();
+    private List<ConsoleInputHandler> consoleInputHandlers = new ArrayList<>();
 
     /**
      * Creates a new instance of the cloud logger
@@ -237,8 +237,8 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
 
     @Override
     public void handleAll(String message) {
-        this.iConsoleInputHandlers
-            .forEach(iConsoleInputHandler -> iConsoleInputHandler.handle(message));
+        this.consoleInputHandlers
+            .forEach(consoleInputHandler -> consoleInputHandler.handle(message));
     }
 
     @Override
@@ -387,7 +387,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
 
             this.consoleReader.killLine();
             this.consoleReader.close();
-            this.iConsoleInputHandlers.clear();
+            this.consoleInputHandlers.clear();
         } catch (final IOException ex) {
             StringUtil
                 .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
@@ -396,8 +396,8 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
     }
 
     @Override
-    public void registerLoggerHandler(final IConsoleInputHandler iConsoleInputHandler) {
-        this.iConsoleInputHandlers.add(iConsoleInputHandler);
+    public void registerLoggerHandler(final ConsoleInputHandler consoleInputHandler) {
+        this.consoleInputHandlers.add(consoleInputHandler);
     }
 
     @Override
@@ -502,8 +502,8 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
         return this.debug;
     }
 
-    public List<IConsoleInputHandler> getIConsoleInputHandlers() {
-        return this.iConsoleInputHandlers;
+    public List<ConsoleInputHandler> getIConsoleInputHandlers() {
+        return this.consoleInputHandlers;
     }
 
     @Override
