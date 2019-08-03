@@ -6,6 +6,7 @@ package systems.reformcloud;
 
 import com.google.common.base.Enums;
 import com.google.gson.reflect.TypeToken;
+import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -72,6 +73,7 @@ import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -181,6 +183,31 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
                 }
             });
         }
+
+        Thread logoutHandler = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                List<UUID> forRemoval = new LinkedList<>();
+                AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+
+                this.proxyInfo.getOnlinePlayers().forEach(player -> {
+                    if (BungeeCord.getInstance().getPlayer(player) == null) {
+                        forRemoval.add(player);
+                        atomicBoolean.set(true);
+                    }
+                });
+
+                if (atomicBoolean.getAndSet(false)) {
+                    this.proxyInfo.getOnlinePlayers().removeAll(forRemoval);
+                    this.proxyInfo.setOnline(this.proxyInfo.getOnlinePlayers().size());
+                    this.updateProxyInfo();
+                    forRemoval.clear();
+                }
+
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
+            }
+        });
+        logoutHandler.setDaemon(true);
+        logoutHandler.start();
     }
 
     public static ReformCloudAPIBungee getInstance() {
