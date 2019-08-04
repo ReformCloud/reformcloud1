@@ -6,6 +6,7 @@ package systems.reformcloud.bootstrap;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.inject.Inject;
+import systems.reformcloud.utility.Dependency;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
@@ -70,7 +71,13 @@ public final class VelocityBootstrap implements Serializable {
 
             @Override
             public String getVersion() {
-                return "4.1.37.Final";
+                return version;
+            }
+            
+            @Override
+            public Dependency setVersion(String version)
+                this.version = version;
+                return this;
             }
         });
         instance = this;
