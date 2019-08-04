@@ -201,6 +201,7 @@ public final class CommandReformCloud extends Command implements Serializable, T
             } else {
                 commandSender.sendMessage(TextComponent
                     .fromLegacyText(prefix + "/reformcloud process <start/stop> <group/name>"));
+                    .fromLegacyText(prefix + "/reformcloud process <stopgroup> <group>"));
             }
 
             return;
