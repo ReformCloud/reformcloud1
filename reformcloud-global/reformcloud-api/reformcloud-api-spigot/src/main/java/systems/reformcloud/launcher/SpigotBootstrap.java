@@ -10,6 +10,7 @@ import io.netty.util.ResourceLeakDetector;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
+import systems.reformcloud.utility.Dependency;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 import systems.reformcloud.ReformCloudAPISpigot;
@@ -53,8 +54,15 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
 
             @Override
             public String getVersion() {
-                return "4.1.37.Final";
+                return version;
             }
+            
+            @Override
+            public Dependency setVersion(String version) {
+                this.version = version;
+                return this;
+    }
+            
         });
         this.start = System.currentTimeMillis();
         instance = this;
