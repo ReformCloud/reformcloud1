@@ -9,6 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.ResourceLeakDetector;
 import java.io.Serializable;
 import java.util.Arrays;
+import systems.reformcloud.utility.Dependency;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 import systems.reformcloud.ReformCloudAPIBungee;
@@ -58,8 +59,8 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
             
             @Override
             public Dependency setVersion(String version) {
-            this.version = version;
-            return this;
+                this.version = version;
+                return this;
             }            
             
         });
