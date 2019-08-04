@@ -370,28 +370,28 @@ public final class CommandPermissions extends Command implements Serializable, T
 
         String prefix = ReformCloudAPIBungee.getInstance().getInternalCloudNetwork().getPrefix();
         commandSender.sendMessage(TextComponent
-            .fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms list"));
+            .fromLegacyText(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/perms list"));
         commandSender.sendMessage(TextComponent.fromLegacyText(
-            prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <USERNAME> list"));
-        commandSender.sendMessage(TextComponent.fromLegacyText(
-            prefix + (prefix.endsWith(" ") ? "" : " ")
-                + "§7perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>"));
+            prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/perms <USERNAME> list"));
         commandSender.sendMessage(TextComponent.fromLegacyText(
             prefix + (prefix.endsWith(" ") ? "" : " ")
-                + "§7perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>"));
+                + "§7/perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>"));
         commandSender.sendMessage(TextComponent.fromLegacyText(
             prefix + (prefix.endsWith(" ") ? "" : " ")
-                + "§7perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>"));
-        commandSender.sendMessage(TextComponent.fromLegacyText(
-            prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> setdefault"));
-        commandSender.sendMessage(TextComponent.fromLegacyText(
-            prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> <CREATE/DELETE>"));
+                + "§7/perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>"));
         commandSender.sendMessage(TextComponent.fromLegacyText(
             prefix + (prefix.endsWith(" ") ? "" : " ")
-                + "§7perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
+                + "§7/perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(
+            prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/perms <GROUPNAME> setdefault"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(
+            prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/perms <GROUPNAME> <CREATE/DELETE>"));
         commandSender.sendMessage(TextComponent.fromLegacyText(
             prefix + (prefix.endsWith(" ") ? "" : " ")
-                + "§7perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>"));
+                + "§7/perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
+        commandSender.sendMessage(TextComponent.fromLegacyText(
+            prefix + (prefix.endsWith(" ") ? "" : " ")
+                + "§7/perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>"));
     }
 
     @Override

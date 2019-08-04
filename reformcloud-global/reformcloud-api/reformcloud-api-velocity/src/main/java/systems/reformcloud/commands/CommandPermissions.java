@@ -355,23 +355,23 @@ public final class CommandPermissions implements Serializable, Command {
 
         String prefix = ReformCloudAPIVelocity.getInstance().getInternalCloudNetwork().getPrefix();
         commandSource.sendMessage(
-            TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms list"));
+            TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/perms list"));
         commandSource.sendMessage(TextComponent
-            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <USERNAME> list"));
+            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/perms <USERNAME> list"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>"));
+            + "§7/perms <USERNAME> <ADDPERM/REMOVEPERM> <PERMISSION>"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>"));
+            + "§7/perms <USERNAME> <ADDGROUP/REMOVEGROUP/SETGROUP> <GROUPNAME>"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>"));
+            + "§7/perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>"));
         commandSource.sendMessage(TextComponent
-            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7perms <GROUPNAME> setdefault"));
+            .of(prefix + (prefix.endsWith(" ") ? "" : " ") + "§7/perms <GROUPNAME> setdefault"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7perms <GROUPNAME> <CREATE/DELETE>"));
+            + "§7/perms <GROUPNAME> <CREATE/DELETE>"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
+            + "§7/perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>"));
         commandSource.sendMessage(TextComponent.of(prefix + (prefix.endsWith(" ") ? "" : " ")
-            + "§7perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>"));
+            + "§7/perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>"));
     }
 
     @Override
