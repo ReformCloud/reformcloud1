@@ -544,7 +544,7 @@ public final class SignSelector {
                                 } else if (sign.getServerInfo().getOnlinePlayers().size() == 0) {
                                     SignSelector.this.setEmpty(sign);
                                 } else if (sign.getServerInfo().getOnlinePlayers().size()
-                                    == serverGroup.getMaxPlayers()) {
+                                    >= serverGroup.getMaxPlayers()) {
                                     SignSelector.this.setFull(sign);
                                 } else {
                                     SignSelector.this.setOnline(sign);
