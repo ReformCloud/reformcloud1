@@ -16,6 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -364,12 +365,10 @@ public final class SignSelector {
     }
 
     private void updateSignForAllPlayers(final org.bukkit.block.Sign sign, final String[] lines) {
-        SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> {
-            if (e.getWorld().getName().equals(sign.getWorld().getName()) && e.getWorld()
-                .isChunkLoaded(sign.getChunk())) {
-                e.sendSignChange(sign.getLocation(), lines);
-            }
-        });
+        Bukkit.getOnlinePlayers().stream().filter(player ->
+            player.getWorld().getName().equals(sign.getWorld().getName())
+                && player.getWorld().isChunkLoaded(sign.getChunk()) && player.getLocation().distance(sign.getLocation()) < 32)
+            .forEach(player -> player.sendSignChange(sign.getLocation(), lines));
     }
 
     private void updateAllSigns() {
