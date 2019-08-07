@@ -269,6 +269,8 @@ public final class CloudConnectListener implements Listener {
             .forEach(CloudConnectListener::initTab);
         ReformCloudAPIBungee.getInstance().getCachedPermissionHolders()
             .remove(event.getPlayer().getUniqueId());
+
+        event.getPlayer().setReconnectServer(null);
     }
 
     @EventHandler(priority = -127)

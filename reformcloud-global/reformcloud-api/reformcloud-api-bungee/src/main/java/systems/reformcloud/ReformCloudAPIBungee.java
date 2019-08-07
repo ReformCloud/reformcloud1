@@ -1077,6 +1077,7 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
     }
 
     public ServerInfo nextFreeLobby(final ProxyGroup proxyGroup, ProxiedPlayer proxiedPlayer) {
+        List<ServerInfo> result = new ArrayList<>();
         for (ServerInfo serverInfo : this.internalCloudNetwork.getServerProcessManager()
             .getAllRegisteredServerProcesses()) {
             if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
@@ -1091,23 +1092,15 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
                 continue;
             }
 
-            if (serverInfo.getServerGroup().getJoinPermission() != null
-                && proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoinPermission())
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
-            } else if (serverInfo.getServerGroup().getJoinPermission() == null
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
-            }
+            result.add(serverInfo);
         }
 
-        return null;
+        return nextFreeLobby(result, proxiedPlayer);
     }
 
     public ServerInfo nextFreeLobby(final ProxyGroup proxyGroup, final ProxiedPlayer proxiedPlayer,
         final String current) {
+        List<ServerInfo> result = new ArrayList<>();
         for (ServerInfo serverInfo : this.internalCloudNetwork.getServerProcessManager()
             .getAllRegisteredServerProcesses()) {
             if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
@@ -1123,19 +1116,39 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
                 continue;
             }
 
-            if (serverInfo.getServerGroup().getJoinPermission() != null
-                && proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoinPermission())
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
-            } else if (serverInfo.getServerGroup().getJoinPermission() == null
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
+            result.add(serverInfo);
+        }
+
+        return nextFreeLobby(result, proxiedPlayer);
+    }
+
+    private ServerInfo nextFreeLobby(List<ServerInfo> infos, ProxiedPlayer proxiedPlayer) {
+        ServerInfo target = null;
+        for (ServerInfo info : infos) {
+            if (!info.isFull()) {
+                if (info.getServerGroup().getJoinPermission() != null && proxiedPlayer.hasPermission(info.getServerGroup().getJoinPermission())) {
+                    if (target == null) {
+                        target = info;
+                        continue;
+                    }
+
+                    if (target.getOnline() > info.getOnline()) {
+                        target = info;
+                    }
+                } else if (info.getServerGroup().getJoinPermission() == null) {
+                    if (target == null) {
+                        target = info;
+                        continue;
+                    }
+
+                    if (target.getOnline() > info.getOnline()) {
+                        target = info;
+                    }
+                }
             }
         }
 
-        return null;
+        return target;
     }
 
     /**
