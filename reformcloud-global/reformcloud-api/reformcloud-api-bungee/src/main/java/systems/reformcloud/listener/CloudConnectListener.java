@@ -232,7 +232,10 @@ public final class CloudConnectListener implements Listener {
             .sendDirectPacket("ReformCloudController",
                 new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));
 
-        final String currentServer = event.getPlayer().getServer().getInfo().getName();
+        String currentServer = event.getPlayer().getServer().getInfo().getName();
+        if (currentServer == null) {
+            currentServer = "unknown";
+        }
 
         ReformCloudAPIBungee.getInstance().getOnlinePlayers()
             .remove(event.getPlayer().getUniqueId());
