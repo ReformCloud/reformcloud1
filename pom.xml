@@ -42,7 +42,7 @@
         <dependency.snakeyaml.version>1.24</dependency.snakeyaml.version>
         <dependency.commons-io.version>2.6</dependency.commons-io.version>
         <dependency.jda.version>4.BETA.0_9</dependency.jda.version>
-        <dependency.slf4j.version>1.7.26</dependency.slf4j.version>
+        <dependency.slf4j.version>1.7.27</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
     </properties>
 
