@@ -55,8 +55,7 @@ public final class CloudConnectListener implements Listener {
                 return;
             }
 
-            event.getPlayer().setReconnectServer(BungeecordBootstrap.getInstance().getProxy()
-                .getServerInfo(serverInfo.getCloudProcess().getName()));
+            event.getPlayer().setReconnectServer(null);
             ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync(
                 "ReformCloudController",
                 proxyInfo.getCloudProcess().getName(),
@@ -232,7 +231,12 @@ public final class CloudConnectListener implements Listener {
             .sendDirectPacket("ReformCloudController",
                 new PacketOutLogoutPlayer(event.getPlayer().getUniqueId()));
 
-        String currentServer = event.getPlayer().getServer().getInfo().getName();
+        String currentServer = null;
+        try {
+            currentServer = event.getPlayer().getServer().getInfo().getName();
+        } catch (final Throwable ignored) {
+        }
+
         if (currentServer == null) {
             currentServer = "unknown";
         }

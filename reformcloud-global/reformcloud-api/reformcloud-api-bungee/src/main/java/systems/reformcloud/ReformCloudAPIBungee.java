@@ -214,6 +214,16 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
         return ReformCloudAPIBungee.instance;
     }
 
+    public void updateServerInfoInternal(ServerInfo serverInfo) {
+        internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
+    public void updateProxyInfoInternal(ProxyInfo proxyInfo) {
+        internalCloudNetwork.getServerProcessManager().updateProxyInfo(proxyInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
     public void updateProxyInfo() {
         this.updateProxyInfo(this.proxyInfo);
     }

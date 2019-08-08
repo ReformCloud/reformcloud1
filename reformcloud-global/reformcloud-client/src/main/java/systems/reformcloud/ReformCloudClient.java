@@ -239,6 +239,16 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         return ReformCloudClient.instance;
     }
 
+    public void updateServerInfoInternal(ServerInfo serverInfo) {
+        internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
+    public void updateProxyInfoInternal(ProxyInfo proxyInfo) {
+        internalCloudNetwork.getServerProcessManager().updateProxyInfo(proxyInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
     private void registerNetworkHandlers() {
         getNettyHandler()
             .registerHandler("StartCloudServer", new PacketInStartGameServer())
@@ -279,6 +289,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
             .registerHandler("EnableBackup", new PacketInEnableBackup())
             .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess())
             .registerQueryHandler("GetRuntimeInformation", new PacketInQueryGetRuntimeInformation())
+            .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
             .registerHandler("InitializeCloudNetwork", internalConnectionHandler);
     }
 

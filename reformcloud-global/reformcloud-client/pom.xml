@@ -57,7 +57,7 @@
     </parent>
 
     <build>
-        <finalName>ReformClient-${service.version}</finalName>
+        <finalName>ReformCloudClient-${service.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

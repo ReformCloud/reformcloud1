@@ -23,11 +23,9 @@ public final class PacketInServerInfoUpdate implements NetworkInboundHandler {
         final ServerInfo serverInfo = configuration
             .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
-        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
-            .updateServerInfo(serverInfo);
+        ReformCloudController.getInstance().updateServerInfoInternal(serverInfo);
         ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(
-            new PacketOutServerInfoUpdate(serverInfo,
-                ReformCloudController.getInstance().getInternalCloudNetwork())
+            new PacketOutServerInfoUpdate(serverInfo)
         );
         ReformCloudController.getInstance().getEventManager()
             .fire(new ServerInfoUpdateEvent(serverInfo));

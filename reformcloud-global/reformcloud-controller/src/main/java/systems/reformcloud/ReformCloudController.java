@@ -268,6 +268,16 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return ReformCloudController.instance;
     }
 
+    public void updateServerInfoInternal(ServerInfo serverInfo) {
+        internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
+    public void updateProxyInfoInternal(ProxyInfo proxyInfo) {
+        internalCloudNetwork.getServerProcessManager().updateProxyInfo(proxyInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
     /**
      * Prepares all packet Handlers
      *
@@ -1012,7 +1022,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     public void updateServerInfo(ServerInfo serverInfo) {
         this.internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
         channelHandler
-            .sendToAllSynchronized(new PacketOutServerInfoUpdate(serverInfo, internalCloudNetwork));
+            .sendToAllSynchronized(new PacketOutServerInfoUpdate(serverInfo));
         eventManager.fire(new ServerInfoUpdateEvent(serverInfo));
     }
 

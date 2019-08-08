@@ -192,6 +192,16 @@ public final class ReformCloudAPISpigot implements Listener, APIService, Seriali
             new PacketOutServerInfoUpdate(serverInfo));
     }
 
+    public void updateServerInfoInternal(ServerInfo serverInfo) {
+        internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
+    public void updateProxyInfoInternal(ProxyInfo proxyInfo) {
+        internalCloudNetwork.getServerProcessManager().updateProxyInfo(proxyInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
     @Override
     public void startGameServer(final String serverGroupName) {
         this.startGameServer(serverGroupName, new Configuration());
