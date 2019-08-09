@@ -4,16 +4,12 @@
 
 package systems.reformcloud.utility.cloudsystem;
 
-import systems.reformcloud.utility.annotiations.ForRemoval;
-
 import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 21.10.2018
  */
 
-@Deprecated
-@ForRemoval
 public final class EthernetAddress implements Serializable {
 
     /**

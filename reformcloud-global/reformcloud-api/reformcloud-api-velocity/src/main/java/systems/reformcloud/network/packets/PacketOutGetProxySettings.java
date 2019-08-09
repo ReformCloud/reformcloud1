@@ -4,6 +4,7 @@
 
 package systems.reformcloud.network.packets;
 
+import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.packet.DefaultPacket;
 
@@ -16,6 +17,9 @@ import java.io.Serializable;
 public final class PacketOutGetProxySettings extends DefaultPacket implements Serializable {
 
     public PacketOutGetProxySettings() {
-        super("GetProxyConfig", new Configuration());
+        super("GetProxyConfig", new Configuration().addStringValue(
+            "group", ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getGroup()
+            )
+        );
     }
 }
