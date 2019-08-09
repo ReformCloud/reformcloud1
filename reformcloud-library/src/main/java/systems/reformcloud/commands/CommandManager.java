@@ -8,6 +8,8 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.defaults.DefaultConsoleCommandSender;
 import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.event.events.commands.CommandPreProcessEvent;
+import systems.reformcloud.event.events.commands.CommandProcessedEvent;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
@@ -30,13 +32,6 @@ public final class CommandManager extends AbstractCommandManager implements Seri
      */
     private List<Command> commands = new ArrayList<>();
 
-    /**
-     * Dispatches a specific command with the given command sender for security reasons
-     *
-     * @param commandSender The defaultConsoleCommandSender who send the command
-     * @param command The command as string which was send
-     * @return if the command is registered or not
-     */
     @Override
     public boolean dispatchCommand(systems.reformcloud.commands.utility.CommandSender commandSender,
         String command) {
@@ -62,12 +57,20 @@ public final class CommandManager extends AbstractCommandManager implements Seri
             String string = command
                 .replace((command.contains(" ") ? command.split(" ")[0] + " " : command), "");
             try {
+                CommandPreProcessEvent commandPreProcessEvent = new CommandPreProcessEvent(command2, commandSender);
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(commandPreProcessEvent);
+                if (commandPreProcessEvent.isCancelled()) {
+                    return true;
+                }
+
                 if (string.equalsIgnoreCase("")) {
                     command2.executeCommand(commandSender, new String[0]);
                 } else {
                     final String[] arguments = string.split(" ");
                     command2.executeCommand(commandSender, arguments);
                 }
+
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new CommandProcessedEvent(command2, commandSender));
             } catch (final Throwable throwable) {
                 StringUtil
                     .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
@@ -79,13 +82,6 @@ public final class CommandManager extends AbstractCommandManager implements Seri
         }
     }
 
-
-    /**
-     * Registers a specific command
-     *
-     * @param command The command which should be registered
-     * @return The class instance
-     */
     @Override
     public AbstractCommandManager registerCommand(Command command) {
         this.commands.add(command);
@@ -97,9 +93,6 @@ public final class CommandManager extends AbstractCommandManager implements Seri
         return commands;
     }
 
-    /**
-     * Unregisters all commands
-     */
     @Override
     public void clearCommands() {
         this.commands.clear();
@@ -127,22 +120,11 @@ public final class CommandManager extends AbstractCommandManager implements Seri
         return null;
     }
 
-    /**
-     * Unregisters an specific command
-     *
-     * @param name The name of the command which should be unregistered
-     */
     @Override
     public void unregisterCommand(final String name) {
         this.commands.remove(findCommand(name));
     }
 
-    /**
-     * Checks if a command is registered
-     *
-     * @param command The command as string which should be checked
-     * @return if the command is registered
-     */
     @Override
     public boolean isCommandRegistered(final String command) {
         return this.commands.stream().anyMatch(
@@ -150,11 +132,6 @@ public final class CommandManager extends AbstractCommandManager implements Seri
                 .contains(command));
     }
 
-    /**
-     * Gets all registered Commands
-     *
-     * @return a list with all registered commands as string
-     */
     @Override
     public List<String> getCommandsAsString() {
         List<String> commands = new ArrayList<>();
@@ -164,23 +141,11 @@ public final class CommandManager extends AbstractCommandManager implements Seri
         return commands;
     }
 
-    /**
-     * Dispatch a command with the default {@link DefaultConsoleCommandSender}
-     *
-     * @param command The command as string
-     * @return if the command is registered
-     */
     @Override
     public boolean dispatchCommand(String command) {
         return this.dispatchCommand(this.defaultConsoleCommandSender, command);
     }
 
-    /**
-     * Creates a new {@link DefaultUserCommandSender}
-     *
-     * @param permissions The permissions of the command sender
-     * @return a new command sender
-     */
     @Override
     public systems.reformcloud.commands.utility.CommandSender newCommandSender(
         final Map<String, Boolean> permissions) {

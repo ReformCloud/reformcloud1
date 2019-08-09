@@ -9,6 +9,7 @@ import systems.reformcloud.commands.AbstractCommandManager;
 import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
 import systems.reformcloud.commands.completer.DefaultCommandCompleter;
 import systems.reformcloud.commands.defaults.DefaultCommandMap;
+import systems.reformcloud.event.events.commands.UnknownCommandTypedEvent;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.utility.StringUtil;
 
@@ -66,6 +67,7 @@ public final class ReformAsyncConsole extends Thread implements Serializable {
                         abstractLoggerProvider.info()
                             .accept(ReformCloudLibraryServiceProvider.getInstance()
                                 .getInternalCloudNetwork().getLoaded().getHelp_command_not_found());
+                        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new UnknownCommandTypedEvent(line));
                     }
                 }
             } catch (final Throwable throwable) {

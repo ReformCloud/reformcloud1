@@ -4,7 +4,6 @@
 
 package systems.reformcloud.utility.map;
 
-import systems.reformcloud.utility.converter.Converter;
 import systems.reformcloud.utility.map.maps.Double;
 import systems.reformcloud.utility.map.maps.Trio;
 import systems.reformcloud.utility.map.pool.Callback;
@@ -12,6 +11,7 @@ import systems.reformcloud.utility.map.pool.Callback;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -248,10 +248,10 @@ public final class MapUtility implements Serializable {
     }
 
     public static <T, V> Collection<T> transform(Collection<V> collection,
-        Converter<V, T> converter) {
+                                                 Function<V, T> converter) {
         Collection<T> out = new LinkedList<>();
         for (V v : collection) {
-            T t = converter.convert(v);
+            T t = converter.apply(v);
             if (t != null) {
                 out.add(t);
             }
