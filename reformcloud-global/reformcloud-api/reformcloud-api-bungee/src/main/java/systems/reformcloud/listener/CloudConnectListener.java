@@ -56,6 +56,9 @@ public final class CloudConnectListener implements Listener {
             }
 
             event.getPlayer().setReconnectServer(null);
+            event.setCancelled(false);
+            event.setTarget(BungeecordBootstrap.getInstance().getProxy()
+                .getServerInfo(serverInfo.getCloudProcess().getName()));
             ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync(
                 "ReformCloudController",
                 proxyInfo.getCloudProcess().getName(),
@@ -125,11 +128,7 @@ public final class CloudConnectListener implements Listener {
                                     .put(permissionHolder.getUniqueID(), permissionHolder);
                             });
                     }
-
-                    event.setCancelled(false);
-                    event.setTarget(BungeecordBootstrap.getInstance().getProxy()
-                        .getServerInfo(serverInfo.getCloudProcess().getName()));
-                }, (configuration, resultID) -> event.setCancelled(true)
+                }
             );
         }
     }
