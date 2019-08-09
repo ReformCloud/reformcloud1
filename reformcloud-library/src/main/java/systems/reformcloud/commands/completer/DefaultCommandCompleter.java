@@ -4,7 +4,6 @@
 
 package systems.reformcloud.commands.completer;
 
-import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
 import systems.reformcloud.commands.abstracts.CommandMap;
 import systems.reformcloud.commands.utility.Command;
@@ -39,8 +38,6 @@ public final class DefaultCommandCompleter extends AbstractCommandCompleter impl
     @Override
     public int complete(String buffer, int cursor, List<CharSequence> candidates) {
         String[] args = calculateArgs(buffer);
-        //TODO: (_Klaro) remove debug message
-        ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().serve().accept(String.valueOf(args.length));
         List<String> out = new ArrayList<>();
         if (buffer.isEmpty() || buffer.indexOf(' ') == -1) {
             out.addAll(commandMap.findAll(buffer));
