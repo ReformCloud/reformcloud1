@@ -47,6 +47,7 @@ import systems.reformcloud.network.api.event.NetworkEventAdapter;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.packets.*;
@@ -845,43 +846,43 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
     }
 
     @Override
-    public boolean sendPacket(String subChannel, Packet packet) {
+    public boolean sendPacket(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketAsynchronous(subChannel, packet);
     }
 
     @Override
-    public boolean sendPacketSync(String subChannel, Packet packet) {
+    public boolean sendPacketSync(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketSynchronized(subChannel, packet);
     }
 
     @Override
-    public void sendPacketToAll(Packet packet) {
+    public void sendPacketToAll(DefaultPacket packet) {
         this.channelHandler.sendToAllAsynchronous(packet);
     }
 
     @Override
-    public void sendPacketToAllSync(Packet packet) {
+    public void sendPacketToAllSync(DefaultPacket packet) {
         this.channelHandler.sendToAllSynchronized(packet);
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet,
-        NetworkQueryInboundHandler onSuccess) {
+    public void sendPacketQuery(String channel, DefaultPacket packet,
+                                NetworkQueryInboundHandler onSuccess) {
         this.channelHandler.sendPacketQuerySync(
             channel, this.proxyInfo.getCloudProcess().getName(), packet, onSuccess
         );
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
-        NetworkQueryInboundHandler onFailure) {
+    public void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess,
+                                NetworkQueryInboundHandler onFailure) {
         this.channelHandler.sendPacketQuerySync(
             channel, this.proxyInfo.getCloudProcess().getName(), packet, onSuccess, onFailure
         );
     }
 
     @Override
-    public PacketFuture createPacketFuture(Packet packet, String networkComponent) {
+    public PacketFuture createPacketFuture(DefaultPacket packet, String networkComponent) {
         this.channelHandler
             .toQueryPacket(packet, UUID.randomUUID(), this.proxyInfo.getCloudProcess().getName());
         PacketFuture packetFuture = new PacketFuture(
@@ -896,7 +897,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
     }
 
     @Override
-    public PacketFuture sendPacketQuery(String channel, Packet packet) {
+    public PacketFuture sendPacketQuery(String channel, DefaultPacket packet) {
         return this.channelHandler.sendPacketQuerySync(
             channel, this.proxyInfo.getCloudProcess().getName(), packet
         );

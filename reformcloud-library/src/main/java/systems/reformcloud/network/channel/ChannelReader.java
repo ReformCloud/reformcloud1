@@ -42,12 +42,16 @@ public final class ChannelReader extends SimpleChannelInboundHandler implements 
     @Override
     protected void channelRead0(final ChannelHandlerContext channelHandlerContext,
         final Object object) {
-        if (!(object instanceof Packet)) {
-            return;
-        }
+        ReformCloudLibraryService.applyAnd(object, o -> {
+            if (o instanceof Packet) {
+                return (Packet) o;
+            }
 
-        Packet packet = (Packet) object;
+            return null;
+        }, Objects::nonNull, packet -> readPacket(channelHandlerContext, packet));
+    }
 
+    private void readPacket(ChannelHandlerContext channelHandlerContext, Packet packet) {
         ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .debug("Handling incoming packet " +
                 "[Type=" + packet.getType() + "/Query=" + (packet.getResult() != null) + "/Message="

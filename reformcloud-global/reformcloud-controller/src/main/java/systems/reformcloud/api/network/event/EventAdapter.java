@@ -11,7 +11,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.event.events.ChannelConnectedEvent;
 import systems.reformcloud.event.events.ChannelDisconnectedEvent;
 import systems.reformcloud.event.events.ChannelExceptionCaughtEvent;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -30,7 +30,7 @@ public final class EventAdapter implements Serializable, EventHandler {
     public void handleCustomPacket(String channel, String targetType, Configuration configuration) {
         if (configuration.contains("to")) {
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
-                configuration.getStringValue("to"), new Packet(targetType, configuration)
+                configuration.getStringValue("to"), new DefaultPacket(targetType, configuration)
             );
         }
     }

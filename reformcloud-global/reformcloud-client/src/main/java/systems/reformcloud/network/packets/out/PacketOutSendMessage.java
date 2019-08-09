@@ -5,7 +5,7 @@
 package systems.reformcloud.network.packets.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 14.03.2019
  */
 
-public final class PacketOutSendMessage extends Packet implements Serializable {
+public final class PacketOutSendMessage extends DefaultPacket implements Serializable {
 
     public PacketOutSendMessage(UUID uniqueID, String message, String proxy) {
         super("SendPlayerMessage", new Configuration().addValue("uuid", uniqueID)

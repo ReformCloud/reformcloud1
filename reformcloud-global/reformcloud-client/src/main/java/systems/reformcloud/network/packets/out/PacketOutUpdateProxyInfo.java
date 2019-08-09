@@ -6,7 +6,7 @@ package systems.reformcloud.network.packets.out;
 
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ProxyInfo;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 25.04.2019
  */
 
-public final class PacketOutUpdateProxyInfo extends Packet implements Serializable {
+public final class PacketOutUpdateProxyInfo extends DefaultPacket implements Serializable {
 
     public PacketOutUpdateProxyInfo(ProxyInfo proxyInfo) {
         super("ProxyInfoUpdate", new Configuration().addValue("proxyInfo", proxyInfo));

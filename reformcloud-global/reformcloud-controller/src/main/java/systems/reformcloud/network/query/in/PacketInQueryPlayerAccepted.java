@@ -7,7 +7,7 @@ package systems.reformcloud.network.query.in;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -25,7 +25,7 @@ public final class PacketInQueryPlayerAccepted implements Serializable, NetworkQ
             .contains(configuration.getValue("uuid", UUID.class))) {
             ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                 configuration.getStringValue("from"),
-                new Packet(StringUtil.NULL, new Configuration().addBooleanValue("checked", true),
+                new DefaultPacket(StringUtil.NULL, new Configuration().addBooleanValue("checked", true),
                     resultID)
             );
         }

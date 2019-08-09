@@ -9,7 +9,7 @@ import net.md_5.bungee.api.Favicon;
 import systems.reformcloud.ReformCloudAPIBungee;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -46,7 +46,7 @@ public final class IconManager implements Serializable {
         ReformCloudAPIBungee.getInstance().getChannelHandler().sendPacketQuerySync(
             "ReformCloudController",
             ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName(),
-            new Packet(
+            new DefaultPacket(
                 "GetConfig", new Configuration()
             ),
             (configuration, resultID) -> {

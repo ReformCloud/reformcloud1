@@ -21,7 +21,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -508,7 +508,7 @@ public final class AsyncAPI implements Serializable, AsyncAPIHelper {
     }
 
     @Override
-    public CompletableFuture<Boolean> sendPacket(String subChannel, Packet packet) {
+    public CompletableFuture<Boolean> sendPacket(String subChannel, DefaultPacket packet) {
         checkAvailable(true);
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         CompletableFuture.runAsync(() -> completableFuture
@@ -517,7 +517,7 @@ public final class AsyncAPI implements Serializable, AsyncAPIHelper {
     }
 
     @Override
-    public CompletableFuture<Boolean> sendPacketSync(String subChannel, Packet packet) {
+    public CompletableFuture<Boolean> sendPacketSync(String subChannel, DefaultPacket packet) {
         checkAvailable(true);
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         CompletableFuture.runAsync(() -> completableFuture
@@ -526,36 +526,36 @@ public final class AsyncAPI implements Serializable, AsyncAPIHelper {
     }
 
     @Override
-    public void sendPacketToAll(Packet packet) {
+    public void sendPacketToAll(DefaultPacket packet) {
         checkAvailable();
         CompletableFuture.runAsync(() -> APIService.instance.get().sendPacketToAll(packet));
     }
 
     @Override
-    public void sendPacketToAllSync(Packet packet) {
+    public void sendPacketToAllSync(DefaultPacket packet) {
         checkAvailable();
         CompletableFuture.runAsync(() -> APIService.instance.get().sendPacketToAllSync(packet));
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet,
-        NetworkQueryInboundHandler onSuccess) {
+    public void sendPacketQuery(String channel, DefaultPacket packet,
+                                NetworkQueryInboundHandler onSuccess) {
         checkAvailable();
         CompletableFuture
             .runAsync(() -> APIService.instance.get().sendPacketQuery(channel, packet, onSuccess));
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
-        NetworkQueryInboundHandler onFailure) {
+    public void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess,
+                                NetworkQueryInboundHandler onFailure) {
         checkAvailable();
         CompletableFuture.runAsync(() -> APIService.instance.get()
             .sendPacketQuery(channel, packet, onSuccess, onFailure));
     }
 
     @Override
-    public CompletableFuture<PacketFuture> createPacketFuture(Packet packet,
-        String networkComponent) {
+    public CompletableFuture<PacketFuture> createPacketFuture(DefaultPacket packet,
+                                                              String networkComponent) {
         checkAvailable(true);
         CompletableFuture<PacketFuture> completableFuture = new CompletableFuture<>();
         CompletableFuture.runAsync(() -> completableFuture
@@ -564,7 +564,7 @@ public final class AsyncAPI implements Serializable, AsyncAPIHelper {
     }
 
     @Override
-    public CompletableFuture<PacketFuture> sendPacketQuery(String channel, Packet packet) {
+    public CompletableFuture<PacketFuture> sendPacketQuery(String channel, DefaultPacket packet) {
         checkAvailable(true);
         CompletableFuture<PacketFuture> completableFuture = new CompletableFuture<>();
         CompletableFuture.runAsync(() -> completableFuture

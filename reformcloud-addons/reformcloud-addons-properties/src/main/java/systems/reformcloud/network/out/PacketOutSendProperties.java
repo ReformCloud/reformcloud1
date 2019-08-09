@@ -4,18 +4,19 @@
 
 package systems.reformcloud.network.out;
 
-import java.io.Serializable;
-import java.util.UUID;
 import systems.reformcloud.configuration.PropertiesConfig;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.StringUtil;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.04.2019
  */
 
-public final class PacketOutSendProperties extends Packet implements Serializable {
+public final class PacketOutSendProperties extends DefaultPacket implements Serializable {
 
     public PacketOutSendProperties(UUID result) {
         super(

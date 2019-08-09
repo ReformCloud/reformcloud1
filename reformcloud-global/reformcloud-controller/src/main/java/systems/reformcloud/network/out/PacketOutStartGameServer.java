@@ -7,7 +7,7 @@ package systems.reformcloud.network.out;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.util.UUID;
 
@@ -15,7 +15,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 28.10.2018
  */
 
-public final class PacketOutStartGameServer extends Packet {
+public final class PacketOutStartGameServer extends DefaultPacket {
 
     public PacketOutStartGameServer(final ServerGroup group, final String processName,
         final UUID serverProcess, final Configuration configuration, final String id) {

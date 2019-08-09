@@ -16,7 +16,7 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.proxy.settings.ProxySettings;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packets.PacketOutGetProxySettings;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.utility.TypeTokenAdaptor;
@@ -51,7 +51,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         new IconManager();
 
         ReformCloudAPIBungee.getInstance().getChannelHandler()
-            .sendPacketAsynchronous("ReformCloudController", new Packet(
+            .sendPacketAsynchronous("ReformCloudController", new DefaultPacket(
                 "AuthSuccess", new Configuration().addStringValue("name",
                 ReformCloudAPIBungee.getInstance().getProxyInfo().getCloudProcess().getName())
             ));

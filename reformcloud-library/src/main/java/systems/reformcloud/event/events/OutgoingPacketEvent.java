@@ -59,6 +59,9 @@ public final class OutgoingPacketEvent extends Event implements Serializable, Ca
      */
     private Packet packet;
 
+    /**
+     * The channel context of the channel in which the packet will be sent
+     */
     private ChannelHandlerContext channelHandlerContext;
 
     public Packet getPacket() {

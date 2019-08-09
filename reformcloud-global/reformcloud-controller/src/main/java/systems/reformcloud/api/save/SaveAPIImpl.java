@@ -12,7 +12,7 @@ import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.NettyHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -126,23 +126,23 @@ public final class SaveAPIImpl implements Serializable, SaveAPIService {
     }
 
     @Override
-    public Optional<Boolean> sendPacket(String subChannel, Packet packet) {
+    public Optional<Boolean> sendPacket(String subChannel, DefaultPacket packet) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Boolean> sendPacketSync(String subChannel, Packet packet) {
+    public Optional<Boolean> sendPacketSync(String subChannel, DefaultPacket packet) {
         return Optional.of(ReformCloudController.getInstance().sendPacketSync(subChannel, packet));
     }
 
     @Override
-    public Optional<PacketFuture> createPacketFuture(Packet packet, String networkComponent) {
+    public Optional<PacketFuture> createPacketFuture(DefaultPacket packet, String networkComponent) {
         return Optional.ofNullable(
             ReformCloudController.getInstance().createPacketFuture(packet, networkComponent));
     }
 
     @Override
-    public Optional<PacketFuture> sendPacketQuery(String channel, Packet packet) {
+    public Optional<PacketFuture> sendPacketQuery(String channel, DefaultPacket packet) {
         return Optional
             .ofNullable(ReformCloudController.getInstance().sendPacketQuery(channel, packet));
     }

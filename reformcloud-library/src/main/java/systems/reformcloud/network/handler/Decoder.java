@@ -7,6 +7,7 @@ package systems.reformcloud.network.handler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.Packet;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public final class Decoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf,
         List<Object> list) {
         try {
-            final Packet packet = new Packet();
+            Packet packet = new DefaultPacket();
             packet.read(byteBuf);
             list.add(packet);
         } catch (final Exception ignored) {

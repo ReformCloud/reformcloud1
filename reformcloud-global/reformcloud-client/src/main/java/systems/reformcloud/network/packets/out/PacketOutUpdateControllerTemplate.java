@@ -5,7 +5,7 @@
 package systems.reformcloud.network.packets.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.io.Serializable;
 import java.util.Base64;
@@ -14,7 +14,7 @@ import java.util.Base64;
  * @author _Klaro | Pasqual K. / created on 15.03.2019
  */
 
-public final class PacketOutUpdateControllerTemplate extends Packet implements Serializable {
+public final class PacketOutUpdateControllerTemplate extends DefaultPacket implements Serializable {
 
     public PacketOutUpdateControllerTemplate(String type, String group, String template,
         byte[] files) {

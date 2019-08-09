@@ -11,6 +11,7 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
 import systems.reformcloud.network.authentication.interfaces.AuthenticationManager;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.Packet;
 
 /**
@@ -40,7 +41,7 @@ public final class AuthenticationHandler implements AuthenticationManager {
                         packet.getConfiguration().getStringValue("key"))) {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
-                    channelHandlerContext.channel().writeAndFlush(new Packet(
+                    channelHandlerContext.channel().writeAndFlush(new DefaultPacket(
                         "InitializeCloudNetwork", new Configuration().addValue("networkProperties",
                         ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));
@@ -54,7 +55,7 @@ public final class AuthenticationHandler implements AuthenticationManager {
                     .equals(packet.getConfiguration().getStringValue("key"))) {
                     channelHandler.registerChannel(name, channelHandlerContext);
 
-                    channelHandlerContext.channel().writeAndFlush(new Packet(
+                    channelHandlerContext.channel().writeAndFlush(new DefaultPacket(
                         "InitializeCloudNetwork", new Configuration().addValue("networkProperties",
                         ReformCloudLibraryServiceProvider.getInstance().getInternalCloudNetwork())
                     ));

@@ -20,6 +20,7 @@ import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.utility.cloudsystem.ServerProcessManager;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -31,25 +32,13 @@ import java.util.stream.Collectors;
 
 public final class ChannelHandler extends AbstractChannelHandler implements Serializable {
 
-    /**
-     * All registered channels of the cloud system
-     */
     private Map<String, ChannelHandlerContext> channelHandlerContextMap = ReformCloudLibraryService
         .concurrentHashMap();
 
-    /**
-     * All waiting query packet
-     */
     private Map<UUID, PacketFuture> results = ReformCloudLibraryService.concurrentHashMap();
 
-    /**
-     * The executor service to run several tasks at the same time
-     */
     private final ExecutorService executorService = ReformCloudLibraryService.EXECUTOR_SERVICE;
 
-    /**
-     * Creates a new instance of the channel handler
-     */
     public ChannelHandler() {
         ReformCloudLibraryServiceProvider.getInstance().setChannelHandler(this);
     }
@@ -57,6 +46,12 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
     @Override
     public NetworkGlobalCluster shiftClusterNetworkInformation() {
         List<ClusterChannelInformation> information = new ArrayList<>();
+        channelHandlerContextMap.forEach((k, v) -> {
+            ClusterChannelInformation clusterChannelInformation = new ClusterChannelInformation(
+                k, v, ReformCloudLibraryService.apply(v.channel().remoteAddress(), socketAddress -> (InetSocketAddress) socketAddress)
+            );
+            information.add(clusterChannelInformation);
+        });
         return new NetworkGlobalCluster(
             this.channelHandlerContextMap.keySet(),
             information,
@@ -65,34 +60,16 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         );
     }
 
-    /**
-     * Gets a specific channel handler context by the name of the network participant
-     *
-     * @param name The name of the network participant
-     * @return The channel handler context or {@code null} if the channel can't be found
-     */
     @Override
     public ChannelHandlerContext getChannel(String name) {
         return this.channelHandlerContextMap.getOrDefault(name, null);
     }
 
-    /**
-     * Checks if a specific channel is registered
-     *
-     * @param name The name of the network participant
-     * @return If the channel is registered in the cloud system
-     */
     @Override
     public boolean isChannelRegistered(final String name) {
         return this.channelHandlerContextMap.containsKey(name);
     }
 
-    /**
-     * Checks if a specific channel is registered
-     *
-     * @param channelHandlerContext The channel handler context of the network participant
-     * @return If the channel is registered in the cloud system
-     */
     @Override
     public boolean isChannelRegistered(ChannelHandlerContext channelHandlerContext) {
         for (Map.Entry<String, ChannelHandlerContext> map : this.channelHandlerContextMap
@@ -105,61 +82,31 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return false;
     }
 
-    /**
-     * Get a list of all channel registered in the cloud system
-     *
-     * @return A set containing all registered channels
-     */
     @Override
     public Set<String> getChannels() {
         return this.channelHandlerContextMap.keySet();
     }
 
-    /**
-     * Get a list of all registered channels handler contexts
-     *
-     * @return A list containing all registered channels handler contexts
-     */
     @Override
     public List<ChannelHandlerContext> getChannelList() {
         return new ArrayList<>(this.channelHandlerContextMap.values());
     }
 
-    /**
-     * Register a channel by the given name
-     *
-     * @param name The name of the network participant
-     * @param channelHandlerContext The channel handler context of the network participant
-     */
     @Override
     public void registerChannel(final String name, ChannelHandlerContext channelHandlerContext) {
         this.channelHandlerContextMap.put(name, channelHandlerContext);
     }
 
-    /**
-     * Unregisters a channel by the given name
-     *
-     * @param name The name of the network participant
-     */
     @Override
     public void unregisterChannel(String name) {
         this.channelHandlerContextMap.remove(name);
     }
 
-    /**
-     * Unregisters all registered channels
-     */
     @Override
     public void clearChannels() {
         this.channelHandlerContextMap.clear();
     }
 
-    /**
-     * Get a specific network participant name
-     *
-     * @param channelHandlerContext The channel handler context of the network participant
-     * @return The specific network participant name
-     */
     @Override
     public String getChannelNameByValue(final ChannelHandlerContext channelHandlerContext) {
         for (Map.Entry<String, ChannelHandlerContext> entry : this.channelHandlerContextMap
@@ -200,13 +147,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         }
     }
 
-    /**
-     * Sends a packet into a channel
-     *
-     * @param channel The network participant name
-     * @param packet The packet which should be sent
-     * @return If the cloud could send the packet into the channel
-     */
     @Override
     public boolean sendPacketSynchronized(final String channel, final Packet packet) {
         if (this.channelHandlerContextMap.containsKey(channel)) {
@@ -216,12 +156,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return this.channelHandlerContextMap.containsKey(channel);
     }
 
-    /**
-     * Sends a direct packet to a network participant
-     *
-     * @param to The name of the network participant
-     * @param packet The packet which should be sent
-     */
     @Override
     public void sendDirectPacket(String to, Packet packet) {
         if (!this.channelHandlerContextMap.containsKey(to)) {
@@ -231,13 +165,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         this.sendPacket0(packet, this.channelHandlerContextMap.get(to));
     }
 
-    /**
-     * Sends a packet into a channel
-     *
-     * @param channel The network participant name
-     * @param packets The packets which should be sent
-     * @return If the cloud could send the packet into the channel
-     */
     @Override
     public boolean sendPacketSynchronized(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel)) {
@@ -249,13 +176,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return this.channelHandlerContextMap.containsKey(channel);
     }
 
-    /**
-     * Sends a packet into a channel
-     *
-     * @param channel The network participant name
-     * @param packet The packet which should be sent
-     * @return If the cloud could send the packet into the channel
-     */
     @Override
     public boolean sendPacketAsynchronous(final String channel, final Packet packet) {
         CompletableFuture.runAsync(() -> {
@@ -267,13 +187,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return this.channelHandlerContextMap.containsKey(channel);
     }
 
-    /**
-     * Sends a packet into a channel
-     *
-     * @param channel The network participant name
-     * @param packets The packets which should be sent
-     * @return If the cloud could send the packet into the channel
-     */
     @Override
     public boolean sendPacketAsynchronous(final String channel, final Packet... packets) {
         if (this.channelHandlerContextMap.containsKey(channel)) {
@@ -285,16 +198,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return this.channelHandlerContextMap.containsKey(channel);
     }
 
-    /**
-     * Sends a packet query
-     *
-     * @param channel The network participant name
-     * @param from The current handler name
-     * @param packet The packet which should be sent
-     * @param handler The handler which should be called if the query succeeds
-     * @param onFailure The handler which should be called if the query fails
-     * @return If the creation of the future was successful
-     */
     @Override
     public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
                                        final NetworkQueryInboundHandler handler,
@@ -315,15 +218,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return true;
     }
 
-    /**
-     * Sends a packet query
-     *
-     * @param channel The network participant name
-     * @param from The current handler name
-     * @param packet The packet which should be sent
-     * @param handler The handler which should be called if the query succeeds
-     * @return If the creation of the future was successful
-     */
     @Override
     public boolean sendPacketQuerySync(final String channel, final String from, final Packet packet,
                                        final NetworkQueryInboundHandler handler) {
@@ -343,14 +237,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return true;
     }
 
-    /**
-     * Sends a packet query
-     *
-     * @param channel The network participant name
-     * @param from The current handler name
-     * @param packet The packet which should be sent
-     * @return The created packet future
-     */
     @Override
     public PacketFuture sendPacketQuerySync(final String channel, final String from,
                                             final Packet packet) {
@@ -367,43 +253,23 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         return packetFuture;
     }
 
-    /**
-     * Sends a packet to all channels
-     *
-     * @param packet The packet which should be sent
-     */
     @Override
     public void sendToAllSynchronized(Packet packet) {
         this.channelHandlerContextMap.values()
             .forEach(consumer -> this.sendPacket0(packet, consumer));
     }
 
-    /**
-     * Sends a packet to all channels
-     *
-     * @param packet The packet which should be sent
-     */
     @Override
     public void sendToAllAsynchronous(Packet packet) {
         CompletableFuture.runAsync(() -> this.channelHandlerContextMap.values()
             .forEach(consumer -> this.sendPacket0(packet, consumer)));
     }
 
-    /**
-     * Sends a packet to all channels
-     *
-     * @param packet The packet which should be sent
-     */
     @Override
     public void sendToAllDirect(Packet packet) {
         this.channelHandlerContextMap.forEach((key, value) -> this.sendDirectPacket(key, packet));
     }
 
-    /**
-     * Sends a packet to all channels
-     *
-     * @param packets The packets which should be sent
-     */
     @Override
     public void sendToAllSynchronized(Packet... packets) {
         for (Packet packet : packets) {
@@ -411,11 +277,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         }
     }
 
-    /**
-     * Sends a packet to all channels
-     *
-     * @param packets The packets which should be sent
-     */
     @Override
     public void sendToAllAsynchronous(Packet... packets) {
         for (Packet packet : packets) {
@@ -423,12 +284,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         }
     }
 
-    /**
-     * Sends a packet to all lobby servers
-     *
-     * @param provider The server process manager which should be used to identify the lobbies
-     * @param packets The packets which should be send
-     */
     @Override
     public void sendToAllLobbies(ServerProcessManager provider, Packet... packets) {
         List<ServerInfo> lobbies = provider
@@ -443,12 +298,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         }
     }
 
-    /**
-     * Sends a direct packet to all lobby servers
-     *
-     * @param provider The server process manager which should be used to identify the lobbies
-     * @param packets The packets which should be send
-     */
     @Override
     public void sendToAllLobbiesDirect(ServerProcessManager provider, Packet... packets) {
         List<ServerInfo> lobbies = provider
@@ -463,13 +312,6 @@ public final class ChannelHandler extends AbstractChannelHandler implements Seri
         }
     }
 
-    /**
-     * Converts a normal packet into a query packet
-     *
-     * @param packet The packet which should be converted
-     * @param resultID The result id which should be set
-     * @param component The current component name
-     */
     @Override
     public void toQueryPacket(Packet packet, UUID resultID, String component) {
         packet.setResult(resultID);

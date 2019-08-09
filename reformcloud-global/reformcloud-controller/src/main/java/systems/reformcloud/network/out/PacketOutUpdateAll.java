@@ -5,14 +5,14 @@
 package systems.reformcloud.network.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-public final class PacketOutUpdateAll extends Packet {
+public final class PacketOutUpdateAll extends DefaultPacket {
 
     public PacketOutUpdateAll(final InternalCloudNetwork internalCloudNetwork) {
         super("UpdateAll", new Configuration().addValue("networkProperties", internalCloudNetwork));

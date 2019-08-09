@@ -48,6 +48,8 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -501,5 +503,16 @@ public final class ReformCloudLibraryService {
     private static ThreadFactory createThreadFactory() {
         return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true,
             Thread.MIN_PRIORITY);
+    }
+
+    public static <T, F> F apply(T t, Function<T, F> function) {
+        return function.apply(t);
+    }
+
+    public static <T, F> void applyAnd(T t, Function<T, F> function, Predicate<F> predicate, Consumer<F> ifTrue) {
+        F f = apply(t, function);
+        if (predicate.test(f)) {
+            ifTrue.accept(f);
+        }
     }
 }
