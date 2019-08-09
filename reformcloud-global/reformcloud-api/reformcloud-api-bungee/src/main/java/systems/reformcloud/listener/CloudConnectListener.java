@@ -316,7 +316,7 @@ public final class CloudConnectListener implements Listener {
         }
     }
 
-    static void initTab(final ProxiedPlayer proxiedPlayer) {
+    public static void initTab(final ProxiedPlayer proxiedPlayer) {
         ProxySettings proxySettings = ReformCloudAPIBungee.getInstance().getProxySettings();
         if (proxySettings == null || !proxySettings.isTabEnabled()
             || proxiedPlayer.getServer() == null || proxiedPlayer.getServer().getInfo() == null) {
