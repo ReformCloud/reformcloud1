@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.event.events.PlayerDisconnectsEvent;
+import systems.reformcloud.event.events.player.PlayerDisconnectsEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.query.out.PacketOutQueryGetOnlinePlayers;

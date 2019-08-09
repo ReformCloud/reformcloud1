@@ -6,8 +6,8 @@ package systems.reformcloud.network.sync.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ProxyStoppedEvent;
-import systems.reformcloud.event.events.ServerStoppedEvent;
+import systems.reformcloud.event.events.process.ProxyStoppedEvent;
+import systems.reformcloud.event.events.process.ServerStoppedEvent;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutUpdateAll;

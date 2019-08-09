@@ -6,7 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ServerInfoUpdateEvent;
+import systems.reformcloud.event.events.update.ServerInfoUpdateEvent;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutServerInfoUpdate;

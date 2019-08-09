@@ -7,7 +7,7 @@ package systems.reformcloud.listeners.proxy;
 import java.io.Serializable;
 import systems.reformcloud.CloudFlareUtil;
 import systems.reformcloud.event.annotation.Handler;
-import systems.reformcloud.event.events.ProxyStartedEvent;
+import systems.reformcloud.event.events.process.ProxyStartedEvent;
 import systems.reformcloud.event.utility.Listener;
 
 /**

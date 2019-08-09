@@ -9,7 +9,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.api.EventHandler;
-import systems.reformcloud.event.events.IncomingPacketEvent;
+import systems.reformcloud.event.events.network.IncomingPacketEvent;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.AuthenticationHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;

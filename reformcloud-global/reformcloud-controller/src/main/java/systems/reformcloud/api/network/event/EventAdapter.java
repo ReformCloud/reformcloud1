@@ -8,9 +8,9 @@ import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.api.EventHandler;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ChannelConnectedEvent;
-import systems.reformcloud.event.events.ChannelDisconnectedEvent;
-import systems.reformcloud.event.events.ChannelExceptionCaughtEvent;
+import systems.reformcloud.event.events.network.ChannelConnectedEvent;
+import systems.reformcloud.event.events.network.ChannelDisconnectedEvent;
+import systems.reformcloud.event.events.network.ChannelExceptionCaughtEvent;
 import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.StringUtil;
 

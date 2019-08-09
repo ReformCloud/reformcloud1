@@ -8,7 +8,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
-import systems.reformcloud.event.events.OutgoingPacketEvent;
+import systems.reformcloud.event.events.network.OutgoingPacketEvent;
 import systems.reformcloud.meta.cluster.NetworkGlobalCluster;
 import systems.reformcloud.meta.cluster.channel.ClusterChannelInformation;
 import systems.reformcloud.meta.enums.ServerModeType;

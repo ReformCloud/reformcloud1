@@ -6,7 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.PlayerDisconnectsEvent;
+import systems.reformcloud.event.events.player.PlayerDisconnectsEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 
 import java.util.UUID;

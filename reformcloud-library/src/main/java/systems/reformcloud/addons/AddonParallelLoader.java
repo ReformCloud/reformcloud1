@@ -7,6 +7,7 @@ package systems.reformcloud.addons;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
+import systems.reformcloud.event.events.addon.*;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.File;
@@ -36,9 +37,19 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
                 final AddonMainClassLoader addonMainClassLoader = new AddonMainClassLoader(
                     addonClassConfig);
                 JavaAddon javaAddon = addonMainClassLoader.loadAddon();
+
+                AddonPreLoadEvent addonPreLoadEvent = new AddonPreLoadEvent(this, javaAddon);
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(addonPreLoadEvent);
+                if (addonPreLoadEvent.isCancelled()) {
+                    return;
+                }
+
+                javaAddon.onAddonClazzPrepare();
                 javaAddon.setAddonMainClassLoader(addonMainClassLoader);
 
                 javaAddons.add(javaAddon);
+
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new AddonLoadedEvent(this, javaAddon));
 
                 ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                     ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_prepared()
@@ -55,11 +66,19 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
     @Override
     public void enableAddons() {
         this.javaAddons.forEach(consumer -> {
+            AddonPreEnableEvent addonPreEnableEvent = new AddonPreEnableEvent(this, consumer);
+            ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(addonPreEnableEvent);
+            if (addonPreEnableEvent.isCancelled()) {
+                return;
+            }
+
             consumer.onAddonLoading();
             ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
                 .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_enabled()
                     .replace("%name%", consumer.getAddonName())
                     .replace("%version%", consumer.getAddonClassConfig().getVersion()));
+
+            ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new AddonEnabledEvent(this, consumer));
         });
     }
 
@@ -76,6 +95,8 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
                 .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_closed()
                     .replace("%name%", consumer.getAddonName())
                     .replace("%version%", consumer.getAddonClassConfig().getVersion()));
+
+            ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new AddonDisabledEvent(this, consumer));
         } while (!javaAddons.isEmpty());
     }
 
@@ -95,6 +116,8 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
             .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_closed()
                 .replace("%name%", javaAddon.getAddonName())
                 .replace("%version%", javaAddon.getAddonClassConfig().getVersion()));
+
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new AddonDisabledEvent(this, javaAddon));
 
         this.javaAddons.remove(javaAddon);
         return true;
@@ -149,18 +172,35 @@ public class AddonParallelLoader extends AddonLoader implements Serializable {
                 JavaAddon javaAddon = addonMainClassLoader.loadAddon();
                 javaAddon.setAddonMainClassLoader(addonMainClassLoader);
 
+                AddonPreLoadEvent addonPreLoadEvent = new AddonPreLoadEvent(this, javaAddon);
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(addonPreLoadEvent);
+                if (addonPreLoadEvent.isCancelled()) {
+                    return;
+                }
+
                 javaAddons.add(javaAddon);
 
+                javaAddon.onAddonClazzPrepare();
                 ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                     ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_prepared()
                         .replace("%name%", addonClassConfig.getName())
                         .replace("%version%", addonClassConfig.getVersion()));
+
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new AddonLoadedEvent(this, javaAddon));
+
+                AddonPreEnableEvent addonPreEnableEvent = new AddonPreEnableEvent(this, javaAddon);
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(addonPreEnableEvent);
+                if (addonPreEnableEvent.isCancelled()) {
+                    return;
+                }
 
                 javaAddon.onAddonLoading();
                 ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                     ReformCloudLibraryServiceProvider.getInstance().getLoaded().getAddon_enabled()
                         .replace("%name%", javaAddon.getAddonName())
                         .replace("%version%", javaAddon.getAddonClassConfig().getVersion()));
+
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new AddonEnabledEvent(this, javaAddon));
             } catch (final Throwable throwable) {
                 StringUtil
                     .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),

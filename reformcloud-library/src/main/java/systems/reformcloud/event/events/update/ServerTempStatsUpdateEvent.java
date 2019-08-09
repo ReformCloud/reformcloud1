@@ -2,7 +2,7 @@
   Copyright © 2019 Pasqual K. | All rights reserved
  */
 
-package systems.reformcloud.event.events;
+package systems.reformcloud.event.events.update;
 
 import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.meta.server.stats.TempServerStats;

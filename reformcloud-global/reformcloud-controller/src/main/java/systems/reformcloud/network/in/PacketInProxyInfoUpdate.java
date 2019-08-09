@@ -6,7 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ProxyInfoUpdateEvent;
+import systems.reformcloud.event.events.update.ProxyInfoUpdateEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutProxyInfoUpdate;

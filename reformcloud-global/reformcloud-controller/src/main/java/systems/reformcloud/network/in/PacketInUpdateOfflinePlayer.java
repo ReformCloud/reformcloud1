@@ -6,7 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.OfflinePlayerUpdateEvent;
+import systems.reformcloud.event.events.player.OfflinePlayerUpdateEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.utility.TypeTokenAdaptor;
