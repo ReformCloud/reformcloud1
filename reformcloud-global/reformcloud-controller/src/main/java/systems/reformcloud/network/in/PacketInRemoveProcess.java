@@ -40,8 +40,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
             ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
                 .unregisterServerProcess(
                     serverInfo.getCloudProcess().getProcessUID(),
-                    serverInfo.getCloudProcess().getName(),
-                    serverInfo.getPort()
+                    serverInfo.getCloudProcess().getName()
                 );
 
             ReformCloudController.getInstance().getColouredConsoleProvider().info(
@@ -80,8 +79,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
             ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
                 .unregisterProxyProcess(
                     proxyInfo.getCloudProcess().getProcessUID(),
-                    proxyInfo.getCloudProcess().getName(),
-                    proxyInfo.getPort()
+                    proxyInfo.getCloudProcess().getName()
                 );
 
             ReformCloudController.getInstance().getColouredConsoleProvider().info(

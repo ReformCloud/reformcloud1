@@ -44,8 +44,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
                 .registerServerProcess(
                     serverInfo.getCloudProcess().getProcessUID(),
                     serverInfo.getCloudProcess().getName(),
-                    serverInfo,
-                    serverInfo.getPort()
+                    serverInfo
                 );
 
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting()
@@ -76,8 +75,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
                 .registerProxyProcess(
                     proxyInfo.getCloudProcess().getProcessUID(),
                     proxyInfo.getCloudProcess().getName(),
-                    proxyInfo,
-                    proxyInfo.getPort()
+                    proxyInfo
                 );
 
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting()
