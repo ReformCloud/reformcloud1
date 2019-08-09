@@ -28,6 +28,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
+import systems.reformcloud.utility.port.PortManagement;
 import systems.reformcloud.utility.startup.ServiceAble;
 
 import java.io.*;
@@ -116,6 +117,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
      */
     @Override
     public void bootstrap0() {
+        this.port = PortManagement.INTERNAL_INSTANCE.nextPortAndRegister(serverStartupInfo.getServerGroup().getStartPort());
+
         if (this.serverStartupInfo.getTemplate() != null) {
             loaded = this.serverStartupInfo.getServerGroup()
                 .getTemplate(this.serverStartupInfo.getTemplate());
@@ -186,7 +189,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .equals(SpigotVersions.SPONGEVANILLA_1_8_9)
             || this.getServerStartupInfo().getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_9_4)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()            
+            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_10_2)
             || this.serverStartupInfo.getServerGroup().getSpigotVersions()
             .equals(SpigotVersions.SPONGEVANILLA_1_11_2)
@@ -278,14 +281,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 FileUtils.copyCompiledFile("reformcloud/default/server.properties",
                     path + "/server.properties");
             }
-        }
-
-        this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
-            .getServerProcessManager()
-            .nextFreePort(serverStartupInfo.getServerGroup().getStartPort());
-        while (!ReformCloudClient.getInstance().isPortUseable(port)) {
-            port++;
-            ReformCloudLibraryService.sleep(20);
         }
 
         Properties properties = new Properties();
@@ -538,7 +533,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
 
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
             .registerServerProcess(
-                serverStartupInfo.getUid(), serverStartupInfo.getName(), serverInfo, port
+                serverStartupInfo.getUid(), serverStartupInfo.getName(), serverInfo
             );
 
         ReformCloudClient.getInstance().getChannelHandler()
@@ -600,7 +595,7 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             .unregisterServerProcess(this.serverStartupInfo.getName());
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
             .unregisterServerProcess(
-                this.serverStartupInfo.getUid(), this.serverStartupInfo.getName(), this.port
+                this.serverStartupInfo.getUid(), this.serverStartupInfo.getName()
             );
 
         if (update) {
@@ -666,6 +661,8 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
             this.process.destroy();
             ReformCloudLibraryService.sleep(100);
         }
+
+        PortManagement.INTERNAL_INSTANCE.unregisterPort(this.port);
 
         try {
             this.finalize();

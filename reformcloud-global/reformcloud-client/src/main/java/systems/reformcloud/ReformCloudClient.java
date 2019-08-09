@@ -80,10 +80,7 @@ import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.threading.AbstractTaskScheduler;
 import systems.reformcloud.versioneering.VersionController;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -438,16 +435,6 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         } else {
             colouredConsoleProvider.info(this.internalCloudNetwork.getLoaded().getVersion_update());
         }
-    }
-
-    public boolean isPortUseable(final int port) {
-        try (ServerSocket serverSocket = new ServerSocket()) {
-            serverSocket.bind(new InetSocketAddress(port));
-            return true;
-        } catch (final IOException ignored) {
-        }
-
-        return false;
     }
 
     public void updateInternalTime(final long controller) {

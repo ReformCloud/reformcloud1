@@ -43,11 +43,6 @@ public final class ServerProcessManager implements Serializable {
         .concurrentHashMap();
 
     /**
-     * All used ports in the cloud system
-     */
-    private List<Integer> ports = new ArrayList<>();
-
-    /**
      * Clears all registered Processes
      *
      * @deprecated
@@ -106,14 +101,12 @@ public final class ServerProcessManager implements Serializable {
      * @param uid The uid of the process which should be registered
      * @param name The name of the process which should be registered
      * @param proxyInfo The proxy info of the process
-     * @param port The port of the process
      * @return The current instance of this class
      */
     public ServerProcessManager registerProxyProcess(final UUID uid, final String name,
-        ProxyInfo proxyInfo, final int port) {
+                                                     ProxyInfo proxyInfo) {
         this.proxyProcessUIDMap.put(uid, proxyInfo);
         this.proxyProcessNameMap.put(name, proxyInfo);
-        this.ports.add(port);
         return this;
     }
 
@@ -126,7 +119,7 @@ public final class ServerProcessManager implements Serializable {
     public ServerProcessManager registerProxyProcess(final ProxyInfo proxyInfo) {
         this.registerProxyProcess(
             proxyInfo.getCloudProcess().getProcessUID(), proxyInfo.getCloudProcess().getName(),
-            proxyInfo, proxyInfo.getPort()
+            proxyInfo
         );
         return this;
     }
@@ -137,14 +130,12 @@ public final class ServerProcessManager implements Serializable {
      * @param uid The uid of the process which should be registered
      * @param name The name of the process which should be registered
      * @param serverInfo The server info of the process
-     * @param port The port of the process
      * @return The current instance of this class
      */
     public ServerProcessManager registerServerProcess(final UUID uid, final String name,
-        ServerInfo serverInfo, final int port) {
+                                                      ServerInfo serverInfo) {
         this.serverProcessUIDMap.put(uid, serverInfo);
         this.serverProcessNameMap.put(name, serverInfo);
-        this.ports.add(port);
         return this;
     }
 
@@ -153,14 +144,11 @@ public final class ServerProcessManager implements Serializable {
      *
      * @param uid The uid of the process which should be unregistered
      * @param name The name of the process which should be unregistered
-     * @param port The port of the process
      * @return The current instance of this class
      */
-    public ServerProcessManager unregisterProxyProcess(final UUID uid, final String name,
-        final int port) {
+    public ServerProcessManager unregisterProxyProcess(final UUID uid, final String name) {
         this.proxyProcessUIDMap.remove(uid);
         this.proxyProcessNameMap.remove(name);
-        this.ports.remove(Integer.valueOf(port));
         return this;
     }
 
@@ -169,14 +157,11 @@ public final class ServerProcessManager implements Serializable {
      *
      * @param uid The uid of the process which should be unregistered
      * @param name The name of the process which should be unregistered
-     * @param port The port of the process
      * @return The current instance of this class
      */
-    public ServerProcessManager unregisterServerProcess(final UUID uid, final String name,
-        final int port) {
+    public ServerProcessManager unregisterServerProcess(final UUID uid, final String name) {
         this.serverProcessUIDMap.remove(uid);
         this.serverProcessNameMap.remove(name);
-        this.ports.remove(Integer.valueOf(port));
         return this;
     }
 
@@ -312,30 +297,6 @@ public final class ServerProcessManager implements Serializable {
         }
 
         return list;
-    }
-
-    /**
-     * Checks if the given port is already used anywhere in the cloud system
-     *
-     * @param port The port which should be checked
-     * @return If the port is usable or already taken
-     */
-    public boolean isPortRegistered(final int port) {
-        return this.ports.contains(port);
-    }
-
-    /**
-     * Gets the next free port of the cloud system starting by the given start port
-     *
-     * @param startPort The start port from where the cloud should check if the port is taken and gets
-     * a better port
-     * @return The next free port after the start port
-     */
-    public int nextFreePort(int startPort) {
-        while (this.ports.contains(startPort)) {
-            startPort = startPort + 1;
-        }
-        return startPort;
     }
 
     /**
