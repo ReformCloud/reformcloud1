@@ -7,8 +7,8 @@ package systems.reformcloud.launcher;
 import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.commands.AbstractCommandManager;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.console.ReformAsyncConsole;
 import systems.reformcloud.logging.console.thread.DefaultInfinitySleeper;
 import systems.reformcloud.logging.console.thread.InfinitySleeper;
@@ -61,20 +61,20 @@ final class ReformCloudLauncher implements Serializable {
             FileUtils.deleteFullDirectory(Paths.get("reformcloud/logs"));
         }
 
-        final CommandManager commandManager = new CommandManager();
-        final ColouredConsoleProvider colouredConsoleProvider = new ColouredConsoleProvider();
+        final AbstractCommandManager commandManager = AbstractCommandManager.defaultCommandManager();
+        final AbstractLoggerProvider loggerProvider = AbstractLoggerProvider.defaultLogger();
 
-        ReformCloudLibraryService.sendHeader(colouredConsoleProvider);
+        ReformCloudLibraryService.sendHeader(loggerProvider);
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
-        colouredConsoleProvider.setDebug(options.contains("--debug"));
-        new ReformCloudController(colouredConsoleProvider, commandManager, options.contains("--ssl"),
+        loggerProvider.setDebug(options.contains("--debug"));
+        new ReformCloudController(loggerProvider, commandManager, options.contains("--ssl"),
             current);
 
-        colouredConsoleProvider
+        loggerProvider
             .info(ReformCloudController.getInstance().getLoadedLanguage().getHelp_default());
-        new ReformAsyncConsole(colouredConsoleProvider, commandManager, "Controller");
+        new ReformAsyncConsole(loggerProvider, commandManager, "Controller");
 
         infinitySleeper.sleep();
     }

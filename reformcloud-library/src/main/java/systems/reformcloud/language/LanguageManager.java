@@ -5,13 +5,15 @@
 package systems.reformcloud.language;
 
 import com.google.gson.reflect.TypeToken;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
+import systems.reformcloud.event.events.language.LanguageLoadEvent;
 import systems.reformcloud.language.languages.defaults.English;
 import systems.reformcloud.language.languages.defaults.German;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.FileUtils;
 
-import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -40,7 +42,7 @@ public final class LanguageManager implements Serializable {
             return;
         }
 
-        new File("reformcloud/language").mkdirs();
+        FileUtils.createDirectory(Paths.get("reformcloud/language"));
 
         if (!Files.exists(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json"))) {
             if (lang.equalsIgnoreCase("german")) {
@@ -59,6 +61,8 @@ public final class LanguageManager implements Serializable {
             .parse(Paths.get("reformcloud/language/" + lang.toLowerCase() + ".json"))
             .getValue("lang", new TypeToken<Language>() {
             }.getType());
+
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new LanguageLoadEvent(loaded));
     }
 
     public Language getLoaded() {

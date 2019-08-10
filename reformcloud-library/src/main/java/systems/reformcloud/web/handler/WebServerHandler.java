@@ -13,6 +13,8 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.web.WebChannelClosedEvent;
+import systems.reformcloud.event.events.web.WebHandlerPreHandleEvent;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.web.utils.WebHandler;
 import systems.reformcloud.web.utils.WebHandlerAdapter;
@@ -97,16 +99,20 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
 
         FullHttpResponse fullHttpResponse = null;
         if (webHandler != null) {
-            try {
-                fullHttpResponse = webHandler.handleRequest(ctx, httpRequest);
-            } catch (final Exception ex) {
-                exception.accept(ex);
-                ctx.writeAndFlush(
-                    new DefaultFullHttpResponse(httpRequest.protocolVersion(),
-                        HttpResponseStatus.NOT_FOUND,
-                        Unpooled.wrappedBuffer("404 Page is not available!".getBytes()))
-                ).addListener(ChannelFutureListener.CLOSE);
-                return;
+            WebHandlerPreHandleEvent webHandlerPreHandleEvent = new WebHandlerPreHandleEvent(webHandlerAdapter, webHandler, httpRequest);
+            ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(webHandlerPreHandleEvent);
+            if (!webHandlerPreHandleEvent.isCancelled()) {
+                try {
+                    fullHttpResponse = webHandler.handleRequest(ctx, httpRequest);
+                } catch (final Exception ex) {
+                    exception.accept(ex);
+                    ctx.writeAndFlush(
+                        new DefaultFullHttpResponse(httpRequest.protocolVersion(),
+                            HttpResponseStatus.NOT_FOUND,
+                            Unpooled.wrappedBuffer("404 Page is not available!".getBytes()))
+                    ).addListener(ChannelFutureListener.CLOSE);
+                    return;
+                }
             }
         }
 
@@ -123,7 +129,10 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
         }
 
         fullHttpResponse.headers().set("Access-Control-Allow-Origin", "*");
-        ctx.channel().writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
+        ctx.channel().writeAndFlush(fullHttpResponse).addListener((ChannelFutureListener) channelFuture -> {
+            channelFuture.channel().close();
+            ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new WebChannelClosedEvent(webHandlerAdapter, channelFuture));
+        });
     }
 
     @Override

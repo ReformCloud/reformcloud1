@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.*;
@@ -251,7 +252,7 @@ public final class Configuration implements Serializable {
      */
     private boolean write(File path) {
         if (path.exists()) {
-            path.delete();
+            FileUtils.deleteFileIfExists(path);
         }
 
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path),
@@ -384,6 +385,11 @@ public final class Configuration implements Serializable {
         return this.jsonObject.has(key);
     }
 
+    /**
+     * Get the json object which is written
+     *
+     * @return the current json object of this class
+     */
     public JsonObject getJsonObject() {
         return this.jsonObject;
     }

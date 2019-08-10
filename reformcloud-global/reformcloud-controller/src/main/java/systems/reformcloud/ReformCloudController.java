@@ -32,16 +32,15 @@ import systems.reformcloud.database.statistics.SaveStatisticsProvider;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.DefaultEventManager;
 import systems.reformcloud.event.abstracts.EventManager;
-import systems.reformcloud.event.events.update.ProxyInfoUpdateEvent;
 import systems.reformcloud.event.events.internal.ReloadDoneEvent;
-import systems.reformcloud.event.events.update.ServerInfoUpdateEvent;
 import systems.reformcloud.event.events.internal.StartedEvent;
+import systems.reformcloud.event.events.update.ProxyInfoUpdateEvent;
+import systems.reformcloud.event.events.update.ServerInfoUpdateEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.AbstractLoggerProvider;
-import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
@@ -150,13 +149,13 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     /**
      * Creates a new instance of the ReformCloudController and prepares all needed handlers
      *
-     * @param colouredConsoleProvider Main Cloud logger, will be used everywhere
+     * @param loggerProvider Main Cloud logger, will be used everywhere
      * @param commandManager Main CommandManager to manage all available commands
      * @param ssl If this is {@code true} the cloud will use a self- signed certificate
      * @param time Startup time for start time
      * @throws Throwable If an error occurs while starting CloudSystem the error will be thrown here
      */
-    public ReformCloudController(ColouredConsoleProvider colouredConsoleProvider, CommandManager commandManager,
+    public ReformCloudController(AbstractLoggerProvider loggerProvider, AbstractCommandManager commandManager,
                                  boolean ssl, long time) throws Throwable {
         if (instance == null) {
             instance = this;
@@ -165,12 +164,12 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 new LoadException(new InstanceAlreadyExistsException()));
         }
 
-        this.colouredConsoleProvider = colouredConsoleProvider;
+        this.colouredConsoleProvider = loggerProvider;
         this.commandManager = commandManager;
 
         cloudConfiguration = new CloudConfiguration();
         ReformCloudLibraryServiceProvider reformCloudLibraryServiceProvider = new ReformCloudLibraryServiceProvider(
-            colouredConsoleProvider,
+            loggerProvider,
             this.cloudConfiguration.getControllerKey(), null, eventManager,
             cloudConfiguration.getLoadedLang());
         this.internalCloudNetwork

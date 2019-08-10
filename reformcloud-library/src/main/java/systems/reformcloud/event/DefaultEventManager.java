@@ -7,6 +7,7 @@ package systems.reformcloud.event;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.event.abstracts.EventManager;
 import systems.reformcloud.event.annotation.Handler;
+import systems.reformcloud.event.events.event.ListenerRegisteredEvent;
 import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 
@@ -96,6 +97,8 @@ public final class DefaultEventManager extends EventManager implements Serializa
             this.handlers.put(methods.getKey(), done.toArray(eventClasses));
             done.clear();
         }
+
+        fire(new ListenerRegisteredEvent(this, listener));
     }
 
     /**

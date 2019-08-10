@@ -4,9 +4,11 @@
 
 package systems.reformcloud.commands.completer;
 
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
 import systems.reformcloud.commands.abstracts.CommandMap;
 import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.event.events.commands.tab.TabCompleteCallEvent;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
@@ -37,6 +39,8 @@ public final class DefaultCommandCompleter extends AbstractCommandCompleter impl
 
     @Override
     public int complete(String buffer, int cursor, List<CharSequence> candidates) {
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new TabCompleteCallEvent(this, buffer));
+
         String[] args = calculateArgs(buffer);
         List<String> out = new ArrayList<>();
         if (buffer.isEmpty() || buffer.indexOf(' ') == -1) {

@@ -10,7 +10,12 @@ import systems.reformcloud.commands.defaults.DefaultUserCommandSender;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.event.events.commands.CommandPreProcessEvent;
 import systems.reformcloud.event.events.commands.CommandProcessedEvent;
+import systems.reformcloud.event.events.commands.CommandRegisterEvent;
+import systems.reformcloud.event.events.commands.CommandUnregisterEvent;
+import systems.reformcloud.event.utility.Event;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.annotiations.Internal;
 import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 import java.io.Serializable;
@@ -25,7 +30,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     /**
      * The default cloud command sender
      */
-    private final DefaultConsoleCommandSender defaultConsoleCommandSender = new DefaultConsoleCommandSender();
+    private static final DefaultConsoleCommandSender CONSOLE_COMMAND_SENDER = new DefaultConsoleCommandSender();
 
     /**
      * The command list, where all commands are located in
@@ -58,7 +63,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
                 .replace((command.contains(" ") ? command.split(" ")[0] + " " : command), "");
             try {
                 CommandPreProcessEvent commandPreProcessEvent = new CommandPreProcessEvent(command2, commandSender);
-                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(commandPreProcessEvent);
+                callEvent(commandPreProcessEvent);
                 if (commandPreProcessEvent.isCancelled()) {
                     return true;
                 }
@@ -70,7 +75,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
                     command2.executeCommand(commandSender, arguments);
                 }
 
-                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new CommandProcessedEvent(command2, commandSender));
+                callEvent(new CommandProcessedEvent(command2, commandSender));
             } catch (final Throwable throwable) {
                 StringUtil
                     .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
@@ -85,6 +90,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
     @Override
     public AbstractCommandManager registerCommand(Command command) {
         this.commands.add(command);
+        callEvent(new CommandRegisterEvent(command));
         return this;
     }
 
@@ -122,7 +128,10 @@ public final class CommandManager extends AbstractCommandManager implements Seri
 
     @Override
     public void unregisterCommand(final String name) {
-        this.commands.remove(findCommand(name));
+        Command command = findCommand(name);
+        Require.requireNotNull(command);
+        this.commands.remove(command);
+        callEvent(new CommandUnregisterEvent(command));
     }
 
     @Override
@@ -143,7 +152,7 @@ public final class CommandManager extends AbstractCommandManager implements Seri
 
     @Override
     public boolean dispatchCommand(String command) {
-        return this.dispatchCommand(this.defaultConsoleCommandSender, command);
+        return this.dispatchCommand(this.CONSOLE_COMMAND_SENDER, command);
     }
 
     @Override
@@ -154,5 +163,10 @@ public final class CommandManager extends AbstractCommandManager implements Seri
 
     public List<Command> getCommands() {
         return this.commands;
+    }
+
+    @Internal
+    private void callEvent(Event event) {
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(event);
     }
 }

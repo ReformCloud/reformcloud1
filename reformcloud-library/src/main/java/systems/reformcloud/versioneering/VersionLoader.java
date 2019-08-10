@@ -7,6 +7,7 @@ package systems.reformcloud.versioneering;
 import com.google.gson.stream.JsonReader;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.version.VersionCheckedEvent;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.IOException;
@@ -37,16 +38,22 @@ final class VersionLoader implements Serializable {
             urlConnection.setUseCaches(false);
             urlConnection.connect();
 
+            String version;
+
             try (JsonReader jsonReader = new JsonReader(
                 new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8))) {
-                return ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
+                version = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
                     .get("version").getAsString();
             }
+
+            ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new VersionCheckedEvent(version));
+            return version;
         } catch (final IOException ex) {
             if (ex instanceof UnknownHostException) {
                 ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().serve()
                     .accept("Cannot resolve update host," +
                         " make sure you have an internet connection");
+                ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new VersionCheckedEvent(null));
                 return StringUtil.REFORM_VERSION;
             }
 
@@ -54,6 +61,8 @@ final class VersionLoader implements Serializable {
                 .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Error while checking newest version", ex);
         }
+
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new VersionCheckedEvent(null));
 
         return StringUtil.REFORM_VERSION;
     }

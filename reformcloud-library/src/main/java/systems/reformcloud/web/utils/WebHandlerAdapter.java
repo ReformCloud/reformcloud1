@@ -5,6 +5,9 @@
 package systems.reformcloud.web.utils;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.web.WebHandlerRegisteredEvent;
+import systems.reformcloud.event.events.web.WebHandlerUnregisteredEvent;
 import systems.reformcloud.utility.Require;
 
 import java.io.Serializable;
@@ -32,6 +35,7 @@ public final class WebHandlerAdapter implements Serializable {
         Require.requireNotNull(path);
         Require.requireNotNull(webHandler);
         this.webHandlerMap.put(path, webHandler);
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new WebHandlerRegisteredEvent(this, path, webHandler));
         return this;
     }
 
@@ -43,7 +47,8 @@ public final class WebHandlerAdapter implements Serializable {
      */
     public WebHandlerAdapter unregisterHandler(final String path) {
         Require.requireNotNull(path);
-        this.webHandlerMap.remove(path);
+        WebHandler webHandler = this.webHandlerMap.remove(path);
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new WebHandlerUnregisteredEvent(this, path, webHandler));
         return this;
     }
 

@@ -5,7 +5,11 @@
 package systems.reformcloud.utility.threading;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.runtime.execution.*;
+import systems.reformcloud.event.utility.Event;
 import systems.reformcloud.utility.Require;
+import systems.reformcloud.utility.annotiations.Internal;
 
 import java.io.Serializable;
 
@@ -13,7 +17,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 25.04.2019
  */
 
-final class TaskQueueEntry implements Serializable {
+public final class TaskQueueEntry implements Serializable {
 
     private Runnable prepared;
 
@@ -55,10 +59,16 @@ final class TaskQueueEntry implements Serializable {
         ReformCloudLibraryService.EXECUTOR_SERVICE.execute(() -> {
             while (!Thread.currentThread().isInterrupted() && (currentRepeats < repeats
                 || repeats == -1) && !deleted) {
+                callEvent(new TaskPreTickEvent(this, currentRepeats));
+
                 prepared.run();
                 if (countRepeats) {
+                    callEvent(new TaskRepeatCountEvent(this, currentRepeats));
                     currentRepeats++;
+                    callEvent(new TaskRepeatCountedEvent(this, currentRepeats));
                 }
+
+                callEvent(new TaskTickedEvent(this, currentRepeats));
             }
 
             deleted = true;
@@ -82,10 +92,13 @@ final class TaskQueueEntry implements Serializable {
     }
 
     public void delete() {
-        if (deleted) {
-            return;
-        }
-
+        Require.isFalse(deleted, "Cannot delete task again");
+        callEvent(new TaskDeletedEvent(this, currentRepeats));
         this.deleted = true;
+    }
+
+    @Internal
+    private void callEvent(Event event) {
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(event);
     }
 }

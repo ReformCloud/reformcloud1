@@ -16,6 +16,8 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.web.WebChannelOpenedEvent;
+import systems.reformcloud.event.events.web.WebServerBoundEvent;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 import systems.reformcloud.web.handler.WebServerHandler;
 import systems.reformcloud.web.utils.WebHandlerAdapter;
@@ -23,6 +25,7 @@ import systems.reformcloud.web.utils.WebHandlerAdapter;
 import javax.net.ssl.SSLException;
 import java.io.File;
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.security.cert.CertificateException;
 
 /**
@@ -40,11 +43,6 @@ public final class ReformWebServer implements Serializable {
      * The worker group of the web server
      */
     private EventLoopGroup workerGroup = ReformCloudLibraryService.eventLoopGroup();
-
-    /**
-     * The created server bootstrap
-     */
-    private ServerBootstrap serverBootstrap;
 
     /**
      * The created ssl context, will be {@code null} if ssl is disabled
@@ -81,7 +79,7 @@ public final class ReformWebServer implements Serializable {
             }
         }
 
-        serverBootstrap = new ServerBootstrap()
+        ServerBootstrap serverBootstrap = new ServerBootstrap()
             .group(bossGroup, workerGroup)
 
             .childOption(ChannelOption.IP_TOS, 24)
@@ -93,6 +91,8 @@ public final class ReformWebServer implements Serializable {
             .childHandler(new ChannelInitializer<Channel>() {
                 @Override
                 protected void initChannel(Channel channel) {
+                    ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new WebChannelOpenedEvent(webHandlerAdapter, channel));
+
                     if (sslContext != null && ssl) {
                         channel.pipeline().addLast(sslContext.newHandler(channel.alloc()));
                     }
@@ -107,6 +107,10 @@ public final class ReformWebServer implements Serializable {
         serverBootstrap.bind(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel()
             .closeFuture();
 
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new WebServerBoundEvent(
+            webHandlerAdapter, InetSocketAddress.createUnresolved(ethernetAddress.getHost(), ethernetAddress.getPort()), System.nanoTime()
+        ));
+
         ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider()
             .info(ReformCloudLibraryServiceProvider.getInstance().getLoaded().getWebserver_bound()
                 .replace("%ip%", ethernetAddress.getHost())
@@ -119,22 +123,6 @@ public final class ReformWebServer implements Serializable {
     public void shutdown() {
         this.bossGroup.shutdownGracefully();
         this.workerGroup.shutdownGracefully();
-    }
-
-    public EventLoopGroup getBossGroup() {
-        return this.bossGroup;
-    }
-
-    public EventLoopGroup getWorkerGroup() {
-        return this.workerGroup;
-    }
-
-    public ServerBootstrap getServerBootstrap() {
-        return this.serverBootstrap;
-    }
-
-    public SslContext getSslContext() {
-        return this.sslContext;
     }
 
     public WebHandlerAdapter getWebHandlerAdapter() {

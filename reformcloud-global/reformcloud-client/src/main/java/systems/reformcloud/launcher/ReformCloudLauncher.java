@@ -7,8 +7,8 @@ package systems.reformcloud.launcher;
 import io.netty.util.ResourceLeakDetector;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
-import systems.reformcloud.commands.CommandManager;
-import systems.reformcloud.logging.ColouredConsoleProvider;
+import systems.reformcloud.commands.AbstractCommandManager;
+import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.logging.console.ReformAsyncConsole;
 import systems.reformcloud.logging.console.thread.DefaultInfinitySleeper;
 import systems.reformcloud.logging.console.thread.InfinitySleeper;
@@ -80,8 +80,8 @@ final class ReformCloudLauncher implements Serializable {
 
         System.out.println();
 
-        final ColouredConsoleProvider colouredConsoleProvider = new ColouredConsoleProvider();
-        final CommandManager commandManager = new CommandManager();
+        final AbstractLoggerProvider colouredConsoleProvider = AbstractLoggerProvider.defaultLogger();
+        final AbstractCommandManager commandManager = AbstractCommandManager.defaultCommandManager();
 
         ReformCloudLibraryService.sendHeader(colouredConsoleProvider);
 

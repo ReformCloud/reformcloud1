@@ -139,13 +139,13 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     /**
      * Creates a new Instance of the ReformCloudClient
      *
-     * @param colouredConsoleProvider The default logger provider of the cloud system
+     * @param loggerProvider The default logger provider of the cloud system
      * @param commandManager The command manger which should be used in the cloud system
      * @param ssl If ssl should be enabled or not
      * @param time The startup time of the client
      * @throws Throwable If any exception occurs it will be catch and printed
      */
-    public ReformCloudClient(ColouredConsoleProvider colouredConsoleProvider, CommandManager commandManager,
+    public ReformCloudClient(AbstractLoggerProvider loggerProvider, AbstractCommandManager commandManager,
                              boolean ssl, final long time) throws Throwable {
         if (instance == null) {
             instance = this;
@@ -158,7 +158,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         this.ssl = ssl;
         this.commandManager = commandManager;
-        this.colouredConsoleProvider = colouredConsoleProvider;
+        this.colouredConsoleProvider = loggerProvider;
 
         SaveAPIService.instance.set(new SaveAPIImpl());
         APIService.instance.set(this);

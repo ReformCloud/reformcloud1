@@ -5,6 +5,9 @@
 package systems.reformcloud.utility.threading;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.runtime.TaskPrePrepareEvent;
+import systems.reformcloud.event.events.runtime.TaskPreparedEvent;
 
 import java.io.Serializable;
 import java.util.Queue;
@@ -30,6 +33,12 @@ public final class TaskScheduler extends AbstractTaskScheduler implements Serial
 
     @Override
     public AbstractTaskScheduler schedule(Runnable runnable, long repeats, long timePerRepeat) {
+        TaskPrePrepareEvent taskPrePrepareEvent = new TaskPrePrepareEvent(this, runnable);
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(taskPrePrepareEvent);
+        if (taskPrePrepareEvent.isCancelled()) {
+            return this;
+        }
+
         Runnable prepared = () -> {
             runnable.run();
             ReformCloudLibraryService.sleep(timePerRepeat);
@@ -37,6 +46,9 @@ public final class TaskScheduler extends AbstractTaskScheduler implements Serial
         TaskQueueEntry taskQueueEntry = new TaskQueueEntry(prepared, runnable, repeats,
             timePerRepeat);
         TASKS.offer(taskQueueEntry);
+
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new TaskPreparedEvent(this, prepared));
+
         taskQueueEntry.execute();
         return this;
     }
