@@ -16,7 +16,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -533,13 +532,16 @@ public final class SignSelector {
                     if (SpigotBootstrap.getInstance().isEnabled()) {
                         SpigotBootstrap.getInstance().getServer().getScheduler()
                             .runTask(SpigotBootstrap.getInstance(), () -> {
+                                if (serverGroup.isMaintenance()) {
+                                    SignSelector.this.setMaintenance(sign);
+                                    return;
+                                }
+
                                 if (sign.getServerInfo() == null
                                     || !sign.getServerInfo().getServerState().isJoineable()
                                     || sign.getServerInfo().getServerState()
                                     .equals(ServerState.HIDDEN)) {
                                     SignSelector.this.setLoading(sign, this.currentLoadingLayout);
-                                } else if (serverGroup.isMaintenance()) {
-                                    SignSelector.this.setMaintenance(sign);
                                 } else if (sign.getServerInfo().getOnlinePlayers().size() == 0) {
                                     SignSelector.this.setEmpty(sign);
                                 } else if (sign.getServerInfo().getOnlinePlayers().size()

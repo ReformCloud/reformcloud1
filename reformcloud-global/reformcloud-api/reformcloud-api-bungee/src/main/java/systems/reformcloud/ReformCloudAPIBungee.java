@@ -20,6 +20,7 @@ import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.event.DefaultEventManager;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.launcher.BungeecordBootstrap;
+import systems.reformcloud.listener.CloudConnectListener;
 import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
@@ -197,14 +198,21 @@ public final class ReformCloudAPIBungee implements APIService, Serializable {
                     }
                 });
 
+                if (BungeeCord.getInstance().getOnlineCount() != proxyInfo.getOnline()) {
+                    proxyInfo.setOnline(BungeeCord.getInstance().getOnlineCount());
+                    atomicBoolean.set(true);
+                }
+
                 if (atomicBoolean.getAndSet(false)) {
                     this.proxyInfo.getOnlinePlayers().removeAll(forRemoval);
                     this.proxyInfo.setOnline(this.proxyInfo.getOnlinePlayers().size());
                     this.updateProxyInfo();
                     forRemoval.clear();
+
+                    BungeeCord.getInstance().getPlayers().forEach(CloudConnectListener::initTab);
                 }
 
-                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 1);
+                ReformCloudLibraryService.sleep(TimeUnit.SECONDS, 3);
             }
         });
         logoutHandler.setDaemon(true);
