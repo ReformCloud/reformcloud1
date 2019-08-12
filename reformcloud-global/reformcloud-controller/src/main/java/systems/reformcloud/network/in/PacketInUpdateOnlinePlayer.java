@@ -10,6 +10,7 @@ import systems.reformcloud.event.events.player.OnlinePlayerUpdateEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.player.implementations.OnlinePlayer;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+import systems.reformcloud.utility.player.OnlinePlayerManager;
 
 import java.io.Serializable;
 
@@ -23,13 +24,7 @@ public final class PacketInUpdateOnlinePlayer implements Serializable, NetworkIn
     public void handle(Configuration configuration) {
         OnlinePlayer onlinePlayer = configuration
             .getValue("player", TypeTokenAdaptor.getONLINE_PLAYER_TYPE());
-        OnlinePlayer before = null;
-        if (ReformCloudController.getInstance().getPlayerDatabase().cachedOnlinePlayers()
-            .containsKey(onlinePlayer.getUniqueID())) {
-            before = ReformCloudController.getInstance()
-                .getOnlinePlayer(onlinePlayer.getUniqueID());
-        }
-
+        OnlinePlayer before = OnlinePlayerManager.INTERNAL_INSTANCE.get(onlinePlayer.getUniqueID());
         OnlinePlayerUpdateEvent onlinePlayerUpdateEvent = new OnlinePlayerUpdateEvent(before,
             onlinePlayer);
         ReformCloudController.getInstance().getEventManager().fire(onlinePlayerUpdateEvent);
@@ -37,6 +32,6 @@ public final class PacketInUpdateOnlinePlayer implements Serializable, NetworkIn
             return;
         }
 
-        ReformCloudController.getInstance().getPlayerDatabase().updateOnlinePlayer(onlinePlayer);
+        ReformCloudController.getInstance().updateOnlinePlayer(onlinePlayer);
     }
 }

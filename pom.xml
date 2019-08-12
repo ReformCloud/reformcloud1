@@ -44,6 +44,9 @@
         <dependency.jda.version>4.BETA.0_9</dependency.jda.version>
         <dependency.slf4j.version>1.7.27</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
+        <dependency.mysql-connector.version>8.0.17
+        </dependency.mysql-connector.version>
+        <dependency.mongodb.version>3.10.2</dependency.mongodb.version>
     </properties>
 
     <modules>

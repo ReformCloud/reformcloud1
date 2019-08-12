@@ -92,7 +92,10 @@ public final class TaskQueueEntry implements Serializable {
     }
 
     public void delete() {
-        Require.isFalse(deleted, "Cannot delete task again");
+        if (deleted) {
+            return;
+        }
+
         callEvent(new TaskDeletedEvent(this, currentRepeats));
         this.deleted = true;
     }

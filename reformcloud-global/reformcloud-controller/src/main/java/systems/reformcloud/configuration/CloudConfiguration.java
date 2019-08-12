@@ -12,6 +12,7 @@ import systems.reformcloud.api.events.ClientCreatedEvent;
 import systems.reformcloud.api.events.ClientDeletedEvent;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.database.config.DatabaseConfig;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.AbstractLoggerProvider;
@@ -69,6 +70,8 @@ public final class CloudConfiguration implements Serializable {
 
     private List<String> ipWhitelist = new ArrayList<>();
 
+    private DatabaseConfig databaseConfig;
+
     /**
      * Prepares and loads ReformCloudController Configuration
      */
@@ -88,6 +91,7 @@ public final class CloudConfiguration implements Serializable {
         }
 
         this.defaultSetup();
+        this.initDatabaseConfig();
         this.load();
         this.loadMessages();
         this.loadProxyGroups();
@@ -126,6 +130,47 @@ public final class CloudConfiguration implements Serializable {
 
         FileUtils.writeToFile(Paths.get("reformcloud/files/ControllerKEY"),
             ReformCloudLibraryService.newKey());
+    }
+
+    private void initDatabaseConfig() {
+        final AbstractLoggerProvider colouredConsoleProvider = ReformCloudController.getInstance()
+            .getColouredConsoleProvider();
+
+        if (!Files.exists(Paths.get("reformcloud/database/config.json"))) {
+            Configuration configuration = new Configuration();
+            String type = this.readString(colouredConsoleProvider,
+                s -> DatabaseConfig.DataBaseType.find(s) != null);
+            DatabaseConfig.DataBaseType dataBaseType = DatabaseConfig.DataBaseType.find(type);
+            if (dataBaseType.equals(DatabaseConfig.DataBaseType.FILE)) {
+                configuration.addValue("config", new DatabaseConfig(
+                    null,
+                    -1,
+                    null,
+                    null,
+                    null,
+                    dataBaseType
+                )).write(Paths.get("reformcloud/database/config.json"));
+            } else {
+                String password = this.readString(colouredConsoleProvider, s -> true);
+                String userName = this.readString(colouredConsoleProvider, s -> true);
+                String database = this.readString(colouredConsoleProvider, s -> true);
+                String host = this.readString(colouredConsoleProvider, s -> true);
+                int port = this.readInt(colouredConsoleProvider, s -> s > 0);
+                configuration.addValue("config", new DatabaseConfig(
+                    host,
+                    port,
+                    userName,
+                    password,
+                    database,
+                    dataBaseType
+                )).write(Paths.get("reformcloud/database/config.json"));
+            }
+        }
+
+        this.databaseConfig = Configuration.parse(
+            Paths.get("reformcloud/database/config.json")
+        ).getValue("config", new TypeToken<DatabaseConfig>() {
+        });
     }
 
     private boolean defaultSetup() {
@@ -763,5 +808,9 @@ public final class CloudConfiguration implements Serializable {
 
     public List<String> getIpWhitelist() {
         return this.ipWhitelist;
+    }
+
+    public DatabaseConfig getDatabaseConfig() {
+        return databaseConfig;
     }
 }

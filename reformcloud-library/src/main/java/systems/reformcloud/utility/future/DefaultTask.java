@@ -36,6 +36,18 @@ public final class DefaultTask<T> extends Task<T> implements Serializable {
     }
 
     @Override
+    public T execute() {
+        try {
+            T result = get();
+            onSuccess(result);
+            return result;
+        } catch (final InterruptedException | ExecutionException ex) {
+            onFailure(ex);
+            return null;
+        }
+    }
+
+    @Override
     public void getUninterruptedly(TimeUnit timeUnit, long timeout) {
         try {
             T t = get(timeout, timeUnit);
@@ -45,6 +57,21 @@ public final class DefaultTask<T> extends Task<T> implements Serializable {
         } catch (final TimeoutException ex) {
             onTimeOut();
         }
+    }
+
+    @Override
+    public T execute(TimeUnit timeUnit, long timeout) {
+        try {
+            T t = get(timeout, timeUnit);
+            onSuccess(t);
+            return t;
+        } catch (final InterruptedException | ExecutionException ex) {
+            onFailure(ex);
+        } catch (final TimeoutException ex) {
+            onTimeOut();
+        }
+
+        return null;
     }
 
     private void onSuccess(T result) {

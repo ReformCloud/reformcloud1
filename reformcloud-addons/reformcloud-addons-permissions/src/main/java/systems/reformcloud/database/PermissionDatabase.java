@@ -89,8 +89,7 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public PermissionHolder getPermissionHolder(final PermissionHolder permissionHolder) {
-        if (ReformCloudController.getInstance().getPlayerDatabase()
-            .getOfflinePlayer(permissionHolder.getUniqueID()) == null) {
+        if (ReformCloudController.getInstance().getOfflinePlayer(permissionHolder.getUniqueID()) == null) {
             return null;
         }
 
@@ -141,8 +140,7 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public PermissionHolder getPermissionHolder(final UUID permissionHolderUID) {
-        if (ReformCloudController.getInstance().getPlayerDatabase()
-            .getOfflinePlayer(permissionHolderUID) == null) {
+        if (ReformCloudController.getInstance().getOfflinePlayer(permissionHolderUID) == null) {
             return null;
         }
 

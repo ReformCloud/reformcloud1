@@ -24,8 +24,7 @@ public final class PacketInQueryGetPlayer implements Serializable, NetworkQueryI
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         if (configuration.contains("uuid")) {
-            OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-                .getOfflinePlayer(
+            OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getOfflinePlayer(
                     configuration.getValue("uuid", UUID.class)
                 );
 
@@ -37,23 +36,29 @@ public final class PacketInQueryGetPlayer implements Serializable, NetworkQueryI
         } else if (configuration.contains("player")) {
             DefaultPlayer defaultPlayer = configuration
                 .getValue("player", TypeTokenAdaptor.getDEFAULT_PLAYER_TYPE());
-            OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-                .getOfflinePlayer(defaultPlayer);
+            OfflinePlayer offlinePlayer = new OfflinePlayer(
+                defaultPlayer.getName(),
+                defaultPlayer.getUniqueID(),
+                defaultPlayer.getPlayerMeta(),
+                defaultPlayer.getLastLogin(),
+                defaultPlayer.getSpigotVersion()
+            );
+            OfflinePlayer result = ReformCloudController.getInstance().getPlayerDatabase()
+                .insert(defaultPlayer.getUniqueID(), offlinePlayer);
 
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                 configuration.getStringValue("from"), new PacketOutQueryPlayerResult(
-                    offlinePlayer, resultID
+                    result, resultID
                 )
             );
         } else {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(configuration.getStringValue("name"));
+                .getID(configuration.getStringValue("name"));
             if (uuid == null) {
                 return;
             }
 
-            OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-                .getOfflinePlayer(uuid);
+            OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getOfflinePlayer(uuid);
 
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                 configuration.getStringValue("from"), new PacketOutQueryPlayerResult(

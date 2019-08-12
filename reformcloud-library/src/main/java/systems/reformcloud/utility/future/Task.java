@@ -32,5 +32,9 @@ public abstract class Task<T> extends CompletableFuture<T> implements Serializab
 
     public abstract void getUninterruptedly();
 
+    public abstract T execute();
+
     public abstract void getUninterruptedly(TimeUnit timeUnit, long timeout);
+
+    public abstract T execute(TimeUnit timeUnit, long timeout);
 }

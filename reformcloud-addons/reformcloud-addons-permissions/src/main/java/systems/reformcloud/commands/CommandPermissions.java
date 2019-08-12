@@ -4,11 +4,6 @@
 
 package systems.reformcloud.commands;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import systems.reformcloud.PermissionsAddon;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
@@ -16,6 +11,12 @@ import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.03.2019
@@ -94,7 +95,7 @@ public final class CommandPermissions extends Command implements Serializable {
             commandSender.sendMessage("The PermissionGroup was deleted successfully");
         } else if (args.length == 2 && args[1].equalsIgnoreCase("list")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;
@@ -112,7 +113,7 @@ public final class CommandPermissions extends Command implements Serializable {
                     "/Permissions=" + permissionHolder.getPlayerPermissions());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("addperm")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;
@@ -134,7 +135,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 .sendMessage("The permission " + args[2] + " was added to the user " + args[0]);
         } else if (args.length == 3 && args[1].equalsIgnoreCase("removeperm")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;
@@ -190,7 +191,7 @@ public final class CommandPermissions extends Command implements Serializable {
                     .getName());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("addgroup")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;
@@ -224,7 +225,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 "The User " + args[0] + " is now in group " + permissionGroup.getName());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("removegroup")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;
@@ -253,7 +254,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 "The User " + args[0] + " is not longer in group " + permissionGroup.getName());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("setgroup")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;
@@ -312,7 +313,7 @@ public final class CommandPermissions extends Command implements Serializable {
             }
 
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;
@@ -349,7 +350,7 @@ public final class CommandPermissions extends Command implements Serializable {
             }
 
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(args[0]);
+                .getID(args[0]);
             if (uuid == null) {
                 commandSender.sendMessage("Could not found uuid of player in database");
                 return;

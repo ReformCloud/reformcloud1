@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.map.MapUtility;
@@ -49,6 +50,22 @@ public final class Configuration implements Serializable {
      */
     public Configuration(JsonObject jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public Configuration(Reader reader) {
+        JsonElement jsonElement;
+        try {
+            jsonElement = ReformCloudLibraryService.PARSER.parse(reader);
+        } catch (final Throwable throwable) {
+            StringUtil.printError(
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
+                "Error while reading config file",
+                throwable
+            );
+            jsonElement = new JsonObject();
+        }
+        Require.isTrue(jsonElement.isJsonObject(), "Json Element has to be a json object");
+        this.jsonObject = jsonElement.getAsJsonObject();
     }
 
     /**

@@ -24,10 +24,17 @@ import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.database.DataBaseManager;
+import systems.reformcloud.database.Database;
 import systems.reformcloud.database.DatabaseProvider;
 import systems.reformcloud.database.DatabaseSaver;
-import systems.reformcloud.database.player.PlayerDatabase;
-import systems.reformcloud.database.player.SavePlayerDatabase;
+import systems.reformcloud.database.config.DatabaseConfig;
+import systems.reformcloud.database.player.file.FileDatabaseManager;
+import systems.reformcloud.database.player.file.PlayerFileDatabase;
+import systems.reformcloud.database.player.mongo.MongoDatabaseManager;
+import systems.reformcloud.database.player.mongo.PlayerMongoDatabase;
+import systems.reformcloud.database.player.mysql.MySQLDatabaseManager;
+import systems.reformcloud.database.player.mysql.PlayerMySQLDatabase;
 import systems.reformcloud.database.statistics.SaveStatisticsProvider;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.DefaultEventManager;
@@ -80,6 +87,7 @@ import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.defaults.DefaultCloudService;
+import systems.reformcloud.utility.player.OnlinePlayerManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
@@ -114,7 +122,9 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private final SaveStatisticsProvider statisticsProvider = new StatisticsProvider();
 
-    private final SavePlayerDatabase playerDatabase = new PlayerDatabase();
+    private DataBaseManager dataBaseManager;
+
+    private Database<UUID, String, OfflinePlayer> playerDatabase;
 
     private final AbstractChannelHandler channelHandler;
 
@@ -210,6 +220,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         statisticsProvider.load();
         statisticsProvider.setLastStartup();
         statisticsProvider.addStartup();
+
+        initDatabase();
 
         if (StringUtil.USER_NAME.equalsIgnoreCase("root")
             && StringUtil.OS_NAME.toLowerCase().contains("linux")) {
@@ -421,6 +433,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     public void reloadAll() {
         this.colouredConsoleProvider.info(this.getLoadedLanguage().getController_reload());
 
+        this.dataBaseManager.disconnect();
+
         this.updateAllConnectedClients();
 
         this.cloudConfiguration = null;
@@ -465,6 +479,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
             this.getAllRegisteredProxies(k).forEach(e -> e.setProxyGroup(v))
         );
 
+        initDatabase();
         this.addonParallelLoader.loadAddons();
 
         final Language language = new LanguageManager(cloudConfiguration.getLoadedLang())
@@ -490,6 +505,31 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.eventManager.fire(new ReloadDoneEvent());
     }
 
+    private void initDatabase() {
+        DatabaseConfig databaseConfig = cloudConfiguration.getDatabaseConfig();
+        switch (databaseConfig.getDataBaseType()) {
+            case MYSQL: {
+                this.dataBaseManager = new MySQLDatabaseManager();
+                dataBaseManager.connect(databaseConfig);
+                this.playerDatabase = new PlayerMySQLDatabase((MySQLDatabaseManager) dataBaseManager);
+                break;
+            }
+
+            case MONGODB: {
+                this.dataBaseManager = new MongoDatabaseManager();
+                dataBaseManager.connect(databaseConfig);
+                this.playerDatabase = new PlayerMongoDatabase(((MongoDatabaseManager) dataBaseManager).mongoDatabase);
+                break;
+            }
+
+            case FILE:
+            default: {
+                this.dataBaseManager = new FileDatabaseManager();
+                this.playerDatabase = new PlayerFileDatabase();
+            }
+        }
+    }
+
     private void updateAllConnectedClients() {
         this.internalCloudNetwork
             .getClients()
@@ -506,6 +546,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     @Override
     public void shutdownAll() {
         this.taskScheduler.close();
+        this.dataBaseManager.disconnect();
         this.statisticsProvider.save();
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses()
@@ -1233,72 +1274,72 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
-        return this.playerDatabase.getOnlinePlayer(uniqueId);
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uniqueId);
     }
 
     @Override
     public OnlinePlayer getOnlinePlayer(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return null;
         }
 
-        return this.playerDatabase.getOnlinePlayer(uuid);
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uuid);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
-        return this.playerDatabase.getOfflinePlayer(uniqueId);
+        return this.playerDatabase.get(uniqueId);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return null;
         }
 
-        return this.playerDatabase.getOfflinePlayer(uuid);
+        return this.playerDatabase.get(uuid);
     }
 
     @Override
     public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
-        this.playerDatabase.updateOnlinePlayer(onlinePlayer);
+        OnlinePlayerManager.INTERNAL_INSTANCE.updatePlayer(onlinePlayer);
     }
 
     @Override
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
-        this.playerDatabase.updateOfflinePlayer(offlinePlayer);
+        this.playerDatabase.update(offlinePlayer.getUniqueID(), offlinePlayer);
     }
 
     @Override
     public boolean isOnline(UUID uniqueId) {
-        return this.playerDatabase.getOnlinePlayer(uniqueId) != null;
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uniqueId) != null;
     }
 
     @Override
     public boolean isOnline(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return false;
         }
 
-        return this.playerDatabase.getOnlinePlayer(uuid) != null;
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uuid) != null;
     }
 
     @Override
     public boolean isRegistered(UUID uniqueId) {
-        return this.playerDatabase.getOfflinePlayer(uniqueId) != null;
+        return this.playerDatabase.get(uniqueId) != null;
     }
 
     @Override
     public boolean isRegistered(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return false;
         }
 
-        return this.playerDatabase.getOfflinePlayer(uuid) != null;
+        return this.playerDatabase.get(uuid) != null;
     }
 
     @Override
@@ -1644,7 +1685,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.statisticsProvider;
     }
 
-    public SavePlayerDatabase getPlayerDatabase() {
+    public Database<UUID, String, OfflinePlayer> getPlayerDatabase() {
         return this.playerDatabase;
     }
 

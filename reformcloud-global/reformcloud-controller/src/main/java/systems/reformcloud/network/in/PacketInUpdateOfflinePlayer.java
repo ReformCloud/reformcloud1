@@ -33,6 +33,6 @@ public final class PacketInUpdateOfflinePlayer implements Serializable, NetworkI
             return;
         }
 
-        ReformCloudController.getInstance().getPlayerDatabase().updateOfflinePlayer(offlinePlayer);
+        ReformCloudController.getInstance().updateOfflinePlayer(offlinePlayer);
     }
 }
