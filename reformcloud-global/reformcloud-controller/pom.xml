@@ -55,6 +55,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.rethinkdb</groupId>
+            <artifactId>rethinkdb-driver</artifactId>
+            <version>${dependency.rethinkdb-driver.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

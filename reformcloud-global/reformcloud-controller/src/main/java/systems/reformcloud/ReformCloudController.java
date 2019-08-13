@@ -35,6 +35,8 @@ import systems.reformcloud.database.player.mongo.MongoDatabaseManager;
 import systems.reformcloud.database.player.mongo.PlayerMongoDatabase;
 import systems.reformcloud.database.player.mysql.MySQLDatabaseManager;
 import systems.reformcloud.database.player.mysql.PlayerMySQLDatabase;
+import systems.reformcloud.database.player.rethinkdb.PlayerRethinkDatabase;
+import systems.reformcloud.database.player.rethinkdb.RethinkDatabaseManager;
 import systems.reformcloud.database.statistics.SaveStatisticsProvider;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.DefaultEventManager;
@@ -519,6 +521,13 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 this.dataBaseManager = new MongoDatabaseManager();
                 dataBaseManager.connect(databaseConfig);
                 this.playerDatabase = new PlayerMongoDatabase(((MongoDatabaseManager) dataBaseManager).mongoDatabase);
+                break;
+            }
+
+            case RETHINK_DB: {
+                this.dataBaseManager = new RethinkDatabaseManager();
+                dataBaseManager.connect(databaseConfig);
+                this.playerDatabase = new PlayerRethinkDatabase(((RethinkDatabaseManager) dataBaseManager).connection);
                 break;
             }
 

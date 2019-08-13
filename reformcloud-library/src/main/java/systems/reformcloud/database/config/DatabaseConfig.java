@@ -62,6 +62,8 @@ public final class DatabaseConfig implements Serializable {
 
         MONGODB,
 
+        RETHINK_DB,
+
         FILE;
 
         public static DataBaseType find(String in) {
