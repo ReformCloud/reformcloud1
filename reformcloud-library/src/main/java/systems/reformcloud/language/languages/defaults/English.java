@@ -110,7 +110,13 @@ public final class English extends Language implements Serializable {
             "The permission was removed §asuccessfully",
             "The permission §e%perm%§r was added with the value §e%key%",
             "The player §e%name%§r was added to §e%proxy%§r whitelist",
-            "The player §e%name%§r was removed from §e%proxy%§r whitelist"
+            "The player §e%name%§r was removed from §e%proxy%§r whitelist",
+            "Please choose a database type {§e\"MYSQL\", \"§eMONGODB\", \"§eFILE\"§r}",
+            "Please provide the ip §3address§r of the database",
+            "Please provide the port §3port§r of the database",
+            "Please provide the §3username§r of the database user",
+            "Please provide the §3password§r of the database user",
+            "Please provide the §3name§r of the database"
         );
     }
 }

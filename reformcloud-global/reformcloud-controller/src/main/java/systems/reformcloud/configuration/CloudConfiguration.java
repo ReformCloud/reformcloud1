@@ -136,8 +136,11 @@ public final class CloudConfiguration implements Serializable {
         final AbstractLoggerProvider colouredConsoleProvider = ReformCloudController.getInstance()
             .getColouredConsoleProvider();
 
+        Language language = ReformCloudController.getInstance().getLoadedLanguage();
+
         if (!Files.exists(Paths.get("reformcloud/database/config.json"))) {
             Configuration configuration = new Configuration();
+            colouredConsoleProvider.info(language.getSetup_choose_database());
             String type = this.readString(colouredConsoleProvider,
                 s -> DatabaseConfig.DataBaseType.find(s) != null);
             DatabaseConfig.DataBaseType dataBaseType = DatabaseConfig.DataBaseType.find(type);
@@ -151,11 +154,16 @@ public final class CloudConfiguration implements Serializable {
                     dataBaseType
                 )).write(Paths.get("reformcloud/database/config.json"));
             } else {
-                String password = this.readString(colouredConsoleProvider, s -> true);
-                String userName = this.readString(colouredConsoleProvider, s -> true);
-                String database = this.readString(colouredConsoleProvider, s -> true);
+                colouredConsoleProvider.info(language.getSetup_database_host());
                 String host = this.readString(colouredConsoleProvider, s -> true);
+                colouredConsoleProvider.info(language.getSetup_database_port());
                 int port = this.readInt(colouredConsoleProvider, s -> s > 0);
+                colouredConsoleProvider.info(language.getSetup_database_name());
+                String database = this.readString(colouredConsoleProvider, s -> true);
+                colouredConsoleProvider.info(language.getSetup_database_username());
+                String userName = this.readString(colouredConsoleProvider, s -> true);
+                colouredConsoleProvider.info(language.getSetup_database_password());
+                String password = this.readString(colouredConsoleProvider, s -> true);
                 configuration.addValue("config", new DatabaseConfig(
                     host,
                     port,

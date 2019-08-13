@@ -61,7 +61,9 @@ public class Language implements Serializable {
         no_available_client_for_startup, command_process_try_stop,
         command_screen_successfully_left, command_webpermission_remove_success,
         command_webpermission_add_success, command_whitelist_success,
-        command_whitelist_removed;
+        command_whitelist_removed, setup_choose_database, setup_database_host,
+        setup_database_port, setup_database_username, setup_database_password,
+        setup_database_name;
 
     @java.beans.ConstructorProperties({"help_default", "help_command_not_found",
         "controller_loading_client", "controller_loading_server", "controller_loading_proxy",
@@ -99,7 +101,9 @@ public class Language implements Serializable {
         "no_available_client_for_startup", "command_process_try_stop",
         "command_screen_successfully_left", "command_webpermission_remove_success",
         "command_webpermission_add_success", "command_whitelist_success",
-        "command_whitelist_removed"})
+        "command_whitelist_removed", "setup_choose_database", "setup_database_host",
+        "setup_database_port", "setup_database_username", "setup_database_password",
+        "setup_database_name"})
     protected Language(String help_default, String help_command_not_found,
         String controller_loading_client, String controller_loading_server,
         String controller_loading_proxy, String loading_done, String controller_reload,
@@ -235,6 +239,197 @@ public class Language implements Serializable {
         this.command_webpermission_add_success = command_webpermission_add_success;
         this.command_whitelist_success = command_whitelist_success;
         this.command_whitelist_removed = command_whitelist_removed;
+        this.setup_choose_database = "Please choose a database type {§e\"MYSQL\", \"§eMONGODB\", \"§eFILE\"§r}";
+        this.setup_database_host = "Please provide the ip §3address§r of the database";
+        this.setup_database_port = "Please provide the port §3port§r of the database";
+        this.setup_database_username = "Please provide the §3username§r of the database user";
+        this.setup_database_password = "Please provide the §3password§r of the database user";
+        this.setup_database_name = "Please provide the §3name§r of the database";
+    }
+
+    @java.beans.ConstructorProperties({"help_default", "help_command_not_found",
+        "controller_loading_client", "controller_loading_server", "controller_loading_proxy",
+        "loading_done", "controller_reload", "global_reload_done",
+        "controller_deleting_servergroup", "controller_deleting_proxygroup",
+        "controller_delete_client", "controller_icon_size_invalid", "version_available",
+        "version_update", "controller_servprocess_stopped", "controller_proxyprocess_stopped",
+        "waiting_for_tasks", "addon_prepared", "addon_enabled", "addon_closed", "webserver_bound",
+        "netty_server_bound", "controller_channel_connected", "controller_channel_disconnected",
+        "controller_process_add", "controller_process_stopped", "controller_process_ready",
+        "controller_command_executed", "controller_command_executed_packet",
+        "controller_get_log_in", "controller_server_added_to_queue",
+        "controller_proxy_added_to_queue", "client_shutdown_process", "client_copies_template",
+        "client_wait_start", "channel_global_disconnected", "screen_kicked_process_disconnect",
+        "client_controller_info_reload_success", "controller_socket_bind_success",
+        "download_trying", "download_success", "command_addons_no_addons_loaded",
+        "command_addons_following_loaded", "command_addons_addon_description",
+        "servergroup_not_found", "proxygroup_not_found", "client_not_found", "client_not_connected",
+        "process_not_connected", "command_assignment_value_updated",
+        "command_assignment_value_removed", "command_assignment_value_added",
+        "command_assignment_value_not_updatable", "command_copy_try",
+        "command_copy_backend_not_client", "setup_name_of_group", "setup_name_of_client",
+        "setup_choose_minecraft_version", "setup_choose_spigot_version", "setup_choose_reset_type",
+        "setup_choose_proxy_reset_type", "setup_trying_to_create", "setup_choose_proxy_version",
+        "setup_name_of_new_client", "setup_ip_of_new_client", "setup_controller_ip",
+        "setup_name_of_first_client", "setup_ram_of_default_group",
+        "setup_ram_of_default_proxy_group", "setup_load_default_addons",
+        "setup_default_user_created", "command_error_occurred", "command_create_webuser_created",
+        "command_create_template_created_success", "command_deploy_trying",
+        "command_developer_debug_enable", "command_developer_debug_disable",
+        "command_developer_standby_enable", "command_developer_standby_disable",
+        "command_execute_success", "command_exit_doing", "command_listgroup_list",
+        "command_log_success", "command_process_queue_requested",
+        "command_process_remove_queue_entry", "command_process_trying_startup",
+        "no_available_client_for_startup", "command_process_try_stop",
+        "command_screen_successfully_left", "command_webpermission_remove_success",
+        "command_webpermission_add_success", "command_whitelist_success",
+        "command_whitelist_removed", "setup_choose_database", "setup_database_host",
+        "setup_database_port", "setup_database_username", "setup_database_password",
+        "setup_database_name"})
+    protected Language(String help_default, String help_command_not_found,
+        String controller_loading_client, String controller_loading_server,
+        String controller_loading_proxy, String loading_done, String controller_reload,
+        String global_reload_done, String controller_deleting_servergroup,
+        String controller_deleting_proxygroup, String controller_delete_client,
+        String controller_icon_size_invalid, String version_available, String version_update,
+        String controller_servprocess_stopped, String controller_proxyprocess_stopped,
+        String waiting_for_tasks, String addon_prepared, String addon_enabled, String addon_closed,
+        String webserver_bound, String netty_server_bound, String controller_channel_connected,
+        String controller_channel_disconnected, String controller_process_add,
+        String controller_process_stopped, String controller_process_ready,
+        String controller_command_executed, String controller_command_executed_packet,
+        String controller_get_log_in, String controller_server_added_to_queue,
+        String controller_proxy_added_to_queue, String client_shutdown_process,
+        String client_copies_template, String client_wait_start, String channel_global_disconnected,
+        String screen_kicked_process_disconnect, String client_controller_info_reload_success,
+        String controller_socket_bind_success, String download_trying, String download_success,
+        String command_addons_no_addons_loaded, String command_addons_following_loaded,
+        String command_addons_addon_description, String servergroup_not_found,
+        String proxygroup_not_found, String client_not_found, String client_not_connected,
+        String process_not_connected, String command_assignment_value_updated,
+        String command_assignment_value_removed, String command_assignment_value_added,
+        String command_assignment_value_not_updatable, String command_copy_try,
+        String command_copy_backend_not_client, String setup_name_of_group,
+        String setup_name_of_client, String setup_choose_minecraft_version,
+        String setup_choose_spigot_version, String setup_choose_reset_type,
+        String setup_choose_proxy_reset_type, String setup_trying_to_create,
+        String setup_choose_proxy_version, String setup_name_of_new_client,
+        String setup_ip_of_new_client, String setup_controller_ip,
+        String setup_name_of_first_client, String setup_ram_of_default_group,
+        String setup_ram_of_default_proxy_group, String setup_load_default_addons,
+        String setup_default_user_created, String command_error_occurred,
+        String command_create_webuser_created, String command_create_template_created_success,
+        String command_deploy_trying, String command_developer_debug_enable,
+        String command_developer_debug_disable, String command_developer_standby_enable,
+        String command_developer_standby_disable, String command_execute_success,
+        String command_exit_doing, String command_listgroup_list, String command_log_success,
+        String command_process_queue_requested, String command_process_remove_queue_entry,
+        String command_process_trying_startup, String no_available_client_for_startup,
+        String command_process_try_stop, String command_screen_successfully_left,
+        String command_webpermission_remove_success, String command_webpermission_add_success,
+        String command_whitelist_success, String command_whitelist_removed,
+        String setup_choose_database, String setup_database_host,
+        String setup_database_port, String setup_database_username,
+        String setup_database_password, String setup_database_name) {
+        this.help_default = help_default;
+        this.help_command_not_found = help_command_not_found;
+        this.controller_loading_client = controller_loading_client;
+        this.controller_loading_server = controller_loading_server;
+        this.controller_loading_proxy = controller_loading_proxy;
+        this.loading_done = loading_done;
+        this.controller_reload = controller_reload;
+        this.global_reload_done = global_reload_done;
+        this.controller_deleting_servergroup = controller_deleting_servergroup;
+        this.controller_deleting_proxygroup = controller_deleting_proxygroup;
+        this.controller_delete_client = controller_delete_client;
+        this.controller_icon_size_invalid = controller_icon_size_invalid;
+        this.version_available = version_available;
+        this.version_update = version_update;
+        this.controller_servprocess_stopped = controller_servprocess_stopped;
+        this.controller_proxyprocess_stopped = controller_proxyprocess_stopped;
+        this.waiting_for_tasks = waiting_for_tasks;
+        this.addon_prepared = addon_prepared;
+        this.addon_enabled = addon_enabled;
+        this.addon_closed = addon_closed;
+        this.webserver_bound = webserver_bound;
+        this.netty_server_bound = netty_server_bound;
+        this.controller_channel_connected = controller_channel_connected;
+        this.controller_channel_disconnected = controller_channel_disconnected;
+        this.controller_process_add = controller_process_add;
+        this.controller_process_stopped = controller_process_stopped;
+        this.controller_process_ready = controller_process_ready;
+        this.controller_command_executed = controller_command_executed;
+        this.controller_command_executed_packet = controller_command_executed_packet;
+        this.controller_get_log_in = controller_get_log_in;
+        this.controller_server_added_to_queue = controller_server_added_to_queue;
+        this.controller_proxy_added_to_queue = controller_proxy_added_to_queue;
+        this.client_shutdown_process = client_shutdown_process;
+        this.client_copies_template = client_copies_template;
+        this.client_wait_start = client_wait_start;
+        this.channel_global_disconnected = channel_global_disconnected;
+        this.screen_kicked_process_disconnect = screen_kicked_process_disconnect;
+        this.client_controller_info_reload_success = client_controller_info_reload_success;
+        this.controller_socket_bind_success = controller_socket_bind_success;
+        this.download_trying = download_trying;
+        this.download_success = download_success;
+        this.command_addons_no_addons_loaded = command_addons_no_addons_loaded;
+        this.command_addons_following_loaded = command_addons_following_loaded;
+        this.command_addons_addon_description = command_addons_addon_description;
+        this.servergroup_not_found = servergroup_not_found;
+        this.proxygroup_not_found = proxygroup_not_found;
+        this.client_not_found = client_not_found;
+        this.client_not_connected = client_not_connected;
+        this.process_not_connected = process_not_connected;
+        this.command_assignment_value_updated = command_assignment_value_updated;
+        this.command_assignment_value_removed = command_assignment_value_removed;
+        this.command_assignment_value_added = command_assignment_value_added;
+        this.command_assignment_value_not_updatable = command_assignment_value_not_updatable;
+        this.command_copy_try = command_copy_try;
+        this.command_copy_backend_not_client = command_copy_backend_not_client;
+        this.setup_name_of_group = setup_name_of_group;
+        this.setup_name_of_client = setup_name_of_client;
+        this.setup_choose_minecraft_version = setup_choose_minecraft_version;
+        this.setup_choose_spigot_version = setup_choose_spigot_version;
+        this.setup_choose_reset_type = setup_choose_reset_type;
+        this.setup_choose_proxy_reset_type = setup_choose_proxy_reset_type;
+        this.setup_trying_to_create = setup_trying_to_create;
+        this.setup_choose_proxy_version = setup_choose_proxy_version;
+        this.setup_name_of_new_client = setup_name_of_new_client;
+        this.setup_ip_of_new_client = setup_ip_of_new_client;
+        this.setup_controller_ip = setup_controller_ip;
+        this.setup_name_of_first_client = setup_name_of_first_client;
+        this.setup_ram_of_default_group = setup_ram_of_default_group;
+        this.setup_ram_of_default_proxy_group = setup_ram_of_default_proxy_group;
+        this.setup_load_default_addons = setup_load_default_addons;
+        this.setup_default_user_created = setup_default_user_created;
+        this.command_error_occurred = command_error_occurred;
+        this.command_create_webuser_created = command_create_webuser_created;
+        this.command_create_template_created_success = command_create_template_created_success;
+        this.command_deploy_trying = command_deploy_trying;
+        this.command_developer_debug_enable = command_developer_debug_enable;
+        this.command_developer_debug_disable = command_developer_debug_disable;
+        this.command_developer_standby_enable = command_developer_standby_enable;
+        this.command_developer_standby_disable = command_developer_standby_disable;
+        this.command_execute_success = command_execute_success;
+        this.command_exit_doing = command_exit_doing;
+        this.command_listgroup_list = command_listgroup_list;
+        this.command_log_success = command_log_success;
+        this.command_process_queue_requested = command_process_queue_requested;
+        this.command_process_remove_queue_entry = command_process_remove_queue_entry;
+        this.command_process_trying_startup = command_process_trying_startup;
+        this.no_available_client_for_startup = no_available_client_for_startup;
+        this.command_process_try_stop = command_process_try_stop;
+        this.command_screen_successfully_left = command_screen_successfully_left;
+        this.command_webpermission_remove_success = command_webpermission_remove_success;
+        this.command_webpermission_add_success = command_webpermission_add_success;
+        this.command_whitelist_success = command_whitelist_success;
+        this.command_whitelist_removed = command_whitelist_removed;
+        this.setup_choose_database = setup_choose_database;
+        this.setup_database_host = setup_database_host;
+        this.setup_database_port = setup_database_port;
+        this.setup_database_username = setup_database_username;
+        this.setup_database_password = setup_database_password;
+        this.setup_database_name = setup_database_name;
     }
 
     public String getHelp_default() {
@@ -607,5 +802,29 @@ public class Language implements Serializable {
 
     public String getCommand_whitelist_removed() {
         return this.command_whitelist_removed;
+    }
+
+    public String getSetup_choose_database() {
+        return setup_choose_database;
+    }
+
+    public String getSetup_database_host() {
+        return setup_database_host;
+    }
+
+    public String getSetup_database_port() {
+        return setup_database_port;
+    }
+
+    public String getSetup_database_username() {
+        return setup_database_username;
+    }
+
+    public String getSetup_database_password() {
+        return setup_database_password;
+    }
+
+    public String getSetup_database_name() {
+        return setup_database_name;
     }
 }
