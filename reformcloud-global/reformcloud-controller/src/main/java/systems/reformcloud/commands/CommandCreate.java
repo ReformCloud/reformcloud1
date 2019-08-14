@@ -54,7 +54,8 @@ public final class CommandCreate extends Command implements Serializable {
             colouredConsoleProvider.info(language.getSetup_name_of_group());
             String name = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups()
-                    .get(s) == null);
+                    .get(s) == null && s.split(" ").length == 1);
+
             colouredConsoleProvider.info(language.getSetup_name_of_client());
             String client = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s)
@@ -96,7 +97,8 @@ public final class CommandCreate extends Command implements Serializable {
             colouredConsoleProvider.info(language.getSetup_name_of_group());
             String name = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
-                    .get(s) == null);
+                    .get(s) == null && s.split(" ").length == 1);
+
             colouredConsoleProvider.info(language.getSetup_name_of_client());
             String client = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s)
@@ -131,7 +133,8 @@ public final class CommandCreate extends Command implements Serializable {
             colouredConsoleProvider.info(language.getSetup_name_of_new_client());
             String name = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s)
-                    == null);
+                    == null && s.split(" ").length == 1);
+
             colouredConsoleProvider.info(language.getSetup_ip_of_new_client());
             String ip = cloudConfiguration
                 .readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
