@@ -26,6 +26,6 @@ public final class MongoDatabaseJavaDriver extends DynamicDependency implements 
 
     @Override
     public String getVersion() {
-        return "3.10.2";
+        return "3.11.0";
     }
 }
