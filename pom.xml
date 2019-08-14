@@ -20,10 +20,10 @@
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <build.number/>
 
-        <api.default.version>113PRESTABLE290719953</api.default.version>
+        <api.default.version>114PRESTABLE15080022</api.default.version>
         <service.type>PRE-STABLE</service.type>
 
-        <service.version>1.13</service.version>
+        <service.version>1.14</service.version>
 
         <plugin.shade.version>3.2.1</plugin.shade.version>
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
@@ -44,11 +44,9 @@
         <dependency.jda.version>4.0.0_39</dependency.jda.version>
         <dependency.slf4j.version>1.7.28</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
-        <dependency.mysql-connector.version>8.0.17
-        </dependency.mysql-connector.version>
+        <dependency.mysql-connector.version>8.0.17</dependency.mysql-connector.version>
         <dependency.mongodb.version>3.11.0</dependency.mongodb.version>
-        <dependency.rethinkdb-driver.version>2.3.3
-        </dependency.rethinkdb-driver.version>
+        <dependency.rethinkdb-driver.version>2.3.3</dependency.rethinkdb-driver.version>
     </properties>
 
     <modules>
@@ -112,7 +110,7 @@
         <maven>3.0.0</maven>
     </prerequisites>
 
-    <version>1.13</version>
+    <version>1.14</version>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
