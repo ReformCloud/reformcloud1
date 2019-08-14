@@ -110,12 +110,14 @@ public final class German extends Language implements Serializable {
             "Die Permission §e%perm%§r wurde mit der value §e%key%§r hinzugefügt",
             "Der Spieler §e%name%§r wurde zur whitelist des Proxies §e%proxy%§r hinzugefügt",
             "Der Spieler §e%name%§r wurde von der whitelist des Proxies §e%proxy%§r entfernt",
-            "Bitte wähle einen Datenbank Typ {§e\"MYSQL\", \"§eMONGODB\", \"§eFILE\"§r}",
+            "Bitte wähle einen Datenbank Typ [\"§eMYSQL§r\", \"§eMONGODB§r\", \"§eFILE§r\"]",
             "Bitte gib die §3IP-Addresse§r der Datenbank an",
             "Bitte gib den §3Port§r der Datenbank an",
             "Bitte gib den §3Nutzernamen§r der Datenbank an",
             "Bitte gib das §3Passwort§r des Datenbank Benutzers an",
-            "Bitte gib den §3Namen§r der Datenbank an"
+            "Bitte gib den §3Namen§r der Datenbank an",
+            "Bitte gib den §3Ram§r der ServerGruppe an",
+            "Bitte gib den §3Ram§r der ProxyGruppe an"
         );
     }
 }

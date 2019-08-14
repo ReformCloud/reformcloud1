@@ -660,7 +660,7 @@ public final class CloudConfiguration implements Serializable {
 
         ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
-                .getController_deleting_servergroup()
+                .getController_deleting_proxygroup()
                 .replace("%name%", proxyGroup.getName())
                 .replace("%clients%", proxyGroup.getClients() + StringUtil.EMPTY));
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
@@ -699,7 +699,7 @@ public final class CloudConfiguration implements Serializable {
         ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_delete_client()
                 .replace("%name%", client.getName())
-                .replace("%clients%", client.getIp()));
+                .replace("%ip%", client.getIp()));
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients()
             .remove(client.getName());
         ReformCloudLibraryServiceProvider.getInstance()
@@ -752,7 +752,7 @@ public final class CloudConfiguration implements Serializable {
         return readLine;
     }
 
-    private Integer readInt(final AbstractLoggerProvider colouredConsoleProvider,
+    public Integer readInt(final AbstractLoggerProvider colouredConsoleProvider,
                             Predicate<Integer> checkable) {
         String readLine = colouredConsoleProvider.readLine();
         while (readLine == null

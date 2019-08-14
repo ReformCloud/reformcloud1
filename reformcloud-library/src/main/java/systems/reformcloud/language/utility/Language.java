@@ -63,7 +63,7 @@ public class Language implements Serializable {
         command_webpermission_add_success, command_whitelist_success,
         command_whitelist_removed, setup_choose_database, setup_database_host,
         setup_database_port, setup_database_username, setup_database_password,
-        setup_database_name;
+        setup_database_name, setup_memory_servergroup, setup_memory_proxygroup;
 
     @java.beans.ConstructorProperties({"help_default", "help_command_not_found",
         "controller_loading_client", "controller_loading_server", "controller_loading_proxy",
@@ -239,7 +239,7 @@ public class Language implements Serializable {
         this.command_webpermission_add_success = command_webpermission_add_success;
         this.command_whitelist_success = command_whitelist_success;
         this.command_whitelist_removed = command_whitelist_removed;
-        this.setup_choose_database = "Please choose a database type {§e\"MYSQL\", \"§eMONGODB\", \"§eFILE\"§r}";
+        this.setup_choose_database = "Please choose a database type [\"§eMYSQL§r\", \"§eMONGODB§r\", \"§eFILE§r\"]";
         this.setup_database_host = "Please provide the ip §3address§r of the database";
         this.setup_database_port = "Please provide the port §3port§r of the database";
         this.setup_database_username = "Please provide the §3username§r of the database user";
@@ -285,7 +285,7 @@ public class Language implements Serializable {
         "command_webpermission_add_success", "command_whitelist_success",
         "command_whitelist_removed", "setup_choose_database", "setup_database_host",
         "setup_database_port", "setup_database_username", "setup_database_password",
-        "setup_database_name"})
+        "setup_database_name", "setup_memory_servergroup", "setup_memory_proxygroup"})
     protected Language(String help_default, String help_command_not_found,
         String controller_loading_client, String controller_loading_server,
         String controller_loading_proxy, String loading_done, String controller_reload,
@@ -330,7 +330,8 @@ public class Language implements Serializable {
         String command_whitelist_success, String command_whitelist_removed,
         String setup_choose_database, String setup_database_host,
         String setup_database_port, String setup_database_username,
-        String setup_database_password, String setup_database_name) {
+        String setup_database_password, String setup_database_name,
+        String setup_memory_servergroup, String setup_memory_proxygroup) {
         this.help_default = help_default;
         this.help_command_not_found = help_command_not_found;
         this.controller_loading_client = controller_loading_client;
@@ -430,6 +431,8 @@ public class Language implements Serializable {
         this.setup_database_username = setup_database_username;
         this.setup_database_password = setup_database_password;
         this.setup_database_name = setup_database_name;
+        this.setup_memory_servergroup = setup_memory_servergroup;
+        this.setup_memory_proxygroup = setup_memory_proxygroup;
     }
 
     public String getHelp_default() {
@@ -826,5 +829,13 @@ public class Language implements Serializable {
 
     public String getSetup_database_name() {
         return setup_database_name;
+    }
+
+    public String getSetup_memory_servergroup() {
+        return setup_memory_servergroup;
+    }
+
+    public String getSetup_memory_proxygroup() {
+        return setup_memory_proxygroup;
     }
 }

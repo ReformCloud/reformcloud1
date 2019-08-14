@@ -43,8 +43,14 @@ public final class PacketInQueryGetPlayer implements Serializable, NetworkQueryI
                 defaultPlayer.getLastLogin(),
                 defaultPlayer.getSpigotVersion()
             );
-            OfflinePlayer result = ReformCloudController.getInstance().getPlayerDatabase()
-                .insert(defaultPlayer.getUniqueID(), offlinePlayer);
+            OfflinePlayer result;
+            if (ReformCloudController.getInstance().getPlayerDatabase().contains(defaultPlayer.getUniqueID())) {
+                result = ReformCloudController.getInstance().getPlayerDatabase().get(defaultPlayer.getUniqueID());
+                ReformCloudController.getInstance().getPlayerDatabase().update(defaultPlayer.getUniqueID(), offlinePlayer);
+            } else {
+                result = ReformCloudController.getInstance().getPlayerDatabase()
+                    .insert(defaultPlayer.getUniqueID(), offlinePlayer);
+            }
 
             ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                 configuration.getStringValue("from"), new PacketOutQueryPlayerResult(

@@ -81,9 +81,9 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
         );
     }
 
-    @ConstructorProperties({"name", "client", "proxyVersions", "proxyModeType"})
+    @ConstructorProperties({"name", "client", "proxyVersions", "proxyModeType", "memory"})
     public DefaultProxyGroup(final String name, final String client, ProxyVersions proxyVersions,
-                             ProxyModeType proxyModeType) {
+                             ProxyModeType proxyModeType, final Integer memory) {
         super(
             name,
             Collections.singletonList(client),
@@ -104,7 +104,7 @@ public final class DefaultProxyGroup extends ProxyGroup implements Serializable 
             1,
             -1,
             512,
-            128,
+            memory,
             proxyVersions
         );
     }
