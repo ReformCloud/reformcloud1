@@ -81,7 +81,7 @@ public final class German extends Language implements Serializable {
             "Versuche §e%group%§r zu erstellen...",
             "Welche §3BungeeCord Version§r soll genutzt werden?",
             "Bitte gib den Namen des neuen Clients an",
-            "Bitte gib die §3IP-Addresse§r des Clients an",
+            "Bitte gib die §3IP-Adresse§r des Clients an",
             "Bitte gib die §3IP-Adresse§r des Controllers an",
             "Bitte gib den §3Namen§r des ersten Clients an",
             "Wie viel §3Ram§r soll die standard Lobby Gruppe haben? (in MB)",
