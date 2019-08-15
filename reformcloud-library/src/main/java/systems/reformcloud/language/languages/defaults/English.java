@@ -23,7 +23,7 @@ public final class English extends Language implements Serializable {
             "Loading Client §e[Name=%name%/Address=%ip%]§r...",
             "Loading ServerGroup §e[Name=%name%/Clients=%clients%]§r...",
             "Loading ProxyGroup §e[Name=%name%/Clients=%clients%]§r...",
-            "ReformCloud has been §asuccessfully §rloaded, took §e%time%ms",
+            "ReformCloud has been §asuccessfully §reloaded, took §e%time%ms",
             "Trying to reload the §eCloudSystem§r, this may take a long time...",
             "§eReloading§r was completed §asuccessfully",
             "Deleting ServerGroup §e[Name=%name%/Clients=%clients%]§r...",
