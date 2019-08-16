@@ -41,7 +41,7 @@
         <dependency.spigot.version>1.13</dependency.spigot.version>
         <dependency.snakeyaml.version>1.25</dependency.snakeyaml.version>
         <dependency.commons-io.version>2.6</dependency.commons-io.version>
-        <dependency.jda.version>4.0.0_40</dependency.jda.version>
+        <dependency.jda.version>4.0.0_41</dependency.jda.version>
         <dependency.slf4j.version>1.7.28</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
         <dependency.mysql-connector.version>8.0.17</dependency.mysql-connector.version>
