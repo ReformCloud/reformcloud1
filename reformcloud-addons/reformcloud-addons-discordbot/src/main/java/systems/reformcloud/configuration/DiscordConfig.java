@@ -26,7 +26,8 @@ public final class DiscordConfig implements Serializable {
                 .addValue("config", new DiscordInformation(
                     "NTQ0MTIyMTMwMzEzMjQ4NzY5.D0Ggvg.eMhB10edmYVmYo1-zg_u2nUNsD0",
                     "535909711178891279",
-                    "ReformCloud - The official CloudSystem"
+                    "ReformCloud - The official CloudSystem",
+                    "ONLINE"
                 )).write(Paths.get("reformcloud/addons/discord/config.json"));
         }
 
