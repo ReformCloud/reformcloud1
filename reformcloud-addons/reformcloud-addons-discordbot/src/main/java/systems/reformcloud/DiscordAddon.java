@@ -7,6 +7,7 @@ package systems.reformcloud;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.TextChannel;
 import systems.reformcloud.configuration.DiscordConfig;
@@ -55,6 +56,7 @@ public final class DiscordAddon extends ControllerAddonImpl implements Serializa
             .setAutoReconnect(true)
             .setToken(this.discordConfig.getDiscordInformation().getToken())
             .addEventListeners(new ConsoleInputHandler())
+            .setStatus(OnlineStatus.fromKey(this.discordConfig.getDiscordInformation().getStatus()))
             .setActivity(Activity.playing(this.discordConfig.getDiscordInformation().getGame()));
 
         try {
