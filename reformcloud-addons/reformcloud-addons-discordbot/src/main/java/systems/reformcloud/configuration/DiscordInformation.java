@@ -4,8 +4,6 @@
 
 package systems.reformcloud.configuration;
 
-import netscape.security.UserTarget;
-
 import java.io.Serializable;
 
 /**
