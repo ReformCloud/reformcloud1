@@ -371,7 +371,7 @@ public final class CloudConfiguration implements Serializable {
     private void loadMessages() {
         String messagePath = "reformcloud/messages.json";
         if (!Files.exists(Paths.get(messagePath))) {
-            if (loadedLang.equalsIgnoreCase("german")) {
+            if (loadedLang.equals("german")) {
                 new Configuration()
                     .addStringValue("internal-global-prefix", "§2R§feform§2C§floud §7┃")
 
@@ -450,7 +450,7 @@ public final class CloudConfiguration implements Serializable {
 
                     .write(Paths.get(messagePath));
 
-            } else if (loadedLang.equalsIgnoreCase("english")) {
+            } else if (loadedLang.equals("english")) {
                 new Configuration()
                     .addStringValue("internal-global-prefix", "§2R§feform§2C§floud §7┃")
 
