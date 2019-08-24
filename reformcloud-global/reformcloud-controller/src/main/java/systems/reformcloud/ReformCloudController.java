@@ -425,7 +425,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
             .registerCommand(new CommandAssignment())
             .registerCommand(new CommandInstall())
             .registerCommand(new CommandDeploy())
-            .registerCommand(new CommandWebPermissions());
+            .registerCommand(new CommandWebPermissions())
+            .registerCommand(new CommandUninstall());
     }
 
     /**
