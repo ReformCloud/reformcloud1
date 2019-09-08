@@ -39,8 +39,7 @@ final class ReformCloudLauncher implements Serializable {
         final List<String> options = Arrays.asList(args);
 
         if (StringUtil.USER_NAME.equalsIgnoreCase("root")
-            && StringUtil.OS_NAME.toLowerCase().contains("linux")
-            && !options.contains("--ignore-root")) {
+            && StringUtil.OS_NAME.toLowerCase().contains("linux")) {
             System.out.println("You cannot run ReformCloud as root user");
             try {
                 Thread.sleep(2000);
