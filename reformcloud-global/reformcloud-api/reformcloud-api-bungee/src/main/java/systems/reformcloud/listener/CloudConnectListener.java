@@ -368,6 +368,8 @@ public final class CloudConnectListener implements Listener {
                             .getMaxPlayers()))
                     .replace("%max_players_global%", Integer
                         .toString(ReformCloudAPIBungee.getInstance().getGlobalMaxOnlineCount()))
+                    .replace("%ping%", Integer
+                        .toString(proxiedPlayer.getPing()))
             ))
         );
     }

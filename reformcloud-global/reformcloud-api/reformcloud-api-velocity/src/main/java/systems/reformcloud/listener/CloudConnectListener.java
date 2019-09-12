@@ -283,6 +283,8 @@ public final class CloudConnectListener {
                             .getMaxPlayers()))
                     .replace("%max_players_global%", Integer
                         .toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
+                    .replace("%ping%", Long
+                        .toString(proxiedPlayer.getPing()))
             )), TextComponent.of(
             CloudAddonsListener.translateAlternateColorCodes('&',
                 proxySettings.getTabFooter()
@@ -307,6 +309,8 @@ public final class CloudConnectListener {
                             .getMaxPlayers()))
                     .replace("%max_players_global%", Integer
                         .toString(ReformCloudAPIVelocity.getInstance().getGlobalMaxOnlineCount()))
+                    .replace("%ping%", Long
+                        .toString(proxiedPlayer.getPing()))
             ))
         );
     }
