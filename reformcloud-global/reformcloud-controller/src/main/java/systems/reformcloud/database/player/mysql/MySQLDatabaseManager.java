@@ -18,9 +18,11 @@ import systems.reformcloud.utility.future.TaskListener;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -101,6 +103,21 @@ public final class MySQLDatabaseManager extends DataBaseManager implements Seria
                 if (isConnected()) {
                     connectionStatus.set(true);
                     defaultTask.complete(true);
+                    Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+
+                        try {
+                            if (isConnected()) {
+                                PreparedStatement preparedStatement = connection.get()
+                                    .prepareStatement("CREATE TABLE IF NOT EXISTS `players`" +
+                                        " (`uuid` VARCHAR(64), `name` VARCHAR(16), `value` LONGBLOB);");
+                                preparedStatement.executeUpdate();
+                                preparedStatement.close();
+                            }
+                        } catch (final SQLException ex) {
+                            handleError(ex);
+                        }
+
+                    }, 5, 5, TimeUnit.MINUTES);
                 } else {
                     defaultTask.complete(false);
                 }
