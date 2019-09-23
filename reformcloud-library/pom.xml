@@ -67,6 +67,17 @@
         </dependency>
 
     </dependencies>
+
+    <repositories>
+
+        <!-- ReformCloud official repository -->
+        <repository>
+            <id>reformcloud-official</id>
+            <url>https://repo.reformcloud.systems</url>
+        </repository>
+
+    </repositories>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>reformcloud-library</artifactId>
