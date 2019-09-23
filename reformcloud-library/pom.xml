@@ -58,6 +58,14 @@
             <version>${dependency.commons-net.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>eu.byteexception.requestbuilder</groupId>
+            <artifactId>requestbuilder-root</artifactId>
+            <version>${dependency.requestbuilder.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
     <modelVersion>4.0.0</modelVersion>
 
