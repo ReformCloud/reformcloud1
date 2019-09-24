@@ -2,6 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <repositories>
+        <!-- ReformCloud official repository -->
+        <repository>
+            <id>reformcloud-official</id>
+            <url>https://repo.reformcloud.systems</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>io.netty</groupId>
@@ -58,17 +67,15 @@
             <version>${dependency.commons-net.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>eu.byteexception.requestbuilder</groupId>
+            <artifactId>requestbuilder-root</artifactId>
+            <version>${dependency.requestbuilder.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
-
-    <repositories>
-
-        <!-- ReformCloud official repository -->
-        <repository>
-            <id>reformcloud-official</id>
-            <url>https://repo.reformcloud.systems</url>
-        </repository>
-
-    </repositories>
 
     <modelVersion>4.0.0</modelVersion>
 

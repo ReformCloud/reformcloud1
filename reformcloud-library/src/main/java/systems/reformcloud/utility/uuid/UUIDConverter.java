@@ -4,14 +4,16 @@
 
 package systems.reformcloud.utility.uuid;
 
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.Proxy;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.method.RequestMethod;
+import eu.byteexception.requestbuilder.result.RequestResult;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.cache.Cache;
 
@@ -64,39 +66,31 @@ public final class UUIDConverter implements Serializable {
         }
 
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                "https://api.mojang.com/users/profiles/minecraft/" + name).openConnection();
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            httpURLConnection.setUseCaches(true);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://api.minetools.eu/uuid/" + name, Proxy.NO_PROXY)
+                .setRequestMethod(RequestMethod.GET)
+                .addHeader("User-Agent",
+                    "\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11\"")
+                .disableCaches()
+                .enableOutput()
+                .fireAndForget();
 
-            String in;
-            try (JsonReader jsonReader = new JsonReader(
-                new InputStreamReader(httpURLConnection.getInputStream()))) {
-                try {
-                    in = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
-                        .get("id").getAsString();
-                } catch (final Throwable throwable) {
-                    return null;
+            final JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(requestResult.getResultAsString()).getAsJsonObject();
+
+            if (jsonObject.get("status").getAsString().equals("OK")) {
+                final StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i <= 31; i++) {
+                    stringBuilder.append(jsonObject.get("id").getAsString().charAt(i));
+                    if (i == 7 || i == 11 || i == 15 || i == 19) {
+                        stringBuilder.append("-");
+                    }
                 }
+
+                final UUID uuid = UUID.fromString(stringBuilder.substring(0));
+                uuids.add(name, uuid);
+                return uuid;
             }
 
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i <= 31; i++) {
-                stringBuilder.append(in.charAt(i));
-                if (i == 7 || i == 11 || i == 15 || i == 19) {
-                    stringBuilder.append("-");
-                }
-            }
-
-            UUID uuid = UUID.fromString(stringBuilder.substring(0));
-            uuids.add(name, uuid);
-
-            return uuid;
-        } catch (final IOException ignored) {
-        }
+        } catch (final IOException ignored) { }
 
         return null;
     }
@@ -113,30 +107,23 @@ public final class UUIDConverter implements Serializable {
         }
 
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                "https://api.mojang.com/user/profile/" + uuid.toString().replace("-", "")).openConnection();
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            httpURLConnection.setUseCaches(true);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://api.minetools.eu/uuid/" + uuid.toString().replace("-", ""),
+                Proxy.NO_PROXY)
+                .setRequestMethod(RequestMethod.GET)
+                .addHeader("User-Agent",
+                    "\"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11\"")
+                .disableCaches()
+                .enableOutput()
+                .fireAndForget();
 
-            String name;
-            try (JsonReader jsonReader = new JsonReader(
-                new InputStreamReader(httpURLConnection.getInputStream()))) {
-                try {
-                    name = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
-                        .get("name").getAsString();
-                } catch (final Throwable throwable) {
-                    return null;
-                }
+            final JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(requestResult.getResultAsString()).getAsJsonObject();
+
+            if (jsonObject.get("status").getAsString().equals("OK")) {
+                final String name = jsonObject.get("name").getAsString();
+                names.add(uuid, name);
+                return name;
             }
-
-            names.add(uuid, name);
-
-            return name;
-        } catch (final IOException ignored) {
-        }
+        } catch (final IOException ignored) { }
 
         return null;
     }
