@@ -7,7 +7,7 @@ jdk:
   - openjdk8
 
 script:
-  - mvn
+  - mvn clean package
 
 cache:
   directories:
