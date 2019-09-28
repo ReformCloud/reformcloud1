@@ -5,6 +5,9 @@
 package systems.reformcloud.versioneering;
 
 import com.google.gson.stream.JsonReader;
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.event.events.version.VersionCheckedEvent;
@@ -13,8 +16,7 @@ import systems.reformcloud.utility.StringUtil;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.Proxy;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
@@ -31,21 +33,20 @@ final class VersionLoader implements Serializable {
      */
     static String getNewestVersion() {
         try {
-            URLConnection urlConnection = new URL(
-                "https://internal.reformcloud.systems/update/version.json").openConnection();
-            urlConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            urlConnection.setUseCaches(false);
-            urlConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://internal.reformcloud.systems/update/version.json", Proxy.NO_PROXY)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .disableCaches()
+                .fireAndForget();
 
             String version;
 
             try (JsonReader jsonReader = new JsonReader(
-                new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8))) {
+                new InputStreamReader(requestResult.getStream(StreamType.DEFAULT), StandardCharsets.UTF_8))) {
                 version = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
                     .get("version").getAsString();
             }
 
+            requestResult.forget();
             ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new VersionCheckedEvent(version));
             return version;
         } catch (final IOException ex) {

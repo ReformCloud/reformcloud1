@@ -6,6 +6,10 @@ package systems.reformcloud.logging;
 
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.method.RequestMethod;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
 import jline.console.ConsoleReader;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
@@ -23,8 +27,7 @@ import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.time.DateProvider;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -403,23 +406,21 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
     @Override
     public String uploadLog(String input) {
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL("https://paste" +
-                ".reformcloud.systems/documents").openConnection();
-
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond());
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://paste.reformcloud.systems/documents", Proxy.NO_PROXY)
+                .setRequestMethod(RequestMethod.POST)
+                .addHeader(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond())
+                .enableOutput()
+                .fireAndForget();
 
             try (DataOutputStream dataOutputStream =
-                     new DataOutputStream(httpURLConnection.getOutputStream())) {
+                     new DataOutputStream(requestResult.getOutputStream())) {
                 dataOutputStream.writeBytes(input);
                 dataOutputStream.flush();
             }
 
             JsonObject jsonObject;
             try (JsonReader jsonReader =
-                     new JsonReader(new InputStreamReader(httpURLConnection.getInputStream()))) {
+                     new JsonReader(new InputStreamReader(requestResult.getStream(StreamType.DEFAULT)))) {
                 jsonObject = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject();
             }
 
@@ -432,6 +433,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
             }
 
             Configuration configuration = new Configuration(jsonObject);
+            requestResult.forget();
             return "https://paste.reformcloud.systems/" + configuration.getStringValue("key");
         } catch (final IOException ex) {
             StringUtil.printError(

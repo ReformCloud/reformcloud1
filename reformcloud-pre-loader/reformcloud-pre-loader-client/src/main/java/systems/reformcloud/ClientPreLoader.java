@@ -4,6 +4,10 @@
 
 package systems.reformcloud;
 
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -13,10 +17,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -139,21 +140,18 @@ final class ClientPreLoader implements Serializable {
         deleteExistingVersion();
 
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(downloadURL())
-                .openConnection();
-            httpURLConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.setUseCaches(false);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder(downloadURL(), Proxy.NO_PROXY)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .disableCaches()
+                .fireAndForget();
 
-            try (InputStream inputStream = httpURLConnection.getInputStream()) {
+            try (InputStream inputStream = requestResult.getStream(StreamType.DEFAULT)) {
                 Files.copy(inputStream, Paths.get("version/ReformCloudClient-" +
                         CommonLoader.getCurrentFallbackVersion() + ".jar"),
                     StandardCopyOption.REPLACE_EXISTING);
             }
 
-            httpURLConnection.disconnect();
+            requestResult.forget();
         } catch (final IOException ex) {
             ex.printStackTrace();
         }
@@ -184,23 +182,22 @@ final class ClientPreLoader implements Serializable {
 
     private static void checkForNewVersion0() {
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
-                "https://internal.reformcloud.systems/update/version.json").openConnection();
-            urlConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            urlConnection.setUseCaches(false);
-            urlConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://internal.reformcloud.systems/update/version.json", Proxy.NO_PROXY)
+                .addHeader("User-Agent",
+                    "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .disableCaches()
+                .fireAndForget();
 
             StringBuilder stringBuilder = new StringBuilder();
             String line;
             try (BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(urlConnection.getInputStream()))) {
+                new InputStreamReader(requestResult.getStream(StreamType.DEFAULT)))) {
                 while ((line = bufferedReader.readLine()) != null) {
                     stringBuilder.append(line);
                 }
             }
 
-            urlConnection.disconnect();
+            requestResult.forget();
             checkForNewVersion1(stringBuilder.substring(0));
         } catch (final IOException ex) {
             if (ex instanceof UnknownHostException) {

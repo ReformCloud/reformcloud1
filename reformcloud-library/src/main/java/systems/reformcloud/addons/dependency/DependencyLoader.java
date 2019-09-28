@@ -4,6 +4,9 @@
 
 package systems.reformcloud.addons.dependency;
 
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
 import systems.reformcloud.addons.dependency.util.DynamicDependency;
 import systems.reformcloud.logging.AbstractLoggerProvider;
 import systems.reformcloud.utility.StringUtil;
@@ -14,10 +17,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -75,24 +75,25 @@ public final class DependencyLoader implements Serializable {
             System.out.println(
                 "Downloading dependency " + dependency.getName() + " from \"" + format(dependency)
                     + "\"...");
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(format(dependency))
-                .openConnection();
-            httpURLConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.setUseCaches(false);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder(format(dependency), Proxy.NO_PROXY)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .disableCaches()
+                .enableOutput()
+                .fireAndForget();
 
-            try (InputStream inputStream = httpURLConnection.getInputStream()) {
-                Files.copy(inputStream, Paths.get(
-                    "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar"),
-                    StandardCopyOption.REPLACE_EXISTING);
+            if (!requestResult.hasFailed()) {
+                try (InputStream inputStream = requestResult.getStream(StreamType.DEFAULT)) {
+                    Files.copy(inputStream, Paths.get(
+                        "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar"),
+                        StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                requestResult.forget();
+
+                return new File(
+                    "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar")
+                    .toURI().toURL();
             }
-
-            httpURLConnection.disconnect();
-            return new File(
-                "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar")
-                .toURI().toURL();
         } catch (final IOException ex) {
             ex.printStackTrace();
         }

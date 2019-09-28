@@ -6,18 +6,21 @@ package systems.reformcloud;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.method.RequestMethod;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
+import eu.byteexception.requestbuilder.types.MimeTypes;
 import systems.reformcloud.config.ConfigLoader;
 import systems.reformcloud.config.config.CloudFlareConfig;
 import systems.reformcloud.dns.ADNSDefaultRecord;
 import systems.reformcloud.meta.client.Client;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.result.Result;
-import systems.reformcloud.util.RequestMethod;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -67,22 +70,19 @@ public final class CloudFlareUtil implements Serializable {
 
     private String getZoneID() {
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                "https://api.cloudflare.com/client/v4/zones?name=" + this.cloudFlareConfig
-                    .getDomain()
-            ).openConnection();
-            httpURLConnection.setRequestMethod(RequestMethod.GET.getStringValue());
-            httpURLConnection.setRequestProperty("X-Auth-Email", this.cloudFlareConfig.getEmail());
-            httpURLConnection.setRequestProperty("X-Auth-Key", this.cloudFlareConfig.getApiToken());
-            httpURLConnection.setRequestProperty("Content-Type", "application/json");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://api.cloudflare.com/client/v4/zones?name=" + this.cloudFlareConfig.getDomain(),
+                Proxy.NO_PROXY)
+                .addHeader("X-Auth-Email", this.cloudFlareConfig.getEmail())
+                .addHeader("X-Auth-Key", this.cloudFlareConfig.getApiToken())
+                .addHeader("Accept", "application/json")
+                .setMimeType(MimeTypes.getMimeType("json"))
+                .fireAndForget();
 
-            try (InputStream inputStream = httpURLConnection.getResponseCode() < 400
-                ? httpURLConnection.getInputStream()
-                : httpURLConnection.getErrorStream()) {
+            try (InputStream inputStream = requestResult.getStatusCode() < 400
+                ? requestResult.getStream(StreamType.DEFAULT)
+                : requestResult.getStream(StreamType.ERROR)) {
                 JsonObject jsonObject = convertInputStreamToJson(inputStream);
-                httpURLConnection.disconnect();
+                requestResult.forget();
                 if (jsonObject.get("success").getAsBoolean()) {
                     JsonArray jsonArray = jsonObject.get("result").getAsJsonArray();
                     if (jsonArray.size() == 0) {
@@ -124,28 +124,28 @@ public final class CloudFlareUtil implements Serializable {
         String json = ReformCloudLibraryService.GSON.toJson(dnsRecord);
 
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                "https://api.cloudflare.com/client/v4/zones/" + zoneID + "/dns_records"
-            ).openConnection();
-            httpURLConnection.setRequestMethod(RequestMethod.POST.getStringValue());
-            httpURLConnection.setRequestProperty("Content-Length", json.getBytes().length + "");
-            httpURLConnection.setRequestProperty("X-Auth-Email", this.cloudFlareConfig.getEmail());
-            httpURLConnection.setRequestProperty("X-Auth-Key", this.cloudFlareConfig.getApiToken());
-            httpURLConnection.setRequestProperty("Content-Type", "application/json");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://api.cloudflare.com/client/v4/zones/" + zoneID + "/dns_records", Proxy.NO_PROXY)
+                .setRequestMethod(RequestMethod.POST)
+                .addHeader("Content-Length", json.getBytes().length + "")
+                .addHeader("X-Auth-Email", this.cloudFlareConfig.getEmail())
+                .addHeader("X-Auth-Key", this.cloudFlareConfig.getApiToken())
+                .addHeader("Accept", "application/json")
+                .setMimeType(MimeTypes.getMimeType("json"))
+                .disableCaches()
+                .enableOutput()
+                .fireAndForget();
 
             try (DataOutputStream dataOutputStream = new DataOutputStream(
-                httpURLConnection.getOutputStream())) {
+                requestResult.getOutputStream())) {
                 dataOutputStream.writeBytes(json);
                 dataOutputStream.flush();
             }
 
-            try (InputStream inputStream = httpURLConnection.getResponseCode() < 400
-                ? httpURLConnection.getInputStream()
-                : httpURLConnection.getErrorStream()) {
+            try (InputStream inputStream = requestResult.getStatusCode() < 400
+                ? requestResult.getStream(StreamType.DEFAULT)
+                : requestResult.getStream(StreamType.ERROR)) {
                 JsonObject jsonObject = convertInputStreamToJson(inputStream);
+                requestResult.forget();
                 if (jsonObject.get("success").getAsBoolean()) {
                     Result result = new Result(
                         jsonObject.get("result").getAsJsonObject().get("id").getAsString(),
@@ -154,8 +154,9 @@ public final class CloudFlareUtil implements Serializable {
                         proxyInfo.getCloudProcess().getName()
                     );
                     results.add(result);
-                } else if (jsonObject.get("errors") != null && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString().contains("The record already exists.")) {
-                    ReformCloudController.getInstance().getColouredConsoleProvider().warn().accept("§cCloudFlare Record for §e" + proxyInfo.getCloudProcess().getName() + "§c could not be created because it already exists.");
+                } else if (jsonObject.has("errors") && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message") != null) {
+                    ReformCloudController.getInstance().getColouredConsoleProvider().warn().accept("§cCloudFlare Record for §e" + proxyInfo.getCloudProcess().getName() + "§c could not be created. " +
+                        "Reason: " + jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString());
                     return;
                 } else {
                     StringUtil.printError(
@@ -166,8 +167,6 @@ public final class CloudFlareUtil implements Serializable {
                     return;
                 }
             }
-
-            httpURLConnection.disconnect();
         } catch (IOException ex) {
             StringUtil.printError(
                 ReformCloudController.getInstance().getColouredConsoleProvider(),
@@ -181,28 +180,28 @@ public final class CloudFlareUtil implements Serializable {
         String json = ReformCloudLibraryService.GSON.toJson(dnsRecord);
 
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                "https://api.cloudflare.com/client/v4/zones/" + zoneID + "/dns_records"
-            ).openConnection();
-            httpURLConnection.setRequestMethod(RequestMethod.POST.getStringValue());
-            httpURLConnection.setRequestProperty("Content-Length", json.getBytes().length + "");
-            httpURLConnection.setRequestProperty("X-Auth-Email", this.cloudFlareConfig.getEmail());
-            httpURLConnection.setRequestProperty("X-Auth-Key", this.cloudFlareConfig.getApiToken());
-            httpURLConnection.setRequestProperty("Content-Type", "application/json");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://api.cloudflare.com/client/v4/zones/" + zoneID + "/dns_records", Proxy.NO_PROXY)
+                .setRequestMethod(RequestMethod.POST)
+                .addHeader("Content-Length", json.getBytes().length + "")
+                .addHeader("X-Auth-Email", this.cloudFlareConfig.getEmail())
+                .addHeader("X-Auth-Key", this.cloudFlareConfig.getApiToken())
+                .addHeader("Accept", "application/json")
+                .setMimeType(MimeTypes.getMimeType("json"))
+                .disableCaches()
+                .enableOutput()
+                .fireAndForget();
 
             try (DataOutputStream dataOutputStream = new DataOutputStream(
-                httpURLConnection.getOutputStream())) {
+                requestResult.getOutputStream())) {
                 dataOutputStream.writeBytes(json);
                 dataOutputStream.flush();
             }
 
-            try (InputStream inputStream = httpURLConnection.getResponseCode() < 400
-                ? httpURLConnection.getInputStream()
-                : httpURLConnection.getErrorStream()) {
+            try (InputStream inputStream = requestResult.getStatusCode() < 400
+                ? requestResult.getStream(StreamType.DEFAULT)
+                : requestResult.getStream(StreamType.ERROR)) {
                 JsonObject jsonObject = convertInputStreamToJson(inputStream);
+                requestResult.forget();
                 if (jsonObject.get("success").getAsBoolean()) {
                     Result result = new Result(
                         jsonObject.get("result").getAsJsonObject().get("id").getAsString(),
@@ -211,8 +210,9 @@ public final class CloudFlareUtil implements Serializable {
                         client.getName()
                     );
                     results.add(result);
-                } else if (jsonObject.get("errors") != null && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString().contains("The record already exists.")) {
-                    ReformCloudController.getInstance().getColouredConsoleProvider().warn().accept("§cCloudFlare Record for §e" + client.getName() + "§c could not be created because it already exists.");
+                } else if (jsonObject.has("errors") && jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message") != null) {
+                    ReformCloudController.getInstance().getColouredConsoleProvider().warn().accept("§cCloudFlare Record for §e" + client.getName() + "§c could not be created. " +
+                        "Reason: " + jsonObject.get("errors").getAsJsonArray().get(0).getAsJsonObject().get("message").getAsString());
                     return;
                 } else {
                     StringUtil.printError(
@@ -223,8 +223,6 @@ public final class CloudFlareUtil implements Serializable {
                     return;
                 }
             }
-
-            httpURLConnection.disconnect();
         } catch (IOException ex) {
             StringUtil.printError(
                 ReformCloudController.getInstance().getColouredConsoleProvider(),
@@ -241,21 +239,21 @@ public final class CloudFlareUtil implements Serializable {
 
     private synchronized void deleteRecord(Result result) {
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                "https://api.cloudflare.com/client/v4/zones/" + zoneID + "/dns_records/" + result
-                    .getId()
-            ).openConnection();
-            httpURLConnection.setRequestMethod(RequestMethod.DELETE.getStringValue());
-            httpURLConnection.setRequestProperty("X-Auth-Email", result.getEmail());
-            httpURLConnection.setRequestProperty("X-Auth-Key", result.getToken());
-            httpURLConnection.setRequestProperty("Content-Type", "application/json");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://api.cloudflare.com/client/v4/zones/" + zoneID + "/dns_records/" + result
+                .getId(), Proxy.NO_PROXY)
+                .setRequestMethod(RequestMethod.DELETE)
+                .addHeader("X-Auth-Email", result.getEmail())
+                .addHeader("X-Auth-Key", result.getToken())
+                .addHeader("Accept", "application/json")
+                .setMimeType(MimeTypes.getMimeType("json"))
+                .disableCaches()
+                .fireAndForget();
 
-            try (InputStream inputStream = httpURLConnection.getResponseCode() < 400
-                ? httpURLConnection.getInputStream()
-                : httpURLConnection.getErrorStream()) {
+            try (InputStream inputStream = requestResult.getStatusCode() < 400
+                ? requestResult.getStream(StreamType.DEFAULT)
+                : requestResult.getStream(StreamType.ERROR)) {
                 JsonObject jsonObject = convertInputStreamToJson(inputStream);
+                requestResult.forget();
                 if (jsonObject.get("success").getAsBoolean()) {
                     results.remove(result);
                 } else {

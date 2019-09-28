@@ -4,6 +4,9 @@
 
 package systems.reformcloud;
 
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
 import systems.reformcloud.libraries.*;
 import systems.reformcloud.utility.Dependency;
 
@@ -11,8 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -64,21 +67,18 @@ final class LibraryPreLoader implements Serializable {
                 Files.delete(Paths.get("libraries/versions.properties"));
             }
 
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
-                "https://internal.reformcloud.systems/dependencies/versions.properties"
-            ).openConnection();
-            httpURLConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.setUseCaches(false);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://internal.reformcloud.systems/dependencies/versions.properties",
+                Proxy.NO_PROXY)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .disableCaches()
+                .fireAndForget();
 
-            try (InputStream inputStream = httpURLConnection.getInputStream()) {
+            try (InputStream inputStream = requestResult.getStream(StreamType.DEFAULT)) {
                 Files.copy(inputStream, Paths.get(
                     "libraries/versions.properties"
                 ));
             }
-            httpURLConnection.disconnect();
+            requestResult.forget();
         }
 
         Properties properties = new Properties();
@@ -119,21 +119,18 @@ final class LibraryPreLoader implements Serializable {
             System.out.println(
                 "Downloading dependency " + dependency.getName() + " from \"" + format(dependency)
                     + "\"...");
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(format(dependency))
-                .openConnection();
-            httpURLConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.setUseCaches(false);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder(format(dependency), Proxy.NO_PROXY)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .disableCaches()
+                .fireAndForget();
 
-            try (InputStream inputStream = httpURLConnection.getInputStream()) {
+            try (InputStream inputStream = requestResult.getStream(StreamType.DEFAULT)) {
                 Files.copy(inputStream, Paths.get(
                     "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar"),
                     StandardCopyOption.REPLACE_EXISTING);
             }
 
-            httpURLConnection.disconnect();
+            requestResult.forget();
             return new File(
                 "libraries/" + dependency.getName() + "-" + dependency.getVersion() + ".jar")
                 .toURI().toURL();
