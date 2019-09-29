@@ -9,13 +9,12 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
+import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.player.permissions.group.PermissionGroup;
 import systems.reformcloud.player.permissions.player.PermissionHolder;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -62,7 +61,7 @@ public final class CommandPermissions extends Command implements Serializable {
             }
 
             PermissionGroup permissionGroup = new PermissionGroup(args[0], "", "", "", "7", 1,
-                new HashMap<>());
+                new HashMap<>(), new HashMap<>(new HashMap<>()));
             PermissionsAddon.getInstance().getPermissionDatabase()
                 .createPermissionGroup(permissionGroup);
             PermissionsAddon.getInstance().getPermissionDatabase().update();
@@ -84,7 +83,8 @@ public final class CommandPermissions extends Command implements Serializable {
                     .setDefaultGroup(
                         new PermissionGroup(
                             "default" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong()
-                            , "", "", "", "7", 1, new HashMap<>())
+                            , "", "", "", "7", 1, new HashMap<>(),
+                            new HashMap<>(new HashMap<>()))
                     );
             }
 
@@ -172,6 +172,41 @@ public final class CommandPermissions extends Command implements Serializable {
             commandSender.sendMessage(
                 "You added the permission " + args[2] + " to the group " + permissionGroup
                     .getName());
+        } else if (args.length == 4 && args[1].equalsIgnoreCase("add")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
+                .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
+                return;
+            }
+
+            ServerGroup serverGroup = ReformCloudController.getInstance().getAllServerGroups()
+                .stream().filter(e -> e.getName().equals(args[3]))
+                .findFirst().orElse(null);
+            if (serverGroup == null) {
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getServergroup_not_found());
+                return;
+            }
+
+            if (permissionGroup.getGroupPermissions().get(serverGroup.getName()) == null ||
+                permissionGroup.getGroupPermissions().get(serverGroup.getName()).isEmpty()) {
+                permissionGroup.getGroupPermissions().put(serverGroup.getName(), new HashMap<String, Boolean>() {{
+                    put(args[2].replace("-", ""), !args[2].startsWith("-"));
+                }});
+            } else {
+                Map<String, Boolean> newPermissions = permissionGroup.getGroupPermissions().get(serverGroup.getName());
+                newPermissions.put(args[2].replace("-", ""), !args[2].startsWith("-"));
+                permissionGroup.getGroupPermissions().put(serverGroup.getName(), newPermissions);
+            }
+
+            PermissionsAddon.getInstance().getPermissionDatabase()
+                .updatePermissionGroup(permissionGroup);
+            PermissionsAddon.getInstance().getPermissionDatabase().update();
+
+            commandSender.sendMessage(
+                "You added the servergroup permission " + args[2] + " to the group " + permissionGroup
+                    .getName());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("remove")) {
             PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
                 .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
@@ -188,6 +223,39 @@ public final class CommandPermissions extends Command implements Serializable {
 
             commandSender.sendMessage(
                 "You removed the permission " + args[2] + " from the group " + permissionGroup
+                    .getName());
+        } else if (args.length == 4 && args[1].equalsIgnoreCase("remove")) {
+            PermissionGroup permissionGroup = PermissionsAddon.getInstance().getPermissionDatabase()
+                .getAllGroups().stream().filter(e -> e.getName().equals(args[0]))
+                .findFirst().orElse(null);
+            if (permissionGroup == null) {
+                commandSender.sendMessage("Could not find PermissionGroup " + args[0]);
+                return;
+            }
+
+            ServerGroup serverGroup = ReformCloudController.getInstance().getAllServerGroups()
+                .stream().filter(e -> e.getName().equals(args[3]))
+                .findFirst().orElse(null);
+            if (serverGroup == null) {
+                commandSender.sendMessage(ReformCloudController.getInstance().getLoadedLanguage().getServergroup_not_found());
+                return;
+            }
+
+            if (permissionGroup.getGroupPermissions().get(serverGroup.getName()) == null ||
+                permissionGroup.getGroupPermissions().get(serverGroup.getName()).isEmpty()) {
+                commandSender.sendMessage("No servergroup permissions for " + serverGroup.getName() + " found!");
+            } else {
+                Map<String, Boolean> newPermissions = permissionGroup.getGroupPermissions().get(serverGroup.getName());
+                newPermissions.remove(args[2].replace("-", ""));
+                permissionGroup.getGroupPermissions().put(serverGroup.getName(), newPermissions);
+            }
+
+            PermissionsAddon.getInstance().getPermissionDatabase()
+                .updatePermissionGroup(permissionGroup);
+            PermissionsAddon.getInstance().getPermissionDatabase().update();
+
+            commandSender.sendMessage(
+                "You removed the servergroup permission " + args[2] + " from the group " + permissionGroup
                     .getName());
         } else if (args.length == 3 && args[1].equalsIgnoreCase("addgroup")) {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
@@ -493,7 +561,7 @@ public final class CommandPermissions extends Command implements Serializable {
                 .sendMessage("perms <USERNAME> <ADDGROUP/SETGROUP> <GROUPNAME> <TIMEOUTINDAYS>");
             commandSender.sendMessage("perms <GROUPNAME> setdefault");
             commandSender.sendMessage("perms <GROUPNAME> <CREATE/DELETE>");
-            commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION>");
+            commandSender.sendMessage("perms <GROUPNAME> <ADD/REMOVE> <PERMISSION> <SERVERGROUP>");
             commandSender.sendMessage(
                 "perms <GROUPNAME> <SETPREFIX/SETSUFFIX/SETDISPLAY/SETTABCOLORCODE/SETGROUPID> <VALUE>");
         }

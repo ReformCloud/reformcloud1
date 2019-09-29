@@ -46,9 +46,9 @@ public final class PermissionDatabase implements Serializable {
             new Configuration().addValue("permissionConfig", new PermissionCache(false, false,
                 "%display% %player% &7|&r %message%",
                 Collections.singletonList(new PermissionGroup(
-                    "admin", null, null, null, "c", 100, Collections.singletonMap("*", true)
+                    "admin", null, null, null, "c", 100, Collections.singletonMap("*", true), new HashMap<>(new HashMap<>())
                 )),
-                new PermissionGroup("default", null, null, null, "7", 999, new HashMap<>())
+                new PermissionGroup("default", null, null, null, "7", 999, new HashMap<>(), new HashMap<>(new HashMap<>()))
             )).write(Paths.get("reformcloud/addons/permissions/config.json"));
         }
 
