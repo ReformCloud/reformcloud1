@@ -152,7 +152,7 @@ public final class WebServerHandler extends ChannelInboundHandlerAdapter impleme
      * Handles the exceptions and print them
      *
      * @param cause The exception which occurs
-     */U
+     */
     private void handleException(Throwable cause) {
         if (ReformCloudLibraryServiceProvider.getInstance() == null) {
             AbstractLoggerProvider.defaultLogger().exception().accept(cause);
