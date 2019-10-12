@@ -15,15 +15,25 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public enum ProxyVersions implements Serializable {
     WATERFALL("Waterfall",
-        "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar"),
+        "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar",
+        "https://dl.reformcloud.systems/mcversions/proxies/waterfall.jar",
+        "https://internal.byteexception.eu/mcversions/proxies/waterfall.jar"),
     HEXACORD("HexaCord",
-        "https://github.com/HexagonMC/BungeeCord/releases/download/v246/BungeeCord.jar"),
+        "https://github.com/HexagonMC/BungeeCord/releases/download/v246/BungeeCord.jar",
+        "https://dl.reformcloud.systems/mcversions/proxies/hexacord-1.7.10-1.14.x.jar",
+        "https://internal.byteexception.eu/mcversions/proxies/hexacord-1.7.10-1.14.x.jar"),
     BUNGEECORD("BungeeCord",
-        "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.ja"),
+        "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar",
+        "https://dl.reformcloud.systems/mcversions/proxies/bungeecord.jar",
+        "https://internal.byteexception.eu/mcversions/proxies/bungeecord.jar"),
     VELOCITY("Velocity",
-        "https://ci.velocitypowered.com/job/velocity/lastSuccessfulBuild/artifact/proxy/build/libs/velocity-proxy-1.0.4-SNAPSHOT-all.jar"),
+        "https://ci.velocitypowered.com/job/velocity/lastSuccessfulBuild/artifact/proxy/build/libs/velocity-proxy-1.0.4-SNAPSHOT-all.jar",
+        "https://dl.reformcloud.systems/mcversions/proxies/velocity.jar",
+        "https://internal.byteexception.eu/mcversions/proxies/velocity.jar"),
     TRAVERTINE("Travertine",
-        "https://papermc.io/ci/job/Travertine/lastSuccessfulBuild/artifact/Travertine-Proxy/bootstrap/target/Travertine.jar");
+        "https://papermc.io/ci/job/Travertine/lastSuccessfulBuild/artifact/Travertine-Proxy/bootstrap/target/Travertine.jar",
+        "https://dl.reformcloud.systems/mcversions/proxies/travertine.jar",
+        "https://internal.byteexception.eu/mcversions/proxies/travertine.jar");
 
     private static Map<String, ProxyVersions> PROVIDERS = new ConcurrentHashMap<>();
 
@@ -53,10 +63,13 @@ public enum ProxyVersions implements Serializable {
 
     private final String fallbackUrl;
 
-    ProxyVersions(final String name, final String url, final String fallbackUrl) {
+    private final String fallbackUrl2;
+
+    ProxyVersions(final String name, final String url, final String fallbackUrl, final String fallbackUrl2) {
         this.name = name;
         this.url = url;
         this.fallbackUrl = fallbackUrl;
+        this.fallbackUrl2 = fallbackUrl2;
     }
 
     public String getName() {
@@ -69,5 +82,9 @@ public enum ProxyVersions implements Serializable {
 
     public String getFallbackUrl() {
         return fallbackUrl;
+    }
+
+    public String getFallbackUrl2() {
+        return fallbackUrl2;
     }
 }
