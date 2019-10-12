@@ -230,10 +230,13 @@ public enum SpigotVersions implements Serializable {
 
     private final String url;
 
-    SpigotVersions(final String name, final String version, final String url) {
+    private final String fallbackUrl;
+
+    SpigotVersions(final String name, final String version, final String url, final String fallbackUrl) {
         this.name = name;
         this.version = version;
         this.url = url;
+        this.fallbackUrl = fallbackUrl;
     }
 
     public String getName() {
@@ -246,5 +249,9 @@ public enum SpigotVersions implements Serializable {
 
     public String getUrl() {
         return this.url;
+    }
+
+    public String getFallbackUrl() {
+        return fallbackUrl;
     }
 }

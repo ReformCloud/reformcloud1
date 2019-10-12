@@ -51,9 +51,12 @@ public enum ProxyVersions implements Serializable {
 
     private final String url;
 
-    ProxyVersions(final String name, final String url) {
+    private final String fallbackUrl;
+
+    ProxyVersions(final String name, final String url, final String fallbackUrl) {
         this.name = name;
         this.url = url;
+        this.fallbackUrl = fallbackUrl;
     }
 
     public String getName() {
@@ -62,5 +65,9 @@ public enum ProxyVersions implements Serializable {
 
     public String getUrl() {
         return this.url;
+    }
+
+    public String getFallbackUrl() {
+        return fallbackUrl;
     }
 }
