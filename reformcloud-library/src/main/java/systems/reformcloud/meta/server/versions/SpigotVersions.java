@@ -141,40 +141,25 @@ public enum SpigotVersions implements Serializable {
      * TorchSpigot Versions
      */
     TORCH_1_8_8("Torch 1.8.8", "1.8.8",
-        "https://archive.mcmirror.io/Torch/Torch-1.8.8-R0.1.3-RC4.jar"),
+        "https://dl.reformcloud.systems/mcversions/torch/Torch-1.8.8.jar"),
     TORCH_1_9_4("Torch 1.9.4", "1.9.4",
-        "https://archive.mcmirror.io/Torch/Torch-1.9.4-R2.0-Light-RELEASE.jar"), // Will be changed later.
+        "https://dl.reformcloud.systems/mcversions/torch/Torch-1.9.4.jar"),
     TORCH_1_11_2("Torch 1.11.2", "1.11.2",
-        "https://archive.mcmirror.io/Torch/Torchpowered-latest.jar"),
+        "https://dl.reformcloud.systems/mcversions/torch/Torch-1.11.2.jar"),
     /**
      * Hose Versions
      */
     HOSE_1_8_8("Hose 1.8.8", "1.8.8",
-        "https://archive.mcmirror.io/HOSE/hose-1.8.8.jar"),
+        "https://dl.reformcloud.systems/mcversions/hose/hose-1.8.8.jar"),
     HOSE_1_9_4("Hose 1.9.4", "1.9.4",
-        "https://archive.mcmirror.io/HOSE/hose-1.9.4.jar"), // Will be changeed later.
+        "https://dl.reformcloud.systems/mcversions/hose/hose-1.9.4.jar"),
     HOSE_1_10_2("Hose 1.10.2", "1.10.2",
-        "https://archive.mcmirror.io/HOSE/hose-1.10.2.jar"),
+        "https://dl.reformcloud.systems/mcversions/hose/hose-1.10.2.jar"),
     /**
      * Akarin Versions
      */
     AKARIN_1_12_2("Akarin 1.12.2", "1.12.2",
-        "https://github.com/Akarin-project/Akarin/releases/download/1.12.2-R0.4.2/akarin-1.12.2.jar"), // Will bed changed later
-    /**
-     * GlowStone Versions
-     */
-    GLOWSTONE_1_7_9("Glowstone 1.7.9", "1.7.9",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.7.9-SNAPSHOT.jar"),
-    GLOWSTONE_1_8_9("Glowstone 1.8.9", "1.8.9",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.8.9-SNAPSHOT.jar"),
-    GLOWSTONE_1_9_4("Glowstone 1.9.4", "1.9.4",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.9.4-SNAPSHOT.jar"),
-    GLOWSTONE_1_10_2("Glowstone 1.10.2", "1.10.2",                      // Will be changed later
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.10.2-SNAPSHOT.jar"),
-    GLOWSTONE_1_11_2("Glowstone 1.11.2", "1.11.2",
-        "https://archive.mcmirror.io/GlowStone/glowstone-1.11.2-SNAPSHOT.jar"),
-    GLOWSTONE_1_12_2("Glowstone 1.12.2", "1.12.2",
-        "https://github.com/GlowstoneMC/Glowstone/releases/download/2018.0.1/glowstone.jar");
+        "https://github.com/Akarin-project/Akarin/releases/download/1.12.2-R0.4.2/akarin-1.12.2.jar");
 
     private static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();

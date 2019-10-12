@@ -90,11 +90,6 @@ public final class ReformCloudLibraryService {
         .disableHtmlEscaping().create();
 
     /**
-     * The cloud creates json parser instance
-     */
-    public static final JsonParser PARSER = new JsonParser();
-
-    /**
      * Netty booleans
      */
     private static final boolean EPOLL = Epoll.isAvailable(), KQUEUE = KQueue.isAvailable();

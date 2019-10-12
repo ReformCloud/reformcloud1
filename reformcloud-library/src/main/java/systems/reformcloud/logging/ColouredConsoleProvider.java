@@ -5,6 +5,7 @@
 package systems.reformcloud.logging;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import eu.byteexception.requestbuilder.RequestBuilder;
 import eu.byteexception.requestbuilder.method.RequestMethod;
@@ -421,7 +422,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
             JsonObject jsonObject;
             try (JsonReader jsonReader =
                      new JsonReader(new InputStreamReader(requestResult.getStream(StreamType.DEFAULT)))) {
-                jsonObject = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject();
+                jsonObject = JsonParser.parseReader(jsonReader).getAsJsonObject();
             }
 
             if (jsonObject == null) {

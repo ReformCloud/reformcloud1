@@ -4,6 +4,7 @@
 
 package systems.reformcloud.versioneering;
 
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import eu.byteexception.requestbuilder.RequestBuilder;
 import eu.byteexception.requestbuilder.result.RequestResult;
@@ -42,7 +43,7 @@ final class VersionLoader implements Serializable {
 
             try (JsonReader jsonReader = new JsonReader(
                 new InputStreamReader(requestResult.getStream(StreamType.DEFAULT), StandardCharsets.UTF_8))) {
-                version = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject()
+                version = JsonParser.parseReader(jsonReader).getAsJsonObject()
                     .get("version").getAsString();
             }
 

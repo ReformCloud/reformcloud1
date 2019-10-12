@@ -5,6 +5,7 @@
 package systems.reformcloud.database.player.mongo;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -243,7 +244,7 @@ public final class PlayerMongoDatabase extends Database<UUID, String, OfflinePla
     private Configuration convertToConfig(String json) {
         JsonElement jsonElement = null;
         try {
-            jsonElement = ReformCloudLibraryService.PARSER.parse(json);
+            jsonElement = JsonParser.parseString(json);
         } catch (final Throwable throwable) {
             MongoDatabaseManager.handleError(throwable);
         }

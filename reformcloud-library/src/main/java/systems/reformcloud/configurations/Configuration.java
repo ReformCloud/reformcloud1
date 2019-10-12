@@ -6,6 +6,7 @@ package systems.reformcloud.configurations;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -55,7 +56,7 @@ public final class Configuration implements Serializable {
     public Configuration(Reader reader) {
         JsonElement jsonElement;
         try {
-            jsonElement = ReformCloudLibraryService.PARSER.parse(reader);
+            jsonElement = JsonParser.parseReader(reader);
         } catch (final Throwable throwable) {
             StringUtil.printError(
                 ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
@@ -316,7 +317,7 @@ public final class Configuration implements Serializable {
             StandardCharsets.UTF_8);
             BufferedReader bufferedReader = new BufferedReader(reader)) {
             return new Configuration(
-                ReformCloudLibraryService.PARSER.parse(bufferedReader).getAsJsonObject());
+                JsonParser.parseReader(bufferedReader).getAsJsonObject());
         } catch (final IOException ex) {
             StringUtil
                 .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
@@ -354,7 +355,7 @@ public final class Configuration implements Serializable {
      * @return A new configuration which contains the content of the string
      */
     public static Configuration fromString(String in) {
-        return new Configuration(ReformCloudLibraryService.PARSER.parse(in).getAsJsonObject());
+        return new Configuration(JsonParser.parseString(in).getAsJsonObject());
     }
 
     /**

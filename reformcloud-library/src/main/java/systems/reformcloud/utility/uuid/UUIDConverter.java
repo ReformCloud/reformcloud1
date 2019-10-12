@@ -11,6 +11,7 @@ import java.net.Proxy;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import com.google.gson.JsonParser;
 import eu.byteexception.requestbuilder.RequestBuilder;
 import eu.byteexception.requestbuilder.method.RequestMethod;
 import eu.byteexception.requestbuilder.result.RequestResult;
@@ -74,7 +75,7 @@ public final class UUIDConverter implements Serializable {
                 .enableOutput()
                 .fireAndForget();
 
-            final JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(requestResult.getResultAsString()).getAsJsonObject();
+            final JsonObject jsonObject = JsonParser.parseString(requestResult.getResultAsString()).getAsJsonObject();
 
             if (jsonObject.get("status").getAsString().equals("OK")) {
                 final StringBuilder stringBuilder = new StringBuilder();
@@ -116,7 +117,7 @@ public final class UUIDConverter implements Serializable {
                 .enableOutput()
                 .fireAndForget();
 
-            final JsonObject jsonObject = ReformCloudLibraryService.PARSER.parse(requestResult.getResultAsString()).getAsJsonObject();
+            final JsonObject jsonObject = JsonParser.parseString(requestResult.getResultAsString()).getAsJsonObject();
 
             if (jsonObject.get("status").getAsString().equals("OK")) {
                 final String name = jsonObject.get("name").getAsString();

@@ -15,15 +15,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public enum ProxyVersions implements Serializable {
     WATERFALL("Waterfall",
-        "https://dl.reformcloud.systems/mcversions/proxies/waterfall.jar"),
+        "https://papermc.io/ci/job/Waterfall/lastSuccessfulBuild/artifact/Waterfall-Proxy/bootstrap/target/Waterfall.jar"),
     HEXACORD("HexaCord",
-        "https://dl.reformcloud.systems/mcversions/proxies/hexacord-1.7.10-1.14.x.jar"),
+        "https://github.com/HexagonMC/BungeeCord/releases/download/v246/BungeeCord.jar"),
     BUNGEECORD("BungeeCord",
-        "https://dl.reformcloud.systems/mcversions/proxies/bungeecord.jar"),
+        "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.ja"),
     VELOCITY("Velocity",
-        "https://dl.reformcloud.systems/mcversions/proxies/velocity.jar"),
+        "https://ci.velocitypowered.com/job/velocity/lastSuccessfulBuild/artifact/proxy/build/libs/velocity-proxy-1.0.4-SNAPSHOT-all.jar"),
     TRAVERTINE("Travertine",
-        "https://dl.reformcloud.systems/mcversions/proxies/travertine.jar");
+        "https://papermc.io/ci/job/Travertine/lastSuccessfulBuild/artifact/Travertine-Proxy/bootstrap/target/Travertine.jar");
 
     private static Map<String, ProxyVersions> PROVIDERS = new ConcurrentHashMap<>();
 

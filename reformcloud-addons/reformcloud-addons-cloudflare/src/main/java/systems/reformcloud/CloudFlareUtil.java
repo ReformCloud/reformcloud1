@@ -6,6 +6,7 @@ package systems.reformcloud;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import eu.byteexception.requestbuilder.RequestBuilder;
 import eu.byteexception.requestbuilder.method.RequestMethod;
 import eu.byteexception.requestbuilder.result.RequestResult;
@@ -397,7 +398,7 @@ public final class CloudFlareUtil implements Serializable {
             );
         }
 
-        return ReformCloudLibraryService.PARSER.parse(stringBuilder.substring(0)).getAsJsonObject();
+        return JsonParser.parseString(stringBuilder.substring(0)).getAsJsonObject();
     }
 
     public static CloudFlareUtil getInstance() {

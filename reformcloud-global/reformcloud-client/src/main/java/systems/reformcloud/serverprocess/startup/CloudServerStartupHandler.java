@@ -250,28 +250,6 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
-        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_7_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_8_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_9_4)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_10_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_11_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_12_2))
-        {
-
-            if (!Files.exists(Paths.get(path + "/config"))) {
-                FileUtils.createDirectory(Paths.get(path + "/config"));
-            }
-            if (!Files.exists(Paths.get(path + "/config/glowstone.yml"))) {
-                FileUtils.copyCompiledFile("reformcloud/glowstone/glowstone.yml",
-                    path + "/config/glowstone.yml");
-            }
-        } else {
             if (!Files.exists(Paths.get(path + "/spigot.yml"))) {
                 FileUtils
                     .copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
@@ -281,93 +259,36 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 FileUtils.copyCompiledFile("reformcloud/default/server.properties",
                     path + "/server.properties");
             }
-        }
 
         Properties properties = new Properties();
-        if (this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_7_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_8_9)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_9_4)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_10_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_11_2)
-            || this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(
-                Files.newInputStream(Paths.get(path + "/config/glowstone.yml")),
-                StandardCharsets.UTF_8)) {
-                net.md_5.config.Configuration configuration = ConfigurationProvider
-                    .getProvider(YamlConfiguration.class).load(inputStreamReader);
-                net.md_5.config.Configuration section = configuration.getSection("server");
-
-                section.set("ip",
-                    ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
-                section.set("port", port);
-                section.set("name", this.serverStartupInfo.getName());
-                section.set("max-players", this.serverStartupInfo.getServerGroup().getMaxPlayers());
-                section.set("motd", this.serverStartupInfo.getServerGroup().getMotd());
-                section.set("log-file", "logs/latest.log");
-
-                configuration.set("server", section);
-                configuration.set("console.use-jline", false);
-                configuration.set("advanced.proxy-support", true);
-                try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
-                    Files.newOutputStream(Paths.get(path +
-                        "/config/glowstone.yml")), StandardCharsets.UTF_8)) {
-                    ConfigurationProvider.getProvider(YamlConfiguration.class)
-                        .save(configuration, outputStreamWriter);
-                }
-            } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
-                    "Error while reading glowstone config", ex);
-                return;
-            }
-        } else {
-            try (InputStreamReader inputStreamReader = new InputStreamReader(
-                Files.newInputStream(Paths.get(path + "/server.properties")))) {
-                properties.load(inputStreamReader);
-            } catch (final IOException ex) {
-                StringUtil
-                    .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
-                        "Could not load server.properties", ex);
-                return;
-            }
+        try (InputStreamReader inputStreamReader = new InputStreamReader(
+            Files.newInputStream(Paths.get(path + "/server.properties")))) {
+            properties.load(inputStreamReader);
+        } catch (final IOException ex) {
+            StringUtil
+                .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
+                    "Could not load server.properties", ex);
+            return;
         }
 
-        if (!this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_7_9)
-            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_8_9)
-            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_9_4)
-            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_10_2)
-            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_11_2)
-            || !this.serverStartupInfo.getServerGroup().getSpigotVersions()
-            .equals(SpigotVersions.GLOWSTONE_1_12_2)) {
-            if (DefaultPropertiesManager.available && DefaultPropertiesManager.getInstance().isPresent()) {
-                DefaultPropertiesManager.getInstance()
-                    .fill(this.serverStartupInfo.getServerGroup().getName(), properties);
-            }
+        if (DefaultPropertiesManager.available && DefaultPropertiesManager.getInstance().isPresent()) {
+            DefaultPropertiesManager.getInstance()
+                .fill(this.serverStartupInfo.getServerGroup().getName(), properties);
+        }
 
-            properties.setProperty("server-ip",
-                ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
-            properties.setProperty("server-port", port + StringUtil.EMPTY);
-            properties.setProperty("server-name", serverStartupInfo.getName());
-            properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
+        properties.setProperty("server-ip",
+            ReformCloudClient.getInstance().getCloudConfiguration().getStartIP());
+        properties.setProperty("server-port", port + StringUtil.EMPTY);
+        properties.setProperty("server-name", serverStartupInfo.getName());
+        properties.setProperty("motd", serverStartupInfo.getServerGroup().getMotd());
 
-            try (OutputStream outputStream = Files
-                .newOutputStream(Paths.get(path + "/server.properties"))) {
-                properties.store(outputStream, "");
-            } catch (final IOException ex) {
-                StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
-                    "Cannot store server.properties", ex);
-                return;
-            }
+        try (OutputStream outputStream = Files
+            .newOutputStream(Paths.get(path + "/server.properties"))) {
+            properties.store(outputStream, "");
+        } catch (final IOException ex) {
+            StringUtil.printError(ReformCloudClient.getInstance().getColouredConsoleProvider(),
+                "Cannot store server.properties", ex);
+            return;
         }
 
         if (!Files.exists(Paths.get(path + "/spigot.jar"))) {
