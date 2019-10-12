@@ -4,8 +4,6 @@
 
 package systems.reformcloud.serverprocess.startup;
 
-import net.md_5.config.ConfigurationProvider;
-import net.md_5.config.YamlConfiguration;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
@@ -250,15 +248,15 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/servers"), path + StringUtil.EMPTY);
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
-            if (!Files.exists(Paths.get(path + "/spigot.yml"))) {
-                FileUtils
-                    .copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
-            }
+        if (!Files.exists(Paths.get(path + "/spigot.yml"))) {
+            FileUtils
+                .copyCompiledFile("reformcloud/spigot/spigot.yml", path + "/spigot.yml");
+        }
 
-            if (!Files.exists(Paths.get(path + "/server.properties"))) {
-                FileUtils.copyCompiledFile("reformcloud/default/server.properties",
-                    path + "/server.properties");
-            }
+        if (!Files.exists(Paths.get(path + "/server.properties"))) {
+            FileUtils.copyCompiledFile("reformcloud/default/server.properties",
+                path + "/server.properties");
+        }
 
         Properties properties = new Properties();
         try (InputStreamReader inputStreamReader = new InputStreamReader(
@@ -303,12 +301,20 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                 if (!Files.exists(Paths.get("reformcloud/jars/" + SpigotVersions
                     .getAsFormattedJarFileName(
                         this.serverStartupInfo.getServerGroup().getSpigotVersions())))) {
-                    DownloadManager.downloadAndDisconnect(
+
+                    if (!DownloadManager.downloadAndDisconnect(
                         this.serverStartupInfo.getServerGroup().getSpigotVersions().getName(),
                         this.serverStartupInfo.getServerGroup().getSpigotVersions().getUrl(),
                         "reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(
-                            this.serverStartupInfo.getServerGroup().getSpigotVersions())
-                    );
+                            this.serverStartupInfo.getServerGroup().getSpigotVersions()))) {
+
+                        DownloadManager.downloadAndDisconnect(
+                            this.serverStartupInfo.getServerGroup().getSpigotVersions().getName(),
+                            this.serverStartupInfo.getServerGroup().getSpigotVersions().getFallbackUrl(),
+                            "reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(
+                                this.serverStartupInfo.getServerGroup().getSpigotVersions()));
+
+                    }
                 }
 
                 FileUtils.copyFile("reformcloud/jars/" + SpigotVersions.getAsFormattedJarFileName(
@@ -319,13 +325,21 @@ public final class CloudServerStartupHandler implements Serializable, ServiceAbl
                     "reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup()
                         .getSpigotVersions().getVersion()))) {
                     try {
-                        DownloadManager.downloadAndDisconnect(
+                        if (!DownloadManager.downloadAndDisconnect(
                             "Sponge-Server " + this.serverStartupInfo.getServerGroup()
                                 .getSpigotVersions().getVersion(),
                             this.serverStartupInfo.getServerGroup().getSpigotVersions().getUrl(),
                             "reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup()
                                 .getSpigotVersions().getVersion() + ".zip"
-                        );
+                        )) {
+                            DownloadManager.downloadAndDisconnect(
+                                "Sponge-Server " + this.serverStartupInfo.getServerGroup()
+                                    .getSpigotVersions().getVersion(),
+                                this.serverStartupInfo.getServerGroup().getSpigotVersions().getFallbackUrl(),
+                                "reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup()
+                                    .getSpigotVersions().getVersion() + ".zip"
+                            );
+                        }
                         FileUtils.createDirectory(Paths.get(
                             "reformcloud/files/sponge-" + this.serverStartupInfo.getServerGroup()
                                 .getSpigotVersions().getVersion()));

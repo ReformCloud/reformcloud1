@@ -219,7 +219,7 @@ public enum SpigotVersions implements Serializable {
      */
     AKARIN_1_12_2("Akarin 1.12.2", "1.12.2",
         "https://github.com/Akarin-project/Akarin/releases/download/1.12.2-R0.4.2/akarin-1.12.2.jar",
-        null);
+        "https://dl.reformcloud.systems/mcversions/akarin/akarin-1.12.2.jar");
 
     private static final Map<String, SpigotVersions> PROVIDERS = new ConcurrentHashMap<>();
     public static final Deque<String> AVAILABLE_VERSIONS = new ConcurrentLinkedDeque<>();

@@ -212,12 +212,26 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions
                     .getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
-                    DownloadManager.downloadAndDisconnect(
+                    if (!DownloadManager.downloadAndDisconnect(
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
                         "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
                             this.proxyStartupInfo.getProxyGroup().getProxyVersions())
-                    );
+                    )) {
+                        if (!DownloadManager.downloadAndDisconnect(
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl(),
+                            "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                        )) {
+                            DownloadManager.downloadAndDisconnect(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl2(),
+                                "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                    this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                            );
+                        }
+                    }
                 }
 
                 FileUtils.copyFile("reformcloud/jars/" + ProxyVersions
@@ -269,12 +283,26 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions
                     .getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
-                    DownloadManager.downloadAndDisconnect(
+                    if (!DownloadManager.downloadAndDisconnect(
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
                         "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
                             this.proxyStartupInfo.getProxyGroup().getProxyVersions())
-                    );
+                    )) {
+                        if (!DownloadManager.downloadAndDisconnect(
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl(),
+                            "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                        )) {
+                            DownloadManager.downloadAndDisconnect(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl2(),
+                                "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                    this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                            );
+                        }
+                    }
                 }
 
                 FileUtils.copyFile("reformcloud/jars/" + ProxyVersions

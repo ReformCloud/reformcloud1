@@ -37,7 +37,7 @@ final class LibraryPreLoader implements Serializable {
         prepareFolder();
         if (dependencies == null) {
             try {
-                prepareDependenciesVersions(installNetty, update);
+                prepareDependenciesVersions(update, installNetty);
             } catch (final IOException ex) {
                 ex.printStackTrace();
             }
@@ -60,8 +60,7 @@ final class LibraryPreLoader implements Serializable {
         return downloaded;
     }
 
-    private static void prepareDependenciesVersions(boolean update,
-                                                    boolean installNetty) throws IOException {
+    private static void prepareDependenciesVersions(boolean update, boolean installNetty) throws IOException {
         if (update || !Files.exists(Paths.get("libraries/versions.properties"))) {
             if (Files.exists(Paths.get("libraries/versions.properties"))) {
                 Files.delete(Paths.get("libraries/versions.properties"));
@@ -73,6 +72,12 @@ final class LibraryPreLoader implements Serializable {
                 .disableCaches()
                 .fireAndForget();
 
+            if (requestResult.hasFailed() || requestResult.getStream(StreamType.DEFAULT) == null) {
+                requestResult.forget();
+                System.out.println("Could not download \"versions.properties\" file. Maybe Download Server not reachable? Please contact us on our discord server.");
+                return;
+            }
+
             try (InputStream inputStream = requestResult.getStream(StreamType.DEFAULT)) {
                 Files.copy(inputStream, Paths.get(
                     "libraries/versions.properties"
@@ -82,6 +87,7 @@ final class LibraryPreLoader implements Serializable {
         }
 
         Properties properties = new Properties();
+
         try (InputStream inputStream = Files.newInputStream(Paths.get("libraries/versions.properties"))) {
             properties.load(inputStream);
         }

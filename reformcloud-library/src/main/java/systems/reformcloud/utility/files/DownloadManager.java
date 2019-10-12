@@ -46,7 +46,6 @@ public final class DownloadManager implements Serializable {
             downloadSilent(url, to);
             return;
         }
-
         ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
             ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_trying()
                 .replace("%name%", input)
@@ -105,13 +104,13 @@ public final class DownloadManager implements Serializable {
      * @param input The name of the file which should be downloaded, for information only
      * @param url The url of the file which should be downloaded
      * @param to The path where the file should be copied to
+     * @return If the download was successfully
      */
-    public static void downloadAndDisconnect(final String input, final String url,
-        final String to) {
+    public static Boolean downloadAndDisconnect(final String input, final String url, final String to) {
         Require.requiresNotNull(url, to);
         if (input == null) {
             downloadSilentAndDisconnect(url, to);
-            return;
+            return false;
         }
 
         ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
@@ -125,6 +124,12 @@ public final class DownloadManager implements Serializable {
                 .disableCaches()
                 .fireAndForget();
 
+            if (requestResult.hasFailed()) {
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().warn().accept("Download for " + input + " failed with statuscode " + requestResult.getStatusCode());
+                requestResult.forget();
+                return false;
+            }
+
             try (InputStream inputStream = requestResult.getStream(StreamType.DEFAULT)) {
                 Files.copy(inputStream, Paths.get(to), StandardCopyOption.REPLACE_EXISTING);
             }
@@ -134,11 +139,14 @@ public final class DownloadManager implements Serializable {
             ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider().info(
                 ReformCloudLibraryServiceProvider.getInstance().getLoaded().getDownload_success()
             );
+
+            return true;
         } catch (final IOException ex) {
             StringUtil
                 .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
                     "Download failed", ex);
         }
+        return false;
     }
 
     /**
