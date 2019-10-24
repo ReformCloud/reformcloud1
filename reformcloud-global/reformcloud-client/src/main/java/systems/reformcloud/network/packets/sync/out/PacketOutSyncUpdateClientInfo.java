@@ -4,18 +4,19 @@
 
 package systems.reformcloud.network.packets.sync.out;
 
-import java.io.Serializable;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ClientInfo;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.constants.ChannelConstants;
+
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 02.02.2019
  */
 
-public final class PacketOutSyncUpdateClientInfo extends Packet implements Serializable {
+public final class PacketOutSyncUpdateClientInfo extends DefaultPacket implements Serializable {
 
     private static final long serialVersionUID = -1798278215718848219L;
 

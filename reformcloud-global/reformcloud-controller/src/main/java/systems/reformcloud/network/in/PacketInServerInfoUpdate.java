@@ -6,7 +6,7 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ServerInfoUpdateEvent;
+import systems.reformcloud.event.events.update.ServerInfoUpdateEvent;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutServerInfoUpdate;
@@ -23,11 +23,9 @@ public final class PacketInServerInfoUpdate implements NetworkInboundHandler {
         final ServerInfo serverInfo = configuration
             .getValue("serverInfo", TypeTokenAdaptor.getSERVER_INFO_TYPE());
 
-        ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
-            .updateServerInfo(serverInfo);
+        ReformCloudController.getInstance().updateServerInfoInternal(serverInfo);
         ReformCloudController.getInstance().getChannelHandler().sendToAllDirect(
-            new PacketOutServerInfoUpdate(serverInfo,
-                ReformCloudController.getInstance().getInternalCloudNetwork())
+            new PacketOutServerInfoUpdate(serverInfo)
         );
         ReformCloudController.getInstance().getEventManager()
             .fire(new ServerInfoUpdateEvent(serverInfo));

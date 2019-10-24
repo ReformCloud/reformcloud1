@@ -4,16 +4,17 @@
 
 package systems.reformcloud.network.in;
 
-import java.io.Serializable;
-import java.util.UUID;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.autoicon.IconData;
 import systems.reformcloud.config.AutoIconConfig;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.StringUtil;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @author _Klaro | Pasqual K. / created on 23.04.2019
@@ -35,7 +36,7 @@ public final class PacketInGetConfig implements Serializable, NetworkQueryInboun
             if (iconData != null) {
                 ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                     configuration.getStringValue("from"),
-                    new Packet(
+                    new DefaultPacket(
                         StringUtil.NULL,
                         new Configuration().addValue("data", iconData),
                         resultID

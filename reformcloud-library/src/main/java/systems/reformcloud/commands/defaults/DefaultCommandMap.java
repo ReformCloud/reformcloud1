@@ -13,8 +13,10 @@ import systems.reformcloud.utility.annotiations.ShouldNotBeNull;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.06.2019
@@ -40,14 +42,27 @@ public final class DefaultCommandMap extends CommandMap implements Serializable 
 
     @Override
     @ShouldNotBeNull
-    public List<Command> findAll(@ShouldNotBeNull String currentBuffer) {
+    public List<String> findAll(@ShouldNotBeNull String currentBuffer) {
         List<Command> all = commandManager.commands();
         if (currentBuffer.isEmpty()) {
-            return all;
+            List<String> preOut = new ArrayList<>();
+            all.forEach(e -> preOut.add(e.getName()));
+            return preOut;
         }
 
-        return all.stream().filter(e -> e.getName().toLowerCase().startsWith(currentBuffer))
-            .collect(Collectors.toList());
+        List<String> out = new LinkedList<>();
+        all.forEach(e -> {
+            if (e.getName().toLowerCase().startsWith(currentBuffer.toLowerCase())) {
+                out.add(e.getName());
+            }
+
+            Arrays.stream(e.getAliases()).forEach(alias -> {
+                if (alias.toLowerCase().startsWith(currentBuffer.toLowerCase())) {
+                    out.add(alias);
+                }
+            });
+        });
+        return out;
     }
 
     @Override

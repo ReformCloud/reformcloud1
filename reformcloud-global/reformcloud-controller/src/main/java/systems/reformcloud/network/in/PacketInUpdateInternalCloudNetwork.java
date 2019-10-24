@@ -7,7 +7,7 @@ package systems.reformcloud.network.in;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.InternalCloudNetworkUpdateEvent;
+import systems.reformcloud.event.events.update.InternalCloudNetworkUpdateEvent;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.out.PacketOutUpdateAll;
 import systems.reformcloud.utility.TypeTokenAdaptor;

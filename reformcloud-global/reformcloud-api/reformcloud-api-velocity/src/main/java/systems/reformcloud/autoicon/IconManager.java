@@ -9,7 +9,7 @@ import com.velocitypowered.api.util.Favicon;
 import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -46,7 +46,7 @@ public final class IconManager implements Serializable {
         ReformCloudAPIVelocity.getInstance().getChannelHandler().sendPacketQuerySync(
             "ReformCloudController",
             ReformCloudAPIVelocity.getInstance().getProxyInfo().getCloudProcess().getName(),
-            new Packet(
+            new DefaultPacket(
                 "GetConfig", new Configuration()
             ),
             (configuration, resultID) -> {

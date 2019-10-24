@@ -54,7 +54,8 @@ public final class CommandCreate extends Command implements Serializable {
             colouredConsoleProvider.info(language.getSetup_name_of_group());
             String name = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getServerGroups()
-                    .get(s) == null);
+                    .get(s) == null && s.split(" ").length == 1);
+
             colouredConsoleProvider.info(language.getSetup_name_of_client());
             String client = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s)
@@ -70,6 +71,12 @@ public final class CommandCreate extends Command implements Serializable {
             String provider = cloudConfiguration
                 .readString(colouredConsoleProvider, s -> SpigotVersions.getByName(s) != null);
 
+            colouredConsoleProvider.info(
+                language.getSetup_memory_servergroup() == null ? "Please provide the §3memory§r for this servergroup" :
+                    language.getSetup_memory_servergroup());
+            Integer memory = cloudConfiguration
+                .readInt(colouredConsoleProvider, s -> s > 127);
+
             colouredConsoleProvider.info(language.getSetup_choose_reset_type());
             String resetType = cloudConfiguration.readString(colouredConsoleProvider,
                 s -> s.equalsIgnoreCase("dynamic") || s.equalsIgnoreCase("static") || s
@@ -79,7 +86,7 @@ public final class CommandCreate extends Command implements Serializable {
                 .sendMessage(language.getSetup_trying_to_create().replace("%group%", name));
             ReformCloudController.getInstance().getCloudConfiguration().createServerGroup(
                 new DefaultGroup(name, client, SpigotVersions.getByName(provider),
-                    ServerModeType.of(resetType)));
+                    ServerModeType.of(resetType), memory));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("proxygroup")) {
             AbstractLoggerProvider colouredConsoleProvider =
@@ -90,7 +97,8 @@ public final class CommandCreate extends Command implements Serializable {
             colouredConsoleProvider.info(language.getSetup_name_of_group());
             String name = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
-                    .get(s) == null);
+                    .get(s) == null && s.split(" ").length == 1);
+
             colouredConsoleProvider.info(language.getSetup_name_of_client());
             String client = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s)
@@ -101,6 +109,12 @@ public final class CommandCreate extends Command implements Serializable {
             String in = cloudConfiguration
                 .readString(colouredConsoleProvider, s -> ProxyVersions.getByName(s) != null);
 
+            colouredConsoleProvider.info(
+                language.getSetup_memory_proxygroup() == null ? "Please provide the §3memory§r for this proxygroup" :
+                    language.getSetup_memory_proxygroup());
+            Integer memory = cloudConfiguration
+                .readInt(colouredConsoleProvider, s -> s > 127);
+
             colouredConsoleProvider.info(language.getSetup_choose_proxy_reset_type());
             String resetType = cloudConfiguration.readString(colouredConsoleProvider,
                 s -> s.equalsIgnoreCase("dynamic") || s.equalsIgnoreCase("static"));
@@ -109,7 +123,7 @@ public final class CommandCreate extends Command implements Serializable {
                 .sendMessage(language.getSetup_trying_to_create().replace("%group%", name));
             ReformCloudController.getInstance().getCloudConfiguration().createProxyGroup(
                 new DefaultProxyGroup(name, client, ProxyVersions.getByName(in),
-                    ProxyModeType.of(resetType)));
+                    ProxyModeType.of(resetType), memory));
             return;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("client")) {
             AbstractLoggerProvider colouredConsoleProvider = ReformCloudController.getInstance().getColouredConsoleProvider();
@@ -119,7 +133,8 @@ public final class CommandCreate extends Command implements Serializable {
             colouredConsoleProvider.info(language.getSetup_name_of_new_client());
             String name = cloudConfiguration.readString(colouredConsoleProvider, s ->
                 ReformCloudController.getInstance().getInternalCloudNetwork().getClients().get(s)
-                    == null);
+                    == null && s.split(" ").length == 1);
+
             colouredConsoleProvider.info(language.getSetup_ip_of_new_client());
             String ip = cloudConfiguration
                 .readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
@@ -240,11 +255,11 @@ public final class CommandCreate extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("SERVERGROUP", "PROXYGROUP", "CLIENT", "WEBUSER", "TEMPLATE"));
         }
 
-        if (args.length == 1 && args[0].equalsIgnoreCase("TEMPLATE")) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("TEMPLATE")) {
             out.addAll(groups());
         }
 

@@ -4,13 +4,16 @@
 
 package systems.reformcloud;
 
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
 import systems.reformcloud.loader.CapableClassLoader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -49,23 +52,21 @@ final class CommonLoader implements Serializable {
 
     private static void getCurrentFallbackVersion0() {
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) new URL(
-                "https://internal.reformcloud.systems/update/version.json").openConnection();
-            urlConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            urlConnection.setUseCaches(false);
-            urlConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://internal.reformcloud.systems/update/version.json", Proxy.NO_PROXY)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .disableCaches()
+                .fireAndForget();
 
             StringBuilder stringBuilder = new StringBuilder();
             String line;
             try (BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(urlConnection.getInputStream()))) {
+                new InputStreamReader(requestResult.getStream(StreamType.DEFAULT)))) {
                 while ((line = bufferedReader.readLine()) != null) {
                     stringBuilder.append(line);
                 }
             }
 
-            urlConnection.disconnect();
+            requestResult.forget();
             Matcher matcher = Pattern
                 .compile("\\{ {5}\"version\": \"(.*)\", {3}\"oldVersion\": \"(.*)\"}")
                 .matcher(stringBuilder.substring(0));

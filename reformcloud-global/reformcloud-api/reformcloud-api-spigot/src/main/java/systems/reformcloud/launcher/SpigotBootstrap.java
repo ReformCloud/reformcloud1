@@ -7,8 +7,6 @@ package systems.reformcloud.launcher;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.ResourceLeakDetector;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandMap;
@@ -20,9 +18,12 @@ import systems.reformcloud.addons.dependency.util.DynamicDependency;
 import systems.reformcloud.listener.CloudAddonsListener;
 import systems.reformcloud.listener.PlayerConnectListener;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
 import systems.reformcloud.permissions.ReflectionUtil;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author _Klaro | Pasqual K. / created on 09.12.2018
@@ -99,7 +100,7 @@ public final class SpigotBootstrap extends JavaPlugin implements Serializable {
         ReformCloudLibraryService.sleep(1000000000);
     }
 
-    private void sendPacketAndClose(Packet packet) {
+    private void sendPacketAndClose(DefaultPacket packet) {
         ChannelHandlerContext channelHandlerContext =
             ReformCloudAPISpigot.getInstance().getChannelHandler()
                 .getChannel("ReformCloudController");

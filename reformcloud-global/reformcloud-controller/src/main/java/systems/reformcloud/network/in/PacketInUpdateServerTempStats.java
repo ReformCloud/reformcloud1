@@ -7,7 +7,7 @@ package systems.reformcloud.network.in;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ServerTempStatsUpdateEvent;
+import systems.reformcloud.event.events.update.ServerTempStatsUpdateEvent;
 import systems.reformcloud.meta.server.stats.TempServerStats;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 

@@ -5,7 +5,7 @@
 package systems.reformcloud.network.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 29.01.2019
  */
 
-public final class PacketOutUploadLog extends Packet implements Serializable {
+public final class PacketOutUploadLog extends DefaultPacket implements Serializable {
 
     private static final long serialVersionUID = -3275070800933988588L;
 

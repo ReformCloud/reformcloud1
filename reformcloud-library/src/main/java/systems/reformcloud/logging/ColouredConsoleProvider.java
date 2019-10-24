@@ -5,7 +5,12 @@
 package systems.reformcloud.logging;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.method.RequestMethod;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
 import jline.console.ConsoleReader;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
@@ -13,7 +18,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
-import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.logging.handlers.ConsoleInputHandler;
 import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.annotiations.ForRemoval;
@@ -23,8 +28,7 @@ import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.time.DateProvider;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -83,7 +87,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
     /**
      * The registered logger handlers
      */
-    private List<IConsoleInputHandler> iConsoleInputHandlers = new ArrayList<>();
+    private List<ConsoleInputHandler> consoleInputHandlers = new ArrayList<>();
 
     /**
      * Creates a new instance of the cloud logger
@@ -237,8 +241,8 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
 
     @Override
     public void handleAll(String message) {
-        this.iConsoleInputHandlers
-            .forEach(iConsoleInputHandler -> iConsoleInputHandler.handle(message));
+        this.consoleInputHandlers
+            .forEach(consoleInputHandler -> consoleInputHandler.handle(message));
     }
 
     @Override
@@ -387,7 +391,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
 
             this.consoleReader.killLine();
             this.consoleReader.close();
-            this.iConsoleInputHandlers.clear();
+            this.consoleInputHandlers.clear();
         } catch (final IOException ex) {
             StringUtil
                 .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
@@ -396,31 +400,29 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
     }
 
     @Override
-    public void registerLoggerHandler(final IConsoleInputHandler iConsoleInputHandler) {
-        this.iConsoleInputHandlers.add(iConsoleInputHandler);
+    public void registerLoggerHandler(final ConsoleInputHandler consoleInputHandler) {
+        this.consoleInputHandlers.add(consoleInputHandler);
     }
 
     @Override
     public String uploadLog(String input) {
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL("https://paste" +
-                ".reformcloud.systems/documents").openConnection();
-
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond());
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder("https://paste.reformcloud.systems/documents", Proxy.NO_PROXY)
+                .setRequestMethod(RequestMethod.POST)
+                .addHeader(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond())
+                .enableOutput()
+                .fireAndForget();
 
             try (DataOutputStream dataOutputStream =
-                     new DataOutputStream(httpURLConnection.getOutputStream())) {
+                     new DataOutputStream(requestResult.getOutputStream())) {
                 dataOutputStream.writeBytes(input);
                 dataOutputStream.flush();
             }
 
             JsonObject jsonObject;
             try (JsonReader jsonReader =
-                     new JsonReader(new InputStreamReader(httpURLConnection.getInputStream()))) {
-                jsonObject = ReformCloudLibraryService.PARSER.parse(jsonReader).getAsJsonObject();
+                     new JsonReader(new InputStreamReader(requestResult.getStream(StreamType.DEFAULT)))) {
+                jsonObject = JsonParser.parseReader(jsonReader).getAsJsonObject();
             }
 
             if (jsonObject == null) {
@@ -432,6 +434,7 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
             }
 
             Configuration configuration = new Configuration(jsonObject);
+            requestResult.forget();
             return "https://paste.reformcloud.systems/" + configuration.getStringValue("key");
         } catch (final IOException ex) {
             StringUtil.printError(
@@ -502,8 +505,8 @@ public class ColouredConsoleProvider extends AbstractLoggerProvider implements S
         return this.debug;
     }
 
-    public List<IConsoleInputHandler> getIConsoleInputHandlers() {
-        return this.iConsoleInputHandlers;
+    public List<ConsoleInputHandler> getIConsoleInputHandlers() {
+        return this.consoleInputHandlers;
     }
 
     @Override

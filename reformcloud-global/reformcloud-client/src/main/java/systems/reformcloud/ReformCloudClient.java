@@ -16,8 +16,8 @@ import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
 import systems.reformcloud.event.DefaultEventManager;
 import systems.reformcloud.event.abstracts.EventManager;
-import systems.reformcloud.event.events.ReloadDoneEvent;
-import systems.reformcloud.event.events.StartedEvent;
+import systems.reformcloud.event.events.internal.ReloadDoneEvent;
+import systems.reformcloud.event.events.internal.StartedEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.logging.AbstractLoggerProvider;
@@ -45,6 +45,7 @@ import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.packets.in.*;
@@ -79,10 +80,7 @@ import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.threading.AbstractTaskScheduler;
 import systems.reformcloud.versioneering.VersionController;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -141,13 +139,13 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     /**
      * Creates a new Instance of the ReformCloudClient
      *
-     * @param colouredConsoleProvider The default logger provider of the cloud system
+     * @param loggerProvider The default logger provider of the cloud system
      * @param commandManager The command manger which should be used in the cloud system
      * @param ssl If ssl should be enabled or not
      * @param time The startup time of the client
      * @throws Throwable If any exception occurs it will be catch and printed
      */
-    public ReformCloudClient(ColouredConsoleProvider colouredConsoleProvider, CommandManager commandManager,
+    public ReformCloudClient(AbstractLoggerProvider loggerProvider, AbstractCommandManager commandManager,
                              boolean ssl, final long time) throws Throwable {
         if (instance == null) {
             instance = this;
@@ -160,7 +158,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
 
         this.ssl = ssl;
         this.commandManager = commandManager;
-        this.colouredConsoleProvider = colouredConsoleProvider;
+        this.colouredConsoleProvider = loggerProvider;
 
         SaveAPIService.instance.set(new SaveAPIImpl());
         APIService.instance.set(this);
@@ -239,6 +237,16 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         return ReformCloudClient.instance;
     }
 
+    public void updateServerInfoInternal(ServerInfo serverInfo) {
+        internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
+    public void updateProxyInfoInternal(ProxyInfo proxyInfo) {
+        internalCloudNetwork.getServerProcessManager().updateProxyInfo(proxyInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
     private void registerNetworkHandlers() {
         getNettyHandler()
             .registerHandler("StartCloudServer", new PacketInStartGameServer())
@@ -279,6 +287,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
             .registerHandler("EnableBackup", new PacketInEnableBackup())
             .registerHandler("RemoveServerQueueProcess", new PacketInRemoveServerQueueProcess())
             .registerQueryHandler("GetRuntimeInformation", new PacketInQueryGetRuntimeInformation())
+            .registerHandler("ProxyInfoUpdate", new PacketInProxyInfoUpdate())
             .registerHandler("InitializeCloudNetwork", internalConnectionHandler);
     }
 
@@ -426,16 +435,6 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
         } else {
             colouredConsoleProvider.info(this.internalCloudNetwork.getLoaded().getVersion_update());
         }
-    }
-
-    public boolean isPortUseable(final int port) {
-        try (ServerSocket serverSocket = new ServerSocket()) {
-            serverSocket.bind(new InetSocketAddress(port));
-            return true;
-        } catch (final IOException ignored) {
-        }
-
-        return false;
     }
 
     public void updateInternalTime(final long controller) {
@@ -1110,43 +1109,43 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     @Override
-    public boolean sendPacket(String subChannel, Packet packet) {
+    public boolean sendPacket(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketAsynchronous(subChannel, packet);
     }
 
     @Override
-    public boolean sendPacketSync(String subChannel, Packet packet) {
+    public boolean sendPacketSync(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketSynchronized(subChannel, packet);
     }
 
     @Override
-    public void sendPacketToAll(Packet packet) {
+    public void sendPacketToAll(DefaultPacket packet) {
         this.channelHandler.sendToAllAsynchronous(packet);
     }
 
     @Override
-    public void sendPacketToAllSync(Packet packet) {
+    public void sendPacketToAllSync(DefaultPacket packet) {
         this.channelHandler.sendToAllSynchronized(packet);
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet,
-        NetworkQueryInboundHandler onSuccess) {
+    public void sendPacketQuery(String channel, DefaultPacket packet,
+                                NetworkQueryInboundHandler onSuccess) {
         this.channelHandler.sendPacketQuerySync(
             channel, this.cloudConfiguration.getClientName(), packet, onSuccess
         );
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
-        NetworkQueryInboundHandler onFailure) {
+    public void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess,
+                                NetworkQueryInboundHandler onFailure) {
         this.channelHandler.sendPacketQuerySync(
             channel, this.cloudConfiguration.getClientName(), packet, onSuccess, onFailure
         );
     }
 
     @Override
-    public PacketFuture createPacketFuture(Packet packet, String networkComponent) {
+    public PacketFuture createPacketFuture(DefaultPacket packet, String networkComponent) {
         this.channelHandler
             .toQueryPacket(packet, UUID.randomUUID(), this.cloudConfiguration.getClientName());
         PacketFuture packetFuture = new PacketFuture(
@@ -1161,7 +1160,7 @@ public final class ReformCloudClient implements Serializable, Shutdown, Reload, 
     }
 
     @Override
-    public PacketFuture sendPacketQuery(String channel, Packet packet) {
+    public PacketFuture sendPacketQuery(String channel, DefaultPacket packet) {
         return this.channelHandler.sendPacketQuerySync(
             channel, this.cloudConfiguration.getClientName(), packet
         );

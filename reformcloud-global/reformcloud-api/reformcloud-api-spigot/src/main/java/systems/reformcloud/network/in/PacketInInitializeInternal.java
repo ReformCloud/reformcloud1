@@ -10,7 +10,7 @@ import systems.reformcloud.meta.enums.ServerModeType;
 import systems.reformcloud.meta.enums.ServerState;
 import systems.reformcloud.mobsaddon.MobSelector;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packets.PacketOutServerInfoUpdate;
 import systems.reformcloud.network.query.out.PacketOutQueryGetPermissionCache;
 import systems.reformcloud.signaddon.SignSelector;
@@ -30,7 +30,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler, 
         ReformCloudAPISpigot.getInstance().setInternalCloudNetwork(configuration
             .getValue("networkProperties", TypeTokenAdaptor.getINTERNAL_CLOUD_NETWORK_TYPE()));
         ReformCloudAPISpigot.getInstance().getChannelHandler()
-            .sendPacketAsynchronous("ReformCloudController", new Packet(
+            .sendPacketAsynchronous("ReformCloudController", new DefaultPacket(
                 "AuthSuccess", new Configuration().addStringValue("name",
                 ReformCloudAPISpigot.getInstance().getServerInfo().getCloudProcess().getName())
             ));

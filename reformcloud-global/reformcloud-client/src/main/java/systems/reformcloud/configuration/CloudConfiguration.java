@@ -105,9 +105,11 @@ public final class CloudConfiguration implements Serializable {
             ReformCloudClient.getInstance().getColouredConsoleProvider();
 
         colouredConsoleProvider.info("Please provide the internal ReformCloudClient ip");
-        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\" +
+            ".").length == 4).trim();
         colouredConsoleProvider.info("Please provide the Controller IP");
-        String controllerIP = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        String controllerIP = this.readString(colouredConsoleProvider,
+            s -> s.split("\\.").length == 4).trim();
 
         ReformCloudClient.getInstance().getColouredConsoleProvider()
             .info("Please provide the name of this Client. (Recommended: Client-01)");

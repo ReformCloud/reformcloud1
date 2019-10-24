@@ -4,6 +4,9 @@
 
 package systems.reformcloud.autoicon;
 
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.icon.IconDataSetEvent;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,6 +24,8 @@ public final class IconData implements Serializable {
     public IconData(List<byte[]> icons, int updateTimeInSeconds) {
         this.icons = icons;
         this.updateTimeInSeconds = updateTimeInSeconds;
+
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new IconDataSetEvent(this));
     }
 
     public List<byte[]> getIcons() {

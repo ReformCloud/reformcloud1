@@ -5,7 +5,7 @@
 package systems.reformcloud.network.sync.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.annotiations.ForRemoval;
 
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 03.02.2019
  */
 
-public final class PacketOutSyncUpdate extends Packet implements Serializable {
+public final class PacketOutSyncUpdate extends DefaultPacket implements Serializable {
 
     private static final long serialVersionUID = 8220472124040186582L;
 

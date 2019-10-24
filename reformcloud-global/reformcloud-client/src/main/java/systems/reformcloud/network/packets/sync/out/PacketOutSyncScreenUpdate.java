@@ -4,16 +4,17 @@
 
 package systems.reformcloud.network.packets.sync.out;
 
-import java.io.Serializable;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.constants.ChannelConstants;
+
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 05.02.2019
  */
 
-public final class PacketOutSyncScreenUpdate extends Packet implements Serializable {
+public final class PacketOutSyncScreenUpdate extends DefaultPacket implements Serializable {
 
     private static final long serialVersionUID = 3205044307706658304L;
 

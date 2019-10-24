@@ -12,6 +12,7 @@ import systems.reformcloud.api.events.ClientCreatedEvent;
 import systems.reformcloud.api.events.ClientDeletedEvent;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.database.config.DatabaseConfig;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.AbstractLoggerProvider;
@@ -69,6 +70,8 @@ public final class CloudConfiguration implements Serializable {
 
     private List<String> ipWhitelist = new ArrayList<>();
 
+    private DatabaseConfig databaseConfig;
+
     /**
      * Prepares and loads ReformCloudController Configuration
      */
@@ -88,6 +91,7 @@ public final class CloudConfiguration implements Serializable {
         }
 
         this.defaultSetup();
+        this.initDatabaseConfig();
         this.load();
         this.loadMessages();
         this.loadProxyGroups();
@@ -128,6 +132,55 @@ public final class CloudConfiguration implements Serializable {
             ReformCloudLibraryService.newKey());
     }
 
+    private void initDatabaseConfig() {
+        final AbstractLoggerProvider colouredConsoleProvider = ReformCloudController.getInstance()
+            .getColouredConsoleProvider();
+
+        Language language = ReformCloudController.getInstance().getLoadedLanguage();
+
+        if (!Files.exists(Paths.get("reformcloud/database/config.json"))) {
+            Configuration configuration = new Configuration();
+            colouredConsoleProvider.info(language.getSetup_choose_database());
+            String type = this.readString(colouredConsoleProvider,
+                s -> DatabaseConfig.DataBaseType.find(s) != null);
+            DatabaseConfig.DataBaseType dataBaseType = DatabaseConfig.DataBaseType.find(type);
+            if (dataBaseType.equals(DatabaseConfig.DataBaseType.FILE)) {
+                configuration.addValue("config", new DatabaseConfig(
+                    null,
+                    -1,
+                    null,
+                    null,
+                    null,
+                    dataBaseType
+                )).write(Paths.get("reformcloud/database/config.json"));
+            } else {
+                colouredConsoleProvider.info(language.getSetup_database_host());
+                String host = this.readString(colouredConsoleProvider, s -> true);
+                colouredConsoleProvider.info(language.getSetup_database_port());
+                int port = this.readInt(colouredConsoleProvider, s -> s > 0);
+                colouredConsoleProvider.info(language.getSetup_database_name());
+                String database = this.readString(colouredConsoleProvider, s -> true);
+                colouredConsoleProvider.info(language.getSetup_database_username());
+                String userName = this.readString(colouredConsoleProvider, s -> true);
+                colouredConsoleProvider.info(language.getSetup_database_password());
+                String password = this.readString(colouredConsoleProvider, s -> true);
+                configuration.addValue("config", new DatabaseConfig(
+                    host,
+                    port,
+                    userName,
+                    password,
+                    database,
+                    dataBaseType
+                )).write(Paths.get("reformcloud/database/config.json"));
+            }
+        }
+
+        this.databaseConfig = Configuration.parse(
+            Paths.get("reformcloud/database/config.json")
+        ).getValue("config", new TypeToken<DatabaseConfig>() {
+        });
+    }
+
     private boolean defaultSetup() {
         if (Files.exists(Paths.get("reformcloud/clients.json"))) {
             return false;
@@ -143,12 +196,14 @@ public final class CloudConfiguration implements Serializable {
         Language language = new LanguageManager(lang).getLoaded();
 
         colouredConsoleProvider.info(language.getSetup_controller_ip());
-        String controllerIP = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        String controllerIP = this.readString(colouredConsoleProvider,
+            s -> s.split("\\.").length == 4).trim();
 
         colouredConsoleProvider.info(language.getSetup_name_of_first_client());
         String clientName = this.readString(colouredConsoleProvider, s -> true);
         colouredConsoleProvider.info(language.getSetup_ip_of_new_client());
-        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\.").length == 4);
+        String ip = this.readString(colouredConsoleProvider, s -> s.split("\\" +
+            ".").length == 4).trim();
 
         new Configuration()
             .addValue("client", Collections.singletonList(new Client(clientName, ip, null)))
@@ -316,90 +371,171 @@ public final class CloudConfiguration implements Serializable {
     private void loadMessages() {
         String messagePath = "reformcloud/messages.json";
         if (!Files.exists(Paths.get(messagePath))) {
-            new Configuration()
-                .addStringValue("internal-global-prefix", "§2R§feform§2C§floud §7┃")
+            if (loadedLang.equalsIgnoreCase("german")) {
+                new Configuration()
+                    .addStringValue("internal-global-prefix", "§2R§feform§2C§floud §7┃")
 
-                .addStringValue("internal-api-bungee-command-no-permission",
-                    "§cYou do not have permission to execute this command")
+                    .addStringValue("internal-api-bungee-command-no-permission",
+                        "§cDu hast keine Rechte diesen Command zu nutzen.")
 
-                .addStringValue("internal-api-bungee-command-hub-already",
-                    "%prefix% §7You are already connected to a hub server")
-                .addStringValue("internal-api-bungee-command-hub-not-available",
-                    "%prefix% §7There is no hub server available")
+                    .addStringValue("internal-api-bungee-command-hub-already",
+                        "%prefix% §7Du bist bereits mit einem Hub Server verbunden.")
+                    .addStringValue("internal-api-bungee-command-hub-not-available",
+                        "%prefix% §7Aktuell ist kein Hub Server verfügbar.")
 
-                .addStringValue("internal-api-bungee-command-jumpto-server-player-not-found",
-                    "%prefix% §cCould not find player or server to go to")
-                .addStringValue("internal-api-bungee-command-jumpto-success",
-                    "%prefix% §aYou was connected to the server")
+                    .addStringValue("internal-api-bungee-command-jumpto-server-player-not-found",
+                        "%prefix% §cEs konnte kein Player oder Server gefunden werden, zu dem du wechseln kannst.")
+                    .addStringValue("internal-api-bungee-command-jumpto-success",
+                        "%prefix% §aDu hast dich erfolgreich zum Server verbunden.")
 
-                .addStringValue("internal-api-bungee-command-reformcloud-invalid-syntax",
-                    "%prefix% §7/reformcloud <command>")
-                .addStringValue("internal-api-bungee-command-reformcloud-no-permission",
-                    "%prefix% §7Command not allowed")
-                .addStringValue("internal-api-bungee-command-reformcloud-command-success",
-                    "%prefix% §7Command has been executed successfully \n §7Please check the Controller Console for more details")
+                    .addStringValue("internal-api-bungee-command-reformcloud-invalid-syntax",
+                        "%prefix% §7/reformcloud <command>")
+                    .addStringValue("internal-api-bungee-command-reformcloud-no-permission",
+                        "%prefix% §7Dieser Command ist nicht erlaubt.")
+                    .addStringValue("internal-api-bungee-command-reformcloud-command-success",
+                        "%prefix% §7Der Command wurde erforlgreich ausgeführt \n §7Bitte prüfe die Console für mehr Details.")
 
-                .addStringValue("internal-api-bungee-maintenance-join-no-permission",
-                    "§cWhitelist is enabled, but you are not added")
-                .addStringValue("internal-api-bungee-connect-hub-no-server",
-                    "%prefix% §7There is no hub server available")
+                    .addStringValue("internal-api-bungee-maintenance-join-no-permission",
+                        "§cWhitelist ist aktiviert, du bist aber nicht geaddet.")
+                    .addStringValue("internal-api-bungee-connect-hub-no-server",
+                        "%prefix% §7Aktuell ist kein Hub Server verfügbar.")
 
-                .addStringValue("internal-api-bungee-command-send-controller",
-                    "%prefix% The command was send to the controller")
+                    .addStringValue("internal-api-bungee-command-send-controller",
+                        "%prefix% Der Command wurde zum Controller gesendet.")
 
-                .addStringValue("internal-api-bungee-server-kick",
-                    "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r\n" +
-                        "§cThe server you were on (%old_server%) went down, and you have been connected to %new_server%§r\n"
-                        +
-                        "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r")
+                    .addStringValue("internal-api-bungee-server-kick",
+                        "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r\n" +
+                            "§cDer Server§8, §77auf dem du verbunden warst §8(§a%old_server§8)§8, §7ist leider abgestürtzt §8(§7oder wurde gestoppt§8) §7und daher wurdest du zum neuen Server gesendet §8(§a%new_server§8)"
+                            +
+                            "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r")
 
-                .addStringValue("internal-api-bungee-startup-server",
-                    "%prefix% §7ServerProcess §6%server-name% §7is starting...")
-                .addStringValue("internal-api-bungee-startup-proxy",
-                    "%prefix% §7ProxyProcess §6%proxy-name% §7is starting...")
-                .addStringValue("internal-api-bungee-remove-server",
-                    "%prefix% §7ServerProcess §6%server-name% §7is stopping...")
-                .addStringValue("internal-api-bungee-remove-proxy",
-                    "%prefix% §7ProxyProcess §6%proxy-name% §7is stopping...")
+                    .addStringValue("internal-api-bungee-startup-server",
+                        "%prefix% §7ServerProcess §6%server-name% §7wird gestartet...")
+                    .addStringValue("internal-api-bungee-startup-proxy",
+                        "%prefix% §7ProxyProcess §6%proxy-name% §7wird gestartet...")
+                    .addStringValue("internal-api-bungee-remove-server",
+                        "%prefix% §7ServerProcess §6%server-name% §7wird gestoppt...")
+                    .addStringValue("internal-api-bungee-remove-proxy",
+                        "%prefix% §7ProxyProcess §6%proxy-name% §7wird gestoppt...")
 
-                .addStringValue("internal-api-spigot-connect-no-permission",
-                    "%prefix% §cYou do not have permission to join this server")
-                .addStringValue("internal-api-spigot-connect-only-proxy",
-                    "%prefix% §cOnly Proxy join allowed")
+                    .addStringValue("internal-api-spigot-connect-no-permission",
+                        "%prefix% §cDu hast nicht ausreichend Permissions diesen Server zu betreten.")
+                    .addStringValue("internal-api-spigot-connect-only-proxy",
+                        "%prefix% §cNur Only Proxy Join Erlaubt.")
 
-                .addStringValue("internal-api-spigot-command-signs-not-enabled",
-                    "%prefix% §7Signs aren't enabled")
-                .addStringValue("internal-api-spigot-command-signs-create-usage",
-                    "%prefix% §7/reformsigns <create/createitem/deleteall> <group-name>")
-                .addStringValue("internal-api-spigot-command-signs-create-success",
-                    "%prefix% §7Sign was created successfully")
-                .addStringValue("internal-api-spigot-command-signs-create-already-exists",
-                    "%prefix% §7Sign already exits")
-                .addStringValue("internal-api-spigot-command-signs-block-not-sign",
-                    "%prefix% §7Target block isn't a sign")
-                .addStringValue("internal-api-spigot-command-signs-delete-success",
-                    "%prefix% §7Sign was deleted")
-                .addStringValue("internal-api-spigot-command-signs-item-success",
-                    "%prefix% §7The Sign-Item was added to your Inventory")
-                .addStringValue("internal-api-spigot-command-signs-delete-not-exists",
-                    "%prefix% §7Sign doesn't exits")
-                .addStringValue("internal-api-spigot-command-signs-list",
-                    "%prefix% §7The Following Signs are registered:")
-                .addStringValue("internal-api-spigot-command-signs-usage-1",
-                    "%prefix% §7/reformsigns <create/createitem> <group-name>")
-                .addStringValue("internal-api-spigot-command-signs-usage-2",
-                    "%prefix% §7/reformsigns <delete/deleteitem>")
-                .addStringValue("internal-api-spigot-command-signs-usage-3",
-                    "%prefix% §7/reformsigns list")
+                    .addStringValue("internal-api-spigot-command-signs-not-enabled",
+                        "%prefix% §7Schilder sind deaktiviert.")
+                    .addStringValue("internal-api-spigot-command-signs-create-usage",
+                        "%prefix% §7/reformsigns <create/createitem/deleteall> <group-name>")
+                    .addStringValue("internal-api-spigot-command-signs-create-success",
+                        "%prefix% §7Schild wurde erforlgreich erstellt")
+                    .addStringValue("internal-api-spigot-command-signs-create-already-exists",
+                        "%prefix% §7Schild existiert bereits.")
+                    .addStringValue("internal-api-spigot-command-signs-block-not-sign",
+                        "%prefix% §7Zielblock ist kein Schild.")
+                    .addStringValue("internal-api-spigot-command-signs-delete-success",
+                        "%prefix% §7Schild wurde gelöscht.")
+                    .addStringValue("internal-api-spigot-command-signs-item-success",
+                        "%prefix% §7Das Sign-Item wurde zu deinem Inventar hinzugefügt.")
+                    .addStringValue("internal-api-spigot-command-signs-delete-not-exists",
+                        "%prefix% §7Schild existiert nicht.")
+                    .addStringValue("internal-api-spigot-command-signs-list",
+                        "%prefix% §7Die folgenden Schilder sind registriert:")
+                    .addStringValue("internal-api-spigot-command-signs-usage-1",
+                        "%prefix% §7/reformsigns <create/createitem> <group-name>")
+                    .addStringValue("internal-api-spigot-command-signs-usage-2",
+                        "%prefix% §7/reformsigns <delete/deleteitem>")
+                    .addStringValue("internal-api-spigot-command-signs-usage-3",
+                        "%prefix% §7/reformsigns list")
 
-                .write(Paths.get(messagePath));
+                    .write(Paths.get(messagePath));
+
+            } else if (loadedLang.equalsIgnoreCase("english")) {
+                new Configuration()
+                    .addStringValue("internal-global-prefix", "§2R§feform§2C§floud §7┃")
+
+                    .addStringValue("internal-api-bungee-command-no-permission",
+                        "§cYou do not have permission to execute this command")
+
+                    .addStringValue("internal-api-bungee-command-hub-already",
+                        "%prefix% §7You are already connected to a hub server")
+                    .addStringValue("internal-api-bungee-command-hub-not-available",
+                        "%prefix% §7There is no hub server available")
+
+                    .addStringValue("internal-api-bungee-command-jumpto-server-player-not-found",
+                        "%prefix% §cCould not find player or server to go to")
+                    .addStringValue("internal-api-bungee-command-jumpto-success",
+                        "%prefix% §aYou was connected to the server")
+
+                    .addStringValue("internal-api-bungee-command-reformcloud-invalid-syntax",
+                        "%prefix% §7/reformcloud <command>")
+                    .addStringValue("internal-api-bungee-command-reformcloud-no-permission",
+                        "%prefix% §7Command not allowed")
+                    .addStringValue("internal-api-bungee-command-reformcloud-command-success",
+                        "%prefix% §7Command has been executed successfully \n §7Please check the Controller Console for more details")
+
+                    .addStringValue("internal-api-bungee-maintenance-join-no-permission",
+                        "§cWhitelist is enabled, but you are not added")
+                    .addStringValue("internal-api-bungee-connect-hub-no-server",
+                        "%prefix% §7There is no hub server available")
+
+                    .addStringValue("internal-api-bungee-command-send-controller",
+                        "%prefix% The command was send to the controller")
+
+                    .addStringValue("internal-api-bungee-server-kick",
+                        "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r\n" +
+                            "§cThe server you were on (%old_server%) went down, and you have been connected to %new_server%§r\n"
+                            +
+                            "§7§m--------------§r§7| §2R§feform§2C§floud §7|§m--------------§r")
+
+                    .addStringValue("internal-api-bungee-startup-server",
+                        "%prefix% §7ServerProcess §6%server-name% §7is starting...")
+                    .addStringValue("internal-api-bungee-startup-proxy",
+                        "%prefix% §7ProxyProcess §6%proxy-name% §7is starting...")
+                    .addStringValue("internal-api-bungee-remove-server",
+                        "%prefix% §7ServerProcess §6%server-name% §7is stopping...")
+                    .addStringValue("internal-api-bungee-remove-proxy",
+                        "%prefix% §7ProxyProcess §6%proxy-name% §7is stopping...")
+
+                    .addStringValue("internal-api-spigot-connect-no-permission",
+                        "%prefix% §cYou do not have permission to join this server")
+                    .addStringValue("internal-api-spigot-connect-only-proxy",
+                        "%prefix% §cOnly Proxy join allowed")
+
+                    .addStringValue("internal-api-spigot-command-signs-not-enabled",
+                        "%prefix% §7Signs aren't enabled")
+                    .addStringValue("internal-api-spigot-command-signs-create-usage",
+                        "%prefix% §7/reformsigns <create/createitem/deleteall> <group-name>")
+                    .addStringValue("internal-api-spigot-command-signs-create-success",
+                        "%prefix% §7Sign was created successfully")
+                    .addStringValue("internal-api-spigot-command-signs-create-already-exists",
+                        "%prefix% §7Sign already exits")
+                    .addStringValue("internal-api-spigot-command-signs-block-not-sign",
+                        "%prefix% §7Target block isn't a sign")
+                    .addStringValue("internal-api-spigot-command-signs-delete-success",
+                        "%prefix% §7Sign was deleted")
+                    .addStringValue("internal-api-spigot-command-signs-item-success",
+                        "%prefix% §7The Sign-Item was added to your Inventory")
+                    .addStringValue("internal-api-spigot-command-signs-delete-not-exists",
+                        "%prefix% §7Sign doesn't exits")
+                    .addStringValue("internal-api-spigot-command-signs-list",
+                        "%prefix% §7The Following Signs are registered:")
+                    .addStringValue("internal-api-spigot-command-signs-usage-1",
+                        "%prefix% §7/reformsigns <create/createitem> <group-name>")
+                    .addStringValue("internal-api-spigot-command-signs-usage-2",
+                        "%prefix% §7/reformsigns <delete/deleteitem>")
+                    .addStringValue("internal-api-spigot-command-signs-usage-3",
+                        "%prefix% §7/reformsigns list")
+
+                    .write(Paths.get(messagePath));
+            }
+
+            ReformCloudController.getInstance().getInternalCloudNetwork()
+                .setMessages(Configuration.parse(Paths.get(messagePath)));
+            ReformCloudController.getInstance().getInternalCloudNetwork().setPrefix(
+                ReformCloudController.getInstance().getInternalCloudNetwork().getMessages()
+                    .getStringValue("internal-global-prefix"));
         }
-
-        ReformCloudController.getInstance().getInternalCloudNetwork()
-            .setMessages(Configuration.parse(Paths.get(messagePath)));
-        ReformCloudController.getInstance().getInternalCloudNetwork().setPrefix(
-            ReformCloudController.getInstance().getInternalCloudNetwork().getMessages()
-                .getStringValue("internal-global-prefix"));
     }
 
     private void createTemplatesIfNotExists() {
@@ -605,7 +741,7 @@ public final class CloudConfiguration implements Serializable {
 
         ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage()
-                .getController_deleting_servergroup()
+                .getController_deleting_proxygroup()
                 .replace("%name%", proxyGroup.getName())
                 .replace("%clients%", proxyGroup.getClients() + StringUtil.EMPTY));
         ReformCloudController.getInstance().getInternalCloudNetwork().getProxyGroups()
@@ -644,7 +780,7 @@ public final class CloudConfiguration implements Serializable {
         ReformCloudController.getInstance().getColouredConsoleProvider().info(
             ReformCloudController.getInstance().getLoadedLanguage().getController_delete_client()
                 .replace("%name%", client.getName())
-                .replace("%clients%", client.getIp()));
+                .replace("%ip%", client.getIp()));
         ReformCloudController.getInstance().getInternalCloudNetwork().getClients()
             .remove(client.getName());
         ReformCloudLibraryServiceProvider.getInstance()
@@ -697,7 +833,7 @@ public final class CloudConfiguration implements Serializable {
         return readLine;
     }
 
-    private Integer readInt(final AbstractLoggerProvider colouredConsoleProvider,
+    public Integer readInt(final AbstractLoggerProvider colouredConsoleProvider,
                             Predicate<Integer> checkable) {
         String readLine = colouredConsoleProvider.readLine();
         while (readLine == null
@@ -761,5 +897,9 @@ public final class CloudConfiguration implements Serializable {
 
     public List<String> getIpWhitelist() {
         return this.ipWhitelist;
+    }
+
+    public DatabaseConfig getDatabaseConfig() {
+        return databaseConfig;
     }
 }

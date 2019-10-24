@@ -4,6 +4,9 @@
 
 package systems.reformcloud.utility.deploy.incoming;
 
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.result.RequestResult;
+import eu.byteexception.requestbuilder.result.stream.StreamType;
 import org.apache.commons.io.IOUtils;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.configurations.Configuration;
@@ -14,8 +17,7 @@ import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.Proxy;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -27,31 +29,23 @@ public final class ControllerTemplateDownload implements Serializable {
 
     public void download(String group, String template, boolean proxy) {
         try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(
+            final RequestResult requestResult = RequestBuilder.newBuilder(
                 ReformCloudClient.getInstance().isSsl() ? "https://" : "http://" +
                     ReformCloudClient.getInstance().getCloudConfiguration().getControllerIP() + ":"
                     +
                     ReformCloudClient.getInstance().getCloudConfiguration().getControllerWebPort() +
-                    "/api/download"
-            ).openConnection();
-
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setRequestProperty(DownloadManager.REQUEST_PROPERTY.getFirst(),
-                DownloadManager.REQUEST_PROPERTY.getSecond());
-            httpURLConnection.setRequestProperty("-XUser",
-                ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser()
-                    .getUserName());
-            httpURLConnection.setRequestProperty("-XPassword",
-                ReformCloudClient.getInstance().getInternalCloudNetwork().getInternalWebUser()
-                    .getPassword());
-            httpURLConnection.setRequestProperty("-XConfig", new Configuration()
-                .addStringValue("template", template)
-                .addStringValue("group", group)
-                .addBooleanValue("proxy", proxy).getJsonString());
-            httpURLConnection.setUseCaches(false);
-            httpURLConnection.setDoOutput(false);
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.connect();
+                    "/api/download", Proxy.NO_PROXY)
+                .addHeader(DownloadManager.REQUEST_PROPERTY.getFirst(), DownloadManager.REQUEST_PROPERTY.getSecond())
+                .addHeader("-XUser", ReformCloudClient.getInstance().
+                    getInternalCloudNetwork().getInternalWebUser().getUserName())
+                .addHeader("-XPassword", ReformCloudClient.getInstance()
+                    .getInternalCloudNetwork().getInternalWebUser().getPassword())
+                .addHeader("-XConfig", new Configuration()
+                    .addStringValue("template", template)
+                    .addStringValue("group", group)
+                    .addBooleanValue("proxy", proxy).getJsonString())
+                .disableCaches()
+                .fireAndForget();
 
             Path path = Paths
                 .get("reformcloud/templates/" + (proxy ? "proxies" : "servers") + "/" + group);
@@ -59,7 +53,7 @@ public final class ControllerTemplateDownload implements Serializable {
             FileUtils.deleteFullDirectory(path + "/" + template);
             FileUtils.createDirectory(Paths.get(path + "/" + template));
 
-            byte[] in = IOUtils.toByteArray(httpURLConnection.getInputStream());
+            byte[] in = IOUtils.toByteArray(requestResult.getStream(StreamType.DEFAULT));
 
             try {
                 ZoneInformationProtocolUtility.unZip(
@@ -81,7 +75,7 @@ public final class ControllerTemplateDownload implements Serializable {
             ReformCloudClient.getInstance().getColouredConsoleProvider()
                 .info("Successfully downloaded template " + template +
                     " of group " + group + " from controller");
-            httpURLConnection.disconnect();
+            requestResult.forget();
         } catch (final IOException ex) {
             StringUtil.printError(
                 ReformCloudClient.getInstance().getColouredConsoleProvider(),

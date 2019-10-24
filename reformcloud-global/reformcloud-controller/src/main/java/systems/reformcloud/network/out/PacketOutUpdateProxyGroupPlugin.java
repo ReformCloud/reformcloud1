@@ -5,7 +5,7 @@
 package systems.reformcloud.network.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 09.03.2019
  */
 
-public final class PacketOutUpdateProxyGroupPlugin extends Packet implements Serializable {
+public final class PacketOutUpdateProxyGroupPlugin extends DefaultPacket implements Serializable {
 
     public PacketOutUpdateProxyGroupPlugin(String proxyGroup, String pluginName, String url) {
         super("UpdateProxyGroupPlugin", new Configuration()

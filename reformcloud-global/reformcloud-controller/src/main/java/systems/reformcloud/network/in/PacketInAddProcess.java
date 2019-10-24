@@ -6,8 +6,8 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ProxyStartedEvent;
-import systems.reformcloud.event.events.ServerStartedEvent;
+import systems.reformcloud.event.events.process.ProxyStartedEvent;
+import systems.reformcloud.event.events.process.ServerStartedEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -44,8 +44,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
                 .registerServerProcess(
                     serverInfo.getCloudProcess().getProcessUID(),
                     serverInfo.getCloudProcess().getName(),
-                    serverInfo,
-                    serverInfo.getPort()
+                    serverInfo
                 );
 
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting()
@@ -76,8 +75,7 @@ public final class PacketInAddProcess implements NetworkInboundHandler {
                 .registerProxyProcess(
                     proxyInfo.getCloudProcess().getProcessUID(),
                     proxyInfo.getCloudProcess().getName(),
-                    proxyInfo,
-                    proxyInfo.getPort()
+                    proxyInfo
                 );
 
             ReformCloudController.getInstance().getCloudProcessOfferService().getWaiting()

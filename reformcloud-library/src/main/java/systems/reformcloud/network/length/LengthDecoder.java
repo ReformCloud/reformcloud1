@@ -20,11 +20,11 @@ public final class LengthDecoder extends ByteToMessageDecoder implements Seriali
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf incoming,
-        List<Object> list) throws Exception {
+                          List<Object> list) throws Exception {
         incoming.markReaderIndex();
-        byte[] lengthByte = new byte[3];
+        byte[] lengthByte = new byte[5];
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             if (!incoming.isReadable()) {
                 incoming.resetReaderIndex();
                 return;
@@ -51,7 +51,7 @@ public final class LengthDecoder extends ByteToMessageDecoder implements Seriali
         }
     }
 
-    private int readVarInt(ByteBuf buf) {
+    public static int readVarInt(ByteBuf buf) {
         int numRead = 0;
         int result = 0;
         byte read;

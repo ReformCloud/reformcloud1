@@ -26,9 +26,9 @@ public class DefaultGroup extends ServerGroup implements Serializable {
 
     private static final long serialVersionUID = -1234409573533112793L;
 
-    @ConstructorProperties({"name", "client", "spigotVersions", "serverModeType"})
+    @ConstructorProperties({"name", "client", "spigotVersions", "serverModeType", "memory"})
     public DefaultGroup(final String name, final String client, SpigotVersions spigotVersions,
-                        ServerModeType serverModeType) {
+                        ServerModeType serverModeType, final Integer memory) {
         super(
             name,
             "ReformCloud",
@@ -39,7 +39,7 @@ public class DefaultGroup extends ServerGroup implements Serializable {
                 new Template("every", null, TemplateBackend.CLIENT
                 )
             ),
-            512,
+            memory,
             1,
             -1,
             50,

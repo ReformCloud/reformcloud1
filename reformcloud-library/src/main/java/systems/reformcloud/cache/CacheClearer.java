@@ -5,6 +5,8 @@
 package systems.reformcloud.cache;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.cache.CacheClearerCacheRegisteredEvent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public final class CacheClearer implements Serializable {
     }
 
     void register(Cache cache) {
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new CacheClearerCacheRegisteredEvent(cache, this));
         this.caches.add(cache);
     }
 }

@@ -4,10 +4,6 @@
 
 package systems.reformcloud.commands;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
@@ -15,6 +11,11 @@ import systems.reformcloud.meta.enums.TemplateBackend;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.out.PacketOutDeployServer;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author _Klaro | Pasqual K. / created on 10.04.2019
@@ -154,11 +155,11 @@ public final class CommandDeploy extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("PROXY", "SERVER"));
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("SERVER")) {
                 out.addAll(serverGroups());
             } else if (args[0].equalsIgnoreCase("PROXY")) {
@@ -166,7 +167,7 @@ public final class CommandDeploy extends Command implements Serializable {
             }
         }
 
-        if (args.length == 2) {
+        if (args.length == 3) {
             if (args[0].equalsIgnoreCase("SERVER")) {
                 out.addAll(serverTemplates(args[1]));
             } else if (args[0].equalsIgnoreCase("PROXY")) {
@@ -174,11 +175,11 @@ public final class CommandDeploy extends Command implements Serializable {
             }
         }
 
-        if (args.length == 3) {
+        if (args.length == 4) {
             out.addAll(clients());
         }
 
-        if (args.length == 4) {
+        if (args.length == 5) {
             out.addAll(clientSort(args[3]));
         }
 

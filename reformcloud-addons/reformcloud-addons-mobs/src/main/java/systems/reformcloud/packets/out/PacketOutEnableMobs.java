@@ -4,15 +4,16 @@
 
 package systems.reformcloud.packets.out;
 
-import java.io.Serializable;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
+
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 22.04.2019
  */
 
-public final class PacketOutEnableMobs extends Packet implements Serializable {
+public final class PacketOutEnableMobs extends DefaultPacket implements Serializable {
 
     public PacketOutEnableMobs() {
         super("EnableMobs", new Configuration());

@@ -46,9 +46,9 @@ public final class PermissionDatabase implements Serializable {
             new Configuration().addValue("permissionConfig", new PermissionCache(false, false,
                 "%display% %player% &7|&r %message%",
                 Collections.singletonList(new PermissionGroup(
-                    "admin", null, null, null, "c", 100, Collections.singletonMap("*", true)
+                    "admin", null, null, null, "c", 100, Collections.singletonMap("*", true), new HashMap<>(new HashMap<>())
                 )),
-                new PermissionGroup("default", null, null, null, "7", 999, new HashMap<>())
+                new PermissionGroup("default", null, null, null, "7", 999, new HashMap<>(), new HashMap<>(new HashMap<>()))
             )).write(Paths.get("reformcloud/addons/permissions/config.json"));
         }
 
@@ -89,8 +89,7 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public PermissionHolder getPermissionHolder(final PermissionHolder permissionHolder) {
-        if (ReformCloudController.getInstance().getPlayerDatabase()
-            .getOfflinePlayer(permissionHolder.getUniqueID()) == null) {
+        if (ReformCloudController.getInstance().getOfflinePlayer(permissionHolder.getUniqueID()) == null) {
             return null;
         }
 
@@ -141,8 +140,7 @@ public final class PermissionDatabase implements Serializable {
     }
 
     public PermissionHolder getPermissionHolder(final UUID permissionHolderUID) {
-        if (ReformCloudController.getInstance().getPlayerDatabase()
-            .getOfflinePlayer(permissionHolderUID) == null) {
+        if (ReformCloudController.getInstance().getOfflinePlayer(permissionHolderUID) == null) {
             return null;
         }
 

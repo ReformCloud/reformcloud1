@@ -14,7 +14,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.startup.ProxyStartupInfo;
 import systems.reformcloud.meta.startup.ServerStartupInfo;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.player.DefaultPlayer;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -51,7 +51,7 @@ public final class TypeTokenAdaptor implements Serializable {
         }.getType(),
         INTERNAL_CLOUD_NETWORK_TYPE = new TypeToken<InternalCloudNetwork>() {
         }.getType(),
-        PACKET_TYPE = new TypeToken<Packet>() {
+        PACKET_TYPE = new TypeToken<DefaultPacket>() {
         }.getType(),
         ETHERNET_ADDRESS_TYPE = new TypeToken<EthernetAddress>() {
         }.getType(),

@@ -4,6 +4,7 @@
 
 package systems.reformcloud.network.in;
 
+import systems.reformcloud.ReformCloudAPISpigot;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.internal.events.CloudProxyInfoUpdateEvent;
 import systems.reformcloud.launcher.SpigotBootstrap;
@@ -22,6 +23,7 @@ public final class PacketInProxyInfoUpdate implements Serializable, NetworkInbou
     @Override
     public void handle(Configuration configuration) {
         ProxyInfo proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());
+        ReformCloudAPISpigot.getInstance().updateProxyInfoInternal(proxyInfo);
         SpigotBootstrap.getInstance().getServer().getPluginManager()
             .callEvent(new CloudProxyInfoUpdateEvent(proxyInfo));
     }

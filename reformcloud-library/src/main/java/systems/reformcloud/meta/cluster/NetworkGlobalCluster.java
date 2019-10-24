@@ -6,7 +6,7 @@ package systems.reformcloud.meta.cluster;
 
 import systems.reformcloud.meta.cluster.channel.ClusterChannelInformation;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 
 import java.beans.ConstructorProperties;
@@ -52,8 +52,8 @@ public final class NetworkGlobalCluster implements Serializable {
         this.currentCloudInformation = currentCloudInformation;
     }
 
-    public void publishPacket(Packet... packets) {
-        for (Packet packet : packets) {
+    public void publishPacket(DefaultPacket... packets) {
+        for (DefaultPacket packet : packets) {
             clusterChannelInformation.forEach(channel -> channel.getChannelHandlerContext().writeAndFlush(packet));
         }
     }

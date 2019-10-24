@@ -6,7 +6,7 @@ package systems.reformcloud.network.packets.out;
 
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.server.ServerGroup;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author _Klaro | Pasqual K. / created on 25.04.2019
  */
 
-public final class PacketOutUpdateServerGroup extends Packet implements Serializable {
+public final class PacketOutUpdateServerGroup extends DefaultPacket implements Serializable {
 
     public PacketOutUpdateServerGroup(ServerGroup serverGroup) {
         super("UpdateServerGroup", new Configuration().addValue("group", serverGroup));

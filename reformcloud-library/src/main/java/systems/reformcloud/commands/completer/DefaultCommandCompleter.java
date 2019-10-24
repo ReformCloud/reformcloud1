@@ -4,16 +4,18 @@
 
 package systems.reformcloud.commands.completer;
 
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
+import systems.reformcloud.commands.abstracts.CommandMap;
+import systems.reformcloud.commands.utility.Command;
+import systems.reformcloud.event.events.commands.tab.TabCompleteCallEvent;
+
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import systems.reformcloud.commands.abstracts.AbstractCommandCompleter;
-import systems.reformcloud.commands.abstracts.CommandMap;
-import systems.reformcloud.commands.utility.Command;
 
 /**
  * @author _Klaro | Pasqual K. / created on 18.06.2019
@@ -37,19 +39,33 @@ public final class DefaultCommandCompleter extends AbstractCommandCompleter impl
 
     @Override
     public int complete(String buffer, int cursor, List<CharSequence> candidates) {
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(new TabCompleteCallEvent(this, buffer));
+
+        String[] args = calculateArgs(buffer);
         List<String> out = new ArrayList<>();
         if (buffer.isEmpty() || buffer.indexOf(' ') == -1) {
-            List<String> commands = new ArrayList<>();
-            commandMap.findAll(buffer).forEach(e -> commands.add(e.getName()));
-            out.addAll(commands);
+            out.addAll(commandMap.findAll(buffer));
         } else {
             Command command = commandMap.fromFirstArgument(buffer);
             if (command != null) {
-                String[] args = replace(buffer);
                 List<String> returned = ((TabCompleter) command)
                     .complete(buffer, args);
-                out.addAll(returned);
+                if (returned != null) {
+                    String test = args[args.length - 1];
+                    for (String suggestion : returned) {
+                        if (test == null || test.isEmpty() || suggestion.toLowerCase().startsWith(test.toLowerCase())) {
+                            out.add(suggestion);
+                        }
+                    }
+
+                    Collections.sort(out);
+                    candidates.addAll(out);
+                }
             }
+
+            int lastSpace = buffer.lastIndexOf(32);
+            return lastSpace == -1 ? cursor - buffer.length() :
+                cursor - (buffer.length() - lastSpace - 1);
         }
 
         Collections.sort(out);
@@ -57,9 +73,20 @@ public final class DefaultCommandCompleter extends AbstractCommandCompleter impl
         return calculateCursorPosition(buffer, cursor);
     }
 
-    private String[] replace(String buffer) {
-        List<String> args = new LinkedList<>(Arrays.asList(buffer.split(" ")));
-        args.remove(buffer.split(" ")[0]);
-        return args.toArray(new String[0]);
+    private String[] calculateArgs(String commandLine) {
+        String[] out = commandLine.split(" ");
+        if (out.length != 0) {
+            out = Arrays.copyOfRange(out, 1, out.length);
+        }
+
+        if (commandLine.endsWith(" ")) {
+            out = out.length == 0 ? new String[]{""} : Arrays.copyOf(out,
+                out.length + 1);
+            if (out.length != 0) {
+                out[out.length - 1] = "";
+            }
+        }
+
+        return out;
     }
 }

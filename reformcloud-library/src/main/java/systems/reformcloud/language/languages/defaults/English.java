@@ -85,8 +85,8 @@ public final class English extends Language implements Serializable {
             "Please enter the ip §3address§r of the client",
             "Please provide the ip §3address§r of the controller",
             "Please enter the first Client §3name",
-            "How many mb §3ram§r should the default lobby group have?",
-            "How many mb §3ram§r should the default proxy group have?",
+            "How many MB §3ram§r should the default lobby group have?",
+            "How many MB §3ram§r should the default proxy group have?",
             "Do you want to load the default addons (You can download them later, too) [\"§ayes§r\" (recommended), \"§cno§r\"]",
             "The default §3WebUser \"§eadministrator§r\" was created with the password \"§e%password%§r\"",
             "An error occurred: §c%message%",
@@ -110,7 +110,15 @@ public final class English extends Language implements Serializable {
             "The permission was removed §asuccessfully",
             "The permission §e%perm%§r was added with the value §e%key%",
             "The player §e%name%§r was added to §e%proxy%§r whitelist",
-            "The player §e%name%§r was removed from §e%proxy%§r whitelist"
+            "The player §e%name%§r was removed from §e%proxy%§r whitelist",
+            "Please choose a database type [\"§eMYSQL§r\", \"§eMONGODB§r\", \"§eFILE§r\"]",
+            "Please provide the §3ip address§r of the database",
+            "Please provide the §3port§r of the database",
+            "Please provide the §3username§r of the database user",
+            "Please provide the §3password§r of the database user",
+            "Please provide the §3name§r of the database",
+            "Please provide the §3memory§r for this servergroup",
+            "Please provide the §3memory§r for this proxygroup"
         );
     }
 }

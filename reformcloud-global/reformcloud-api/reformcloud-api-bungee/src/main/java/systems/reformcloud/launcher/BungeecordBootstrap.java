@@ -7,8 +7,6 @@ package systems.reformcloud.launcher;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.ResourceLeakDetector;
-import java.io.Serializable;
-import java.util.Arrays;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 import systems.reformcloud.ReformCloudAPIBungee;
@@ -23,8 +21,11 @@ import systems.reformcloud.listener.CloudConnectListener;
 import systems.reformcloud.listener.CloudProcessListener;
 import systems.reformcloud.listener.CloudProxyPingListener;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packets.PacketOutInternalProcessRemove;
+
+import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * @author _Klaro | Pasqual K. / created on 01.11.2018
@@ -97,7 +98,7 @@ public final class BungeecordBootstrap extends Plugin implements Serializable {
             AuthenticationType.PROXY));
     }
 
-    private void sendPacketAndClose(Packet packet) {
+    private void sendPacketAndClose(DefaultPacket packet) {
         ChannelHandlerContext channelHandlerContext =
             ReformCloudAPIBungee.getInstance().getChannelHandler()
                 .getChannel("ReformCloudController");

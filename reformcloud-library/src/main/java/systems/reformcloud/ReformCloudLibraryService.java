@@ -32,7 +32,6 @@ import systems.reformcloud.cache.CacheClearer;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.configurations.ConfigurationAdapter;
 import systems.reformcloud.logging.AbstractLoggerProvider;
-import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.environment.RuntimeEnvironment;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.channel.ChannelReader;
@@ -41,12 +40,15 @@ import systems.reformcloud.network.handler.Encoder;
 import systems.reformcloud.network.length.LengthDecoder;
 import systems.reformcloud.network.length.LengthEncoder;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.annotiations.Internal;
 
 import java.lang.management.*;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -86,11 +88,6 @@ public final class ReformCloudLibraryService {
         .setPrettyPrinting()
         .registerTypeAdapterFactory(TypeAdapters.newTypeHierarchyFactory(Configuration.class, new ConfigurationAdapter()))
         .disableHtmlEscaping().create();
-
-    /**
-     * The cloud creates json parser instance
-     */
-    public static final JsonParser PARSER = new JsonParser();
 
     /**
      * Netty booleans
@@ -155,16 +152,16 @@ public final class ReformCloudLibraryService {
     /**
      * Sends the cloud header colored
      *
-     * @param colouredConsoleProvider The logger provider which should be used to print the header coloured
+     * @param abstractLoggerProvider The logger provider which should be used to print the header coloured
      */
-    public static void sendHeader(final ColouredConsoleProvider colouredConsoleProvider) {
-        if (colouredConsoleProvider == null) {
+    public static void sendHeader(final AbstractLoggerProvider abstractLoggerProvider) {
+        if (abstractLoggerProvider == null) {
             sendHeader();
             return;
         }
 
         System.out.println(" ");
-        colouredConsoleProvider.coloured(
+        abstractLoggerProvider.coloured(
             "§3" +
                 "         ______ _______ _______  _____   ______ _______ _______         _____  _     _ ______ \n"
                 +
@@ -475,6 +472,7 @@ public final class ReformCloudLibraryService {
      * @return A new thread factory for the executor service of the cloud
      * @see ThreadFactory
      */
+    @Internal
     private static ThreadFactory createThreadFactory(
         Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
@@ -495,8 +493,42 @@ public final class ReformCloudLibraryService {
      * @return A new thread factory for all network channels
      * @see DefaultThreadFactory
      */
+    @Internal
     private static ThreadFactory createThreadFactory() {
         return new DefaultThreadFactory(MultithreadEventExecutorGroup.class, true,
             Thread.MIN_PRIORITY);
+    }
+
+    /**
+     * Applies a type to a function to convert the second type to the first one
+     *
+     * @param t        The first parameter type which should be converted
+     * @param function The function which should be applied to the type
+     * @param <T>      The first type which will be applied
+     * @param <F>      The second type which should be returned
+     * @return The converted first type to the second one
+     */
+    public static <T, F> F apply(T t, Function<T, F> function) {
+        return function.apply(t);
+    }
+
+    /**
+     * Applies a type to a function to convert the second type to the first
+     * one and checks if the next action is accepted and calls the
+     * handling consumer if true
+     *
+     * @param t         The first parameter type which should be converted
+     * @param function  The function which should be applied to the type
+     * @param predicate The predicate which should test if the consumer
+     *                  should accept the action
+     * @param ifTrue    The consumer which get called if the action is accepted
+     * @param <T>       The first type which will be applied
+     * @param <F>       The second type which should be returned
+     */
+    public static <T, F> void applyAnd(T t, Function<T, F> function, Predicate<F> predicate, Consumer<F> ifTrue) {
+        F f = apply(t, function);
+        if (predicate.test(f)) {
+            ifTrue.accept(f);
+        }
     }
 }

@@ -6,10 +6,13 @@ package systems.reformcloud.configurations;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
+import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.map.MapUtility;
 
 import java.io.*;
@@ -48,6 +51,22 @@ public final class Configuration implements Serializable {
      */
     public Configuration(JsonObject jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public Configuration(Reader reader) {
+        JsonElement jsonElement;
+        try {
+            jsonElement = JsonParser.parseReader(reader);
+        } catch (final Throwable throwable) {
+            StringUtil.printError(
+                ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
+                "Error while reading config file",
+                throwable
+            );
+            jsonElement = new JsonObject();
+        }
+        Require.isTrue(jsonElement.isJsonObject(), "Json Element has to be a json object");
+        this.jsonObject = jsonElement.getAsJsonObject();
     }
 
     /**
@@ -251,7 +270,7 @@ public final class Configuration implements Serializable {
      */
     private boolean write(File path) {
         if (path.exists()) {
-            path.delete();
+            FileUtils.deleteFileIfExists(path);
         }
 
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(path),
@@ -298,7 +317,7 @@ public final class Configuration implements Serializable {
             StandardCharsets.UTF_8);
             BufferedReader bufferedReader = new BufferedReader(reader)) {
             return new Configuration(
-                ReformCloudLibraryService.PARSER.parse(bufferedReader).getAsJsonObject());
+                JsonParser.parseReader(bufferedReader).getAsJsonObject());
         } catch (final IOException ex) {
             StringUtil
                 .printError(ReformCloudLibraryServiceProvider.getInstance().getColouredConsoleProvider(),
@@ -336,7 +355,7 @@ public final class Configuration implements Serializable {
      * @return A new configuration which contains the content of the string
      */
     public static Configuration fromString(String in) {
-        return new Configuration(ReformCloudLibraryService.PARSER.parse(in).getAsJsonObject());
+        return new Configuration(JsonParser.parseString(in).getAsJsonObject());
     }
 
     /**
@@ -384,6 +403,11 @@ public final class Configuration implements Serializable {
         return this.jsonObject.has(key);
     }
 
+    /**
+     * Get the json object which is written
+     *
+     * @return the current json object of this class
+     */
     public JsonObject getJsonObject() {
         return this.jsonObject;
     }

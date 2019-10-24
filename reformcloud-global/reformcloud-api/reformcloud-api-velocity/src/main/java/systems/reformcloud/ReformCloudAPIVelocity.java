@@ -47,6 +47,7 @@ import systems.reformcloud.network.api.event.NetworkEventAdapter;
 import systems.reformcloud.network.channel.ChannelHandler;
 import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.Packet;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.packets.*;
@@ -187,6 +188,16 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
 
     public static ReformCloudAPIVelocity getInstance() {
         return ReformCloudAPIVelocity.instance;
+    }
+
+    public void updateServerInfoInternal(ServerInfo serverInfo) {
+        internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
+    public void updateProxyInfoInternal(ProxyInfo proxyInfo) {
+        internalCloudNetwork.getServerProcessManager().updateProxyInfo(proxyInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
     }
 
     public void updateProxyInfo() {
@@ -835,43 +846,43 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
     }
 
     @Override
-    public boolean sendPacket(String subChannel, Packet packet) {
+    public boolean sendPacket(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketAsynchronous(subChannel, packet);
     }
 
     @Override
-    public boolean sendPacketSync(String subChannel, Packet packet) {
+    public boolean sendPacketSync(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketSynchronized(subChannel, packet);
     }
 
     @Override
-    public void sendPacketToAll(Packet packet) {
+    public void sendPacketToAll(DefaultPacket packet) {
         this.channelHandler.sendToAllAsynchronous(packet);
     }
 
     @Override
-    public void sendPacketToAllSync(Packet packet) {
+    public void sendPacketToAllSync(DefaultPacket packet) {
         this.channelHandler.sendToAllSynchronized(packet);
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet,
-        NetworkQueryInboundHandler onSuccess) {
+    public void sendPacketQuery(String channel, DefaultPacket packet,
+                                NetworkQueryInboundHandler onSuccess) {
         this.channelHandler.sendPacketQuerySync(
             channel, this.proxyInfo.getCloudProcess().getName(), packet, onSuccess
         );
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
-        NetworkQueryInboundHandler onFailure) {
+    public void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess,
+                                NetworkQueryInboundHandler onFailure) {
         this.channelHandler.sendPacketQuerySync(
             channel, this.proxyInfo.getCloudProcess().getName(), packet, onSuccess, onFailure
         );
     }
 
     @Override
-    public PacketFuture createPacketFuture(Packet packet, String networkComponent) {
+    public PacketFuture createPacketFuture(DefaultPacket packet, String networkComponent) {
         this.channelHandler
             .toQueryPacket(packet, UUID.randomUUID(), this.proxyInfo.getCloudProcess().getName());
         PacketFuture packetFuture = new PacketFuture(
@@ -886,7 +897,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
     }
 
     @Override
-    public PacketFuture sendPacketQuery(String channel, Packet packet) {
+    public PacketFuture sendPacketQuery(String channel, DefaultPacket packet) {
         return this.channelHandler.sendPacketQuerySync(
             channel, this.proxyInfo.getCloudProcess().getName(), packet
         );
@@ -1052,6 +1063,7 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
     }
 
     public ServerInfo nextFreeLobby(final ProxyGroup proxyGroup, Player proxiedPlayer) {
+        List<ServerInfo> result = new LinkedList<>();
         for (ServerInfo serverInfo : this.internalCloudNetwork.getServerProcessManager()
             .getAllRegisteredServerProcesses()) {
             if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
@@ -1066,23 +1078,15 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
                 continue;
             }
 
-            if (serverInfo.getServerGroup().getJoinPermission() != null
-                && proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoinPermission())
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
-            } else if (serverInfo.getServerGroup().getJoinPermission() == null
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
-            }
+            result.add(serverInfo);
         }
 
-        return null;
+        return nextFreeLobby(result, proxiedPlayer);
     }
 
     public ServerInfo nextFreeLobby(final ProxyGroup proxyGroup, final Player proxiedPlayer,
         final String current) {
+        List<ServerInfo> result = new LinkedList<>();
         for (ServerInfo serverInfo : this.internalCloudNetwork.getServerProcessManager()
             .getAllRegisteredServerProcesses()) {
             if (serverInfo.getServerGroup().getServerModeType().equals(ServerModeType.STATIC)
@@ -1098,19 +1102,39 @@ public final class ReformCloudAPIVelocity implements Serializable, APIService {
                 continue;
             }
 
-            if (serverInfo.getServerGroup().getJoinPermission() != null
-                && proxiedPlayer.hasPermission(serverInfo.getServerGroup().getJoinPermission())
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
-            } else if (serverInfo.getServerGroup().getJoinPermission() == null
-                && serverInfo.getOnlinePlayers().size() < serverInfo.getServerGroup()
-                .getMaxPlayers()) {
-                return serverInfo;
+            result.add(serverInfo);
+        }
+
+        return nextFreeLobby(result, proxiedPlayer);
+    }
+
+    private ServerInfo nextFreeLobby(List<ServerInfo> infos, Player player) {
+        ServerInfo target = null;
+        for (ServerInfo info : infos) {
+            if (!info.isFull()) {
+                if (info.getServerGroup().getJoinPermission() != null && player.hasPermission(info.getServerGroup().getJoinPermission())) {
+                    if (target == null) {
+                        target = info;
+                        continue;
+                    }
+
+                    if (target.getOnline() > info.getOnline()) {
+                        target = info;
+                    }
+                } else if (info.getServerGroup().getJoinPermission() == null) {
+                    if (target == null) {
+                        target = info;
+                        continue;
+                    }
+
+                    if (target.getOnline() > info.getOnline()) {
+                        target = info;
+                    }
+                }
             }
         }
 
-        return null;
+        return target;
     }
 
     /**

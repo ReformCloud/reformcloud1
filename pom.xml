@@ -9,14 +9,21 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.test.redirectTestOutputToFile>true
+        </maven.test.redirectTestOutputToFile>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.targetEncoding>UTF-8</project.build.targetEncoding>
 
-        <api.default.version>113PRESTABLE290719953</api.default.version>
+        <maven.build.timestamp.format>yyyyMMddHHmm
+        </maven.build.timestamp.format>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <build.number/>
+
+        <api.default.version>114PRESTABLE15080022</api.default.version>
         <service.type>PRE-STABLE</service.type>
 
-        <service.version>1.13</service.version>
+        <service.version>1.14</service.version>
 
         <plugin.shade.version>3.2.1</plugin.shade.version>
         <plugin.compiler.version>3.8.1</plugin.compiler.version>
@@ -26,17 +33,21 @@
 
         <dependency.test.junit.version>4.12</dependency.test.junit.version>
 
-        <dependency.apache-http.version>4.5.9</dependency.apache-http.version>
+        <dependency.apache-http.version>4.5.10</dependency.apache-http.version>
         <dependency.jline.version>2.14.6</dependency.jline.version>
         <dependency.bungeecord.version>1.8-1.12</dependency.bungeecord.version>
-        <dependency.gson.version>2.8.5</dependency.gson.version>
-        <dependency.netty.version>4.1.38.Final</dependency.netty.version>
+        <dependency.gson.version>2.8.6</dependency.gson.version>
+        <dependency.netty.version>4.1.42.Final</dependency.netty.version>
         <dependency.spigot.version>1.13</dependency.spigot.version>
-        <dependency.snakeyaml.version>1.24</dependency.snakeyaml.version>
+        <dependency.snakeyaml.version>1.25</dependency.snakeyaml.version>
         <dependency.commons-io.version>2.6</dependency.commons-io.version>
-        <dependency.jda.version>4.BETA.0_9</dependency.jda.version>
-        <dependency.slf4j.version>1.7.26</dependency.slf4j.version>
+        <dependency.jda.version>4.0.0_54</dependency.jda.version>
+        <dependency.slf4j.version>1.7.28</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
+        <dependency.mysql-connector.version>8.0.18</dependency.mysql-connector.version>
+        <dependency.mongodb.version>3.11.1</dependency.mongodb.version>
+        <dependency.rethinkdb-driver.version>2.3.3</dependency.rethinkdb-driver.version>
+        <dependency.requestbuilder.version>1.0</dependency.requestbuilder.version>
     </properties>
 
     <modules>
@@ -64,7 +75,43 @@
         </developer>
     </developers>
 
-    <version>1.13</version>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <contributors>
+        <contributor>
+            <name>ByteException</name>
+        </contributor>
+        <contributor>
+            <name>JanDragon</name>
+        </contributor>
+        <contributor>
+            <name>MrDoubleTime</name>
+        </contributor>
+    </contributors>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/reformcloudproject/reformcloud/issues</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <site>
+            <id>github-project-site</id>
+            <url>gitsite:git@github.com/reformcloudproject/reformcloud.git</url>
+        </site>
+    </distributionManagement>
+
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
+
+    <version>1.14</version>
 
     <build>
         <defaultGoal>clean package</defaultGoal>

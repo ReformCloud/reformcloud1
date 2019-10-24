@@ -81,11 +81,11 @@ public final class German extends Language implements Serializable {
             "Versuche §e%group%§r zu erstellen...",
             "Welche §3BungeeCord Version§r soll genutzt werden?",
             "Bitte gib den Namen des neuen Clients an",
-            "Bitte gib die §3IP-Addresse§r des Clients an",
+            "Bitte gib die §3IP-Adresse§r des Clients an",
             "Bitte gib die §3IP-Adresse§r des Controllers an",
             "Bitte gib den §3Namen§r des ersten Clients an",
-            "Wie viel §3Ram§r soll die standard Lobby Gruppe haben? (in MB)",
-            "Wie viel §3Ram§r soll die standard Proxy Gruppe haben? (in MB)",
+            "Wie viel MB §3Ram§r soll die standard Lobby Gruppe haben?",
+            "Wie viel MB §3Ram§r soll die standard Proxy Gruppe haben?",
             "Möchtest du die standard Addons herunterladen? (Du kannst diese auch später herunterladen) [\"yes\" (Empfohlen), \"no\"]",
             "Der standard WebUser \"§eadministrator§r\" wurde mit dem Passwort \"§e%password%§r\" erstellt",
             "Ein Fehler ist aufgetreten: §c%message%",
@@ -109,7 +109,15 @@ public final class German extends Language implements Serializable {
             "Die Berechtigung wurde §aerfolgreich§r entfernt",
             "Die Permission §e%perm%§r wurde mit der value §e%key%§r hinzugefügt",
             "Der Spieler §e%name%§r wurde zur whitelist des Proxies §e%proxy%§r hinzugefügt",
-            "Der Spieler §e%name%§r wurde von der whitelist des Proxies §e%proxy%§r entfernt"
+            "Der Spieler §e%name%§r wurde von der whitelist des Proxies §e%proxy%§r entfernt",
+            "Bitte wähle einen Datenbank Typ [\"§eMYSQL§r\", \"§eMONGODB§r\", \"§eFILE§r\"]",
+            "Bitte gib die §3IP-Addresse§r der Datenbank an",
+            "Bitte gib den §3Port§r der Datenbank an",
+            "Bitte gib den §3Nutzernamen§r der Datenbank an",
+            "Bitte gib das §3Passwort§r des Datenbank Benutzers an",
+            "Bitte gib den §3Namen§r der Datenbank an",
+            "Bitte gib den §3Ram§r der ServerGruppe an",
+            "Bitte gib den §3Ram§r der ProxyGruppe an"
         );
     }
 }

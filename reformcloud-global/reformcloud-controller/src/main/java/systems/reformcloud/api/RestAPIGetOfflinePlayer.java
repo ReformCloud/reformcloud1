@@ -71,8 +71,7 @@ public final class RestAPIGetOfflinePlayer implements Serializable, WebHandler {
         }
 
         UUID uuid = UUID.fromString(httpHeaders.get("-XUniqueID"));
-        OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-            .getOfflinePlayer(uuid);
+        OfflinePlayer offlinePlayer = ReformCloudController.getInstance().getOfflinePlayer(uuid);
         if (offlinePlayer == null) {
             answer
                 .addValue("response", Collections.singletonList("Player by given uuid not found"));

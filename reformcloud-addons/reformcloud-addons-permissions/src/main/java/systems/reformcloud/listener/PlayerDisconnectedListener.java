@@ -7,7 +7,7 @@ package systems.reformcloud.listener;
 import java.io.Serializable;
 import systems.reformcloud.PermissionsAddon;
 import systems.reformcloud.event.annotation.Handler;
-import systems.reformcloud.event.events.PlayerDisconnectsEvent;
+import systems.reformcloud.event.events.player.PlayerDisconnectsEvent;
 import systems.reformcloud.event.utility.Listener;
 
 /**

@@ -23,8 +23,7 @@ public final class PacketInQueryGetOnlinePlayer implements Serializable,
     @Override
     public void handle(Configuration configuration, UUID resultID) {
         if (configuration.contains("uuid")) {
-            OnlinePlayer onlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-                .getOnlinePlayer(configuration.getValue("uuid", UUID.class));
+            OnlinePlayer onlinePlayer = ReformCloudController.getInstance().getOnlinePlayer(configuration.getValue("uuid", UUID.class));
             if (onlinePlayer != null) {
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                     configuration.getStringValue("from"), new PacketOutQueryOnlinePlayerResult(
@@ -34,13 +33,12 @@ public final class PacketInQueryGetOnlinePlayer implements Serializable,
             }
         } else {
             UUID uuid = ReformCloudController.getInstance().getPlayerDatabase()
-                .getFromName(configuration.getStringValue("name"));
+                .getID(configuration.getStringValue("name"));
             if (uuid == null) {
                 return;
             }
 
-            OnlinePlayer onlinePlayer = ReformCloudController.getInstance().getPlayerDatabase()
-                .getOnlinePlayer(uuid);
+            OnlinePlayer onlinePlayer = ReformCloudController.getInstance().getOnlinePlayer(uuid);
             if (onlinePlayer != null) {
                 ReformCloudController.getInstance().getChannelHandler().sendPacketSynchronized(
                     configuration.getStringValue("from"), new PacketOutQueryOnlinePlayerResult(

@@ -7,13 +7,13 @@ package systems.reformcloud.network.packets.out;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 /**
  * @author _Klaro | Pasqual K. / created on 11.11.2018
  */
 
-public final class PacketOutAddProcess extends Packet {
+public final class PacketOutAddProcess extends DefaultPacket {
 
     public PacketOutAddProcess(final ServerInfo serverInfo) {
         super("ProcessAdd", new Configuration().addValue("serverInfo", serverInfo));

@@ -19,7 +19,7 @@ import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.meta.server.versions.SpigotVersions;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -162,22 +162,22 @@ public interface AsyncAPIHelper {
 
     CompletableFuture<List<ProxyInfo>> getAllRegisteredProxies(String groupName);
 
-    CompletableFuture<Boolean> sendPacket(String subChannel, Packet packet);
+    CompletableFuture<Boolean> sendPacket(String subChannel, DefaultPacket packet);
 
-    CompletableFuture<Boolean> sendPacketSync(String subChannel, Packet packet);
+    CompletableFuture<Boolean> sendPacketSync(String subChannel, DefaultPacket packet);
 
-    void sendPacketToAll(Packet packet);
+    void sendPacketToAll(DefaultPacket packet);
 
-    void sendPacketToAllSync(Packet packet);
+    void sendPacketToAllSync(DefaultPacket packet);
 
-    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess);
+    void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess);
 
-    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
-        NetworkQueryInboundHandler onFailure);
+    void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess,
+                         NetworkQueryInboundHandler onFailure);
 
-    CompletableFuture<PacketFuture> createPacketFuture(Packet packet, String networkComponent);
+    CompletableFuture<PacketFuture> createPacketFuture(DefaultPacket packet, String networkComponent);
 
-    CompletableFuture<PacketFuture> sendPacketQuery(String channel, Packet packet);
+    CompletableFuture<PacketFuture> sendPacketQuery(String channel, DefaultPacket packet);
 
     CompletableFuture<Client> getClient(String name);
 

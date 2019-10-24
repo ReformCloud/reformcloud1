@@ -5,7 +5,7 @@
 package systems.reformcloud.network.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 15.03.2019
  */
 
-public final class PacketOutGetControllerTemplateResult extends Packet implements Serializable {
+public final class PacketOutGetControllerTemplateResult extends DefaultPacket implements Serializable {
 
     public PacketOutGetControllerTemplateResult(String encoded, String name, UUID processUID,
         String type, String group) {

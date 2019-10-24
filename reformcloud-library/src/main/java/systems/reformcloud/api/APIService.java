@@ -23,7 +23,7 @@ import systems.reformcloud.meta.system.RuntimeSnapshot;
 import systems.reformcloud.meta.web.WebUser;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -620,7 +620,7 @@ public interface APIService extends Serializable, SnapshotAble {
      * @param packet The packet that should be send
      * @return If the operation was successful
      */
-    boolean sendPacket(String subChannel, Packet packet);
+    boolean sendPacket(String subChannel, DefaultPacket packet);
 
     /**
      * Sends a packet through the cloud system
@@ -629,21 +629,21 @@ public interface APIService extends Serializable, SnapshotAble {
      * @param packet The packet that should be send
      * @return If the operation was successful
      */
-    boolean sendPacketSync(String subChannel, Packet packet);
+    boolean sendPacketSync(String subChannel, DefaultPacket packet);
 
     /**
      * Sends a packet to all instances
      *
      * @param packet The packet that should be send
      */
-    void sendPacketToAll(Packet packet);
+    void sendPacketToAll(DefaultPacket packet);
 
     /**
      * Sends a packet to all instances
      *
      * @param packet The packet that should be send
      */
-    void sendPacketToAllSync(Packet packet);
+    void sendPacketToAllSync(DefaultPacket packet);
 
     /**
      * Sends a packet query through the cloud system
@@ -652,7 +652,7 @@ public interface APIService extends Serializable, SnapshotAble {
      * @param packet The packet that should be send
      * @param onSuccess The handler when the query returns another packet
      */
-    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess);
+    void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess);
 
     /**
      * Sends a packet query through the cloud system
@@ -662,8 +662,8 @@ public interface APIService extends Serializable, SnapshotAble {
      * @param onSuccess The handler when the query returns another packet
      * @param onFailure The handler when the query fails
      */
-    void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
-        NetworkQueryInboundHandler onFailure);
+    void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess,
+                         NetworkQueryInboundHandler onFailure);
 
     /**
      * Creates a packet future
@@ -672,7 +672,7 @@ public interface APIService extends Serializable, SnapshotAble {
      * @param networkComponent The instance name of the packet receiver
      * @return The created packet future
      */
-    PacketFuture createPacketFuture(Packet packet, String networkComponent);
+    PacketFuture createPacketFuture(DefaultPacket packet, String networkComponent);
 
     /**
      * Creates a packet future
@@ -681,7 +681,7 @@ public interface APIService extends Serializable, SnapshotAble {
      * @param channel The instance name of the packet receiver
      * @return The created packet future
      */
-    PacketFuture sendPacketQuery(String channel, Packet packet);
+    PacketFuture sendPacketQuery(String channel, DefaultPacket packet);
 
     /**
      * Gets a specific client

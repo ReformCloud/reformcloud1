@@ -364,12 +364,10 @@ public final class SignSelector {
     }
 
     private void updateSignForAllPlayers(final org.bukkit.block.Sign sign, final String[] lines) {
-        SpigotBootstrap.getInstance().getServer().getOnlinePlayers().forEach(e -> {
-            if (e.getWorld().getName().equals(sign.getWorld().getName()) && e.getWorld()
-                .isChunkLoaded(sign.getChunk())) {
-                e.sendSignChange(sign.getLocation(), lines);
-            }
-        });
+        Bukkit.getOnlinePlayers().stream().filter(player ->
+            player.getWorld().getName().equals(sign.getWorld().getName())
+                && player.getWorld().isChunkLoaded(sign.getChunk()) && player.getLocation().distance(sign.getLocation()) < 32)
+            .forEach(player -> player.sendSignChange(sign.getLocation(), lines));
     }
 
     private void updateAllSigns() {
@@ -534,17 +532,20 @@ public final class SignSelector {
                     if (SpigotBootstrap.getInstance().isEnabled()) {
                         SpigotBootstrap.getInstance().getServer().getScheduler()
                             .runTask(SpigotBootstrap.getInstance(), () -> {
+                                if (serverGroup.isMaintenance()) {
+                                    SignSelector.this.setMaintenance(sign);
+                                    return;
+                                }
+
                                 if (sign.getServerInfo() == null
                                     || !sign.getServerInfo().getServerState().isJoineable()
                                     || sign.getServerInfo().getServerState()
                                     .equals(ServerState.HIDDEN)) {
                                     SignSelector.this.setLoading(sign, this.currentLoadingLayout);
-                                } else if (serverGroup.isMaintenance()) {
-                                    SignSelector.this.setMaintenance(sign);
                                 } else if (sign.getServerInfo().getOnlinePlayers().size() == 0) {
                                     SignSelector.this.setEmpty(sign);
                                 } else if (sign.getServerInfo().getOnlinePlayers().size()
-                                    == serverGroup.getMaxPlayers()) {
+                                    >= serverGroup.getMaxPlayers()) {
                                     SignSelector.this.setFull(sign);
                                 } else {
                                     SignSelector.this.setOnline(sign);

@@ -18,7 +18,8 @@ import java.lang.annotation.*;
         ElementType.FIELD,
         ElementType.PARAMETER,
         ElementType.LOCAL_VARIABLE,
-        ElementType.CONSTRUCTOR
+        ElementType.CONSTRUCTOR,
+        ElementType.TYPE
     }
 )
 public @interface ForRemoval {

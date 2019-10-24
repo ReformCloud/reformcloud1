@@ -24,24 +24,32 @@ import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configuration.CloudConfiguration;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.cryptic.StringEncrypt;
+import systems.reformcloud.database.DataBaseManager;
+import systems.reformcloud.database.Database;
 import systems.reformcloud.database.DatabaseProvider;
 import systems.reformcloud.database.DatabaseSaver;
-import systems.reformcloud.database.player.PlayerDatabase;
-import systems.reformcloud.database.player.SavePlayerDatabase;
+import systems.reformcloud.database.config.DatabaseConfig;
+import systems.reformcloud.database.player.file.FileDatabaseManager;
+import systems.reformcloud.database.player.file.PlayerFileDatabase;
+import systems.reformcloud.database.player.mongo.MongoDatabaseManager;
+import systems.reformcloud.database.player.mongo.PlayerMongoDatabase;
+import systems.reformcloud.database.player.mysql.MySQLDatabaseManager;
+import systems.reformcloud.database.player.mysql.PlayerMySQLDatabase;
+import systems.reformcloud.database.player.rethinkdb.PlayerRethinkDatabase;
+import systems.reformcloud.database.player.rethinkdb.RethinkDatabaseManager;
 import systems.reformcloud.database.statistics.SaveStatisticsProvider;
 import systems.reformcloud.database.statistics.StatisticsProvider;
 import systems.reformcloud.event.DefaultEventManager;
 import systems.reformcloud.event.abstracts.EventManager;
-import systems.reformcloud.event.events.ProxyInfoUpdateEvent;
-import systems.reformcloud.event.events.ReloadDoneEvent;
-import systems.reformcloud.event.events.ServerInfoUpdateEvent;
-import systems.reformcloud.event.events.StartedEvent;
+import systems.reformcloud.event.events.internal.ReloadDoneEvent;
+import systems.reformcloud.event.events.internal.StartedEvent;
+import systems.reformcloud.event.events.update.ProxyInfoUpdateEvent;
+import systems.reformcloud.event.events.update.ServerInfoUpdateEvent;
 import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.exceptions.LoadException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.AbstractLoggerProvider;
-import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.Template;
 import systems.reformcloud.meta.auto.start.AutoStart;
 import systems.reformcloud.meta.auto.stop.AutoStop;
@@ -67,7 +75,7 @@ import systems.reformcloud.network.in.*;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 import systems.reformcloud.network.out.*;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.network.query.in.*;
 import systems.reformcloud.network.query.out.PacketOutQueryGetRuntimeInformation;
@@ -81,6 +89,7 @@ import systems.reformcloud.utility.Require;
 import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.cloudsystem.InternalCloudNetwork;
 import systems.reformcloud.utility.defaults.DefaultCloudService;
+import systems.reformcloud.utility.player.OnlinePlayerManager;
 import systems.reformcloud.utility.runtime.Reload;
 import systems.reformcloud.utility.runtime.Shutdown;
 import systems.reformcloud.utility.screen.ScreenSessionProvider;
@@ -115,7 +124,9 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     private final SaveStatisticsProvider statisticsProvider = new StatisticsProvider();
 
-    private final SavePlayerDatabase playerDatabase = new PlayerDatabase();
+    private DataBaseManager dataBaseManager;
+
+    private Database<UUID, String, OfflinePlayer> playerDatabase;
 
     private final AbstractChannelHandler channelHandler;
 
@@ -150,13 +161,13 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     /**
      * Creates a new instance of the ReformCloudController and prepares all needed handlers
      *
-     * @param colouredConsoleProvider Main Cloud logger, will be used everywhere
+     * @param loggerProvider Main Cloud logger, will be used everywhere
      * @param commandManager Main CommandManager to manage all available commands
      * @param ssl If this is {@code true} the cloud will use a self- signed certificate
      * @param time Startup time for start time
      * @throws Throwable If an error occurs while starting CloudSystem the error will be thrown here
      */
-    public ReformCloudController(ColouredConsoleProvider colouredConsoleProvider, CommandManager commandManager,
+    public ReformCloudController(AbstractLoggerProvider loggerProvider, AbstractCommandManager commandManager,
                                  boolean ssl, long time) throws Throwable {
         if (instance == null) {
             instance = this;
@@ -165,12 +176,12 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
                 new LoadException(new InstanceAlreadyExistsException()));
         }
 
-        this.colouredConsoleProvider = colouredConsoleProvider;
+        this.colouredConsoleProvider = loggerProvider;
         this.commandManager = commandManager;
 
         cloudConfiguration = new CloudConfiguration();
         ReformCloudLibraryServiceProvider reformCloudLibraryServiceProvider = new ReformCloudLibraryServiceProvider(
-            colouredConsoleProvider,
+            loggerProvider,
             this.cloudConfiguration.getControllerKey(), null, eventManager,
             cloudConfiguration.getLoadedLang());
         this.internalCloudNetwork
@@ -211,6 +222,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         statisticsProvider.load();
         statisticsProvider.setLastStartup();
         statisticsProvider.addStartup();
+
+        initDatabase();
 
         if (StringUtil.USER_NAME.equalsIgnoreCase("root")
             && StringUtil.OS_NAME.toLowerCase().contains("linux")) {
@@ -266,6 +279,16 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     public static ReformCloudController getInstance() {
         return ReformCloudController.instance;
+    }
+
+    public void updateServerInfoInternal(ServerInfo serverInfo) {
+        internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
+    }
+
+    public void updateProxyInfoInternal(ProxyInfo proxyInfo) {
+        internalCloudNetwork.getServerProcessManager().updateProxyInfo(proxyInfo);
+        ReformCloudLibraryServiceProvider.getInstance().setInternalCloudNetwork(internalCloudNetwork);
     }
 
     /**
@@ -412,6 +435,8 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     public void reloadAll() {
         this.colouredConsoleProvider.info(this.getLoadedLanguage().getController_reload());
 
+        this.dataBaseManager.disconnect();
+
         this.updateAllConnectedClients();
 
         this.cloudConfiguration = null;
@@ -456,6 +481,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
             this.getAllRegisteredProxies(k).forEach(e -> e.setProxyGroup(v))
         );
 
+        initDatabase();
         this.addonParallelLoader.loadAddons();
 
         final Language language = new LanguageManager(cloudConfiguration.getLoadedLang())
@@ -481,6 +507,38 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         this.eventManager.fire(new ReloadDoneEvent());
     }
 
+    private void initDatabase() {
+        DatabaseConfig databaseConfig = cloudConfiguration.getDatabaseConfig();
+        switch (databaseConfig.getDataBaseType()) {
+            case MYSQL: {
+                this.dataBaseManager = new MySQLDatabaseManager();
+                dataBaseManager.connect(databaseConfig);
+                this.playerDatabase = new PlayerMySQLDatabase((MySQLDatabaseManager) dataBaseManager);
+                break;
+            }
+
+            case MONGODB: {
+                this.dataBaseManager = new MongoDatabaseManager();
+                dataBaseManager.connect(databaseConfig);
+                this.playerDatabase = new PlayerMongoDatabase(((MongoDatabaseManager) dataBaseManager).mongoDatabase);
+                break;
+            }
+
+            case RETHINK_DB: {
+                this.dataBaseManager = new RethinkDatabaseManager();
+                dataBaseManager.connect(databaseConfig);
+                this.playerDatabase = new PlayerRethinkDatabase(((RethinkDatabaseManager) dataBaseManager).connection);
+                break;
+            }
+
+            case FILE:
+            default: {
+                this.dataBaseManager = new FileDatabaseManager();
+                this.playerDatabase = new PlayerFileDatabase();
+            }
+        }
+    }
+
     private void updateAllConnectedClients() {
         this.internalCloudNetwork
             .getClients()
@@ -497,6 +555,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     @Override
     public void shutdownAll() {
         this.taskScheduler.close();
+        this.dataBaseManager.disconnect();
         this.statisticsProvider.save();
 
         this.internalCloudNetwork.getServerProcessManager().getAllRegisteredServerProcesses()
@@ -1012,7 +1071,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     public void updateServerInfo(ServerInfo serverInfo) {
         this.internalCloudNetwork.getServerProcessManager().updateServerInfo(serverInfo);
         channelHandler
-            .sendToAllSynchronized(new PacketOutServerInfoUpdate(serverInfo, internalCloudNetwork));
+            .sendToAllSynchronized(new PacketOutServerInfoUpdate(serverInfo));
         eventManager.fire(new ServerInfoUpdateEvent(serverInfo));
     }
 
@@ -1224,72 +1283,72 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
 
     @Override
     public OnlinePlayer getOnlinePlayer(UUID uniqueId) {
-        return this.playerDatabase.getOnlinePlayer(uniqueId);
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uniqueId);
     }
 
     @Override
     public OnlinePlayer getOnlinePlayer(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return null;
         }
 
-        return this.playerDatabase.getOnlinePlayer(uuid);
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uuid);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(UUID uniqueId) {
-        return this.playerDatabase.getOfflinePlayer(uniqueId);
+        return this.playerDatabase.get(uniqueId);
     }
 
     @Override
     public OfflinePlayer getOfflinePlayer(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return null;
         }
 
-        return this.playerDatabase.getOfflinePlayer(uuid);
+        return this.playerDatabase.get(uuid);
     }
 
     @Override
     public void updateOnlinePlayer(OnlinePlayer onlinePlayer) {
-        this.playerDatabase.updateOnlinePlayer(onlinePlayer);
+        OnlinePlayerManager.INTERNAL_INSTANCE.updatePlayer(onlinePlayer);
     }
 
     @Override
     public void updateOfflinePlayer(OfflinePlayer offlinePlayer) {
-        this.playerDatabase.updateOfflinePlayer(offlinePlayer);
+        this.playerDatabase.update(offlinePlayer.getUniqueID(), offlinePlayer);
     }
 
     @Override
     public boolean isOnline(UUID uniqueId) {
-        return this.playerDatabase.getOnlinePlayer(uniqueId) != null;
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uniqueId) != null;
     }
 
     @Override
     public boolean isOnline(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return false;
         }
 
-        return this.playerDatabase.getOnlinePlayer(uuid) != null;
+        return OnlinePlayerManager.INTERNAL_INSTANCE.get(uuid) != null;
     }
 
     @Override
     public boolean isRegistered(UUID uniqueId) {
-        return this.playerDatabase.getOfflinePlayer(uniqueId) != null;
+        return this.playerDatabase.get(uniqueId) != null;
     }
 
     @Override
     public boolean isRegistered(String name) {
-        UUID uuid = this.playerDatabase.getFromName(name);
+        UUID uuid = this.playerDatabase.getID(name);
         if (uuid == null) {
             return false;
         }
 
-        return this.playerDatabase.getOfflinePlayer(uuid) != null;
+        return this.playerDatabase.get(uuid) != null;
     }
 
     @Override
@@ -1375,43 +1434,43 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     }
 
     @Override
-    public boolean sendPacket(String subChannel, Packet packet) {
+    public boolean sendPacket(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketAsynchronous(subChannel, packet);
     }
 
     @Override
-    public boolean sendPacketSync(String subChannel, Packet packet) {
+    public boolean sendPacketSync(String subChannel, DefaultPacket packet) {
         return this.channelHandler.sendPacketSynchronized(subChannel, packet);
     }
 
     @Override
-    public void sendPacketToAll(Packet packet) {
+    public void sendPacketToAll(DefaultPacket packet) {
         this.channelHandler.sendToAllAsynchronous(packet);
     }
 
     @Override
-    public void sendPacketToAllSync(Packet packet) {
+    public void sendPacketToAllSync(DefaultPacket packet) {
         this.channelHandler.sendToAllSynchronized(packet);
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet,
-        NetworkQueryInboundHandler onSuccess) {
+    public void sendPacketQuery(String channel, DefaultPacket packet,
+                                NetworkQueryInboundHandler onSuccess) {
         this.channelHandler.sendPacketQuerySync(
             channel, "ReformCloudController", packet, onSuccess
         );
     }
 
     @Override
-    public void sendPacketQuery(String channel, Packet packet, NetworkQueryInboundHandler onSuccess,
-        NetworkQueryInboundHandler onFailure) {
+    public void sendPacketQuery(String channel, DefaultPacket packet, NetworkQueryInboundHandler onSuccess,
+                                NetworkQueryInboundHandler onFailure) {
         this.channelHandler.sendPacketQuerySync(
             channel, "ReformCloudController", packet, onSuccess, onFailure
         );
     }
 
     @Override
-    public PacketFuture createPacketFuture(Packet packet, String networkComponent) {
+    public PacketFuture createPacketFuture(DefaultPacket packet, String networkComponent) {
         this.channelHandler.toQueryPacket(packet, UUID.randomUUID(), "ReformCloudController");
         PacketFuture packetFuture = new PacketFuture(
             this.channelHandler,
@@ -1425,7 +1484,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
     }
 
     @Override
-    public PacketFuture sendPacketQuery(String channel, Packet packet) {
+    public PacketFuture sendPacketQuery(String channel, DefaultPacket packet) {
         return this.channelHandler.sendPacketQuerySync(
             channel, "ReformCloudController", packet
         );
@@ -1635,7 +1694,7 @@ public final class ReformCloudController implements Serializable, Shutdown, Relo
         return this.statisticsProvider;
     }
 
-    public SavePlayerDatabase getPlayerDatabase() {
+    public Database<UUID, String, OfflinePlayer> getPlayerDatabase() {
         return this.playerDatabase;
     }
 

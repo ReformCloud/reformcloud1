@@ -5,7 +5,7 @@
 package systems.reformcloud.network.query.out;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.player.DefaultPlayer;
 import systems.reformcloud.player.version.SpigotVersion;
 
@@ -17,7 +17,7 @@ import java.util.UUID;
  * @author _Klaro | Pasqual K. / created on 22.02.2019
  */
 
-public final class PacketOutQueryGetPlayer extends Packet implements Serializable {
+public final class PacketOutQueryGetPlayer extends DefaultPacket implements Serializable {
 
     public PacketOutQueryGetPlayer(final UUID uuid, final SpigotVersion spigotVersion,
         String name) {

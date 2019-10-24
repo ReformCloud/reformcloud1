@@ -16,7 +16,7 @@ import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
 import systems.reformcloud.network.authentication.enums.AuthenticationType;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.constants.ChannelConstants;
 import systems.reformcloud.utility.cloudsystem.EthernetAddress;
 
@@ -70,7 +70,7 @@ public final class NettySocketClient implements AutoCloseable, Serializable {
                 });
 
             bootstrap.connect(ethernetAddress.getHost(), ethernetAddress.getPort()).sync().channel()
-                .writeAndFlush(new Packet("Auth",
+                .writeAndFlush(new DefaultPacket("Auth",
                     new Configuration()
                         .addStringValue("key", key)
                         .addStringValue("name", name)

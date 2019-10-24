@@ -5,13 +5,13 @@
 package systems.reformcloud.network.packets;
 
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 
 /**
  * @author _Klaro | Pasqual K. / created on 30.11.2018
  */
 
-public final class PacketOutSendControllerConsoleMessage extends Packet {
+public final class PacketOutSendControllerConsoleMessage extends DefaultPacket {
 
     public PacketOutSendControllerConsoleMessage(final String message) {
         super("SendControllerConsoleMessage",

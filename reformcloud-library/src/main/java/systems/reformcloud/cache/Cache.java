@@ -5,6 +5,13 @@
 package systems.reformcloud.cache;
 
 import systems.reformcloud.ReformCloudLibraryService;
+import systems.reformcloud.ReformCloudLibraryServiceProvider;
+import systems.reformcloud.event.events.cache.CacheCreatedEvent;
+import systems.reformcloud.event.events.cache.CacheDataInvalidatedEvent;
+import systems.reformcloud.event.events.cache.CacheItemInvalidateEvent;
+import systems.reformcloud.event.events.cache.CacheItemPutEvent;
+import systems.reformcloud.event.utility.Event;
+import systems.reformcloud.utility.annotiations.Internal;
 import systems.reformcloud.utility.annotiations.MayNotBePresent;
 
 import java.io.Serializable;
@@ -31,6 +38,9 @@ public final class Cache<K, V> implements Serializable {
     public Cache(long maxSize) {
         this.maxSize = maxSize;
         this.cache = new TreeMap<>();
+
+        callEvent(new CacheCreatedEvent(this));
+
         ReformCloudLibraryService.CACHE_CLEARER.register(this);
     }
 
@@ -52,6 +62,7 @@ public final class Cache<K, V> implements Serializable {
      */
     public void invalidate(K k) {
         this.cache.remove(k);
+        callEvent(new CacheItemInvalidateEvent<>(this, k));
     }
 
     /**
@@ -59,6 +70,7 @@ public final class Cache<K, V> implements Serializable {
      */
     public void invalidateAll() {
         this.cache.clear();
+        callEvent(new CacheDataInvalidatedEvent(this));
     }
 
     /**
@@ -71,9 +83,11 @@ public final class Cache<K, V> implements Serializable {
         this.cache.put(k, v);
         if (cache.size() >= maxSize) {
             while (this.cache.size() >= maxSize) {
-                this.cache.remove(this.cache.lastKey());
+                invalidate(cache.lastKey());
             }
         }
+
+        callEvent(new CacheItemPutEvent<>(this, k, v));
     }
 
     /**
@@ -112,5 +126,10 @@ public final class Cache<K, V> implements Serializable {
      */
     public long getMaxSize() {
         return maxSize;
+    }
+
+    @Internal
+    private void callEvent(Event event) {
+        ReformCloudLibraryServiceProvider.getInstance().getEventManager().fire(event);
     }
 }

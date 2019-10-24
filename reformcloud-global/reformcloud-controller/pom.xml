@@ -5,7 +5,7 @@
     <parent>
         <artifactId>reformcloud-global</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.13</version>
+        <version>1.14</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
@@ -40,10 +40,32 @@
             <version>${dependency.jline.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${dependency.mysql-connector.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>${dependency.mongodb.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.rethinkdb</groupId>
+            <artifactId>rethinkdb-driver</artifactId>
+            <version>${dependency.rethinkdb-driver.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
-        <finalName>ReformController-${service.version}</finalName>
+        <finalName>ReformCloudController-${service.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

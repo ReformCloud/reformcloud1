@@ -6,12 +6,12 @@
         <dependency>
             <groupId>systems.reformcloud</groupId>
             <artifactId>reformcloud-controller</artifactId>
-            <version>1.13</version>
+            <version>1.14</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.5</version>
+            <version>2.8.6</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -35,6 +35,6 @@
     <parent>
         <artifactId>reformcloud-parent</artifactId>
         <groupId>systems.reformcloud</groupId>
-        <version>1.13</version>
+        <version>1.14</version>
     </parent>
 </project>

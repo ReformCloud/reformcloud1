@@ -9,7 +9,6 @@ import systems.reformcloud.exceptions.InstanceAlreadyExistsException;
 import systems.reformcloud.language.LanguageManager;
 import systems.reformcloud.language.utility.Language;
 import systems.reformcloud.logging.AbstractLoggerProvider;
-import systems.reformcloud.logging.ColouredConsoleProvider;
 import systems.reformcloud.meta.cluster.NetworkGlobalCluster;
 import systems.reformcloud.network.NettyHandler;
 import systems.reformcloud.network.abstracts.AbstractChannelHandler;
@@ -79,12 +78,12 @@ public final class ReformCloudLibraryServiceProvider {
     /**
      * Creates a new Instance of the {ReformCloudLibraryServiceProvider}
      *
-     * @param colouredConsoleProvider The internal ColouredConsoleProvider created by the instances
+     * @param loggerProvider The internal ColouredConsoleProvider created by the instances
      * @param key The controller key
      * @param controllerIP The controller ip address
      * @param eventManager The event manager of the cloud
      */
-    public ReformCloudLibraryServiceProvider(ColouredConsoleProvider colouredConsoleProvider, String key,
+    public ReformCloudLibraryServiceProvider(AbstractLoggerProvider loggerProvider, String key,
                                              String controllerIP, EventManager eventManager, String lang) {
         if (instance == null) {
             instance = this;
@@ -98,7 +97,7 @@ public final class ReformCloudLibraryServiceProvider {
 
         this.key = key;
         this.controllerIP = controllerIP;
-        this.colouredConsoleProvider = colouredConsoleProvider;
+        this.colouredConsoleProvider = loggerProvider;
         this.eventManager = eventManager;
         this.loaded = new LanguageManager(lang).getLoaded();
     }

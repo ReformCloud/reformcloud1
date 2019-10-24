@@ -9,12 +9,13 @@ import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
 
 import java.io.Serializable;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 /**
  * @author _Klaro | Pasqual K. / created on 06.03.2019
  */
 
-public final class PacketFuture implements Serializable {
+public final class PacketFuture extends QueryRequest<Packet> implements Serializable {
 
     /**
      * The completable future for the packets
@@ -93,11 +94,9 @@ public final class PacketFuture implements Serializable {
      * This method will set the failure network inbound handler
      *
      * @param inboundHandler The new failure network handler
-     * @return The current instance of this class
      */
-    private PacketFuture onFailure(final NetworkQueryInboundHandler inboundHandler) {
+    private void onFailure(final NetworkQueryInboundHandler inboundHandler) {
         this.onFailure = inboundHandler;
-        return this;
     }
 
     /**
@@ -105,11 +104,10 @@ public final class PacketFuture implements Serializable {
      *
      * @param onSuccess The new successful network handler
      * @param onFailure The new failure network handler
-     * @return The current instance of this class
      */
-    public PacketFuture whenCompleted(final NetworkQueryInboundHandler onSuccess,
-        final NetworkQueryInboundHandler onFailure) {
-        return this.onSuccessfullyCompleted(onSuccess).onFailure(onFailure);
+    public void whenCompleted(final NetworkQueryInboundHandler onSuccess,
+                              final NetworkQueryInboundHandler onFailure) {
+        this.onSuccessfullyCompleted(onSuccess).onFailure(onFailure);
     }
 
     /**
@@ -184,7 +182,7 @@ public final class PacketFuture implements Serializable {
         try {
             return this.completableFuture.get(10, TimeUnit.SECONDS);
         } catch (final InterruptedException | ExecutionException | TimeoutException ex) {
-            return Packet.EMPTY_PACKET;
+            return DefaultPacket.EMPTY_PACKET;
         }
     }
 
@@ -199,7 +197,7 @@ public final class PacketFuture implements Serializable {
         try {
             return this.completableFuture.get(timeout, timeUnit);
         } catch (final InterruptedException | ExecutionException | TimeoutException ex) {
-            return Packet.EMPTY_PACKET;
+            return DefaultPacket.EMPTY_PACKET;
         }
     }
 
@@ -213,31 +211,12 @@ public final class PacketFuture implements Serializable {
         channelHandler.getResults().remove(in.getResult());
     }
 
-    public CompletableFuture<Packet> getCompletableFuture() {
-        return this.completableFuture;
-    }
-
-    public ExecutorService getExecutorService() {
-        return this.executorService;
-    }
-
-    public NetworkQueryInboundHandler getOnSuccess() {
-        return this.onSuccess;
-    }
-
-    public NetworkQueryInboundHandler getOnFailure() {
-        return this.onFailure;
-    }
-
     public AbstractChannelHandler getChannelHandler() {
         return this.channelHandler;
     }
 
-    public Packet getSentPacket() {
-        return this.sentPacket;
-    }
-
-    public String getTo() {
-        return this.to;
+    @Override
+    public void onResult(Consumer<Packet> consumer) {
+        completableFuture.thenAccept(consumer);
     }
 }

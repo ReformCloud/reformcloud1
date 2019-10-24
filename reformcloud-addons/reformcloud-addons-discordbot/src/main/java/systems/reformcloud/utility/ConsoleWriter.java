@@ -8,7 +8,7 @@ import systems.reformcloud.DiscordAddon;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.logging.enums.AnsiColourHandler;
-import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.logging.handlers.ConsoleInputHandler;
 
 import java.io.Serializable;
 import java.util.Deque;
@@ -18,7 +18,7 @@ import java.util.LinkedList;
  * @author _Klaro | Pasqual K. / created on 10.02.2019
  */
 
-public final class ConsoleWriter implements Serializable, Runnable, IConsoleInputHandler {
+public final class ConsoleWriter implements Serializable, Runnable, ConsoleInputHandler {
 
     private Deque<String> consoleMessages = new LinkedList<>();
 

@@ -4,9 +4,8 @@
 
 package systems.reformcloud.network.in;
 
-import systems.reformcloud.bootstrap.VelocityBootstrap;
+import systems.reformcloud.ReformCloudAPIVelocity;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.events.CloudProxyInfoUpdateEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.utility.TypeTokenAdaptor;
@@ -22,7 +21,6 @@ public final class PacketInProxyInfoUpdate implements Serializable, NetworkInbou
     @Override
     public void handle(Configuration configuration) {
         ProxyInfo proxyInfo = configuration.getValue("info", TypeTokenAdaptor.getPROXY_INFO_TYPE());
-        VelocityBootstrap.getInstance().getProxyServer().getEventManager()
-            .fire(new CloudProxyInfoUpdateEvent(proxyInfo));
+        ReformCloudAPIVelocity.getInstance().updateProxyInfoInternal(proxyInfo);
     }
 }

@@ -41,8 +41,6 @@ public class AddonMainClassLoader extends URLClassLoader implements AddonPreLoad
             .getDeclaredConstructor().newInstance();
 
         javaAddon.setAddonClassConfig(this.addonClassConfig);
-        javaAddon.onAddonClazzPrepare();
-
         return javaAddon;
     }
 }

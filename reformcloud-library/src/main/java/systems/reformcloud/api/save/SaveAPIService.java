@@ -11,7 +11,7 @@ import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.meta.proxy.ProxyGroup;
 import systems.reformcloud.meta.server.ServerGroup;
 import systems.reformcloud.network.NettyHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packet.PacketFuture;
 import systems.reformcloud.player.implementations.OfflinePlayer;
 import systems.reformcloud.player.implementations.OnlinePlayer;
@@ -184,7 +184,7 @@ public interface SaveAPIService {
      * @param packet The packet that should be send
      * @return If the operation was successful
      */
-    Optional<Boolean> sendPacket(String subChannel, Packet packet);
+    Optional<Boolean> sendPacket(String subChannel, DefaultPacket packet);
 
     /**
      * Sends a packet through the cloud system
@@ -193,7 +193,7 @@ public interface SaveAPIService {
      * @param packet The packet that should be send
      * @return If the operation was successful
      */
-    Optional<Boolean> sendPacketSync(String subChannel, Packet packet);
+    Optional<Boolean> sendPacketSync(String subChannel, DefaultPacket packet);
 
     /**
      * Creates a packet future
@@ -202,7 +202,7 @@ public interface SaveAPIService {
      * @param networkComponent The instance name of the packet receiver
      * @return The created packet future
      */
-    Optional<PacketFuture> createPacketFuture(Packet packet, String networkComponent);
+    Optional<PacketFuture> createPacketFuture(DefaultPacket packet, String networkComponent);
 
     /**
      * Creates a packet future
@@ -211,7 +211,7 @@ public interface SaveAPIService {
      * @param channel The instance name of the packet receiver
      * @return The created packet future
      */
-    Optional<PacketFuture> sendPacketQuery(String channel, Packet packet);
+    Optional<PacketFuture> sendPacketQuery(String channel, DefaultPacket packet);
 
     /**
      * Gets a specific client

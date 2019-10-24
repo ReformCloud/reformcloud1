@@ -5,7 +5,7 @@
 package systems.reformcloud.serverprocess.screen.internal;
 
 import systems.reformcloud.ReformCloudClient;
-import systems.reformcloud.logging.handlers.IConsoleInputHandler;
+import systems.reformcloud.logging.handlers.ConsoleInputHandler;
 import systems.reformcloud.serverprocess.screen.ScreenHandler;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 
 public final class ClientScreenHandler extends ScreenHandler implements Serializable,
-    IConsoleInputHandler {
+    ConsoleInputHandler {
 
     public ClientScreenHandler() {
         super(ReformCloudClient.getInstance().getCloudConfiguration().getClientName());

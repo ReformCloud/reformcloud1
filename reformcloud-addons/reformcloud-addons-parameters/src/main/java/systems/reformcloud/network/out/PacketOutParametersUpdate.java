@@ -4,16 +4,17 @@
 
 package systems.reformcloud.network.out;
 
-import java.io.Serializable;
 import systems.reformcloud.ParametersAddon;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
+
+import java.io.Serializable;
 
 /**
  * @author _Klaro | Pasqual K. / created on 14.04.2019
  */
 
-public final class PacketOutParametersUpdate extends Packet implements Serializable {
+public final class PacketOutParametersUpdate extends DefaultPacket implements Serializable {
 
     public PacketOutParametersUpdate() {
         super(

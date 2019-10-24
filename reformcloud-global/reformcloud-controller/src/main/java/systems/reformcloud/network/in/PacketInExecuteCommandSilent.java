@@ -8,7 +8,7 @@ import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.CommandSender;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -50,7 +50,7 @@ public final class PacketInExecuteCommandSilent implements Serializable,
             sent = true;
             ReformCloudController.getInstance().getChannelHandler().sendDirectPacket(
                 in.getStringValue("from"),
-                new Packet(StringUtil.NULL, new Configuration().addStringValue("result", message),
+                new DefaultPacket(StringUtil.NULL, new Configuration().addStringValue("result", message),
                     resultID)
             );
         }

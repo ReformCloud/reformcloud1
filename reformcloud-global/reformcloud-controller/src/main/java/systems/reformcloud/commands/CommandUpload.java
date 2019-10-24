@@ -5,12 +5,15 @@
 package systems.reformcloud.commands;
 
 import java.io.Serializable;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.Proxy;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import eu.byteexception.requestbuilder.RequestBuilder;
+import eu.byteexception.requestbuilder.result.RequestResult;
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.commands.utility.Command;
 import systems.reformcloud.commands.utility.CommandSender;
@@ -315,18 +318,18 @@ public final class CommandUpload extends Command implements Serializable {
     public List<String> complete(String commandLine, String[] args) {
         List<String> out = new LinkedList<>();
 
-        if (args.length == 0) {
+        if (args.length == 1) {
             out.addAll(asList("PLUGIN", "CONTROLLER", "CLIENTS",
                 "CONTROLLERADDON", "CLIENTADDON"));
         }
 
-        if (args.length == 1) {
+        if (args.length == 2) {
             if (args[0].equalsIgnoreCase("PLUGIN")) {
                 out.addAll(groups());
             }
         }
 
-        if (args.length == 2) {
+        if (args.length == 3) {
             if (args[0].equalsIgnoreCase("PLUGIN")) {
                 out.addAll(templates(args[1]));
             }
@@ -337,14 +340,13 @@ public final class CommandUpload extends Command implements Serializable {
 
     private boolean isURLValid(String url) {
         try {
-            URLConnection urlConnection = new URL(url).openConnection();
-            urlConnection.setRequestProperty("User-Agent",
-                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-            urlConnection.setConnectTimeout(1000);
-            urlConnection.setUseCaches(false);
-            urlConnection.connect();
+            final RequestResult requestResult = RequestBuilder.newBuilder(url, Proxy.NO_PROXY)
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11")
+                .setConnectTimeout(1, TimeUnit.SECONDS)
+                .disableCaches()
+                .fireAndForget();
 
-            return true;
+            return requestResult.isConnected();
         } catch (Throwable throwable) {
             return false;
         }

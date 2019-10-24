@@ -34,7 +34,7 @@ public abstract class CommandMap implements Serializable {
      * @return A list containing all command candidates
      */
     @ShouldNotBeNull
-    public abstract List<Command> findAll(@ShouldNotBeNull String arg1);
+    public abstract List<String> findAll(@ShouldNotBeNull String arg1);
 
     /**
      * The used command manager

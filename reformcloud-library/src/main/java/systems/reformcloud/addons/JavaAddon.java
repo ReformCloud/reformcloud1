@@ -7,7 +7,10 @@ package systems.reformcloud.addons;
 import systems.reformcloud.ReformCloudLibraryService;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.addons.configuration.AddonClassConfig;
+import systems.reformcloud.addons.dependency.util.DynamicDependency;
 import systems.reformcloud.addons.loader.AddonMainClassLoader;
+import systems.reformcloud.utility.future.Task;
+import systems.reformcloud.utility.future.TaskListener;
 
 import java.util.Objects;
 
@@ -72,6 +75,12 @@ public abstract class JavaAddon<E> {
         return addonClassConfig != null ? addonClassConfig.getName()
             : "Addon-" + ReformCloudLibraryService.THREAD_LOCAL_RANDOM.nextLong();
     }
+
+    public void loadDependencySync(DynamicDependency dynamicDependency) {
+        loadDependencyAsync(dynamicDependency).addListener(TaskListener.FIRE_EXCEPTION_ON_FAILURE).getUninterruptedly();
+    }
+
+    public abstract Task<Void> loadDependencyAsync(DynamicDependency dynamicDependency);
 
     public AddonClassConfig getAddonClassConfig() {
         return this.addonClassConfig;

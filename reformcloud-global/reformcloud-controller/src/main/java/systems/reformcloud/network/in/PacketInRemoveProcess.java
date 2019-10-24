@@ -6,8 +6,8 @@ package systems.reformcloud.network.in;
 
 import systems.reformcloud.ReformCloudController;
 import systems.reformcloud.configurations.Configuration;
-import systems.reformcloud.event.events.ProxyStoppedEvent;
-import systems.reformcloud.event.events.ServerStoppedEvent;
+import systems.reformcloud.event.events.process.ProxyStoppedEvent;
+import systems.reformcloud.event.events.process.ServerStoppedEvent;
 import systems.reformcloud.meta.info.ProxyInfo;
 import systems.reformcloud.meta.info.ServerInfo;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
@@ -40,8 +40,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
             ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
                 .unregisterServerProcess(
                     serverInfo.getCloudProcess().getProcessUID(),
-                    serverInfo.getCloudProcess().getName(),
-                    serverInfo.getPort()
+                    serverInfo.getCloudProcess().getName()
                 );
 
             ReformCloudController.getInstance().getColouredConsoleProvider().info(
@@ -80,8 +79,7 @@ public final class PacketInRemoveProcess implements NetworkInboundHandler {
             ReformCloudController.getInstance().getInternalCloudNetwork().getServerProcessManager()
                 .unregisterProxyProcess(
                     proxyInfo.getCloudProcess().getProcessUID(),
-                    proxyInfo.getCloudProcess().getName(),
-                    proxyInfo.getPort()
+                    proxyInfo.getCloudProcess().getName()
                 );
 
             ReformCloudController.getInstance().getColouredConsoleProvider().info(

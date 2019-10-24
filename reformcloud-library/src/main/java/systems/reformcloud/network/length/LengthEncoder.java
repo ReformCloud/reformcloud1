@@ -19,9 +19,10 @@ public final class LengthEncoder extends MessageToByteEncoder<ByteBuf> implement
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf in, ByteBuf out)
         throws Exception {
-        int readAble = in.readableBytes(), space = getVarIntSize(readAble);
-        if (space > 3) {
-            throw new IllegalStateException("Length space is bigger than 3");
+        int readAble = in.readableBytes();
+        int space = getVarIntSize(readAble);
+        if (space > 5) {
+            throw new IllegalStateException("Length space is bigger than 5");
         }
 
         out.ensureWritable(space + readAble);
@@ -29,7 +30,7 @@ public final class LengthEncoder extends MessageToByteEncoder<ByteBuf> implement
         out.writeBytes(in, in.readerIndex(), readAble);
     }
 
-    private void write(ByteBuf out, int value) {
+    public static ByteBuf write(ByteBuf out, int value) {
         do {
             byte temp = (byte) (value & 0b01111111);
             value >>>= 7;
@@ -39,6 +40,8 @@ public final class LengthEncoder extends MessageToByteEncoder<ByteBuf> implement
 
             out.writeByte(temp);
         } while (value != 0);
+
+        return out;
     }
 
     private int getVarIntSize(int value) {

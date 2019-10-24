@@ -9,7 +9,7 @@ import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
 import systems.reformcloud.network.interfaces.NetworkQueryInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.utility.StringUtil;
 
 import java.io.Serializable;
@@ -61,7 +61,7 @@ public final class NettyHandler implements Serializable {
      * @param packet The packet which was sent by the other network participant
      * @return If a handler for the packet could be found
      */
-    public boolean handle(Packet packet) {
+    public boolean handle(DefaultPacket packet) {
         return this.handle(packet.getChannel(), packet.getType(),
             packet.getConfiguration());
     }

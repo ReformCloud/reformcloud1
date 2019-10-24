@@ -17,7 +17,7 @@ public final class Gson extends Dependency implements Serializable {
     private static final long serialVersionUID = -6226344132999747554L;
 
     public Gson() {
-        super(null, "2.8.5");
+        super(null, "2.8.6");
     }
 
     @Override

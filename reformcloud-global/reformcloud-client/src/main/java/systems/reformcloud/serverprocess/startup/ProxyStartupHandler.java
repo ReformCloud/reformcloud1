@@ -23,6 +23,7 @@ import systems.reformcloud.utility.StringUtil;
 import systems.reformcloud.utility.files.DownloadManager;
 import systems.reformcloud.utility.files.FileUtils;
 import systems.reformcloud.utility.files.ZoneInformationProtocolUtility;
+import systems.reformcloud.utility.port.PortManagement;
 import systems.reformcloud.utility.startup.ServiceAble;
 
 import javax.imageio.ImageIO;
@@ -105,6 +106,8 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
      * Starts the BungeeCord
      */
     public void bootstrap0() {
+        this.port = PortManagement.INTERNAL_INSTANCE.nextPortAndRegister(this.proxyStartupInfo.getProxyGroup().getStartPort());
+
         if (!this.proxyStartupInfo.getProxyGroup().isStatic()) {
             FileUtils.deleteFullDirectory(path);
         }
@@ -178,13 +181,6 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
         FileUtils.copyAllFiles(Paths.get("reformcloud/default/proxies"), path + StringUtil.EMPTY);
 
         this.processStartupStage = ProcessStartupStage.PREPARING;
-        this.port = ReformCloudClient.getInstance().getInternalCloudNetwork()
-            .getServerProcessManager()
-            .nextFreePort(proxyStartupInfo.getProxyGroup().getStartPort());
-        while (!ReformCloudClient.getInstance().isPortUseable(port)) {
-            port++;
-            ReformCloudLibraryService.sleep(20);
-        }
 
         if (!Files.exists(Paths.get(path + "/server-icon.png"))) {
             FileUtils.copyCompiledFile("reformcloud/bungeecord/icon/server-icon.png",
@@ -216,12 +212,26 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions
                     .getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
-                    DownloadManager.downloadAndDisconnect(
+                    if (!DownloadManager.downloadAndDisconnect(
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
                         "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
                             this.proxyStartupInfo.getProxyGroup().getProxyVersions())
-                    );
+                    )) {
+                        if (!DownloadManager.downloadAndDisconnect(
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl(),
+                            "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                        )) {
+                            DownloadManager.downloadAndDisconnect(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl2(),
+                                "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                    this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                            );
+                        }
+                    }
                 }
 
                 FileUtils.copyFile("reformcloud/jars/" + ProxyVersions
@@ -273,12 +283,26 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
             if (!Files.exists(Paths.get(path + "/BungeeCord.jar"))) {
                 if (!Files.exists(Paths.get("reformcloud/jars/" + ProxyVersions
                     .getAsJarFileName(this.proxyStartupInfo.getProxyGroup().getProxyVersions())))) {
-                    DownloadManager.downloadAndDisconnect(
+                    if (!DownloadManager.downloadAndDisconnect(
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
                         this.proxyStartupInfo.getProxyGroup().getProxyVersions().getUrl(),
                         "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
                             this.proxyStartupInfo.getProxyGroup().getProxyVersions())
-                    );
+                    )) {
+                        if (!DownloadManager.downloadAndDisconnect(
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                            this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl(),
+                            "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                        )) {
+                            DownloadManager.downloadAndDisconnect(
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getName(),
+                                this.proxyStartupInfo.getProxyGroup().getProxyVersions().getFallbackUrl2(),
+                                "reformcloud/jars/" + ProxyVersions.getAsJarFileName(
+                                    this.proxyStartupInfo.getProxyGroup().getProxyVersions())
+                            );
+                        }
+                    }
                 }
 
                 FileUtils.copyFile("reformcloud/jars/" + ProxyVersions
@@ -392,7 +416,7 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
 
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
             .registerProxyProcess(
-                proxyStartupInfo.getUid(), proxyStartupInfo.getName(), proxyInfo, port
+                proxyStartupInfo.getUid(), proxyStartupInfo.getName(), proxyInfo
             );
         ReformCloudClient.getInstance().getChannelHandler()
             .sendPacketSynchronized("ReformCloudController",
@@ -476,7 +500,7 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
             .unregisterProxyProcess(this.proxyStartupInfo.getName());
         ReformCloudClient.getInstance().getInternalCloudNetwork().getServerProcessManager()
             .unregisterProxyProcess(
-                this.proxyStartupInfo.getUid(), this.proxyStartupInfo.getName(), this.port
+                this.proxyStartupInfo.getUid(), this.proxyStartupInfo.getName()
             );
 
         if (update) {
@@ -551,6 +575,8 @@ public final class ProxyStartupHandler implements Serializable, ServiceAble {
             this.process.destroy();
             ReformCloudLibraryService.sleep(100);
         }
+
+        PortManagement.INTERNAL_INSTANCE.unregisterPort(this.port);
 
         try {
             this.finalize();

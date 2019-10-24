@@ -5,16 +5,12 @@
 package systems.reformcloud.network.packets.in;
 
 import com.google.gson.reflect.TypeToken;
-import java.beans.ConstructorProperties;
-import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import systems.reformcloud.ReformCloudClient;
 import systems.reformcloud.ReformCloudLibraryServiceProvider;
 import systems.reformcloud.backup.StartSearch;
 import systems.reformcloud.configurations.Configuration;
 import systems.reformcloud.network.interfaces.NetworkInboundHandler;
-import systems.reformcloud.network.packet.Packet;
+import systems.reformcloud.network.packet.DefaultPacket;
 import systems.reformcloud.network.packets.out.PacketOutRequestParameters;
 import systems.reformcloud.network.packets.out.PacketOutRequestProperties;
 import systems.reformcloud.network.packets.sync.out.PacketOutSyncUpdateClientInfo;
@@ -22,6 +18,11 @@ import systems.reformcloud.parameters.ParameterGroup;
 import systems.reformcloud.properties.DefaultPropertiesManager;
 import systems.reformcloud.properties.PropertiesConfig;
 import systems.reformcloud.utility.TypeTokenAdaptor;
+
+import java.beans.ConstructorProperties;
+import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @author _Klaro | Pasqual K. / created on 29.10.2018
@@ -50,7 +51,7 @@ public final class PacketInInitializeInternal implements NetworkInboundHandler {
                 new PacketOutSyncUpdateClientInfo(ReformCloudClient.getInstance().getClientInfo()));
 
         ReformCloudClient.getInstance().getChannelHandler()
-            .sendPacketAsynchronous("ReformCloudController", new Packet(
+            .sendPacketAsynchronous("ReformCloudController", new DefaultPacket(
                 "AuthSuccess",
                 new Configuration().addStringValue("name",
                     ReformCloudClient.getInstance().getCloudConfiguration().getClientName())
