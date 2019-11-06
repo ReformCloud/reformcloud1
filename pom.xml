@@ -45,7 +45,7 @@
         <dependency.slf4j.version>1.7.28</dependency.slf4j.version>
         <dependency.commons-net.version>3.6</dependency.commons-net.version>
         <dependency.mysql-connector.version>8.0.18</dependency.mysql-connector.version>
-        <dependency.mongodb.version>3.11.1</dependency.mongodb.version>
+        <dependency.mongodb.version>3.11.2</dependency.mongodb.version>
         <dependency.rethinkdb-driver.version>2.3.3</dependency.rethinkdb-driver.version>
         <dependency.requestbuilder.version>1.0</dependency.requestbuilder.version>
     </properties>
